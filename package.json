@@ -1,0 +1,23 @@
+{
+  "name": "majsoul-custorm-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamapig120/majsoul-custorm-server.git"
+  },
+  "author": "Handle",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/iamapig120/majsoul-custorm-server/issues"
+  },
+  "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
