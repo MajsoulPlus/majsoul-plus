@@ -139,16 +139,12 @@ const Util = {
   /**
    * 读取本地文件
    * @param {string} filepath
-   * @param {boolean} encrypt
    * @return {Promise<{err:Error, data:Buffer | string}>}
    */
-  readFile(filepath, encrypt) {
+  readFile(filepath) {
     console.log('读取本地文件 ' + filepath)
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
-        if (data && encrypt) {
-          data = this.XOR(data)
-        }
         resolve({ err, data })
       })
     })
@@ -174,7 +170,7 @@ const Util = {
     const isPath = this.isPath(originalUrl)
     const localURI = this.getLocalURI(originalUrl, isPath)
 
-    this.readFile(localURI, encrypt)
+    this.readFile(localURI)
       .then(({ err, data }) => {
         if (err) {
           if (isPath) {
@@ -196,9 +192,12 @@ const Util = {
       })
       .then(data => {
         console.log('文件读取完毕 ' + originalUrl)
-        const sendData = isPath
+        let sendData = isPath
           ? this.getSendData(data).toString('utf-8')
           : this.getSendData(data)
+        if (encrypt) {
+          sendData = this.XOR(sendData)
+        }
         res.send(sendData)
         res.sendFile
       })
