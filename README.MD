@@ -1,4 +1,4 @@
-# [雀魂文件替换用中转服务器 - 魔改雀魂神器](https://github.com/iamapig120/majsoul-custorm-server)
+# [雀魂文件替换用中转服务器 - 魔改雀魂神器](https://github.com/iamapig120/majsoul-custom-server)
 
 - 除首次加载较慢，其余均可高速加载
 - 轻量级，仅依赖express
