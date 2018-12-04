@@ -8,7 +8,9 @@ const Util = {
     PORT: 8000,
     XOR_KEY: 73,
     EXTEND_RES_KEYWORD: 'extendRes',
-    REMOTE_DOMAIN: 'http://majsoul.union-game.com'
+    REMOTE_DOMAIN: 'http://majsoul.union-game.com',
+    LOCAL_DIR: '/static',
+    MODS_DIR: '/mod'
   },
   /**
    * 加密或者解密文件
@@ -114,7 +116,7 @@ const Util = {
    * @return {string}
    */
   getLocalURI(originalUrl, isPath) {
-    let localURI = path.join(__dirname, '/static', originalUrl)
+    let localURI = path.join(__dirname, this.CONFIG.LOCAL_DIR, originalUrl)
     return isPath ? `${localURI}localfile.dirindexfile` : localURI
   },
 
@@ -204,6 +206,12 @@ const Util = {
       .catch(console.error)
   }
 }
+
+Object.keys(Util).forEach(key => {
+  if (typeof Util[key] === 'function') {
+    Util[key] = Util[key].bind(Util)
+  }
+})
 
 http = Util.CONFIG.REMOTE_DOMAIN.startsWith('https')
   ? require('https')
