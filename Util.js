@@ -98,7 +98,7 @@ class Util {
                 })
                 httpRes.on('end', () => {
                     console.log(`从远端服务器请求 ${remoteUrl} 成功`)
-                    resolve(encrypt? this.XOR(Buffer.from(fileData, encoding)): fileData)
+                    resolve(encrypt? this.XOR(this.encodeBufferData(fileData, encoding)): fileData)
                 })
             })
         })
@@ -150,10 +150,11 @@ class Util {
     }
 
     /**
+     * 
      * @param {Buffer | string} data 
      * @param {string} encoding 
      */
-    static getSendData(data, encoding = 'binary'){
+    static encodeBufferData(data, encoding = 'binary'){
         return Buffer.from(data, encoding)
     }
 
@@ -177,7 +178,7 @@ class Util {
             })
             .then(data => {
                 this.writeFile(localURI, data)
-                const sendData = isPath? this.getSendData(data).toString('utf-8'): this.getSendData(data)
+                const sendData = isPath? this.encodeBufferData(data).toString('utf-8'): this.encodeBufferData(data)
                 res.send(sendData)
             })
             .catch(console.error)
