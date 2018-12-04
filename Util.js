@@ -4,14 +4,16 @@ const http = require('http')
 const https = require('https')
 const path = require('path')
 const fs = require('fs')
-class Util {
 
-    static Config = {
-        PORT: 8000,
-        XOR_KEY: 73,
-        EXTEND_RES_KEYWORD: 'extendRes',
-        REMOTE_DOMAIN: 'http://majsoul.union-game.com'
-    }
+const Config = {
+    PORT: 8000,
+    XOR_KEY: 73,
+    EXTEND_RES_KEYWORD: 'extendRes',
+    REMOTE_DOMAIN: 'http://majsoul.union-game.com'
+}
+
+class Util {
+    constructor(){}
 
     /**
      * 加密或者解密文件
@@ -23,7 +25,7 @@ class Util {
         let array = []
         for (let index = 0; index < buffer.length; index++) {
             const byte = buffer.readUInt8(index)
-            array.push(this.Config.XOR_KEY ^ byte)
+            array.push(Util.Config.XOR_KEY ^ byte)
         }
         return Buffer.from(array)
     }
@@ -34,7 +36,7 @@ class Util {
      * @returns {boolean}
      */
     static isEncryptRes(originalUrl) {
-        return originalUrl.includes(this.Config.EXTEND_RES_KEYWORD)
+        return originalUrl.includes(Util.Config.EXTEND_RES_KEYWORD)
     }
 
     /**
@@ -59,7 +61,7 @@ class Util {
                 if (exists) {
                     resolve()
                 }
-                this.mkdirs(path.dirname(dirname), () => {
+                Util.mkdirs(path.dirname(dirname), () => {
                     fs.mkdir(dirname, resolve)
                 })
             })
@@ -72,7 +74,7 @@ class Util {
      * @returns {string}
      */
     static getRemoteUrl(originalUrl) {
-        return this.Config.REMOTE_DOMAIN + originalUrl
+        return Util.Config.REMOTE_DOMAIN + originalUrl
     }
 
     /**
@@ -84,7 +86,7 @@ class Util {
      */
     static getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
         return new Promise((resolve, reject) => {
-            const remoteUrl = this.getRemoteUrl(originalUrl)
+            const remoteUrl = Util.getRemoteUrl(originalUrl)
             console.log(`从远端服务器请求 ${remoteUrl}`)
             http.get(remoteUrl, httpRes => {
                 const { statusCode } = httpRes
@@ -98,7 +100,7 @@ class Util {
                 })
                 httpRes.on('end', () => {
                     console.log(`从远端服务器请求 ${remoteUrl} 成功`)
-                    resolve(encrypt? this.XOR(Buffer.from(fileData, encoding)): fileData)
+                    resolve(encrypt? Util.XOR(Buffer.from(fileData, encoding)): fileData)
                 })
             })
         })
@@ -124,7 +126,7 @@ class Util {
      */
     static writeFile(localURI, data, encoding = 'binary') {
         return new Promise((resolve, reject) => {
-            this.mkdirs(path.dirname(localURI))
+            Util.mkdirs(path.dirname(localURI))
                 .then(() => {
                     fs.writeFile(localURI, data, encoding, err => {
                         if (err) reject(err)
@@ -144,7 +146,7 @@ class Util {
         return new Promise((resolve, reject) => {
             fs.readFile(filepath, (err, data) => {
                 if (err) reject(err)
-                resolve(encrypt ? this.XOR(data) : data)
+                resolve(encrypt ? Util.XOR(data) : data)
             })
         })
     }
@@ -165,23 +167,25 @@ class Util {
      */
     static processRequest(req, res, next) {
         const { originalUrl } = req
-        const encrypt = this.isEncryptRes(originalUrl)
-        const localURI = this.getLocalURI(originalUrl, isPath)
-        const isPath = this.isPath(originalUrl)
+        const encrypt = Util.isEncryptRes(originalUrl)
+        const isPath = Util.isPath(originalUrl)
+        const localURI = Util.getLocalURI(originalUrl, isPath)
 
-        this.readFile(localURI, encrypt)
+        Util.readFile(localURI, encrypt)
             .then(res.send)
             .catch(err => {
                 console.error(err)
-                return this.getRemoteSource(originalUrl, encrypt)
+                return Util.getRemoteSource(originalUrl, encrypt)
             })
             .then(data => {
-                this.writeFile(localURI, data)
-                const sendData = isPath? this.getSendData(data).toString('utf-8'): this.getSendData(data)
+                Util.writeFile(localURI, data)
+                const sendData = isPath? Util.getSendData(data).toString('utf-8'): Util.getSendData(data)
                 res.send(sendData)
             })
             .catch(console.error)
     }
 }
+
+Util.Config = Config
 
 module.exports = Util
