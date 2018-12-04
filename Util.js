@@ -1,17 +1,32 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+
+const configs = require('./configs')
 let http
 
+const modRootDir = path.join(__dirname, configs.MODS_DIR)
+const modDirs = fs.readdirSync(modRootDir)
+const mods = []
+modDirs.forEach(dir => {
+  const modDir = path.join(modRootDir, dir)
+  fs.stat(modDir, (err, stats) => {
+    if (err) {
+      console.error(err)
+    } else if (stats.isDirectory()) {
+      fs.readFile(path.join(modDir, 'mod.json'), (err, data) => {
+        if (!err) {
+          const modInfo = JSON.parse(data)
+          modInfo.filesDir = path.join(modDir, '/files')
+          mods.push(modInfo)
+          console.log('Mod加载 ' + modInfo.name)
+        }
+      })
+    }
+  })
+})
+
 const Util = {
-  CONFIG: {
-    PORT: 8000,
-    XOR_KEY: 73,
-    EXTEND_RES_KEYWORD: 'extendRes',
-    REMOTE_DOMAIN: 'http://majsoul.union-game.com',
-    LOCAL_DIR: '/static',
-    MODS_DIR: '/mod'
-  },
   /**
    * 加密或者解密文件
    * @param {Buffer} buffer
@@ -21,7 +36,7 @@ const Util = {
     let array = []
     for (let index = 0; index < buffer.length; index++) {
       const byte = buffer.readUInt8(index)
-      array.push(this.CONFIG.XOR_KEY ^ byte)
+      array.push(configs.XOR_KEY ^ byte)
     }
     return Buffer.from(array)
   },
@@ -32,7 +47,7 @@ const Util = {
    * @returns {boolean}
    */
   isEncryptRes(originalUrl) {
-    return originalUrl.includes(this.CONFIG.EXTEND_RES_KEYWORD)
+    return originalUrl.includes(configs.EXTEND_RES_KEYWORD)
   },
 
   /**
@@ -73,7 +88,7 @@ const Util = {
    * @returns {string}
    */
   getRemoteUrl(originalUrl) {
-    return this.CONFIG.REMOTE_DOMAIN + originalUrl
+    return configs.REMOTE_DOMAIN + originalUrl
   },
 
   /**
@@ -86,7 +101,6 @@ const Util = {
   getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
-      console.log(`从远端服务器请求 ${remoteUrl}`)
       http.get(remoteUrl, httpRes => {
         const { statusCode } = httpRes
         if (200 > statusCode || 400 <= statusCode) {
@@ -100,7 +114,6 @@ const Util = {
           fileData += chunk
         })
         httpRes.on('end', () => {
-          console.log(`从远端服务器请求 ${remoteUrl} 成功`)
           resolve(
             encrypt ? this.XOR(Buffer.from(fileData, 'binary')) : fileData
           )
@@ -115,8 +128,12 @@ const Util = {
    * @param {boolean} isPath
    * @return {string}
    */
-  getLocalURI(originalUrl, isPath) {
-    let localURI = path.join(__dirname, this.CONFIG.LOCAL_DIR, originalUrl)
+  getLocalURI(
+    originalUrl,
+    isPath,
+    dirBase = path.join(__dirname, configs.LOCAL_DIR)
+  ) {
+    let localURI = path.join(dirBase, originalUrl)
     return isPath ? `${localURI}localfile.dirindexfile` : localURI
   },
 
@@ -144,7 +161,6 @@ const Util = {
    * @return {Promise<{err:Error, data:Buffer | string}>}
    */
   readFile(filepath) {
-    console.log('读取本地文件 ' + filepath)
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
         resolve({ err, data })
@@ -172,28 +188,42 @@ const Util = {
     const isPath = this.isPath(originalUrl)
     const localURI = this.getLocalURI(originalUrl, isPath)
 
-    this.readFile(localURI)
-      .then(({ err, data }) => {
+    let promise = Promise.resolve()
+    mods.forEach(mod => {
+      promise = promise.then(({ err = true, data = null } = {}) => {
         if (err) {
-          if (isPath) {
-            console.log('目录路由 ' + originalUrl)
-          } else {
-            console.log('本地不存在 ' + originalUrl)
-          }
+          return this.readFile(
+            this.getLocalURI(originalUrl, isPath, mod.filesDir)
+          )
+        }
+        if (data) {
+          return { err: false, data: data }
+        }
+        return { err: false, data: data }
+      })
+    })
+    promise
+      .then(({ err = true, data = null } = {}) => {
+        if (err) {
+          return this.readFile(localURI)
+        }
+        if (data) {
+          return { err: false, data: data }
+        }
+        return { err: false, data: data }
+      })
+      .then(({ err = true, data = null } = {}) => {
+        if (err) {
           return this.getRemoteSource(originalUrl, encrypt).then(data => {
             if (!isPath) {
-              this.writeFile(localURI, data).then(
-                console.log('写入本地文件 ' + originalUrl)
-              )
+              this.writeFile(localURI, data)
             }
             return data
           })
         }
-        console.log('读取本地文件 ' + originalUrl)
         return data
       })
       .then(data => {
-        console.log('文件读取完毕 ' + originalUrl)
         let sendData = isPath
           ? this.getSendData(data).toString('utf-8')
           : this.getSendData(data)
@@ -213,7 +243,7 @@ Object.keys(Util).forEach(key => {
   }
 })
 
-http = Util.CONFIG.REMOTE_DOMAIN.startsWith('https')
+http = configs.REMOTE_DOMAIN.startsWith('https')
   ? require('https')
   : require('http')
 
