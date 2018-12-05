@@ -115,7 +115,7 @@ const Util = {
         })
         httpRes.on('end', () => {
           resolve(
-            encrypt ? this.XOR(Buffer.from(fileData, 'binary')) : fileData
+            encrypt ? this.XOR(this.encodeData(fileData, encoding)) : fileData
           )
         })
       })
@@ -172,7 +172,7 @@ const Util = {
    * @param {Buffer | string} data
    * @param {string} encoding
    */
-  getSendData(data, encoding = 'binary') {
+  encodeData(data, encoding = 'binary') {
     return Buffer.from(data, encoding)
   },
 
@@ -225,8 +225,8 @@ const Util = {
       })
       .then(data => {
         let sendData = isPath
-          ? this.getSendData(data).toString('utf-8')
-          : this.getSendData(data)
+          ? this.encodeData(data).toString('utf-8')
+          : this.encodeData(data)
         if (encrypt) {
           sendData = this.XOR(sendData)
         }
