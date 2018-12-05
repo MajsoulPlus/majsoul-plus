@@ -10,7 +10,7 @@
 2. npm install
 3. 使用 Fiddler 配置一个 AutoResponder 配置
 4. 内容设置为 REGEX:http://majsoul.union-game.com/0/*
-5. 以及 http://127.0.0.1:8000/game/0/
+5. 以及 http://127.0.0.1:8000/0/
 6. npm start
 
 打开雀魂，现在随意地替换资源文件吧！
