@@ -102,7 +102,7 @@ const Util = {
         httpRes.on('end', () => {
           console.log(`从远端服务器请求 ${remoteUrl} 成功`)
           resolve(
-            encrypt ? this.XOR(Buffer.from(fileData, 'binary')) : fileData
+            encrypt ? this.XOR(this.encodeData(fileData, encoding)) : fileData
           )
         })
       })
@@ -141,13 +141,21 @@ const Util = {
   /**
    * 读取本地文件
    * @param {string} filepath
-   * @return {Promise<{err:Error, data:Buffer | string}>}
+   * @return {Promise<Buffer | string>}
    */
-  readFile(filepath) {
+  readFile(filepath, encrypt) {
     console.log('读取本地文件 ' + filepath)
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
-        resolve({ err, data })
+        if (err) {
+          reject(`本地文件 ${filepath} 不存在`)
+        } else {
+          resolve(
+            encrypt
+              ? this.XOR(data)
+              : data
+          )
+        }
       })
     })
   },
@@ -156,8 +164,38 @@ const Util = {
    * @param {Buffer | string} data
    * @param {string} encoding
    */
-  getSendData(data, encoding = 'binary') {
+  encodeData(data, encoding = 'binary') {
     return Buffer.from(data, encoding)
+  },
+
+  /**
+   * Promise流程确保确保返回本地或远程资源
+   * @param {string} originalUrl 
+   * @return {Promise<Buffer>}
+   */
+  getResponseData(originalUrl) {
+    return new Promise(resolve => {
+      const encrypt = this.isEncryptRes(originalUrl)
+      const isPath = this.isPath(originalUrl)
+      const localURI = this.getLocalURI(originalUrl, isPath)
+      this.readFile(localURI, encrypt)
+        .then(resolve)
+        .catch(err => {
+          console.log(err)
+          return this.getRemoteSource(originalUrl, encrypt)
+        })
+        .then(data => {
+          this.writeFile(localURI, data)
+          return data
+        })
+        .then(data => {
+          let sendData = isPath
+            ? this.encodeData(data).toString('utf-8')
+            : this.encodeData(data)
+          if (encrypt) sendData = this.XOR(sendData)
+          resolve(sendData)
+        })
+    })
   },
 
   /**
@@ -167,43 +205,11 @@ const Util = {
    * @param {express.NextFunction} next NextFunction对象
    */
   processRequest(req, res, next) {
-    const originalUrl = req.originalUrl
-    const encrypt = this.isEncryptRes(originalUrl)
-    const isPath = this.isPath(originalUrl)
-    const localURI = this.getLocalURI(originalUrl, isPath)
-
-    this.readFile(localURI)
-      .then(({ err, data }) => {
-        if (err) {
-          if (isPath) {
-            console.log('目录路由 ' + originalUrl)
-          } else {
-            console.log('本地不存在 ' + originalUrl)
-          }
-          return this.getRemoteSource(originalUrl, encrypt).then(data => {
-            if (!isPath) {
-              this.writeFile(localURI, data).then(
-                console.log('写入本地文件 ' + originalUrl)
-              )
-            }
-            return data
-          })
-        }
-        console.log('读取本地文件 ' + originalUrl)
-        return data
-      })
+    const { originalUrl } = req
+    this.getResponseData(originalUrl)
       .then(data => {
-        console.log('文件读取完毕 ' + originalUrl)
-        let sendData = isPath
-          ? this.getSendData(data).toString('utf-8')
-          : this.getSendData(data)
-        if (encrypt) {
-          sendData = this.XOR(sendData)
-        }
-        res.send(sendData)
-        res.sendFile
+        res.send(data)
       })
-      .catch(console.error)
   }
 }
 
