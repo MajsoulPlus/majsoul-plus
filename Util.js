@@ -96,27 +96,37 @@ const Util = {
    * @param {string} originalUrl 原始请求的相对路径
    * @param {boolean} encrypt  是否是加密数据
    * @param {string} encoding 请求的数据格式，默认是binary
-   * @returns {Promise<Buffer | string>}
+   * @returns {Promise<{statusCode: number,data:Buffer | string}>}
    */
   getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
       http.get(remoteUrl, httpRes => {
         const { statusCode } = httpRes
-        if (200 > statusCode || 400 <= statusCode) {
-          reject(
-            `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-          )
-        }
         httpRes.setEncoding(encoding)
         let fileData = ''
         httpRes.on('data', chunk => {
           fileData += chunk
         })
         httpRes.on('end', () => {
-          resolve(
-            encrypt ? this.XOR(this.encodeData(fileData, encoding)) : fileData
-          )
+          if (200 > statusCode || 400 <= statusCode) {
+            console.log(
+              `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
+            )
+            reject({
+              statusCode,
+              data: encrypt
+                ? this.XOR(this.encodeData(fileData, encoding))
+                : fileData
+            })
+          } else {
+            resolve({
+              statusCode,
+              data: encrypt
+                ? this.XOR(this.encodeData(fileData, encoding))
+                : fileData
+            })
+          }
         })
       })
     })
@@ -158,12 +168,16 @@ const Util = {
   /**
    * 读取本地文件
    * @param {string} filepath
-   * @return {Promise<{err:Error, data:Buffer | string}>}
+   * @return {Promise<Buffer | string>}
    */
   readFile(filepath) {
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
-        resolve({ err, data })
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve(data)
       })
     })
   },
@@ -188,52 +202,57 @@ const Util = {
     const isPath = this.isPath(originalUrl)
     const localURI = this.getLocalURI(originalUrl, isPath)
 
-    let promise = Promise.resolve()
+    let promise = Promise.reject()
     mods.forEach(mod => {
-      promise = promise.then(({ err = true, data = null } = {}) => {
-        if (err) {
+      promise = promise.then(
+        data => data,
+        () => {
           return this.readFile(
             this.getLocalURI(originalUrl, isPath, mod.filesDir)
           )
         }
-        if (data) {
-          return { err: false, data: data }
-        }
-        return { err: false, data: data }
-      })
+      )
     })
     promise
-      .then(({ err = true, data = null } = {}) => {
-        if (err) {
+      .then(
+        data => data,
+        () => {
           return this.readFile(localURI)
         }
-        if (data) {
-          return { err: false, data: data }
-        }
-        return { err: false, data: data }
-      })
-      .then(({ err = true, data = null } = {}) => {
-        if (err) {
-          return this.getRemoteSource(originalUrl, encrypt).then(data => {
-            if (!isPath) {
-              this.writeFile(localURI, data)
+      )
+      .then(
+        data => data,
+        () => {
+          return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
+            ({ data, statusCode }) => {
+              res.statusCode = statusCode
+              if (!isPath) {
+                this.writeFile(localURI, data)
+              }
+              return data
+            },
+            ({ data, statusCode }) => {
+              res.statusCode = statusCode
+              return Promise.reject(data)
             }
-            return data
-          })
+          )
         }
-        return data
-      })
-      .then(data => {
-        let sendData = isPath
-          ? this.encodeData(data).toString('utf-8')
-          : this.encodeData(data)
-        if (encrypt) {
-          sendData = this.XOR(sendData)
+      )
+      .then(
+        data => {
+          let sendData = isPath
+            ? this.encodeData(data).toString('utf-8')
+            : this.encodeData(data)
+          if (encrypt) {
+            sendData = this.XOR(sendData)
+          }
+          res.send(sendData)
+        },
+        data => {
+          res.send(this.encodeData(data).toString('utf-8'))
         }
-        res.send(sendData)
-        res.sendFile
-      })
-      .catch(console.error)
+      )
+      .catch(err => console.error)
   }
 }
 
