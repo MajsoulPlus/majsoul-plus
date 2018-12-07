@@ -24,11 +24,9 @@ serverPipe.use('*', (req, res) => {
           1
       )
     req.pipe(request(pipeUrl)).pipe(res)
-    console.log(pipeUrl)
     return
   }
   pipeUrl = req.originalUrl
-  console.log(pipeUrl)
   req.pipe(request(pipeUrl)).pipe(res)
 })
 
