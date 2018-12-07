@@ -1,7 +1,8 @@
-# [雀魂文件替换用中转服务器 - 魔改雀魂神器](https://github.com/iamapig120/majsoul-custom-server)
+# [雀魂Plus - 雀魂麻将桌面客户端](https://github.com/iamapig120/majsoul-plus-client)
 
 - 除首次加载较慢，其余均可高速加载
-- 轻量级，仅依赖express
+- 轻量级，仅依赖 express 以及 electron
+- 桌面端跨平台
 - 本地文件不加密
 
 ## 如何使用
