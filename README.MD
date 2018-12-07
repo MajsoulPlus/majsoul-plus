@@ -11,3 +11,5 @@
 3. npm start
 
 在客户端中玩的开心！
+
+这个项目中，由 <a href="https://github.com/aoarashi1988">aoarashi1988</a> 贡献了大量代码，在这里，十分表示感谢！！
