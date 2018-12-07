@@ -62,7 +62,11 @@ const Util = {
    * @return {boolean}
    */
   isPath(originalUrl) {
-    return originalUrl.endsWith('\\') || originalUrl.endsWith('/')
+    return (
+      originalUrl.endsWith('\\') ||
+      originalUrl.endsWith('/') ||
+      originalUrl.includes('?')
+    )
   },
 
   /**
@@ -155,7 +159,7 @@ const Util = {
       indexOfProps === -1 ? undefined : indexOfProps
     )
     let localURI = path.join(dirBase, originalUrl)
-    return isPath ? `${localURI}localfile.dirindexfile` : localURI
+    return isPath ? localURI : localURI //  `${localURI}localfile.dirindexfile` : localURI
   },
 
   /**
