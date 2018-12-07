@@ -68,7 +68,7 @@ Promise.all([
       nodeIntegration: false
       // plugins: true
     },
-    title: '雀魂majsoul'
+    title: '雀魂Plus'
   })
   electron.Menu.setApplicationMenu(null)
 
