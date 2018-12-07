@@ -5,9 +5,13 @@ const fs = require('fs')
 const configs = require('./configs')
 let http
 
+// Mod文件根目录
 const modRootDir = path.join(__dirname, configs.MODS_DIR)
+// 所有已在目录中的Mod目录
 const modDirs = fs.readdirSync(modRootDir)
+// 用于存储Mod对象
 const mods = []
+// 遍历所有Mod文件夹，寻找Mod.json并加载
 modDirs.forEach(dir => {
   const modDir = path.join(modRootDir, dir)
   fs.stat(modDir, (err, stats) => {
@@ -22,6 +26,8 @@ modDirs.forEach(dir => {
           console.log('Mod加载 ' + modInfo.name)
         }
       })
+    } else {
+      // TODO, 若为 "*.mod" 则作为 zip 文件解压，然后加载
     }
   })
 })
@@ -143,6 +149,11 @@ const Util = {
     isPath,
     dirBase = path.join(__dirname, configs.LOCAL_DIR)
   ) {
+    const indexOfProps = originalUrl.indexOf('?')
+    originalUrl = originalUrl.substring(
+      0,
+      indexOfProps === -1 ? undefined : indexOfProps
+    )
     let localURI = path.join(dirBase, originalUrl)
     return isPath ? `${localURI}localfile.dirindexfile` : localURI
   },
@@ -175,7 +186,6 @@ const Util = {
       fs.readFile(filepath, (err, data) => {
         if (err) {
           reject(err)
-          return
         }
         resolve(data)
       })
@@ -214,12 +224,7 @@ const Util = {
       )
     })
     promise
-      .then(
-        data => data,
-        () => {
-          return this.readFile(localURI)
-        }
-      )
+      .then(data => data, () => this.readFile(localURI))
       .then(
         data => data,
         () => {
