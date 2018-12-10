@@ -273,7 +273,7 @@ const Util = {
     // 所有已在目录中的Mod目录
     // const modDirs = fs.readdirSync(modRootDir)
     try {
-      const data = fs.readFileSync(path.join(modRootDir, '/settings.json'))
+      const data = fs.readFileSync(path.join(modRootDir, '/active.json'))
       mods = JSON.parse(data.toString('utf-8'))
       mods.forEach(mod => console.log('Mod 加载 ' + mod.name))
     } catch (error) {

@@ -85,7 +85,7 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
       // 注入脚本根文件根目录
       const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
       let executes
-      fs.readFile(path.join(executeRootDir, '/settings.json'), (err, data) => {
+      fs.readFile(path.join(executeRootDir, '/active.json'), (err, data) => {
         if (err) {
           executes = []
         } else {

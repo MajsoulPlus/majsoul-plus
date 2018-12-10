@@ -5,11 +5,11 @@ const { ipcRenderer } = require('electron')
 
 // 注入脚本根文件根目录
 const executeRootDir = path.join('./', configs.EXECUTE_DIR)
-const executeSettingsFile = path.join(executeRootDir, './settings.json')
+const executeSettingsFile = path.join(executeRootDir, './active.json')
 
 // Mod文件根目录
 const modRootDir = path.join('./', configs.MODS_DIR)
-const modSettingsFile = path.join(modRootDir, './settings.json')
+const modSettingsFile = path.join(modRootDir, './active.json')
 
 /**
  * @type {Array<>}
