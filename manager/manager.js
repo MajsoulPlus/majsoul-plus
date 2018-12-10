@@ -147,7 +147,7 @@ const reloadDOM = (executes, mods) => {
 
     if (executeLaunchedList.includes(keyString)) {
       ableRadio.checked = true
-      executeLaunched[executeLaunchedList.indexOf(keyString)] = element.filesDir
+      executeLaunched[executeLaunchedList.indexOf(keyString)].filesDir = element.filesDir
     } else {
       disableRadio.checked = true
     }
@@ -225,7 +225,7 @@ const reloadDOM = (executes, mods) => {
 
     if (modLaunchedList.includes(keyString)) {
       ableRadio.checked = true
-      modLaunched[modLaunchedList.indexOf(keyString)] = element.filesDir
+      modLaunched[modLaunchedList.indexOf(keyString)].filesDir = element.filesDir
     } else {
       disableRadio.checked = true
     }
