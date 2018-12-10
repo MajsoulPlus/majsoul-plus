@@ -4,11 +4,11 @@ const configs = require('../configs')
 const { ipcRenderer } = require('electron')
 
 // 注入脚本根文件根目录
-const executeRootDir = path.join('./', configs.EXECUTE_DIR)
+const executeRootDir = path.join(__dirname, '../', configs.EXECUTE_DIR)
 const executeSettingsFile = path.join(executeRootDir, './active.json')
 
 // Mod文件根目录
-const modRootDir = path.join('./', configs.MODS_DIR)
+const modRootDir = path.join(__dirname, '../', configs.MODS_DIR)
 const modSettingsFile = path.join(modRootDir, './active.json')
 
 /**
@@ -147,6 +147,7 @@ const reloadDOM = (executes, mods) => {
 
     if (executeLaunchedList.includes(keyString)) {
       ableRadio.checked = true
+      executeLaunched[executeLaunchedList.indexOf(keyString)] = element.filesDir
     } else {
       disableRadio.checked = true
     }
@@ -224,6 +225,7 @@ const reloadDOM = (executes, mods) => {
 
     if (modLaunchedList.includes(keyString)) {
       ableRadio.checked = true
+      modLaunched[modLaunchedList.indexOf(keyString)] = element.filesDir
     } else {
       disableRadio.checked = true
     }

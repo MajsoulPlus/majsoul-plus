@@ -126,7 +126,7 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
       title: '雀魂Plus'
     })
     guiWindows[0].loadURL(path.join(__dirname, '/manager/index.html'))
-    guiWindows[0].openDevTools({ mode: 'detach' })
+    // guiWindows[0].openDevTools({ mode: 'detach' })
     ipcMain.on('application-message', (event, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
