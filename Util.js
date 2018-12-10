@@ -5,32 +5,29 @@ const fs = require('fs')
 const configs = require('./configs')
 let http
 
-// Mod文件根目录
-const modRootDir = path.join(__dirname, configs.MODS_DIR)
-// 所有已在目录中的Mod目录
-const modDirs = fs.readdirSync(modRootDir)
 // 用于存储Mod对象
-const mods = []
+let mods
+
 // 遍历所有Mod文件夹，寻找Mod.json并加载
-modDirs.forEach(dir => {
-  const modDir = path.join(modRootDir, dir)
-  fs.stat(modDir, (err, stats) => {
-    if (err) {
-      console.error(err)
-    } else if (stats.isDirectory()) {
-      fs.readFile(path.join(modDir, 'mod.json'), (err, data) => {
-        if (!err) {
-          const modInfo = JSON.parse(data)
-          modInfo.filesDir = path.join(modDir, '/files')
-          mods.push(modInfo)
-          console.log('Mod加载 ' + modInfo.name)
-        }
-      })
-    } else {
-      // TODO, 若为 "*.mod" 则作为 zip 文件解压，然后加载
-    }
-  })
-})
+// modDirs.forEach(dir => {
+//   const modDir = path.join(modRootDir, dir)
+//   fs.stat(modDir, (err, stats) => {
+//     if (err) {
+//       console.error(err)
+//     } else if (stats.isDirectory()) {
+//       fs.readFile(path.join(modDir, 'mod.json'), (err, data) => {
+//         if (!err) {
+//           const modInfo = JSON.parse(data)
+//           modInfo.filesDir = path.join(modDir, '/files')
+//           mods.push(modInfo)
+//           console.log('Mod加载 ' + modInfo.name)
+//         }
+//       })
+//     } else {
+//       // TODO, 若为 "*.mod" 则作为 zip 文件解压，然后加载
+//     }
+//   })
+// })
 
 const Util = {
   /**
@@ -211,6 +208,10 @@ const Util = {
    * @param {express.NextFunction} next NextFunction对象
    */
   processRequest(req, res, next) {
+    if (!mods) {
+      this.loadMods()
+    }
+
     const originalUrl = req.originalUrl
     const encrypt = this.isEncryptRes(originalUrl)
     const isPath = this.isPath(originalUrl)
@@ -262,6 +263,23 @@ const Util = {
         }
       )
       .catch(err => console.error)
+  },
+  /**
+   * 加载Mod
+   */
+  loadMods() {
+    // Mod文件根目录
+    const modRootDir = path.join(__dirname, configs.MODS_DIR)
+    // 所有已在目录中的Mod目录
+    // const modDirs = fs.readdirSync(modRootDir)
+    try {
+      const data = fs.readFileSync(path.join(modRootDir, '/settings.json'))
+      mods = JSON.parse(data.toString('utf-8'))
+      mods.forEach(mod => console.log('Mod 加载 ' + mod.name))
+    } catch (error) {
+      console.log(error)
+      mods = []
+    }
   }
 }
 

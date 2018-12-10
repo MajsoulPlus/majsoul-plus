@@ -9,7 +9,7 @@ const http = require('http')
 
 const serverPipe = express()
 const electron = require('electron')
-const { app: electronApp, BrowserWindow } = electron
+const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
 
 server.get('*', Util.processRequest)
 
@@ -47,77 +47,102 @@ electronApp.on('window-all-closed', function() {
   }
 })
 
-Promise.all([
-  new Promise(resolve => electronApp.on('ready', resolve)),
-  new Promise(resolve => server.listen(configs.SERVER_PORT, resolve)),
-  new Promise(resolve => serverPipe.listen(configs.PIPE_PORT, resolve))
-]).then(() => {
-  console.log('镜像服务器运行于端口', configs.SERVER_PORT)
-  console.log('代理服务器运行于端口', configs.PIPE_PORT)
+Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
+  () => {
+    guiWindows = {}
 
-  guiWindows = {}
+    const startGame = () => {
+      Promise.all([
+        new Promise(resolve => server.listen(configs.SERVER_PORT, resolve)),
+        new Promise(resolve => serverPipe.listen(configs.PIPE_PORT, resolve))
+      ]).then(() => {
+        console.log('镜像服务器运行于端口', configs.SERVER_PORT)
+        console.log('代理服务器运行于端口', configs.PIPE_PORT)
+      })
+      guiWindows[1] = new BrowserWindow({
+        width: 960 + 16,
+        height: 540 + 39,
+        frame: true,
+        resizable: true,
+        backgroundColor: '#000000',
+        webPreferences: {
+          webSecurity: false,
+          nodeIntegration: false
+          // plugins: true
+        },
+        title: '雀魂Plus'
+      })
 
-  guiWindows[0] = new BrowserWindow({
-    width: 976,
-    height: 579,
-    frame: true,
-    resizable: true,
-    backgroundColor: '#000000',
-    webPreferences: {
-      webSecurity: false,
-      nodeIntegration: false
-      // plugins: true
-    },
-    title: '雀魂Plus'
-  })
-  electron.Menu.setApplicationMenu(null)
+      guiWindows[1].webContents.session.setProxy(
+        {
+          pacScript: path.join(__dirname, 'core.pac')
+        },
+        () => {
+          guiWindows[1].loadURL('http://majsoul.union-game.com/0/')
+        }
+      )
 
-  guiWindows[0].webContents.session.setProxy(
-    {
-      pacScript: path.join(__dirname, 'core.pac')
-    },
-    () => {
-      guiWindows[0].loadURL('http://majsoul.union-game.com/0/')
-    }
-  )
-
-  guiWindows[0].webContents.on('did-finish-load', () => {
-    // 注入脚本根文件根目录
-    const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
-    // 所有已在目录中的注入脚本目录
-    const executeDirs = fs.readdirSync(executeRootDir)
-    // 用于存储注入脚本对象
-    const executes = []
-    // 遍历所有注入脚本文件夹，寻找execute.json并加载
-    executeDirs.forEach(dir => {
-      const executeDir = path.join(executeRootDir, dir)
-      fs.stat(executeDir, (err, stats) => {
+      // 注入脚本根文件根目录
+      const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
+      let executes
+      fs.readFile(path.join(executeRootDir, '/settings.json'), (err, data) => {
         if (err) {
-          console.error(err)
-        } else if (stats.isDirectory()) {
-          fs.readFile(path.join(executeDir, 'execute.json'), (err, data) => {
-            if (!err) {
-              const executeInfo = JSON.parse(data)
-              executeInfo.filesDir = executeDir
-              executes.push(executeInfo)
-              guiWindows[0].webContents.executeJavaScript(
-                fs
-                  .readFileSync(path.join(executeDir, executeInfo.entry))
-                  .toString('utf-8')
-              )
-              console.log('Hack加载 ' + executeInfo.name)
-            }
-          })
+          executes = []
         } else {
-          // TODO, 若为 "*.exec" 则作为 zip 文件解压，然后加载
+          executes = JSON.parse(data.toString('utf-8'))
         }
       })
-    })
-  })
-  // guiWindows[0].openDevTools({ mode: 'detach' })
 
-  guiWindows[0].on('page-title-updated', event => event.preventDefault())
-})
+      guiWindows[1].webContents.on('did-finish-load', () => {
+        // 注入脚本的逻辑
+        executes.forEach(executeInfo => {
+          guiWindows[1].webContents.executeJavaScript(
+            fs
+              .readFileSync(path.join(executeInfo.filesDir, executeInfo.entry))
+              .toString('utf-8')
+          )
+          console.log('Hack加载 ' + executeInfo.name)
+        })
+      })
+      // guiWindows[1].openDevTools({ mode: 'detach' })
+
+      guiWindows[1].on('page-title-updated', event => event.preventDefault())
+
+      if (guiWindows[0]) {
+        guiWindows[0].close()
+      }
+    }
+
+    guiWindows[0] = new BrowserWindow({
+      width: 960 + 16,
+      height: 540 + 39,
+      frame: true,
+      resizable: true,
+      backgroundColor: '#FFFFFF',
+      webPreferences: {
+        webSecurity: false,
+        allowRunningInsecureContent: true
+      },
+      title: '雀魂Plus'
+    })
+    guiWindows[0].loadURL(path.join(__dirname, '/manager/index.html'))
+    guiWindows[0].openDevTools({ mode: 'detach' })
+    ipcMain.on('application-message', (event, ...args) => {
+      if (args && args.length > 0) {
+        switch (args[0]) {
+          case 'start-game':
+            // Util.loadMods() // 该语句用于重新加载Mod，可选
+            startGame()
+            break
+          default:
+            return
+        }
+      }
+    })
+
+    electron.Menu.setApplicationMenu(null)
+  }
+)
 
 process.on('uncaughtException', function(err) {
   console.log(err)
