@@ -70,7 +70,46 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
           nodeIntegration: false
           // plugins: true
         },
-        title: '雀魂Plus'
+        title: (() => {
+          const titles = [
+            {
+              text:
+                '雀魂Plus - 游戏制作不易，请多多在雀魂内氪金支持雀魂猫粮开发团队！',
+              weight: 50
+            },
+            {
+              text:
+                '雀魂Plus - 扩展插件可能会损害游戏开发者利益，请尽可能支持付费',
+              weight: 50
+            },
+            {
+              text:
+                '雀魂Plus - 在使用插件的同时，也不要忘记给别人推荐这款游戏哦',
+              weight: 50
+            },
+            {
+              text: '雀魂Plus - 只有氪金获得的装扮和角色才可以让其他玩家查看到',
+              weight: 50
+            },
+            {
+              text: '喵喵喵！ - 喵喵喵？喵！喵喵喵！喵~~',
+              weight: 1
+            }
+          ]
+          let sumWeight = titles.reduce((last, value) => last + value.weight, 0)
+          let randomResult = (Math.random() * sumWeight) >> 0
+          const index = titles.reduce((last, value, index) => {
+            if (Number.isInteger(last)) {
+              return last
+            }
+            if ((randomResult -= value.weight) <= 0) {
+              return index
+            }
+            return null
+          }, null)
+          console.log(titles[index])
+          return titles[index].text
+        })()
       })
 
       guiWindows[1].webContents.session.setProxy(
@@ -123,7 +162,7 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
         webSecurity: false,
         allowRunningInsecureContent: true
       },
-      title: '雀魂Plus'
+      title: '雀魂Plus - 扩展资源管理器'
     })
     guiWindows[0].loadURL(path.join(__dirname, '/manager/index.html'))
     // guiWindows[0].openDevTools({ mode: 'detach' })
