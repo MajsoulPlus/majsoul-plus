@@ -5,7 +5,6 @@ const configs = require('./configs')
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
-const http = require('http')
 
 const serverPipe = express()
 const electron = require('electron')
@@ -117,7 +116,7 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
           pacScript: path.join(__dirname, 'core.pac')
         },
         () => {
-          guiWindows[1].loadURL('http://majsoul.union-game.com/0/')
+          guiWindows[1].loadURL(path.join(configs.REMOTE_DOMAIN, '/0/'))
         }
       )
 

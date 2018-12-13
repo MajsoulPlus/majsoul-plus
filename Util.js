@@ -3,6 +3,10 @@ const path = require('path')
 const fs = require('fs')
 
 const configs = require('./configs')
+
+/**
+ * @type {typeof import("https")|typeof import("http")}
+ */
 let http
 
 // 用于存储Mod对象
