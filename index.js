@@ -12,8 +12,8 @@ const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
 
 const sererHttps = https.createServer(
   {
-    key: fs.readFileSync('./certificate/key.pem'),
-    cert: fs.readFileSync('./certificate/cert.crt')
+    key: fs.readFileSync(path.join(__dirname, './certificate/key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, './certificate/cert.crt'))
   },
   server
 )
