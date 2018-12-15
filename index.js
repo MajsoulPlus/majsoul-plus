@@ -4,7 +4,6 @@ const Util = require('./Util.js')
 const configs = require('./configs')
 const fs = require('fs')
 const path = require('path')
-const request = require('request')
 
 const https = require('https')
 
