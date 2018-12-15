@@ -6,28 +6,22 @@ const fs = require('fs')
 const path = require('path')
 const request = require('request')
 
-const serverPipe = express()
+const https = require('https')
+
 const electron = require('electron')
 const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
 
-server.get('*', Util.processRequest)
+const sererHttps = https.createServer(
+  {
+    key: fs.readFileSync('./certificate/key.pem'),
+    cert: fs.readFileSync('./certificate/cert.crt')
+  },
+  server
+)
 
-serverPipe.use('*', (req, res) => {
-  if (req.url.indexOf(configs.REMOTE_DOMAIN) > -1) {
-    const pipeUrl =
-      'http://127.0.0.1:' +
-      configs.SERVER_PORT +
-      req.originalUrl.substring(
-        req.originalUrl.indexOf(configs.REMOTE_DOMAINs) +
-          configs.REMOTE_DOMAIN.length +
-          1
-      )
-    req.pipe(request(pipeUrl)).pipe(res)
-    return
-  }
-  pipeUrl = req.originalUrl
-  req.pipe(request(pipeUrl)).pipe(res)
-})
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
+server.get('*', Util.processRequest)
 
 // 保持一个对于 window 对象的全局引用，不然，当 JavaScript 被 GC，
 // window 会被自动地关闭
@@ -46,17 +40,27 @@ electronApp.on('window-all-closed', function() {
   }
 })
 
-Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
+electronApp.commandLine.appendSwitch('ignore-certificate-errors')
+
+electronApp.on(
+  'certificate-error',
+  (event, webContents, url, error, certificate, callback) => {
+    event.preventDefault()
+    callback(true)
+  }
+)
+
+Promise.all([new Promise(resolve => electronApp.once('ready', resolve))]).then(
   () => {
     guiWindows = {}
 
     const startGame = () => {
       Promise.all([
-        new Promise(resolve => server.listen(configs.SERVER_PORT, resolve)),
-        new Promise(resolve => serverPipe.listen(configs.PIPE_PORT, resolve))
+        new Promise(resolve => sererHttps.listen(configs.SERVER_PORT, resolve))
+        // new Promise(resolve => pipeHttps.listen(configs.PIPE_PORT, resolve))
       ]).then(() => {
         console.log('镜像服务器运行于端口', configs.SERVER_PORT)
-        console.log('代理服务器运行于端口', configs.PIPE_PORT)
+        // console.log('代理服务器运行于端口', configs.PIPE_PORT)
       })
       guiWindows[1] = new BrowserWindow({
         width: 960 + 16,
@@ -106,46 +110,63 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
             }
             return null
           }, null)
-          console.log(titles[index])
           return titles[index].text
         })()
       })
 
-      guiWindows[1].webContents.session.setProxy(
-        {
-          pacScript: path.join(__dirname, 'core.pac')
-        },
-        () => {
-          guiWindows[1].loadURL(path.join(configs.REMOTE_DOMAIN, '/0/'))
-        }
-      )
-
       // 注入脚本根文件根目录
       const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
       let executes
-      fs.readFile(path.join(executeRootDir, '/active.json'), (err, data) => {
-        if (err) {
-          executes = []
-        } else {
-          executes = JSON.parse(data.toString('utf-8'))
-        }
-      })
-
+      try {
+        const data = fs.readFileSync(path.join(executeRootDir, '/active.json'))
+        executes = JSON.parse(data.toString('utf-8'))
+        executes.forEach(executeInfo => {
+          console.log('Hack加载 ' + executeInfo.name)
+        })
+      } catch (error) {
+        console.error(error)
+        executes = []
+      }
       guiWindows[1].webContents.on('did-finish-load', () => {
         // 注入脚本的逻辑
         executes.forEach(executeInfo => {
-          guiWindows[1].webContents.executeJavaScript(
-            fs
-              .readFileSync(path.join(executeInfo.filesDir, executeInfo.entry))
-              .toString('utf-8')
-          )
-          console.log('Hack加载 ' + executeInfo.name)
+          let code = fs
+            .readFileSync(path.join(executeInfo.filesDir, executeInfo.entry))
+            .toString('utf-8')
+          if (!executeInfo.sync) {
+            code = `(()=>{
+              let __raf
+              const __rafFun = ()=>{if(window.game){(()=>{${code}})()}else{__raf=requestAnimationFrame(__rafFun)}}
+              __raf = requestAnimationFrame(__rafFun)})()`
+          }
+          guiWindows[1].webContents.executeJavaScript(code)
         })
       })
+
       // guiWindows[1].openDevTools({ mode: 'detach' })
 
       guiWindows[1].on('page-title-updated', event => event.preventDefault())
 
+      guiWindows[1].webContents.on('crashed', event => console.log('creashed'))
+      guiWindows[1].webContents.on('did-navigate', (event, url) => {
+        console.log('will-navigate', url)
+        if (url.startsWith(configs.REMOTE_DOMAIN)) {
+          if (url.indexOf('?') > -1) {
+            event.preventDefault()
+            guiWindows[1].loadURL(
+              `https://localhost:${configs.SERVER_PORT}/0/` +
+                url.substring(url.indexOf('?'))
+            )
+          }
+        }
+      })
+      guiWindows[1].webContents.on(
+        'console-message',
+        (event, level, message, line, sourceId) =>
+          console.log('Console', message)
+      )
+
+      guiWindows[1].loadURL(`https://localhost:${configs.SERVER_PORT}/0/`)
       if (guiWindows[0]) {
         guiWindows[0].close()
       }
@@ -163,6 +184,7 @@ Promise.all([new Promise(resolve => electronApp.on('ready', resolve))]).then(
       },
       title: '雀魂Plus - 扩展资源管理器'
     })
+    guiWindows[0].on('page-title-updated', event => event.preventDefault())
     guiWindows[0].loadURL(path.join(__dirname, '/manager/index.html'))
     // guiWindows[0].openDevTools({ mode: 'detach' })
     ipcMain.on('application-message', (event, ...args) => {

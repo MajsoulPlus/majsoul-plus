@@ -1,6 +1,6 @@
 const CONFIGS = {
   SERVER_PORT: 8887,
-  PIPE_PORT: 8888,
+  // PIPE_PORT: 8888,
   XOR_KEY: 73,
   EXTEND_RES_KEYWORD: 'extendRes',
   REMOTE_DOMAIN: 'https://majsoul.union-game.com',
