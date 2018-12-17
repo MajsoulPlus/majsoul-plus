@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "chcp 65001 && electron . --enable_logging",
-    "pack":"electron-packager . 雀魂Plus  --platform=win32 --arch=ia32 --out ../majsoul-plus-client-packed --overwrite",
+    "pack": "electron-packager . 雀魂Plus  --platform=win32 --arch=ia32 --out ../majsoul-plus-client-packed --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "express": "^4.16.4"
   },
   "devDependencies": {

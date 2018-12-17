@@ -226,8 +226,13 @@ const Util = {
       promise = promise.then(
         data => data,
         () => {
+          const modDir = mod.dir
           return this.readFile(
-            this.getLocalURI(originalUrl, isPath, mod.filesDir)
+            this.getLocalURI(
+              originalUrl,
+              isPath,
+              path.join(mod.filesDir, modDir ? modDir : '/files')
+            )
           )
         }
       )

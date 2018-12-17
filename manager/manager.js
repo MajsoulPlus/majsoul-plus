@@ -1,7 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 const configs = require('../configs')
-const { ipcRenderer } = require('electron')
+const { ipcRenderer, remote: electronRemote } = require('electron')
+const dialog = electronRemote.dialog
+const AdmZip = require('adm-zip')
+const os = require('os')
 
 // 注入脚本根文件根目录
 const executeRootDir = path.join(__dirname, '../', configs.EXECUTE_DIR)
@@ -47,16 +50,16 @@ const saveSettings = () => {
   const executesWindowList = executesWindow.map(
     element => `${element.name}|${element.author}`
   )
-  executeLaunched = executeLaunched.filter(element =>
-    executesWindowList.includes(`${element.name}|${element.author}`)
-  )
+  executeLaunched = executeLaunched.filter(element => {
+    return executesWindowList.includes(`${element.name}|${element.author}`)
+  })
 
   const modsWindowList = modsWindow.map(
     element => `${element.name}|${element.author}`
   )
-  modLaunched = modLaunched.filter(element =>
-    modsWindowList.includes(`${element.name}|${element.author}`)
-  )
+  modLaunched = modLaunched.filter(element => {
+    return modsWindowList.includes(`${element.name}|${element.author}`)
+  })
 
   fs.writeFileSync(executeSettingsFile, JSON.stringify(executeLaunched), {
     encoding: 'utf-8'
@@ -78,8 +81,8 @@ const reloadDOM = (executes, mods) => {
   const executeLaunchedList = executeLaunched.map(
     element => `${element.name}|${element.author}`
   )
-  executes.forEach((element, index) => {
-    const keyString = `${element.name}|${element.author}`
+  executes.forEach((executeInfo, index) => {
+    const keyString = `${executeInfo.name}|${executeInfo.author}`
 
     const article = document.createElement('article')
     const h3 = document.createElement('h3')
@@ -92,16 +95,16 @@ const reloadDOM = (executes, mods) => {
     const exportBtn = document.createElement('button')
     const removeBtn = document.createElement('button')
 
-    h3.innerText = element.name
-    address.innerText = element.author ? element.author : '无名氏'
-    p.innerText = element.description ? element.description : '无描述'
+    h3.innerText = executeInfo.name
+    address.innerText = executeInfo.author ? executeInfo.author : '无名氏'
+    p.innerText = executeInfo.description ? executeInfo.description : '无描述'
 
     const onchangeFunction = event => {
       if (ableRadio.checked) {
         if (executeLaunchedList.includes(keyString)) {
           return
         } else {
-          executeLaunched.push(element)
+          executeLaunched.push(executeInfo)
           executeLaunchedList.push(keyString)
         }
       } else {
@@ -129,6 +132,40 @@ const reloadDOM = (executes, mods) => {
     ableLabel.setAttribute('for', `execute${index}_able`)
 
     exportBtn.innerHTML = '导出'
+    exportBtn.addEventListener('click', event => {
+      const zip = new AdmZip()
+      const tempZipName = path.basename(executeInfo.filesDir) + '.mspe'
+      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
+      zip.addLocalFolder(
+        executeInfo.filesDir,
+        path.basename(executeInfo.filesDir)
+      )
+      zip.writeZip(tempZipPathName, true)
+      const userChosenPath = dialog.showSaveDialog({
+        title: '导出插件到……',
+        filters: [
+          {
+            name: '雀魂Plus插件',
+            extensions: ['mspe']
+          },
+          {
+            name: '所有文件',
+            extensions: ['*']
+          }
+        ],
+        defaultPath: tempZipName
+      })
+      if (userChosenPath) {
+        fs.copyFile(tempZipPathName, userChosenPath, err => {
+          if (err) {
+            alert('导出失败！\n错误信息如下:\n' + err)
+          } else {
+            alert('导出成功！')
+          }
+        })
+      }
+    })
+
     removeBtn.innerHTML = '删除'
 
     article.appendChild(h3)
@@ -147,7 +184,8 @@ const reloadDOM = (executes, mods) => {
 
     if (executeLaunchedList.includes(keyString)) {
       ableRadio.checked = true
-      executeLaunched[executeLaunchedList.indexOf(keyString)].filesDir = element.filesDir
+      executeLaunched[executeLaunchedList.indexOf(keyString)].filesDir =
+        executeInfo.filesDir
     } else {
       disableRadio.checked = true
     }
@@ -156,8 +194,8 @@ const reloadDOM = (executes, mods) => {
   const modLaunchedList = modLaunched.map(
     element => `${element.name}|${element.author}`
   )
-  mods.forEach((element, index) => {
-    const keyString = `${element.name}|${element.author}`
+  mods.forEach((modInfo, index) => {
+    const keyString = `${modInfo.name}|${modInfo.author}`
 
     const article = document.createElement('article')
     const h3 = document.createElement('h3')
@@ -170,16 +208,16 @@ const reloadDOM = (executes, mods) => {
     const exportBtn = document.createElement('button')
     const removeBtn = document.createElement('button')
 
-    h3.innerText = element.name
-    address.innerText = element.author ? element.author : '无名氏'
-    p.innerText = element.description ? element.description : '无描述'
+    h3.innerText = modInfo.name
+    address.innerText = modInfo.author ? modInfo.author : '无名氏'
+    p.innerText = modInfo.description ? modInfo.description : '无描述'
 
     const onchangeFunction = event => {
       if (ableRadio.checked) {
         if (modLaunchedList.includes(keyString)) {
           return
         } else {
-          modLaunched.push(element)
+          modLaunched.push(modInfo)
           modLaunchedList.push(keyString)
         }
       } else {
@@ -207,6 +245,37 @@ const reloadDOM = (executes, mods) => {
     ableLabel.setAttribute('for', `mod${index}_able`)
 
     exportBtn.innerHTML = '导出'
+    exportBtn.addEventListener('click', event => {
+      const zip = new AdmZip()
+      const tempZipName = path.basename(modInfo.filesDir) + '.mspm'
+      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
+      zip.addLocalFolder(modInfo.filesDir, path.basename(modInfo.filesDir))
+      zip.writeZip(tempZipPathName, true)
+      const userChosenPath = dialog.showSaveDialog({
+        title: '导出Mod到……',
+        filters: [
+          {
+            name: '雀魂Plus Mod',
+            extensions: ['mspm']
+          },
+          {
+            name: '所有文件',
+            extensions: ['*']
+          }
+        ],
+        defaultPath: tempZipName
+      })
+      if (userChosenPath) {
+        fs.copyFile(tempZipPathName, userChosenPath, err => {
+          if (err) {
+            alert('导出失败！\n错误信息如下:\n' + err)
+          } else {
+            alert('导出成功！')
+          }
+        })
+      }
+    })
+
     removeBtn.innerHTML = '删除'
 
     article.appendChild(h3)
@@ -225,7 +294,8 @@ const reloadDOM = (executes, mods) => {
 
     if (modLaunchedList.includes(keyString)) {
       ableRadio.checked = true
-      modLaunched[modLaunchedList.indexOf(keyString)].filesDir = element.filesDir
+      modLaunched[modLaunchedList.indexOf(keyString)].filesDir =
+        modInfo.filesDir
     } else {
       disableRadio.checked = true
     }
@@ -267,7 +337,7 @@ const refreshFunction = event => {
       try {
         const data = fs.readFileSync(path.join(modDir, 'mod.json'))
         const modInfo = JSON.parse(data.toString('utf-8'))
-        modInfo.filesDir = path.join(modDir, '/files')
+        modInfo.filesDir = modDir
         mods.push(modInfo)
       } catch (error) {
         console.warn(error)
@@ -282,8 +352,60 @@ const refreshFunction = event => {
   reloadDOM(executes, mods)
 }
 
+const installMod = document.getElementById('installMod')
+installMod.addEventListener('click', event => {
+  const userChosenPath = dialog.showOpenDialog({
+    title: '选取Mod资源包……',
+    filters: [
+      {
+        name: '雀魂Plus Mod',
+        extensions: ['mspm']
+      },
+      {
+        name: '所有文件',
+        extensions: ['*']
+      }
+    ]
+  })
+  if (userChosenPath && userChosenPath[0]) {
+    const unzip = new AdmZip(userChosenPath[0])
+    unzip.extractAllToAsync(modRootDir, true, err => {
+      if (err) {
+        alert('安装失败！\n错误信息如下:\n' + err)
+      } else {
+        alert('安装成功！')
+      }
+    })
+  }
+})
+const installExecute = document.getElementById('installExecute')
+installExecute.addEventListener('click', event => {
+  const userChosenPath = dialog.showOpenDialog({
+    title: '选取插件资源包……',
+    filters: [
+      {
+        name: '雀魂Plus插件',
+        extensions: ['mspe']
+      },
+      {
+        name: '所有文件',
+        extensions: ['*']
+      }
+    ]
+  })
+  if (userChosenPath && userChosenPath[0]) {
+    const unzip = new AdmZip(userChosenPath[0])
+    unzip.extractAllToAsync(executeRootDir, true, err => {
+      if (err) {
+        alert('安装失败！\n错误信息如下:\n' + err)
+      } else {
+        alert('安装成功！')
+      }
+    })
+  }
+})
+
 document.getElementById('refresh').addEventListener('click', refreshFunction)
 document.getElementById('launch').addEventListener('click', startGame)
 
-// BUG TODO DOM对象不会被正确加载，但如果打个断点就没问题了
 refreshFunction()
