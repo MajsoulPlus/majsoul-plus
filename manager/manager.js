@@ -134,7 +134,7 @@ const reloadDOM = (executes, mods) => {
     exportBtn.innerHTML = '导出'
     exportBtn.addEventListener('click', event => {
       const zip = new AdmZip()
-      const tempZipName = `${modInfo.name}-${modInfo.author}.mspe`
+      const tempZipName = `${executeInfo.name}-${executeInfo.author}.mspe`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(
         executeInfo.filesDir,
