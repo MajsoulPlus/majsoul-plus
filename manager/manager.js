@@ -134,7 +134,7 @@ const reloadDOM = (executes, mods) => {
     exportBtn.innerHTML = '导出'
     exportBtn.addEventListener('click', event => {
       const zip = new AdmZip()
-      const tempZipName = path.basename(executeInfo.filesDir) + '.mspe'
+      const tempZipName = `${modInfo.name}-${modInfo.author}.mspe`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(
         executeInfo.filesDir,
@@ -247,7 +247,7 @@ const reloadDOM = (executes, mods) => {
     exportBtn.innerHTML = '导出'
     exportBtn.addEventListener('click', event => {
       const zip = new AdmZip()
-      const tempZipName = path.basename(modInfo.filesDir) + '.mspm'
+      const tempZipName = `${modInfo.name}-${modInfo.author}.mspm`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(modInfo.filesDir, path.basename(modInfo.filesDir))
       zip.writeZip(tempZipPathName, true)
