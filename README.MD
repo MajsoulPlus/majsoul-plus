@@ -1,7 +1,7 @@
 # [雀魂Plus - 雀魂麻将第三方桌面客户端](https://github.com/iamapig120/majsoul-plus-client)
 
 - 除首次加载较慢，其余均可高速加载
-- 轻量级，仅依赖 express 以及 electron
+- 轻量级，仅依赖 express 、 electron 以及 AdmZip
 - 桌面端跨平台
 - 本地文件不加密
 - 支持魔改模组和代码执行
