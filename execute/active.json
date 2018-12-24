@@ -1,1 +1,8 @@
-[{"name":"强制开启语音报番型","author":"aoarashi1988","description":"可以强制在本地打开报番型效果。","entry":"script.js","filesDir":""}]
+[
+  {
+    "name": "强制开启报番型、主菜单交互语音",
+    "author": "aoarashi1988",
+    "description": "可以强制在本地打开报番型、主菜单交互语音。\naoarashi1988原作，Handle修改。",
+    "entry": "script.js"
+  }
+]

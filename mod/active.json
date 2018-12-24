@@ -1,1 +1,18 @@
-[{"name":"千织普通改绿头鸭","author":"Handle","description":"图片来源pixabay，由Capri23auto上传，CC0协议\n这是一个Mod示范，用途为将普通千织立绘和头像改为绿头鸭。","filesDir":""}]
+[
+  {
+    "name": "千织普通改绿头鸭",
+    "author": "Handle",
+    "description": "图片来源pixabay，由Capri23auto上传，CC0协议\n这是一个Mod示范，用途为将普通千织立绘和头像改为绿头鸭。"
+  },
+  {
+    "name": "Hemomimi鱼桌布",
+    "author": "Handle",
+    "description": "将默认牌背替换为Hemomimi鱼桌布，\n画师为“ながユー”。",
+    "replace": [
+      {
+        "from": "/0/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg",
+        "to": "/0/v0.4.1.w/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg"
+      }
+    ]
+  }
+]
