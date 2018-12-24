@@ -368,13 +368,16 @@ installMod.addEventListener('click', event => {
     ]
   })
   if (userChosenPath && userChosenPath[0]) {
-    const unzip = new AdmZip(userChosenPath[0])
-    unzip.extractAllToAsync(modRootDir, true, err => {
-      if (err) {
-        alert('安装失败！\n错误信息如下:\n' + err)
-      } else {
-        alert('安装成功！')
-      }
+    userChosenPath.forEach(chosenPath=>{
+      const unzip = new AdmZip(chosenPath)
+      unzip.extractAllToAsync(modRootDir, true, err => {
+        if (err) {
+          alert('安装失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('安装成功！')
+          refreshFunction()
+        }
+      })
     })
   }
 })
@@ -394,13 +397,16 @@ installExecute.addEventListener('click', event => {
     ]
   })
   if (userChosenPath && userChosenPath[0]) {
-    const unzip = new AdmZip(userChosenPath[0])
-    unzip.extractAllToAsync(executeRootDir, true, err => {
-      if (err) {
-        alert('安装失败！\n错误信息如下:\n' + err)
-      } else {
-        alert('安装成功！')
-      }
+    userChosenPath.forEach(chosenPath=>{
+      const unzip = new AdmZip(chosenPath)
+      unzip.extractAllToAsync(executeRootDir, true, err => {
+        if (err) {
+          alert('安装失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('安装成功！')
+          refreshFunction()
+        }
+      })
     })
   }
 })

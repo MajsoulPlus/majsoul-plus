@@ -1,4 +1,4 @@
-// Hack 开启报番型，作者 aoarashi1988
+// Hack 开启报番型，作者 aoarashi1988，Handle修改
 if (game) {
   game.Tools.get_chara_audio = function(e, t) {
     if (t && '' != t) {
@@ -18,6 +18,23 @@ if (game) {
         volume: chara.sound_volume,
         time_length: r[h].time_length
       }
+    }
+  }
+  view.AudioMgr.PlayCharactorSound = function(e, t, i) {
+    var n = e.charid,
+      a = cfg.item_definition.character.get(n)
+    if (!a) return null
+    for (
+      var r = /* e.level */ 6, o = cfg.voice.sound.findGroup(a.sound), s = [], h = 0;
+      h < o.length;
+      h++
+    )
+      o[h].type == t && o[h].level_limit <= r && s.push(h)
+    if (0 == s.length) return null
+    var l = s[Math.floor(Math.random() * s.length)]
+    return {
+      words: o[l].words,
+      sound: this.PlaySound(o[l].path, a.sound_volume, i)
     }
   }
 }

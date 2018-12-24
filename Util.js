@@ -227,13 +227,32 @@ const Util = {
         data => data,
         () => {
           const modDir = mod.dir
-          return this.readFile(
-            this.getLocalURI(
+          const promiseMod = Promise.reject()
+          // const readModFile = path => {
+          //   return this.readFile(localURI)
+          // }
+          if (mod.replace) {
+            mod.replace.forEach(replaceInfo => {
+              console.log(originalUrl)
+              const localURI = this.getLocalURI(
+                originalUrl.replace(
+                  new RegExp(replaceInfo.form),
+                  replaceInfo.to
+                ),
+                isPath,
+                path.join(mod.filesDir, modDir ? modDir : '/files')
+              )
+              promiseMod.then(data => data, () => this.readFile(localURI))
+            })
+            return promiseMod
+          } else {
+            const localURI = this.getLocalURI(
               originalUrl,
               isPath,
               path.join(mod.filesDir, modDir ? modDir : '/files')
             )
-          )
+            return this.readFile(localURI)
+          }
         }
       )
     })
