@@ -241,7 +241,10 @@ const Util = {
                 isPath,
                 path.join(mod.filesDir, modDir ? modDir : '/files')
               )
-              promiseMod.then(data => data, () => this.readFile(localURI))
+              promiseMod = promiseMod.then(
+                data => data,
+                () => this.readFile(localURI)
+              )
             })
           }
           const localURI = this.getLocalURI(
@@ -249,7 +252,10 @@ const Util = {
             isPath,
             path.join(mod.filesDir, modDir ? modDir : '/files')
           )
-          promiseMod.then(data => data, () => this.readFile(localURI))
+          promiseMod = promiseMod.then(
+            data => data,
+            () => this.readFile(localURI)
+          )
           return promiseMod
         }
       )
