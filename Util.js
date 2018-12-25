@@ -227,11 +227,11 @@ const Util = {
         data => data,
         () => {
           const modDir = mod.dir
+          let promiseMod = Promise.reject()
           // const readModFile = path => {
           //   return this.readFile(localURI)
           // }
           if (mod.replace && mod.replace.length > 0) {
-            let promiseMod = Promise.reject()
             mod.replace.forEach(replaceInfo => {
               const localURI = this.getLocalURI(
                 originalUrl.replace(
@@ -241,20 +241,16 @@ const Util = {
                 isPath,
                 path.join(mod.filesDir, modDir ? modDir : '/files')
               )
-              promiseMod = promiseMod.then(
-                data => data,
-                () => this.readFile(localURI)
-              )
+              promiseMod.then(data => data, () => this.readFile(localURI))
             })
-            return promiseMod
-          } else {
-            const localURI = this.getLocalURI(
-              originalUrl,
-              isPath,
-              path.join(mod.filesDir, modDir ? modDir : '/files')
-            )
-            return this.readFile(localURI)
           }
+          const localURI = this.getLocalURI(
+            originalUrl,
+            isPath,
+            path.join(mod.filesDir, modDir ? modDir : '/files')
+          )
+          promiseMod.then(data => data, () => this.readFile(localURI))
+          return promiseMod
         }
       )
     })
