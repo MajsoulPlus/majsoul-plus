@@ -8,9 +8,9 @@
 
 ## 如何使用
 
-1. 克隆或下载本仓库
-2. npm install
-3. npm start
+1. 访问 <a href="https://github.com/iamapig120/majsoul-plus-client/releases">releases页面</a> 下载最新版本
+2. 解压
+3. 运行
 
 在客户端中玩的开心！
 
