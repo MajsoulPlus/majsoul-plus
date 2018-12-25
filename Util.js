@@ -233,11 +233,12 @@ const Util = {
           // }
           if (mod.replace && mod.replace.length > 0) {
             mod.replace.forEach(replaceInfo => {
+              const regExp = new RegExp(replaceInfo.from)
+              if (!regExp.test(originalUrl)) {
+                return
+              }
               const localURI = this.getLocalURI(
-                originalUrl.replace(
-                  new RegExp(replaceInfo.from),
-                  replaceInfo.to
-                ),
+                originalUrl.replace(regExp, replaceInfo.to),
                 isPath,
                 path.join(mod.filesDir, modDir ? modDir : '/files')
               )
