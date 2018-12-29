@@ -42,7 +42,7 @@
     {
       "//注释": "将会作为正则表达式处理",
       "from": "/0/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif\\.jpg",
-      "//注释": "匹配目标，可以使用形如 $1, $2 的占位符",s
+      "//注释": "匹配目标，可以使用形如 $1, $2 的占位符",
       "to": "/0/v0.4.1.w/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif\\.jpg"
     },
     {
