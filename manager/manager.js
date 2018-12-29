@@ -321,7 +321,7 @@ const refreshFunction = event => {
         console.warn(error)
       }
     } else {
-      // TODO, 若为 "*.exec" 则作为 zip 文件解压，然后加载
+      // TODO, 若为 "*.mspe" 则作为 zip 文件解压，然后加载
     }
   })
 
@@ -343,7 +343,7 @@ const refreshFunction = event => {
         console.warn(error)
       }
     } else {
-      // TODO, 若为 "*.mod" 则作为 zip 文件解压，然后加载
+      // TODO, 若为 "*.mspm" 则作为 zip 文件解压，然后加载
     }
   })
   executesWindow = executes
