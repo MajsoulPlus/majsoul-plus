@@ -3,7 +3,6 @@
 可能是 PC 平台最好用的雀魂麻将第三方客户端
 
 ![github](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/total.svg)
-
 ![github](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 ## 特性
