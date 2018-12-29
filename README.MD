@@ -33,14 +33,16 @@
   "name": "默认桌布替换为示例桌布",
   "author": "Handle",
   "description": "将默认桌布替换为第一届Sim杯日式麻将比赛桌布，\n仅用于本届比赛使用。",
-  "dir": "/files", // 可选，设置Mod静态资源相对路径，默认值为 /files
-  "preview": "preview.jpg", // 可选，设置Mod预览图的相对路径，默认值为 preview.jpg
-  // 可选，用于替换原始资源路径 replace 属性可以支持多组正则表达式
+  "//注释": "可选，设置Mod静态资源相对路径，默认值为 /files",
+  "dir": "/files",
+  "//注释": "可选，设置Mod预览图的相对路径，默认值为 preview.jpg",
+  "//注释": "可选，用于替换原始资源路径 replace 属性可以支持多组正则表达式",
+  "preview": "preview.jpg",
   "replace": [
     {
-      // from 将会作为正则表达式处理
+      "//注释": "将会作为正则表达式处理",
       "from": "/0/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif\\.jpg",
-      // to 匹配目标，可以使用形如 $1, $2 的占位符
+      "//注释": "匹配目标，可以使用形如 $1, $2 的占位符",s
       "to": "/0/v0.4.1.w/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif\\.jpg"
     },
     {
@@ -63,10 +65,11 @@
   "name": "强制开启报番型、主菜单交互语音",
   "author": "aoarashi1988",
   "description": "可以强制在本地打开报番型、主菜单交互语音。\naoarashi1988原作，Handle修改。",
-  "preview": "preview.jpg", // 可选，设置插件预览图的相对路径，默认值为 preview.jpg
-  // 可选（不低于1.2.6），必填（低于1.2.6），要注入的 JavaScript 代码文件
+  "//注释": "可选，设置插件预览图的相对路径，默认值为 preview.jpg",
+  "preview": "preview.jpg",
+  "//注释": "可选（不低于1.2.6），必填（低于1.2.6），要注入的 JavaScript 代码文件",
   "entry": "script.js",
-  // 可选，设置代码执行时机，默认值为 false，即游戏代码加载完成后执行，若为 true 则会在游戏加载前执行要注入的代码
+  "//注释": "可选，设置代码执行时机，默认值为 false，即游戏代码加载完成后执行，若为 true 则会在游戏加载前执行要注入的代码",
   "sync": false
 }
 ```
@@ -74,5 +77,4 @@
 ## 贡献者
 
 [![Handle](https://avatars0.githubusercontent.com/u/16359124?s=64)](https://github.com/iamapig120)
-
 [![aoarashi1988](https://avatars1.githubusercontent.com/u/30466105?s=64)](https://github.com/aoarashi1988)
