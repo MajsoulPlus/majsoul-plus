@@ -175,7 +175,6 @@ const windowControl = {
       (evt, level, msg, line, sourceId) => console.log('Console', msg)
     )
     gameWindow.loadURL(`https://localhost:${configs.SERVER_PORT}/0/`)
-    gameWindow.openDevTools({ mode: 'detach' })
     windowControl.windowMap['game'] = gameWindow
   },
 
