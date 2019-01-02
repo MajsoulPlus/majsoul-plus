@@ -1,10 +1,10 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "chcp 65001 && electron . --enable_logging",
+    "start": "electron . --enable_logging",
     "pack": "electron-packager . 雀魂Plus  --platform=win32 --arch=ia32 --out ../majsoul-plus-client-packed --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +20,8 @@
   "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
   "dependencies": {
     "adm-zip": "^0.4.13",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
     "electron": "^4.0.0-beta.8",

@@ -46,8 +46,7 @@ const windowControl = {
   _getGameWindowTitle: function() {
     const titles = [
       {
-        text:
-          '雀魂Plus - 游戏制作不易，请多多在雀魂内氪金支持雀魂猫粮开发团队！',
+        text: '雀魂Plus - 游戏制作不易，请多多在雀魂内氪金支持雀魂猫粮工作室！',
         weight: 50
       },
       {
@@ -147,7 +146,10 @@ const windowControl = {
   initManagerWindow: function(managerWindowConfig) {
     const managerWindow = new BrowserWindow(managerWindowConfig)
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
-    managerWindow.loadURL(path.join(__dirname, '/manager/index.html'))
+    managerWindow.loadURL(
+      'file://' + path.join(__dirname, '/manager/index.html')
+    )
+    managerWindow.openDevTools({ mode: 'detach' })
     windowControl.windowMap['manager'] = managerWindow
   },
 
