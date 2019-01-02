@@ -122,7 +122,7 @@ const windowControl = {
   _getLocalUrlWithParams(url) {
     if (url.includes('?')) {
       return `https://localhost:${configs.SERVER_PORT}/0/${url.substring(
-        url.indexOf('?S')
+        url.indexOf('?')
       )}`
     }
     return `https://localhost:${configs.SERVER_PORT}/0/`
@@ -175,6 +175,7 @@ const windowControl = {
       (evt, level, msg, line, sourceId) => console.log('Console', msg)
     )
     gameWindow.loadURL(`https://localhost:${configs.SERVER_PORT}/0/`)
+    gameWindow.openDevTools({ mode: 'detach' })
     windowControl.windowMap['game'] = gameWindow
   },
 
