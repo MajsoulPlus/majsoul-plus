@@ -15,6 +15,34 @@ const modRootDir = path.join(__dirname, '../', configs.MODS_DIR)
 const modSettingsFile = path.join(modRootDir, './active.json')
 
 /**
+ * 同步删除文件夹
+ * @param {string} dir 要删除的目录
+ * @author romin
+ * @description 同步删除文件夹，https://juejin.im/post/5ab32b20518825557f00d36c
+ */
+function removeDir(dir) {
+  let files = fs.readdirSync(dir)
+  for (var i = 0; i < files.length; i++) {
+    let newPath = path.join(dir, files[i])
+    let stat = fs.statSync(newPath)
+    if (stat.isDirectory()) {
+      //如果是文件夹就递归下去
+      removeDir(newPath)
+    } else {
+      //删除文件
+      fs.unlinkSync(newPath)
+    }
+  }
+  fs.rmdirSync(dir) //如果文件夹是空的，就将自己删除掉
+}
+
+/**
+ * 刷新所有模组和插件并重新加载DOM
+ * @type {function}
+ */
+let refreshFunction
+
+/**
  * @type {Array<>}
  */
 let executeLaunched = (() => {
@@ -41,11 +69,151 @@ let modLaunched = (() => {
  * @type {Array<>}
  */
 let executesWindow
+
 /**
  * @type {Array<>}
  */
 let modsWindow
 
+/**
+ * 信息卡
+ */
+class InfoCard {
+  /**
+   * 模组和插件通用的信息卡
+   * @param {{name:string,author:string,description:string,preview:string,filesDir:string}} infos
+   * @param {boolean} checked
+   */
+  constructor(infos, checked = false) {
+    this.infos = infos
+    this.checked = checked
+    this.name = infos.name ? infos.name : '未知'
+    this.author = infos.author ? infos.author : '无名氏'
+    this.description = infos.description ? infos.description : '无描述'
+    this.previewSrc = path.join(
+      infos.filesDir,
+      infos.preview ? infos.preview : 'preview.jpg'
+    )
+    /**
+     * @type {{[x:string]:Array<>}}
+     */
+    this._eventListeners = {}
+    this.initDOM()
+    this.edit = false
+  }
+  get DOM() {
+    return this._dom
+  }
+  set DOM(value) {
+    this._dom = value
+  }
+  initDOM() {
+    const article = document.createElement('article')
+    const preview = document.createElement('img')
+    const h3 = document.createElement('h3')
+    const address = document.createElement('address')
+    const p = document.createElement('p')
+    const checkbox = document.createElement('input')
+    const exportBtn = document.createElement('button')
+    const removeBtn = document.createElement('button')
+
+    preview.src = this.previewSrc
+    preview.addEventListener('error', function errFun() {
+      preview.src = path.join(__dirname, 'defaultPreview.jpg')
+      preview.removeEventListener('error', errFun)
+    })
+
+    h3.innerText = this.name
+    address.innerText = this.author
+    p.innerText = this.description
+
+    checkbox.type = 'checkbox'
+    checkbox.addEventListener('change', event => {
+      if (this._eventListeners['change']) {
+        this._eventListeners['change'].forEach(listener => {
+          listener.call(this, event)
+        })
+      }
+    })
+
+    checkbox.checked = this.checked
+    Object.defineProperty(this, 'checked', {
+      get: () => checkbox.checked,
+      set: value => (checkbox.checked = value)
+    })
+
+    exportBtn.className = 'export-btn'
+    exportBtn.addEventListener('click', event => {
+      if (this._eventListeners['export']) {
+        this._eventListeners['export'].forEach(listener => {
+          listener.call(this, event)
+        })
+      }
+    })
+
+    removeBtn.className = 'remove-btn'
+    removeBtn.addEventListener('click', event => {
+      if (this._eventListeners['remove']) {
+        this._eventListeners['remove'].forEach(listener => {
+          listener.call(this, event)
+        })
+      }
+    })
+
+    article.appendChild(preview)
+    article.appendChild(h3)
+    article.appendChild(p)
+
+    article.appendChild(address)
+
+    article.appendChild(checkbox)
+
+    article.appendChild(exportBtn)
+    article.appendChild(removeBtn)
+
+    this.DOM = article
+  }
+  addEventListener(type, listener) {
+    if (!this._eventListeners[type]) {
+      this._eventListeners[type] = []
+    }
+    this._eventListeners[type].push(listener)
+  }
+  removeEventListener(type, listener) {
+    if (!this._eventListeners[type]) {
+      return
+    }
+    this._eventListeners[type].forEach((addedListener, index) => {
+      if (addedListener === listener) {
+        this._eventListeners[type].splice(index, 1)
+        return
+      }
+    })
+  }
+  get edit() {
+    return this._edit
+  }
+  set edit(value) {
+    this._edit = value
+    if (value === true) {
+      this.DOM.className = 'edit'
+    } else {
+      this.DOM.className = ''
+    }
+  }
+}
+/**
+ * @type {Array<InfoCard>}
+ */
+let modCards
+/**
+ * @type {Array<InfoCard>}
+ */
+let executeCards
+
+/**
+ * 保存设置
+ */
 const saveSettings = () => {
   const executesWindowList = executesWindow.map(
     element => `${element.name}|${element.author}`
@@ -68,10 +236,18 @@ const saveSettings = () => {
     encoding: 'utf-8'
   })
 }
+/**
+ * 启动游戏
+ */
 const startGame = () => {
   saveSettings()
   ipcRenderer.send('application-message', 'start-game')
 }
+/**
+ * 刷新所有DOM节点
+ * @param {Array<>} executes 插件
+ * @param {Array<>} mods 模组
+ */
 const reloadDOM = (executes, mods) => {
   const modInfos = document.getElementById('modInfos')
   const executeInfos = document.getElementById('executeInfos')
@@ -81,26 +257,23 @@ const reloadDOM = (executes, mods) => {
   const executeLaunchedList = executeLaunched.map(
     element => `${element.name}|${element.author}`
   )
+  executeCards = []
   executes.forEach((executeInfo, index) => {
     const keyString = `${executeInfo.name}|${executeInfo.author}`
 
-    const article = document.createElement('article')
-    const h3 = document.createElement('h3')
-    const address = document.createElement('address')
-    const p = document.createElement('p')
-    const disableRadio = document.createElement('input')
-    const disableLabel = document.createElement('label')
-    const ableRadio = document.createElement('input')
-    const ableLabel = document.createElement('label')
-    const exportBtn = document.createElement('button')
-    const removeBtn = document.createElement('button')
+    const infoCard = new InfoCard(executeInfo)
+    executeCards.push(infoCard)
 
-    h3.innerText = executeInfo.name
-    address.innerText = executeInfo.author ? executeInfo.author : '无名氏'
-    p.innerText = executeInfo.description ? executeInfo.description : '无描述'
+    if (executeLaunchedList.includes(keyString)) {
+      infoCard.checked = true
+      executeLaunched[executeLaunchedList.indexOf(keyString)].filesDir =
+        executeInfo.filesDir
+    } else {
+      infoCard.checked = false
+    }
 
     const onchangeFunction = event => {
-      if (ableRadio.checked) {
+      if (infoCard.checked) {
         if (executeLaunchedList.includes(keyString)) {
           return
         } else {
@@ -117,22 +290,7 @@ const reloadDOM = (executes, mods) => {
         }
       }
     }
-    disableRadio.addEventListener('change', onchangeFunction)
-    disableRadio.name = `execute${index}`
-    disableRadio.id = `execute${index}_disableLabel`
-    disableRadio.type = 'radio'
-    ableRadio.addEventListener('change', onchangeFunction)
-    ableRadio.name = `execute${index}`
-    ableRadio.id = `execute${index}_able`
-    ableRadio.type = 'radio'
-
-    disableLabel.innerHTML = '禁用'
-    disableLabel.setAttribute('for', `execute${index}_disableLabel`)
-    ableLabel.innerText = '启用'
-    ableLabel.setAttribute('for', `execute${index}_able`)
-
-    exportBtn.innerHTML = '导出'
-    exportBtn.addEventListener('click', event => {
+    const onexportFunction = event => {
       const zip = new AdmZip()
       const tempZipName = `${executeInfo.name}-${executeInfo.author}.mspe`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
@@ -164,56 +322,39 @@ const reloadDOM = (executes, mods) => {
           }
         })
       }
-    })
-
-    removeBtn.innerHTML = '删除'
-
-    article.appendChild(h3)
-    article.appendChild(address)
-    article.appendChild(p)
-
-    article.appendChild(disableRadio)
-    article.appendChild(disableLabel)
-    article.appendChild(ableRadio)
-    article.appendChild(ableLabel)
-
-    article.appendChild(exportBtn)
-    article.appendChild(removeBtn)
-
-    executeInfos.appendChild(article)
-
-    if (executeLaunchedList.includes(keyString)) {
-      ableRadio.checked = true
-      executeLaunched[executeLaunchedList.indexOf(keyString)].filesDir =
-        executeInfo.filesDir
-    } else {
-      disableRadio.checked = true
     }
+    const onremoveFunction = event => {
+      infoCard.DOM.remove()
+      removeDir(infoCard.infos.filesDir)
+      refreshFunction()
+    }
+    infoCard.addEventListener('change', onchangeFunction)
+    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('remove', onremoveFunction)
+
+    executeInfos.appendChild(infoCard.DOM)
   })
 
   const modLaunchedList = modLaunched.map(
     element => `${element.name}|${element.author}`
   )
+  modCards = []
   mods.forEach((modInfo, index) => {
     const keyString = `${modInfo.name}|${modInfo.author}`
 
-    const article = document.createElement('article')
-    const h3 = document.createElement('h3')
-    const address = document.createElement('address')
-    const p = document.createElement('p')
-    const disableRadio = document.createElement('input')
-    const disableLabel = document.createElement('label')
-    const ableRadio = document.createElement('input')
-    const ableLabel = document.createElement('label')
-    const exportBtn = document.createElement('button')
-    const removeBtn = document.createElement('button')
+    const infoCard = new InfoCard(modInfo)
+    modCards.push(infoCard)
 
-    h3.innerText = modInfo.name
-    address.innerText = modInfo.author ? modInfo.author : '无名氏'
-    p.innerText = modInfo.description ? modInfo.description : '无描述'
+    if (modLaunchedList.includes(keyString)) {
+      infoCard.checked = true
+      modLaunched[modLaunchedList.indexOf(keyString)].filesDir =
+        modInfo.filesDir
+    } else {
+      infoCard.checked = false
+    }
 
     const onchangeFunction = event => {
-      if (ableRadio.checked) {
+      if (infoCard.checked) {
         if (modLaunchedList.includes(keyString)) {
           return
         } else {
@@ -230,22 +371,7 @@ const reloadDOM = (executes, mods) => {
         }
       }
     }
-    disableRadio.addEventListener('change', onchangeFunction)
-    disableRadio.name = `mod${index}`
-    disableRadio.id = `mod${index}_disableLabel`
-    disableRadio.type = 'radio'
-    ableRadio.addEventListener('change', onchangeFunction)
-    ableRadio.name = `mod${index}`
-    ableRadio.id = `mod${index}_able`
-    ableRadio.type = 'radio'
-
-    disableLabel.innerHTML = '禁用'
-    disableLabel.setAttribute('for', `mod${index}_disableLabel`)
-    ableLabel.innerText = '启用'
-    ableLabel.setAttribute('for', `mod${index}_able`)
-
-    exportBtn.innerHTML = '导出'
-    exportBtn.addEventListener('click', event => {
+    const onexportFunction = event => {
       const zip = new AdmZip()
       const tempZipName = `${modInfo.name}-${modInfo.author}.mspm`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
@@ -274,34 +400,104 @@ const reloadDOM = (executes, mods) => {
           }
         })
       }
-    })
-
-    removeBtn.innerHTML = '删除'
-
-    article.appendChild(h3)
-    article.appendChild(address)
-    article.appendChild(p)
-
-    article.appendChild(disableRadio)
-    article.appendChild(disableLabel)
-    article.appendChild(ableRadio)
-    article.appendChild(ableLabel)
-
-    article.appendChild(exportBtn)
-    article.appendChild(removeBtn)
-
-    modInfos.appendChild(article)
-
-    if (modLaunchedList.includes(keyString)) {
-      ableRadio.checked = true
-      modLaunched[modLaunchedList.indexOf(keyString)].filesDir =
-        modInfo.filesDir
-    } else {
-      disableRadio.checked = true
     }
+    const onremoveFunction = event => {
+      infoCard.DOM.remove()
+      removeDir(infoCard.infos.filesDir)
+      refreshFunction()
+    }
+    infoCard.addEventListener('change', onchangeFunction)
+    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('remove', onremoveFunction)
+
+    modInfos.appendChild(infoCard.DOM)
   })
 }
-const refreshFunction = event => {
+
+// 安装模组 按钮
+const installMod = document.getElementById('installMod')
+installMod.addEventListener('click', event => {
+  const userChosenPath = dialog.showOpenDialog({
+    title: '选取Mod资源包……',
+    filters: [
+      {
+        name: '雀魂Plus Mod',
+        extensions: ['mspm']
+      },
+      {
+        name: '所有文件',
+        extensions: ['*']
+      }
+    ]
+  })
+  if (userChosenPath && userChosenPath[0]) {
+    userChosenPath.forEach(chosenPath => {
+      const unzip = new AdmZip(chosenPath)
+      unzip.extractAllToAsync(modRootDir, true, err => {
+        if (err) {
+          alert('安装失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('安装成功！')
+          refreshFunction()
+        }
+      })
+    })
+  }
+})
+
+// 安装插件 按钮
+const installExecute = document.getElementById('installExecute')
+installExecute.addEventListener('click', event => {
+  const userChosenPath = dialog.showOpenDialog({
+    title: '选取插件资源包……',
+    filters: [
+      {
+        name: '雀魂Plus插件',
+        extensions: ['mspe']
+      },
+      {
+        name: '所有文件',
+        extensions: ['*']
+      }
+    ]
+  })
+  if (userChosenPath && userChosenPath[0]) {
+    userChosenPath.forEach(chosenPath => {
+      const unzip = new AdmZip(chosenPath)
+      unzip.extractAllToAsync(executeRootDir, true, err => {
+        if (err) {
+          alert('安装失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('安装成功！')
+          refreshFunction()
+        }
+      })
+    })
+  }
+})
+
+const editMod = document.getElementById('editMod')
+editMod.addEventListener('click', event => {
+  modsEditFlag = !modsEditFlag
+  modCards.forEach(card => {
+    card.edit = modsEditFlag
+  })
+})
+const editExecute = document.getElementById('editExecute')
+editExecute.addEventListener('click', event => {
+  executesEditFlag = !executesEditFlag
+  executeCards.forEach(card => {
+    card.edit = executesEditFlag
+  })
+})
+// 记录编辑状态使用的变量
+let executesEditFlag = false
+let modsEditFlag = false
+// 刷新事件
+refreshFunction = event => {
+  // 清除编辑状态
+  executesEditFlag = false
+  modsEditFlag = false
   // 所有已在目录中的注入脚本目录
   const executeDirs = fs.readdirSync(executeRootDir)
   // 用于存储注入脚本对象
@@ -352,66 +548,175 @@ const refreshFunction = event => {
   reloadDOM(executes, mods)
 }
 
-const installMod = document.getElementById('installMod')
-installMod.addEventListener('click', event => {
-  const userChosenPath = dialog.showOpenDialog({
-    title: '选取Mod资源包……',
-    filters: [
-      {
-        name: '雀魂Plus Mod',
-        extensions: ['mspm']
-      },
-      {
-        name: '所有文件',
-        extensions: ['*']
-      }
-    ]
-  })
-  if (userChosenPath && userChosenPath[0]) {
-    userChosenPath.forEach(chosenPath=>{
-      const unzip = new AdmZip(chosenPath)
-      unzip.extractAllToAsync(modRootDir, true, err => {
-        if (err) {
-          alert('安装失败！\n错误信息如下:\n' + err)
-        } else {
-          alert('安装成功！')
-          refreshFunction()
-        }
-      })
-    })
-  }
-})
-const installExecute = document.getElementById('installExecute')
-installExecute.addEventListener('click', event => {
-  const userChosenPath = dialog.showOpenDialog({
-    title: '选取插件资源包……',
-    filters: [
-      {
-        name: '雀魂Plus插件',
-        extensions: ['mspe']
-      },
-      {
-        name: '所有文件',
-        extensions: ['*']
-      }
-    ]
-  })
-  if (userChosenPath && userChosenPath[0]) {
-    userChosenPath.forEach(chosenPath=>{
-      const unzip = new AdmZip(chosenPath)
-      unzip.extractAllToAsync(executeRootDir, true, err => {
-        if (err) {
-          alert('安装失败！\n错误信息如下:\n' + err)
-        } else {
-          alert('安装成功！')
-          refreshFunction()
-        }
-      })
-    })
-  }
-})
+// 刷新模组 按钮
+document.getElementById('refreshMod').addEventListener('click', refreshFunction)
+// 刷新插件 按钮
+document
+  .getElementById('refreshExecute')
+  .addEventListener('click', refreshFunction)
 
-document.getElementById('refresh').addEventListener('click', refreshFunction)
+// 启动游戏 按钮
 document.getElementById('launch').addEventListener('click', startGame)
 
+// 关闭页面 按钮
+const closeBtn = document.getElementById('closeBtn')
+if (os.platform === 'darwin') {
+  closeBtn.className = 'close-btn darwin'
+}
+closeBtn.addEventListener('click', () => {
+  window.close()
+})
+
+// 标题配色
+window.addEventListener('blur', () => {
+  document.body.className = 'blur'
+})
+window.addEventListener('focus', () => {
+  document.body.className = ''
+})
+
 refreshFunction()
+
+/* 分页提供业务逻辑 Start */
+Array.prototype.forEach.call(
+  document.querySelectorAll('.left-pannel ul li'),
+  node => {
+    node.addEventListener('click', event => {
+      const sections = document.getElementsByTagName('section')
+      Array.prototype.forEach.call(sections, section => {
+        if (section.dataset.name === node.dataset.target) {
+          section.className = 'show'
+        } else {
+          section.className = ''
+        }
+      })
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.left-pannel ul li'),
+        node => {
+          node.className = ''
+        }
+      )
+      node.className = 'active'
+    })
+  }
+)
+document.querySelectorAll('.left-pannel ul li')[0].click()
+/* 分页提供业务逻辑 End */
+
+/* Ping 业务逻辑 Start */
+const getServersJson = () => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open(
+      'GET',
+      `https://majsoul.union-game.com/0/version.json?randv=${Math.random()
+        .toString()
+        .substring(2, 17)
+        .padStart(16, '0')}`
+    )
+    xhr.send()
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        resolve(JSON.parse(xhr.responseText))
+      } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
+        reject()
+      }
+    })
+  })
+    .then(
+      result =>
+        new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          let configDir = result.code
+          configDir = result.code.substring(0, configDir.indexOf('/'))
+          xhr.open(
+            'GET',
+            `https://majsoul.union-game.com/0/${configDir}/config.json?randv=${Math.random()
+              .toString()
+              .substring(2, 17)
+              .padStart(16, '0')}`
+          )
+          xhr.send()
+          xhr.addEventListener('readystatechange', () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              resolve(JSON.parse(xhr.responseText))
+            } else if (
+              xhr.readyState === XMLHttpRequest.DONE &&
+              xhr.status !== 200
+            ) {
+              reject()
+            }
+          })
+        })
+    )
+    .then(
+      result =>
+        new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.open(
+            'GET',
+            `https://${result.ip[0].url}?randv=${Math.random()
+              .toString()
+              .substring(2, 17)
+              .padStart(16, '0')}`
+          )
+          xhr.send()
+          xhr.addEventListener('readystatechange', () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              resolve(JSON.parse(xhr.responseText))
+            } else if (
+              xhr.readyState === XMLHttpRequest.DONE &&
+              xhr.status !== 200
+            ) {
+              reject()
+            }
+          })
+        })
+    )
+}
+const ping = serversJson => {
+  return new Promise((resolve, reject) => {
+    let resolved = false
+    const serversList = serversJson.servers
+    const tcpp = require('tcp-ping')
+    const target = serversList[0].substring(0, serversList[0].indexOf(':'))
+    const port = serversList[0].substring(serversList[0].indexOf(':') + 1)
+    tcpp.ping(
+      {
+        address: target,
+        port: port,
+        attempts: 3
+      },
+      (err, data) => {
+        if (err) {
+          console.error(err)
+        } else {
+          if (!resolved) {
+            resolved = true
+            resolve(data.avg)
+          }
+        }
+      }
+    )
+  })
+}
+const refreshPing = serversJson => {
+  ping(serversJson).then(result => {
+    if (Number.isNaN(result)) {
+      document.getElementById('pingInfo').className = 'offline'
+      document.getElementById('pingText').innerText = '--'
+    } else {
+      document.getElementById('pingText').innerText = result >> 0
+      document.getElementById('pingInfo').className = (() => {
+        if (result < 150) return 'green'
+        if (result < 500) return 'orange'
+        return 'red'
+      })()
+    }
+  })
+}
+getServersJson().then(result => {
+  refreshPing(result)
+  setInterval(() => refreshPing(result), 5000)
+})
+/* Ping 业务逻辑 End */

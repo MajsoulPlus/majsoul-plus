@@ -9,22 +9,22 @@ const CONFIGS = {
   PLUGINS_DIR: '/plugins',
   EXECUTE_DIR: '/execute',
   GAME_WINDOW_CONFIG: {
-    width: 960 + 16,
-    height: 540 + 39,
+    width: 1280 + 16,
+    height: 720 + 39,
     frame: true,
     resizable: true,
     backgroundColor: '#000000',
     webPreferences: {
       webSecurity: false,
       nodeIntegration: false
-    // plugins: true
+      // plugins: true
     }
   },
   MANAGER_WINDOW_CONFIG: {
-    width: 960 + 16,
-    height: 540 + 39,
-    frame: true,
-    resizable: true,
+    width: 1280, // + 16,
+    height: 720, // + 39,
+    frame: false,
+    resizable: false,
     backgroundColor: '#FFFFFF',
     webPreferences: {
       webSecurity: false,

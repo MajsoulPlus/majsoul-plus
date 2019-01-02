@@ -1,55 +1,77 @@
 <!DOCTYPE html>
-<html lang="zh-hans">
+<html lang="zh-cmn-Hans">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
     <title>雀魂Plus</title>
   </head>
   <body>
-    <h1>雀魂Plus-扩展资源管理器</h1>
-    <button id="launch">启动游戏</button>
-    <button id="refresh">刷新扩展资源库</button>
-    <hr />
-    <section>
-      <h2>模组管理</h2>
-      <p>您可以在这里启用、停止、或删除模组，亦或是安装或导出一个插件。</p>
-      <button id="installMod">安装</button>
-      <div id="modInfos">
-        <article>
-          <h3>千织普通改绿头鸭</h3>
-          <address>Handle</address>
-          <p>
-            图片来源pixabay，由Capri23auto上传，CC0协议\n这是一个Mod示范，用途为将普通千织立绘和头像改为绿头鸭。
-          </p>
-          <input type="radio" name="mod0" id="mod0_disable" />
-          <label for="mod0_disable">启用</label>
-          <input type="radio" name="mod0" id="mod0_able" />
-          <label for="mod0_able">禁用 </label>
-          <button id="mod0_export">导出</button>
-          <button id="mod0_remove">删除</button>
-        </article>
+    <h1>雀魂Plus</h1>
+    <span class="close-btn" id="closeBtn"></span>
+    <div class="main-context">
+      <div class="left-pannel">
+        <ul>
+          <li data-target="modPage">模组</li>
+          <li data-target="executePage">插件</li>
+        </ul>
       </div>
-    </section>
-    <hr />
-    <section>
-      <h2>插件管理</h2>
-      <p>您可以在这里启用、停止、或删除插件，亦或是安装或导出一个插件。</p>
-      <button id="installExecute">安装</button>
-      <div id="executeInfos">
-        <article>
-          <h3>强制开启语音报番型</h3>
-          <address>aoarashi1988</address>
-          <p>可以强制在本地打开报番型效果。</p>
-          <input type="radio" name="execute0" id="execute0_disable" />
-          <label for="execute0_disable">启用</label>
-          <input type="radio" name="execute0" id="execute0_able" />
-          <label for="execute0_able">禁用 </label>
-          <button id="execute0_export">导出</button>
-          <button id="execute0_remove">删除</button>
-        </article>
+
+      <section data-name="modPage">
+        <!-- <h2>模组管理</h2>
+        <p>您可以在这里启用、停止、或删除模组，亦或是安装或导出一个插件。</p> -->
+        <button id="refreshMod" class="big-btn refresh-btn"></button>
+        <button id="installMod" class="big-btn install-btn"></button>
+        <button id="editMod" class="big-btn edit-btn"></button>
+        <div id="modInfos" class="info-cards">
+          <article>
+            <img src="" />
+            <h3>千织普通改绿头鸭</h3>
+            <address>Handle</address>
+            <p>
+              图片来源pixabay，由Capri23auto上传，CC0协议\n这是一个Mod示范，用途为将普通千织立绘和头像改为绿头鸭。
+            </p>
+            <!-- <input type="radio" name="mod0" id="mod0_disable" />
+            <label for="mod0_disable">启用</label>
+            <input type="radio" name="mod0" id="mod0_able" />
+            <label for="mod0_able">禁用 </label> -->
+            <input type="checkbox" />
+            <button id="mod0_export" class="export-btn"></button>
+            <button id="mod0_remove" class="remove-btn"></button>
+          </article>
+        </div>
+      </section>
+
+      <section data-name="executePage">
+        <!-- <h2>插件管理</h2>
+        <p>您可以在这里启用、停止、或删除插件，亦或是安装或导出一个插件。</p> -->
+        <button id="refreshExecute" class="big-btn refresh-btn"></button>
+        <button id="installExecute" class="big-btn install-btn"></button>
+        <button id="editExecute" class="big-btn edit-btn"></button>
+        <div id="executeInfos" class="info-cards">
+          <article>
+            <img src="" />
+            <h3>强制开启语音报番型</h3>
+            <address>aoarashi1988</address>
+            <p>可以强制在本地打开报番型效果。</p>
+            <!-- <input type="radio" name="execute0" id="execute0_disable" />
+            <label for="execute0_disable">启用</label>
+            <input type="radio" name="execute0" id="execute0_able" />
+            <label for="execute0_able">禁用 </label> -->
+            <input type="checkbox" />
+            <button id="execute0_export" class="export-btn">导出</button>
+            <button id="execute0_remove" class="remove-btn">删除</button>
+          </article>
+        </div>
+      </section>
+      <div class="bottom-pannel">
+        <span id="pingInfo" class="offline"
+          >Ping: <span id="pingText">--</span> ms</span
+        >
+        <button id="launch" class="launch-btn">启动游戏</button>
       </div>
-    </section>
+    </div>
     <script src="./manager.js"></script>
   </body>
 </html>
