@@ -108,7 +108,7 @@ h1 {
     height: 28px;
     width: 48px;
     content: '×';
-    color: var(--white-text);
+    color: var(--title-text);
     font-weight: 300;
     background-color: #f000;
     transition: background-color var(--animation-time) var(--ease-in-out);
@@ -118,6 +118,7 @@ h1 {
   }
   &:hover::before {
     background-color: #f12f;
+    color: var(--white-text);
   }
   &.darwin {
     &::before {
@@ -262,6 +263,7 @@ h1 {
           color: var(--bold-text);
           font-size: 14px;
           line-height: 14px;
+          max-width: calc(100% - 20px - 144px);
         }
         & > p {
           padding-left: 20px;

@@ -105,7 +105,7 @@ h1 {
   height: 28px;
   width: 48px;
   content: '×';
-  color: var(--white-text);
+  color: var(--title-text);
   font-weight: 300;
   background-color: #f000;
   -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
@@ -116,6 +116,7 @@ h1 {
 }
 .close-btn:hover::before {
   background-color: #f12f;
+  color: var(--white-text);
 }
 .close-btn.darwin::before {
   cursor: pointer;
@@ -265,6 +266,7 @@ h1 {
   color: var(--bold-text);
   font-size: 14px;
   line-height: 14px;
+  max-width: calc(100% - 20px - 144px);
 }
 .main-context > section > div.info-cards > article > p {
   padding-left: 20px;
