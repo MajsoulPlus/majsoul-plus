@@ -149,7 +149,7 @@ const windowControl = {
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
-    managerWindow.openDevTools({ mode: 'detach' })
+    // managerWindow.openDevTools({ mode: 'detach' })
     windowControl.windowMap['manager'] = managerWindow
   },
 
