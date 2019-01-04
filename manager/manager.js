@@ -625,10 +625,35 @@ const getServersJson = () => {
   })
     .then(
       result =>
+        new Promise((reslove, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.open(
+            'GET',
+            `https://majsoul.union-game.com/0/resversion${
+              result.version
+            }.json?randv=${Math.random()
+              .toString()
+              .substring(2, 17)
+              .padStart(16, '0')}`
+          )
+          xhr.send()
+          xhr.addEventListener('readystatechange', () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              reslove(JSON.parse(xhr.responseText).res['config.json'])
+            } else if (
+              xhr.readyState === XMLHttpRequest.DONE &&
+              xhr.status !== 200
+            ) {
+              reject()
+            }
+          })
+        })
+    )
+    .then(
+      result =>
         new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest()
-          let configDir = result.code
-          configDir = result.code.substring(0, configDir.indexOf('/'))
+          const configDir = result.prefix
           xhr.open(
             'GET',
             `https://majsoul.union-game.com/0/${configDir}/config.json?randv=${Math.random()
