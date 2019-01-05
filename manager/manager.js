@@ -560,7 +560,7 @@ document.getElementById('launch').addEventListener('click', startGame)
 
 // 关闭页面 按钮
 const closeBtn = document.getElementById('closeBtn')
-if (os.platform === 'darwin') {
+if (os.platform() === 'darwin') {
   closeBtn.className = 'close-btn darwin'
 }
 closeBtn.addEventListener('click', () => {
