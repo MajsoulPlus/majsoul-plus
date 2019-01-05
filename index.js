@@ -80,7 +80,7 @@ const windowControl = {
     return titles[index].text
   },
 
-  _getExcuteScripts: function() {
+  _getExecuteScripts: function() {
     const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
     let executeScripts
     try {
@@ -93,7 +93,7 @@ const windowControl = {
     return executeScripts
   },
 
-  _getExcuteCode: function(executeScript) {
+  _getExecuteCode: function(executeScript) {
     let codeEntry = executeScript.entry
     if (!codeEntry) {
       codeEntry = 'script.js'
@@ -110,11 +110,11 @@ const windowControl = {
     return code
   },
 
-  _excute: function(gameWindow) {
-    const executeScripts = windowControl._getExcuteScripts()
+  _execute: function(gameWindow) {
+    const executeScripts = windowControl._getExecuteScripts()
     executeScripts.forEach(executeScript => {
       console.log('Hack加载 ' + executeScript.name)
-      const code = windowControl._getExcuteCode(executeScript)
+      const code = windowControl._getExecuteCode(executeScript)
       gameWindow.webContents.executeJavaScript(code)
     })
   },
@@ -161,7 +161,7 @@ const windowControl = {
     const gameWindow = new BrowserWindow(config)
     gameWindow.on('page-title-updated', evt => evt.preventDefault())
     gameWindow.webContents.on('did-finish-load', () =>
-      windowControl._excute(gameWindow)
+      windowControl._execute(gameWindow)
     )
     gameWindow.webContents.on('crashed', evt =>
       console.log('web contents crashed')
