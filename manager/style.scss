@@ -37,6 +37,8 @@
 
   --mac-close-btn-hover: #f44f;
   --mac-close-btn-hover-border: #d33f;
+
+  --main-heigth: 628px;
 }
 .blur {
   --title-color: #fddaea;
@@ -99,6 +101,15 @@ h1 {
   line-height: 28px;
   -webkit-app-region: drag;
 }
+.darwin {
+  --main-heigth: 634px;
+
+  &.h1 {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+  }
+}
 .close-btn {
   &::before {
     display: block;
@@ -150,7 +161,7 @@ h1 {
   }
   & > section {
     display: none;
-    height: 628px;
+    height: var(--main-height);
     width: calc(1280px - 241px);
     background-color: var(--section-color);
     position: relative;
@@ -369,7 +380,7 @@ h1 {
     }
   }
   & > .left-pannel {
-    height: 628px;
+    height: var(--main-heigth);
     width: calc(240px + 1px);
     border-right: 1px solid var(--border-color);
     background-color: var(--left-pannel-color);

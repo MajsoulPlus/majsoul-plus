@@ -562,6 +562,11 @@ document.getElementById('launch').addEventListener('click', startGame)
 const closeBtn = document.getElementById('closeBtn')
 if (os.platform() === 'darwin') {
   closeBtn.className = 'close-btn darwin'
+  // hack close bar
+  const body = document.querySelector('body')
+  body.classList.add('darwin')
+  const closeButton = document.querySelector('body > .close-btn.darwin')
+  body.removeChild(closeButton)
 }
 closeBtn.addEventListener('click', () => {
   window.close()
@@ -569,10 +574,10 @@ closeBtn.addEventListener('click', () => {
 
 // 标题配色
 window.addEventListener('blur', () => {
-  document.body.className = 'blur'
+  document.body.classList.add('blur')
 })
 window.addEventListener('focus', () => {
-  document.body.className = ''
+  document.body.classList.remove('blur')
 })
 
 refreshFunction()

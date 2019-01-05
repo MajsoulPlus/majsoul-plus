@@ -28,6 +28,7 @@
   --mac-close-btn-border: #d33f;
   --mac-close-btn-hover: #f44f;
   --mac-close-btn-hover-border: #d33f;
+  --main-height: 628px;
 }
 
 .blur {
@@ -97,6 +98,16 @@ h1 {
   -webkit-app-region: drag;
 }
 
+.darwin {
+  --main-height: 634px;
+}
+
+.darwin h1 {
+  height: 22px;
+  line-height: 22px;
+  font-size: 12px;
+}
+
 .close-btn::before {
   display: block;
   position: fixed;
@@ -146,7 +157,7 @@ h1 {
 }
 .main-context > section {
   display: none;
-  height: 628px;
+  height: var(--main-height);
   width: calc(1280px - 241px);
   background-color: var(--section-color);
   position: relative;
@@ -364,7 +375,7 @@ h1 {
   display: none;
 }
 .main-context > .left-pannel {
-  height: 628px;
+  height: var(--main-heigth);
   width: calc(240px + 1px);
   border-right: 1px solid var(--border-color);
   background-color: var(--left-pannel-color);
