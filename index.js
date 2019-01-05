@@ -28,7 +28,7 @@ electronApp.commandLine.appendSwitch('ignore-certificate-errors')
 electronApp.on('window-all-closed', function() {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
-  if (process.platform != 'darwin') {
+  if (process.platform !== 'darwin') {
     electronApp.quit()
   }
 })
@@ -149,7 +149,12 @@ const windowControl = {
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
-    // managerWindow.openDevTools({ mode: 'detach' })
+
+    // Add environment config to open developer tools
+    if (process.env.NODE_ENV === 'development') {
+      managerWindow.openDevTools({ mode: 'detach' })
+    }
+
     windowControl.windowMap['manager'] = managerWindow
   },
 
@@ -203,6 +208,15 @@ const windowControl = {
     windowControl.electronReady().then(() => {
       electron.Menu.setApplicationMenu(null)
       windowControl.addAppListener()
+
+      // hack macOS config
+      if (process.platform === 'darwin') {
+        configs.MANAGER_WINDOW_CONFIG.frame = true
+        configs.MANAGER_WINDOW_CONFIG.titleBarStyle = 'hidden'
+        configs.MANAGER_WINDOW_CONFIG.maximizable = false
+        configs.MANAGER_WINDOW_CONFIG.fullscreenable = false
+      }
+
       windowControl.initManagerWindow(configs.MANAGER_WINDOW_CONFIG)
     })
   }
