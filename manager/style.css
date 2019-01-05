@@ -28,7 +28,7 @@
   --mac-close-btn-border: #d33f;
   --mac-close-btn-hover: #f44f;
   --mac-close-btn-hover-border: #d33f;
-  --main-height: 628px;
+  --main-heigth: 628px;
 }
 
 .blur {
@@ -99,10 +99,9 @@ h1 {
 }
 
 .darwin {
-  --main-height: 634px;
+  --main-heigth: 634px;
 }
-
-.darwin h1 {
+.darwin.h1 {
   height: 22px;
   line-height: 22px;
   font-size: 12px;
@@ -119,6 +118,8 @@ h1 {
   color: var(--title-text);
   font-weight: 300;
   background-color: #f000;
+  -webkit-transition: color var(--animation-time) var(--ease-in-out);
+  transition: color var(--animation-time) var(--ease-in-out);
   -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
   -webkit-app-region: no-drag;

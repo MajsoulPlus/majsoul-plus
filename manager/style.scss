@@ -122,6 +122,7 @@ h1 {
     color: var(--title-text);
     font-weight: 300;
     background-color: #f000;
+    transition: color var(--animation-time) var(--ease-in-out);
     transition: background-color var(--animation-time) var(--ease-in-out);
     -webkit-app-region: no-drag;
     text-align: center;
