@@ -149,7 +149,12 @@ const windowControl = {
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
-    managerWindow.openDevTools({ mode: 'detach' })
+
+    // Add environment config to open developer tools
+    if (process.env.NODE_ENV === 'development') {
+      managerWindow.openDevTools({ mode: 'detach' })
+    }
+
     windowControl.windowMap['manager'] = managerWindow
   },
 
