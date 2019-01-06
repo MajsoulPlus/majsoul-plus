@@ -25,7 +25,7 @@ server.get('*', Util.processRequest)
 electronApp.commandLine.appendSwitch('ignore-certificate-errors')
 
 // 当所有窗口被关闭了，退出。
-electronApp.on('window-all-closed', function() {
+electronApp.on('window-all-closed', () => {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
   if (process.platform !== 'darwin') {
@@ -33,6 +33,7 @@ electronApp.on('window-all-closed', function() {
   }
 })
 
+// 阻止证书验证
 electronApp.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
@@ -43,7 +44,7 @@ electronApp.on(
 
 const windowControl = {
   windowMap: {},
-  _getGameWindowTitle: function() {
+  _getGameWindowTitle: () => {
     const titles = [
       {
         text: '雀魂Plus - 游戏制作不易，请多多在雀魂内氪金支持雀魂猫粮工作室！',
@@ -80,7 +81,7 @@ const windowControl = {
     return titles[index].text
   },
 
-  _getExecuteScripts: function() {
+  _getExecuteScripts: () => {
     const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
     let executeScripts
     try {
@@ -93,7 +94,7 @@ const windowControl = {
     return executeScripts
   },
 
-  _getExecuteCode: function(executeScript) {
+  _getExecuteCode: executeScript => {
     let codeEntry = executeScript.entry
     if (!codeEntry) {
       codeEntry = 'script.js'
@@ -110,7 +111,7 @@ const windowControl = {
     return code
   },
 
-  _execute: function(gameWindow) {
+  _execute: gameWindow => {
     const executeScripts = windowControl._getExecuteScripts()
     executeScripts.forEach(executeScript => {
       console.log('Hack加载 ' + executeScript.name)
@@ -119,7 +120,7 @@ const windowControl = {
     })
   },
 
-  _getLocalUrlWithParams(url) {
+  _getLocalUrlWithParams: url => {
     if (url.includes('?')) {
       return `https://localhost:${configs.SERVER_PORT}/0/${url.substring(
         url.indexOf('?')
@@ -128,22 +129,22 @@ const windowControl = {
     return `https://localhost:${configs.SERVER_PORT}/0/`
   },
 
-  _redirectGameWindow: function(url, gameWindow) {
+  _redirectGameWindow: (url, gameWindow) => {
     if (url.startsWith(configs.REMOTE_DOMAIN) && url.includes('?')) {
       const localUrl = windowControl._getLocalUrlWithParams(url)
       gameWindow.loadURL(localUrl)
     }
   },
 
-  electronReady: function() {
+  electronReady: () => {
     return new Promise(resolve => electronApp.once('ready', resolve))
   },
 
-  initLocalMirrorServer: function(sererHttps, port) {
+  initLocalMirrorServer: (sererHttps, port) => {
     return new Promise(resolve => sererHttps.listen(port, resolve))
   },
 
-  initManagerWindow: function(managerWindowConfig) {
+  initManagerWindow: managerWindowConfig => {
     const managerWindow = new BrowserWindow(managerWindowConfig)
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
     managerWindow.loadURL(
@@ -158,7 +159,7 @@ const windowControl = {
     windowControl.windowMap['manager'] = managerWindow
   },
 
-  initGameWindow: function(gameWindowConfig) {
+  initGameWindow: gameWindowConfig => {
     const config = {
       ...gameWindowConfig,
       title: windowControl._getGameWindowTitle()
@@ -183,12 +184,12 @@ const windowControl = {
     windowControl.windowMap['game'] = gameWindow
   },
 
-  closeManagerWindow: function() {
+  closeManagerWindow: () => {
     const managerWindow = windowControl.windowMap['manager']
     managerWindow && managerWindow.close()
   },
 
-  addAppListener: function() {
+  addAppListener: () => {
     ipcMain.on('application-message', (evt, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
@@ -204,7 +205,7 @@ const windowControl = {
     })
   },
 
-  start: function() {
+  start: () => {
     windowControl.electronReady().then(() => {
       electron.Menu.setApplicationMenu(null)
       windowControl.addAppListener()
@@ -223,6 +224,6 @@ const windowControl = {
 }
 windowControl.start()
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', err => {
   console.log(err)
 })
