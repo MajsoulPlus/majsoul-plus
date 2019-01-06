@@ -379,6 +379,11 @@ h1 {
         }
       }
     }
+
+    &[data-name='settingPage'] {
+      padding-left: 102px;
+      padding-top: 16px;
+    }
   }
   & > .left-pannel {
     height: var(--main-height);
@@ -419,6 +424,15 @@ h1 {
         }
         &[data-target='executePage']::before {
           content: '';
+          font-size: 16px;
+        }
+        &[data-target='toolPage']::before {
+          content: '';
+          font-size: 18px;
+        }
+        &[data-target='settingPage']::before {
+          content: '';
+          font-size: 18px;
         }
       }
     }

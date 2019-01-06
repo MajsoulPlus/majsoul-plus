@@ -375,6 +375,10 @@ h1 {
 .main-context > section > div.info-cards > article.edit > input[type='checkbox'] {
   display: none;
 }
+.main-context > section[data-name='settingPage'] {
+  padding-left: 102px;
+  padding-top: 16px;
+}
 .main-context > .left-pannel {
   height: var(--main-height);
   width: calc(240px + 1px);
@@ -418,6 +422,15 @@ h1 {
 }
 .main-context > .left-pannel > ul > li[data-target='executePage']::before {
   content: '';
+  font-size: 16px;
+}
+.main-context > .left-pannel > ul > li[data-target='toolPage']::before {
+  content: '';
+  font-size: 18px;
+}
+.main-context > .left-pannel > ul > li[data-target='settingPage']::before {
+  content: '';
+  font-size: 18px;
 }
 .main-context > .bottom-pannel {
   height: calc(64px + 1px);
