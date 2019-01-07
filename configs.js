@@ -1,3 +1,15 @@
+const os = require('os')
+const getIcon = () => {
+  switch (os.platform()) {
+    case 'win32':
+      return __dirname + '/icons/icon.ico'
+    case 'darwin':
+      return __dirname + '/icons/icon.icns'
+    case 'linux':
+    default:
+      return __dirname + '/icons/icon.png'
+  }
+}
 const CONFIGS = {
   SERVER_PORT: 8887,
   // PIPE_PORT: 8888,
@@ -19,7 +31,7 @@ const CONFIGS = {
       nodeIntegration: false
       // plugins: true
     },
-    icon: __dirname + '/icon.ico'
+    icon: getIcon()
   },
   MANAGER_WINDOW_CONFIG: {
     width: 1280, // + 16,
@@ -32,7 +44,7 @@ const CONFIGS = {
       allowRunningInsecureContent: true
     },
     title: '雀魂Plus - 扩展资源管理器',
-    icon: __dirname + '/icon.ico'
+    icon: getIcon()
   }
 }
 module.exports = CONFIGS

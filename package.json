@@ -1,12 +1,15 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron . --enable_logging",
-    "pack": "electron-packager . Majsoul_Plus  --platform=all --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icon.ico",
-    "build": "electron-packager . Majsoul_Plus  --platform=all --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icon.ico",
+    "pack": "npm run build",
+    "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
+    "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.ico",
+    "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.icns",
+    "build-darwin": "electron-packager . Majsoul_Plus  --platform=darwin --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.png",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
