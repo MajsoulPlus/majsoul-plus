@@ -827,7 +827,9 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
         })
       document.getElementById('localVersion').innerText = res.local
       document.getElementById('remoteVersion').innerText = res.version
-      document.getElementById('publishTime').innerText = res.time
+      document.getElementById('publishTime').innerText = new Date(
+        res.time
+      ).toLocaleString()
     },
     reason => {
       console.log('rejected')
