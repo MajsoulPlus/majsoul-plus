@@ -76,6 +76,7 @@
 
 ## 贡献者
 
-[![Handle](https://avatars0.githubusercontent.com/u/16359124?s=64)](https://github.com/iamapig120)
-[![aoarashi1988](https://avatars1.githubusercontent.com/u/30466105?s=64)](https://github.com/aoarashi1988)
-[![UnrealShadow](https://avatars1.githubusercontent.com/u/36305150?s=64)](https://github.com/hyunrealshadow)
+
+[<img src="https://avatars0.githubusercontent.com/u/16359124?s=64" width="64" height="64" alt="Handle"/>](https://github.com/iamapig120)
+[<img src="https://avatars0.githubusercontent.com/u/30466105?s=64" width="64" height="64" alt="aoarashi1988"/>](https://github.com/aoarashi1988)
+[<img src="https://avatars0.githubusercontent.com/u/36305150?s=64" width="64" height="64" alt="UnrealShadow"/>](https://github.com/hyunrealshadow)
