@@ -150,10 +150,8 @@ const windowControl = {
       sererHttps.on('error', err => {
         if (err.code === 'EADDRINUSE') {
           console.log('Port in use, retrying...')
-          setTimeout(() => {
-            sererHttps.close()
-            sererHttps.listen(0, resolve)
-          }, 5)
+          sererHttps.close()
+          sererHttps.listen(0)
         }
       })
     })
