@@ -495,3 +495,74 @@ h1 {
     }
   }
 }
+.update-card {
+  @keyframes fadeInFromNone {
+    0% {
+      display: none;
+      opacity: 0;
+    }
+
+    1% {
+      display: block;
+      opacity: 0;
+    }
+
+    100% {
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  display: none;
+  padding: 16px 20px;
+  position: fixed;
+  left: 0;
+  bottom: calc(64px);
+  height: calc(144px + 2px);
+  width: calc(256px + 2px);
+  background-color: var(--info-card-color);
+  border: 1px solid var(--border-color);
+  & > h3 {
+    color: var(--bold-text);
+    font-size: 14px;
+    line-height: 14px;
+    max-width: 100%;
+    margin-bottom: 8px;
+  }
+  & > p {
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--light-text);
+    margin-bottom: 8px;
+  }
+  & > button {
+    font-size: 12px;
+    font-weight: 400;
+    &.updateCard_close {
+      color: var(--light-text);
+      border: none;
+      text-underline-position: under;
+      background-color: transparent;
+      text-decoration: underline;
+      transition: color var(--animation-time) var(--ease-in-out);
+      &:hover {
+        color: var(--bold-text);
+      }
+    }
+    &.updateCard_view {
+      border: none;
+      color: var(--white-text);
+      background-color: var(--main-color);
+      transition: background-color var(--animation-time) var(--ease-in-out);
+      padding: 4px 12px;
+      float: right;
+      &:hover {
+        background-color: var(--main-dark-color);
+      }
+    }
+  }
+  &.show {
+    display: block;
+    animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
+  }
+}

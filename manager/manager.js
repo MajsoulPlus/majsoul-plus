@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const configs = require('../configs')
-const { ipcRenderer, remote: electronRemote } = require('electron')
+const { ipcRenderer, remote: electronRemote, shell } = require('electron')
 const dialog = electronRemote.dialog
 const AdmZip = require('adm-zip')
 const os = require('os')
@@ -750,3 +750,88 @@ getServersJson().then(result => {
   setInterval(() => refreshPing(result), 5000)
 })
 /* Ping 业务逻辑 End */
+
+/* 检查更新业务逻辑 Start */
+const checkUpdate = userConfig => {
+  return new Promise((resolve, reject) => {
+    const locakPackage = require('../package.json')
+    /**
+     * @type {Array<>}
+     */
+    const versionLocal = locakPackage.version.split('.')
+    for (let i in versionLocal) {
+      versionLocal[i] = parseInt(versionLocal[i], 10)
+    }
+
+    const xhr = new XMLHttpRequest()
+    xhr.open(
+      'GET',
+      `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest`
+    )
+    xhr.send()
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const result = JSON.parse(xhr.responseText)
+        if (
+          // 如果不接受预览版，则跳出
+          !(
+            result.prerelease === userConfig.prerelease ||
+            result.prerelease === false
+          )
+        ) {
+          reject()
+          return
+        }
+        // 远程版本号
+        const versionRemote = result.tag_name.split('.')
+        versionRemote[0] = versionRemote[0].substring(1)
+        for (let i in versionRemote) {
+          versionRemote[i] = parseInt(versionRemote[i], 10)
+          if (versionRemote[i] > versionLocal[i]) {
+            resolve({
+              version: result.tag_name,
+              time: result.published_at,
+              body: result.body,
+              local: 'v' + locakPackage.version,
+              html_url: result.html_url
+            })
+          } else if (versionRemote[i] < versionLocal[i]) {
+            reject()
+            return
+          }
+        }
+        reject()
+      } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
+        reject()
+      }
+    })
+  })
+}
+fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
+  if (err) {
+    return
+  }
+  checkUpdate(JSON.parse(data).update).then(
+    res => {
+      document.getElementById('updateCard').classList.add('show')
+      document
+        .getElementById('updateCard_close')
+        .addEventListener('click', () => {
+          document.getElementById('updateCard').classList.remove('show')
+        })
+      document
+        .getElementById('updateCard_view')
+        .addEventListener('click', () => {
+          shell.openExternal(res.html_url)
+          document.getElementById('updateCard').classList.remove('show')
+        })
+      document.getElementById('localVersion').innerText = res.local
+      document.getElementById('remoteVersion').innerText = res.version
+      document.getElementById('publishTime').innerText = res.time
+    },
+    reason => {
+      console.log('rejected')
+    }
+  )
+})
+/* 检查更新业务逻辑 End */

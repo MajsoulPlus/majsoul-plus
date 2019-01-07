@@ -490,3 +490,89 @@ h1 {
 .main-context > .bottom-pannel > #pingInfo.orange::before {
   background-color: var(--ping-orange);
 }
+
+.update-card {
+  display: none;
+  padding: 16px 20px;
+  position: fixed;
+  left: 0;
+  bottom: calc(64px);
+  height: calc(144px + 2px);
+  width: calc(256px + 2px);
+  background-color: var(--info-card-color);
+  border: 1px solid var(--border-color);
+}
+@-webkit-keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+@keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  1% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+.update-card > h3 {
+  color: var(--bold-text);
+  font-size: 14px;
+  line-height: 14px;
+  max-width: 100%;
+  margin-bottom: 8px;
+}
+.update-card > p {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--light-text);
+  margin-bottom: 8px;
+}
+.update-card > button {
+  font-size: 12px;
+  font-weight: 400;
+}
+.update-card > button.updateCard_close {
+  color: var(--light-text);
+  border: none;
+  text-underline-position: under;
+  background-color: transparent;
+  text-decoration: underline;
+  -webkit-transition: color var(--animation-time) var(--ease-in-out);
+  transition: color var(--animation-time) var(--ease-in-out);
+}
+.update-card > button.updateCard_close:hover {
+  color: var(--bold-text);
+}
+.update-card > button.updateCard_view {
+  border: none;
+  color: var(--white-text);
+  background-color: var(--main-color);
+  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
+  transition: background-color var(--animation-time) var(--ease-in-out);
+  padding: 4px 12px;
+  float: right;
+}
+.update-card > button.updateCard_view:hover {
+  background-color: var(--main-dark-color);
+}
+.update-card.show {
+  display: block;
+  -webkit-animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
+          animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
+}
