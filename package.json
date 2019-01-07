@@ -8,8 +8,8 @@
     "pack": "npm run build",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
     "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.ico",
-    "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.icns",
-    "build-darwin": "electron-packager . Majsoul_Plus  --platform=darwin --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.png",
+    "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.png",
+    "build-darwin": "electron-packager . Majsoul_Plus  --platform=darwin --arch=all --out ../majsoul-plus-client-packed --overwrite --icon=icons/icon.icns",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
