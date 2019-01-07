@@ -122,11 +122,11 @@ const windowControl = {
 
   _getLocalUrlWithParams: url => {
     if (url.includes('?')) {
-      return `https://localhost:${configs.SERVER_PORT}/0/${url.substring(
+      return `https://localhost:${sererHttps.address().port}/0/${url.substring(
         url.indexOf('?')
       )}`
     }
-    return `https://localhost:${configs.SERVER_PORT}/0/`
+    return `https://localhost:${sererHttps.address().port}/0/`
   },
 
   _redirectGameWindow: (url, gameWindow) => {
@@ -140,8 +140,23 @@ const windowControl = {
     return new Promise(resolve => electronApp.once('ready', resolve))
   },
 
+  /**
+   * @param {https.Server} sererHttps
+   */
   initLocalMirrorServer: (sererHttps, port) => {
-    return new Promise(resolve => sererHttps.listen(port, resolve))
+    return new Promise(resolve => {
+      sererHttps.listen(port)
+      sererHttps.on('listening', resolve)
+      sererHttps.on('error', err => {
+        if (err.code === 'EADDRINUSE') {
+          console.log('Port in use, retrying...')
+          setTimeout(() => {
+            sererHttps.close()
+            sererHttps.listen(0, resolve)
+          }, 5)
+        }
+      })
+    })
   },
 
   initManagerWindow: managerWindowConfig => {
@@ -180,7 +195,13 @@ const windowControl = {
       'console-message',
       (evt, level, msg, line, sourceId) => console.log('Console', msg)
     )
-    gameWindow.loadURL(`https://localhost:${configs.SERVER_PORT}/0/`)
+    gameWindow.loadURL(`https://localhost:${sererHttps.address().port}/0/`)
+
+    // Add environment config to open developer tools
+    if (process.env.NODE_ENV === 'development') {
+      gameWindow.openDevTools({ mode: 'detach' })
+    }
+
     windowControl.windowMap['game'] = gameWindow
   },
 
@@ -194,9 +215,12 @@ const windowControl = {
       if (args && args.length > 0) {
         switch (args[0]) {
           case 'start-game':
-            windowControl.initLocalMirrorServer(sererHttps, configs.SERVER_PORT)
-            windowControl.initGameWindow(configs.GAME_WINDOW_CONFIG)
-            windowControl.closeManagerWindow()
+            windowControl
+              .initLocalMirrorServer(sererHttps, configs.SERVER_PORT)
+              .then(() => {
+                windowControl.initGameWindow(configs.GAME_WINDOW_CONFIG)
+                windowControl.closeManagerWindow()
+              })
             break
           default:
             break
