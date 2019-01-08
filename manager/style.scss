@@ -299,6 +299,9 @@ h1 {
           }
         }
         & > input[type='checkbox'] {
+          display: none;
+        }
+        & > input[type='checkbox'] + label {
           height: 0;
           width: 0;
           line-height: 0;
@@ -334,13 +337,13 @@ h1 {
             background-color: var(--switch-ball-color);
             transition: left var(--animation-time) var(--ease-in-out);
           }
-          &:checked {
-            &::before {
-              background-color: var(--switch-able-color);
-            }
-            &::after {
-              left: calc(-12px - 2px);
-            }
+        }
+        & > input[type='checkbox']:checked + label {
+          &::before {
+            background-color: var(--switch-able-color);
+          }
+          &::after {
+            left: calc(-12px - 2px);
           }
         }
         & > .remove-btn,

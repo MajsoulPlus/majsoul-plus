@@ -75,6 +75,7 @@ let executesWindow
  */
 let modsWindow
 
+const infoCardIdMap = {}
 /**
  * 信息卡
  */
@@ -114,6 +115,7 @@ class InfoCard {
     const address = document.createElement('address')
     const p = document.createElement('p')
     const checkbox = document.createElement('input')
+    const label = document.createElement('label')
     const exportBtn = document.createElement('button')
     const removeBtn = document.createElement('button')
 
@@ -142,6 +144,19 @@ class InfoCard {
       set: value => (checkbox.checked = value)
     })
 
+    checkbox.id = (function getRandomId() {
+      let str = 'infoCard_'
+      window.crypto.getRandomValues(new Uint32Array(3)).forEach(value => {
+        str += value.toString(32)
+      })
+      if (infoCardIdMap[str]) {
+        return getRandomId()
+      }
+      infoCardIdMap[str] = true
+      return str
+    })()
+    label.setAttribute('for', checkbox.id)
+
     exportBtn.className = 'export-btn'
     exportBtn.addEventListener('click', event => {
       if (this._eventListeners['export']) {
@@ -167,6 +182,7 @@ class InfoCard {
     article.appendChild(address)
 
     article.appendChild(checkbox)
+    article.appendChild(label)
 
     article.appendChild(exportBtn)
     article.appendChild(removeBtn)
