@@ -9,6 +9,7 @@ const https = require('https')
 
 const electron = require('electron')
 const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
+const { Menu, MenuItem } = electron
 
 const sererHttps = https.createServer(
   {
@@ -200,6 +201,44 @@ const windowControl = {
       gameWindow.openDevTools({ mode: 'detach' })
     }
 
+    // 设置一个菜单
+    const gameWindowMenu = new Menu()
+    gameWindowMenu.append(
+      new MenuItem({
+        label: '窗口',
+        role: 'window',
+        submenu: [
+          new MenuItem({
+            label: '全屏',
+            accelerator: 'F11',
+            click: (menuItem, browserWindow, event) => {
+              browserWindow.setFullScreen(!browserWindow.isFullScreen())
+            }
+          }),
+          new MenuItem({
+            label: '全屏',
+            accelerator: 'F5',
+            enabled: true,
+            visible: false,
+            click: (menuItem, browserWindow, event) => {
+              browserWindow.setFullScreen(!browserWindow.isFullScreen())
+            }
+          }),
+          new MenuItem({
+            label: '退出全屏',
+            accelerator: 'Esc',
+            click: (menuItem, browserWindow, event) => {
+              if (browserWindow.isFullScreen()) {
+                browserWindow.setFullScreen(false)
+                return
+              }
+            }
+          })
+        ]
+      })
+    )
+    Menu.setApplicationMenu(gameWindowMenu)
+
     windowControl.windowMap['game'] = gameWindow
   },
 
@@ -229,15 +268,13 @@ const windowControl = {
 
   start: () => {
     windowControl.electronReady().then(() => {
-      electron.Menu.setApplicationMenu(null)
+      Menu.setApplicationMenu(null)
       windowControl.addAppListener()
 
       // hack macOS config
       if (process.platform === 'darwin') {
         configs.MANAGER_WINDOW_CONFIG.frame = true
         configs.MANAGER_WINDOW_CONFIG.titleBarStyle = 'hidden'
-        configs.MANAGER_WINDOW_CONFIG.maximizable = false
-        configs.MANAGER_WINDOW_CONFIG.fullscreenable = false
       }
 
       windowControl.initManagerWindow(configs.MANAGER_WINDOW_CONFIG)

@@ -21,8 +21,8 @@ const CONFIGS = {
   PLUGINS_DIR: '/plugins',
   EXECUTE_DIR: '/execute',
   GAME_WINDOW_CONFIG: {
-    width: 1280 + 16,
-    height: 720 + 39,
+    width: 1280,
+    height: 720,
     frame: true,
     resizable: true,
     backgroundColor: '#000000',
@@ -31,6 +31,8 @@ const CONFIGS = {
       nodeIntegration: false
       // plugins: true
     },
+    autoHideMenuBar: true,
+    useContentSize: true,
     icon: getIcon()
   },
   MANAGER_WINDOW_CONFIG: {
@@ -44,7 +46,10 @@ const CONFIGS = {
       allowRunningInsecureContent: true
     },
     title: '雀魂Plus - 扩展资源管理器',
-    icon: getIcon()
+    autoHideMenuBar: true,
+    icon: getIcon(),
+    maximizable: false,
+    fullscreenable: false
   }
 }
 module.exports = CONFIGS
