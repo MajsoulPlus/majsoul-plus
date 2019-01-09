@@ -376,7 +376,7 @@ h1 {
           & > .export-btn {
             display: block;
           }
-          & > input[type='checkbox'] {
+          & > input[type='checkbox'] + label {
             display: none;
           }
         }

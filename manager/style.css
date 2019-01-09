@@ -375,7 +375,7 @@ h1 {
 .main-context > section > div.info-cards > article.edit > .remove-btn, .main-context > section > div.info-cards > article.edit > .export-btn {
   display: block;
 }
-.main-context > section > div.info-cards > article.edit > input[type='checkbox'] {
+.main-context > section > div.info-cards > article.edit > input[type='checkbox'] + label {
   display: none;
 }
 .main-context > section[data-name='settingPage'] {
