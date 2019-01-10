@@ -4,7 +4,7 @@
   "description": "简单几步生成桌布Mod，桌布随心换",
   "index": "index.html",
   "windowOptions": {
-    "width": 960,
+    "width": 360,
     "height": 540
   }
 }
