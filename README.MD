@@ -2,6 +2,7 @@
 
 可能是 PC 平台最好用的雀魂麻将第三方客户端
 
+[![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus-client.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus-client)
 ![github](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/total.svg)
 ![github](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
