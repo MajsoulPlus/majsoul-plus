@@ -298,7 +298,7 @@ h1 {
             padding-right: 4px;
           }
         }
-        & > input[type='checkbox'] {
+        & > input {
           display: none;
         }
         & > input[type='checkbox'] + label {
@@ -346,6 +346,24 @@ h1 {
             left: calc(-12px - 2px);
           }
         }
+        & > input[type='button'] + label {
+          font-style: normal;
+          position: absolute;
+          bottom: 12px;
+          right: 18px;
+          background-color: transparent;
+          border: 0;
+          color: var(--light-text);
+          cursor: pointer;
+          &:hover {
+            color: var(--bold-text);
+          }
+          &::before {
+            font-family: 'iconfont' !important;
+            font-size: 16px;
+            content: '';
+          }
+        }
         & > .remove-btn,
         & > .export-btn {
           font-style: normal;
@@ -376,7 +394,7 @@ h1 {
           & > .export-btn {
             display: block;
           }
-          & > input[type='checkbox'] + label {
+          & > input + label {
             display: none;
           }
         }

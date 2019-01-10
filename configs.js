@@ -18,7 +18,8 @@ const CONFIGS = {
   REMOTE_DOMAIN: 'https://majsoul.union-game.com',
   LOCAL_DIR: '/static',
   MODS_DIR: '/mod',
-  PLUGINS_DIR: '/plugins',
+  PLUGINS_DIR: '/plugin',
+  TOOLS_DIR: '/tool',
   EXECUTE_DIR: '/execute',
   GAME_WINDOW_CONFIG: {
     width: 1280,
@@ -50,6 +51,22 @@ const CONFIGS = {
     icon: getIcon(),
     maximizable: false,
     fullscreenable: false
+  },
+  TOOL_WINDOW_CONFIG: {
+    width: 960, // + 16,
+    height: 540, // + 39,
+    frame: true,
+    resizable: false,
+    backgroundColor: '#FFFFFF',
+    webPreferences: {
+      webSecurity: false,
+      allowRunningInsecureContent: true
+    },
+    autoHideMenuBar: true,
+    icon: getIcon(),
+    maximizable: false,
+    fullscreenable: false,
+    useContentSize: true
   }
 }
 module.exports = CONFIGS

@@ -1,0 +1,10 @@
+{
+  "name": "桌布制作工具",
+  "author": "Handle",
+  "description": "简单几步生成桌布Mod，桌布随心换",
+  "index": "index.html",
+  "windowOptions": {
+    "width": 960,
+    "height": 540
+  }
+}

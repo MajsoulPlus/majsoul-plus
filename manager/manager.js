@@ -14,6 +14,9 @@ const executeSettingsFile = path.join(executeRootDir, './active.json')
 const modRootDir = path.join(__dirname, '../', configs.MODS_DIR)
 const modSettingsFile = path.join(modRootDir, './active.json')
 
+// 工具根目录
+const toolsRootDir = path.join(__dirname, '../', configs.TOOLS_DIR)
+
 /**
  * 同步删除文件夹
  * @param {string} dir 要删除的目录
@@ -75,6 +78,11 @@ let executesWindow
  */
 let modsWindow
 
+/**
+ * @type {Array<>}
+ */
+let toolsWindow
+
 const infoCardIdMap = {}
 /**
  * 信息卡
@@ -85,7 +93,7 @@ class InfoCard {
    * @param {{name:string,author:string,description:string,preview:string,filesDir:string}} infos
    * @param {boolean} checked
    */
-  constructor(infos, checked = false) {
+  constructor(infos, checked = false, isButton = false) {
     this.infos = infos
     this.checked = checked
     this.name = infos.name ? infos.name : '未知'
@@ -95,6 +103,7 @@ class InfoCard {
       infos.filesDir,
       infos.preview ? infos.preview : 'preview.jpg'
     )
+    this._inputType = isButton ? 'button' : 'checkbox'
     /**
      * @type {{[x:string]:Array<>}}
      */
@@ -114,7 +123,7 @@ class InfoCard {
     const h3 = document.createElement('h3')
     const address = document.createElement('address')
     const p = document.createElement('p')
-    const checkbox = document.createElement('input')
+    const input = document.createElement('input')
     const label = document.createElement('label')
     const exportBtn = document.createElement('button')
     const removeBtn = document.createElement('button')
@@ -129,22 +138,32 @@ class InfoCard {
     address.innerText = this.author
     p.innerText = this.description
 
-    checkbox.type = 'checkbox'
-    checkbox.addEventListener('change', event => {
-      if (this._eventListeners['change']) {
-        this._eventListeners['change'].forEach(listener => {
-          listener.call(this, event)
-        })
-      }
-    })
+    if (this._inputType === 'checkbox') {
+      input.type = 'checkbox'
+      input.addEventListener('change', event => {
+        if (this._eventListeners['change']) {
+          this._eventListeners['change'].forEach(listener => {
+            listener.call(this, event)
+          })
+        }
+      })
+      input.checked = this.checked
+      Object.defineProperty(this, 'checked', {
+        get: () => input.checked,
+        set: value => (input.checked = value)
+      })
+    } else if (this._inputType === 'button') {
+      input.type = 'button'
+      input.addEventListener('click', event => {
+        if (this._eventListeners['click']) {
+          this._eventListeners['click'].forEach(listener => {
+            listener.call(this, event)
+          })
+        }
+      })
+    }
 
-    checkbox.checked = this.checked
-    Object.defineProperty(this, 'checked', {
-      get: () => checkbox.checked,
-      set: value => (checkbox.checked = value)
-    })
-
-    checkbox.id = (function getRandomId() {
+    input.id = (function getRandomId() {
       let str = 'infoCard_'
       window.crypto.getRandomValues(new Uint32Array(3)).forEach(value => {
         str += value.toString(32)
@@ -155,7 +174,7 @@ class InfoCard {
       infoCardIdMap[str] = true
       return str
     })()
-    label.setAttribute('for', checkbox.id)
+    label.setAttribute('for', input.id)
 
     exportBtn.className = 'export-btn'
     exportBtn.addEventListener('click', event => {
@@ -181,7 +200,7 @@ class InfoCard {
 
     article.appendChild(address)
 
-    article.appendChild(checkbox)
+    article.appendChild(input)
     article.appendChild(label)
 
     article.appendChild(exportBtn)
@@ -226,6 +245,10 @@ let modCards
  * @type {Array<InfoCard>}
  */
 let executeCards
+/**
+ * @type {Array<InfoCard>}
+ */
+let toolCards
 
 /**
  * 保存设置
@@ -263,13 +286,18 @@ const startGame = () => {
  * 刷新所有DOM节点
  * @param {Array<>} executes 插件
  * @param {Array<>} mods 模组
+ * @param {Array<>} tools 工具
  */
-const reloadDOM = (executes, mods) => {
+const reloadDOM = (executes, mods, tools) => {
   const modInfos = document.getElementById('modInfos')
   const executeInfos = document.getElementById('executeInfos')
+  const toolInfos = document.getElementById('toolInfos')
+
   modInfos.innerHTML = ''
   executeInfos.innerHTML = ''
+  toolInfos.innerHTML = ''
 
+  // Execute
   const executeLaunchedList = executeLaunched.map(
     element => `${element.name}|${element.author}`
   )
@@ -351,6 +379,7 @@ const reloadDOM = (executes, mods) => {
     executeInfos.appendChild(infoCard.DOM)
   })
 
+  // Mod
   const modLaunchedList = modLaunched.map(
     element => `${element.name}|${element.author}`
   )
@@ -428,6 +457,57 @@ const reloadDOM = (executes, mods) => {
 
     modInfos.appendChild(infoCard.DOM)
   })
+
+  // Tool
+  toolCards = []
+  tools.forEach((toolInfo, index) => {
+    const infoCard = new InfoCard(toolInfo, false, true)
+    toolCards.push(infoCard)
+
+    const onClickFunction = event => {
+      ipcRenderer.send('application-message', 'start-tool', toolInfo)
+    }
+    const onexportFunction = event => {
+      const zip = new AdmZip()
+      const tempZipName = `${toolInfo.name}-${toolInfo.author}.mspt`
+      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
+      zip.addLocalFolder(toolInfo.filesDir, path.basename(toolInfo.filesDir))
+      zip.writeZip(tempZipPathName, true)
+      const userChosenPath = dialog.showSaveDialog({
+        title: '导出工具到……',
+        filters: [
+          {
+            name: '雀魂Plus工具',
+            extensions: ['mspt']
+          },
+          {
+            name: '所有文件',
+            extensions: ['*']
+          }
+        ],
+        defaultPath: tempZipName
+      })
+      if (userChosenPath) {
+        fs.copyFile(tempZipPathName, userChosenPath, err => {
+          if (err) {
+            alert('导出失败！\n错误信息如下:\n' + err)
+          } else {
+            alert('导出成功！')
+          }
+        })
+      }
+    }
+    const onremoveFunction = event => {
+      infoCard.DOM.remove()
+      removeDir(infoCard.infos.filesDir)
+      refreshFunction()
+    }
+    infoCard.addEventListener('click', onClickFunction)
+    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('remove', onremoveFunction)
+
+    toolInfos.appendChild(infoCard.DOM)
+  })
 }
 
 // 安装模组 按钮
@@ -492,6 +572,42 @@ installExecute.addEventListener('click', event => {
   }
 })
 
+// 安装工具 按钮
+const installTool = document.getElementById('installTool')
+installTool.addEventListener('click', event => {
+  const userChosenPath = dialog.showOpenDialog({
+    title: '选取工具资源包……',
+    filters: [
+      {
+        name: '雀魂Plus工具',
+        extensions: ['mspt']
+      },
+      {
+        name: '所有文件',
+        extensions: ['*']
+      }
+    ]
+  })
+  if (userChosenPath && userChosenPath[0]) {
+    userChosenPath.forEach(chosenPath => {
+      const unzip = new AdmZip(chosenPath)
+      unzip.extractAllToAsync(toolsRootDir, true, err => {
+        if (err) {
+          alert('安装失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('安装成功！')
+          refreshFunction()
+        }
+      })
+    })
+  }
+})
+
+// 记录编辑状态使用的变量
+let executesEditFlag = false
+let modsEditFlag = false
+let toolsEditFlag = false
+
 const editMod = document.getElementById('editMod')
 editMod.addEventListener('click', event => {
   modsEditFlag = !modsEditFlag
@@ -506,19 +622,25 @@ editExecute.addEventListener('click', event => {
     card.edit = executesEditFlag
   })
 })
-// 记录编辑状态使用的变量
-let executesEditFlag = false
-let modsEditFlag = false
+const editTool = document.getElementById('editTool')
+editTool.addEventListener('click', event => {
+  toolsEditFlag = !toolsEditFlag
+  toolCards.forEach(card => {
+    card.edit = toolsEditFlag
+  })
+})
+
 // 刷新事件
 refreshFunction = event => {
   // 清除编辑状态
   executesEditFlag = false
   modsEditFlag = false
+  toolsEditFlag = false
   // 所有已在目录中的注入脚本目录
   const executeDirs = fs.readdirSync(executeRootDir)
   // 用于存储注入脚本对象
   const executes = []
-  // 遍历所有注入脚本文件夹，寻找execute.json并加载
+  // 遍历所有注入脚本文件夹，寻找 execute.json并加载
   executeDirs.forEach(dir => {
     const executeDir = path.join(executeRootDir, dir)
     const stats = fs.statSync(executeDir)
@@ -541,7 +663,7 @@ refreshFunction = event => {
   const modDirs = fs.readdirSync(modRootDir)
   // 用于存储Mod对象
   const mods = []
-  // 遍历所有Mod文件夹，寻找Mod.json并加载
+  // 遍历所有Mod文件夹，寻找 Mod.json并加载
   modDirs.forEach(dir => {
     const modDir = path.join(modRootDir, dir)
     const stats = fs.statSync(modDir)
@@ -558,10 +680,33 @@ refreshFunction = event => {
       // TODO, 若为 "*.mspm" 则作为 zip 文件解压，然后加载
     }
   })
+
+  // 所有已在目录中的 tool 目录
+  const toolDirs = fs.readdirSync(toolsRootDir)
+  // 用于存储 tool 对象
+  const tools = []
+  // 遍历所有 tool 文件夹，寻找 Tool.json并加载
+  toolDirs.forEach(dir => {
+    const toolDir = path.join(toolsRootDir, dir)
+    const stats = fs.statSync(toolDir)
+    if (stats.isDirectory()) {
+      try {
+        const data = fs.readFileSync(path.join(toolDir, 'tool.json'))
+        const toolInfo = JSON.parse(data.toString('utf-8'))
+        toolInfo.filesDir = toolDir
+        tools.push(toolInfo)
+      } catch (error) {
+        console.warn(error)
+      }
+    } else {
+      // TODO, 若为 "*.mspt" 则作为 zip 文件解压，然后加载
+    }
+  })
   executesWindow = executes
   modsWindow = mods
+  toolsWindow = tools
 
-  reloadDOM(executes, mods)
+  reloadDOM(executes, mods, tools)
 }
 
 // 刷新模组 按钮
@@ -569,6 +714,10 @@ document.getElementById('refreshMod').addEventListener('click', refreshFunction)
 // 刷新插件 按钮
 document
   .getElementById('refreshExecute')
+  .addEventListener('click', refreshFunction)
+// 刷新插件 按钮
+document
+  .getElementById('refreshTool')
   .addEventListener('click', refreshFunction)
 
 // 启动游戏 按钮

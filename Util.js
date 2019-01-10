@@ -5,33 +5,12 @@ const fs = require('fs')
 const configs = require('./configs')
 
 /**
- * @type {typeof import("https")|typeof import("http")}
+ * @type {typeof import("https")}
  */
-let http
+const http = require('https')
 
 // 用于存储Mod对象
 let mods
-
-// 遍历所有Mod文件夹，寻找Mod.json并加载
-// modDirs.forEach(dir => {
-//   const modDir = path.join(modRootDir, dir)
-//   fs.stat(modDir, (err, stats) => {
-//     if (err) {
-//       console.error(err)
-//     } else if (stats.isDirectory()) {
-//       fs.readFile(path.join(modDir, 'mod.json'), (err, data) => {
-//         if (!err) {
-//           const modInfo = JSON.parse(data)
-//           modInfo.filesDir = path.join(modDir, '/files')
-//           mods.push(modInfo)
-//           console.log('Mod加载 ' + modInfo.name)
-//         }
-//       })
-//     } else {
-//       // TODO, 若为 "*.mod" 则作为 zip 文件解压，然后加载
-//     }
-//   })
-// })
 
 const Util = {
   /**
@@ -321,9 +300,5 @@ Object.keys(Util).forEach(key => {
     Util[key] = Util[key].bind(Util)
   }
 })
-
-http = configs.REMOTE_DOMAIN.startsWith('https')
-  ? require('https')
-  : require('http')
 
 module.exports = Util

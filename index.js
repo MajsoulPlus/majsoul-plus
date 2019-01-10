@@ -44,7 +44,7 @@ electronApp.on(
 )
 
 const windowControl = {
-  windowMap: {},
+  windowMap: { toolsMap: {} },
   _getGameWindowTitle: () => {
     const titles = [
       {
@@ -130,11 +130,14 @@ const windowControl = {
     return `https://localhost:${sererHttps.address().port}/0/`
   },
 
+  _testRedirectGameWindow: url => {
+    return url.startsWith(configs.REMOTE_DOMAIN) > -1
+  },
+
   _redirectGameWindow: (url, gameWindow) => {
-    if (url.startsWith(configs.REMOTE_DOMAIN) && url.includes('?')) {
-      const localUrl = windowControl._getLocalUrlWithParams(url)
-      gameWindow.loadURL(localUrl)
-    }
+    console.log(url)
+    const localUrl = windowControl._getLocalUrlWithParams(url)
+    gameWindow.loadURL(localUrl)
   },
 
   electronReady: () => {
@@ -157,7 +160,6 @@ const windowControl = {
       })
     })
   },
-
   initManagerWindow: managerWindowConfig => {
     const managerWindow = new BrowserWindow(managerWindowConfig)
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
@@ -186,9 +188,11 @@ const windowControl = {
     gameWindow.webContents.on('crashed', evt =>
       console.log('web contents crashed')
     )
-    gameWindow.webContents.on('did-navigate', (evt, url) => {
-      evt.preventDefault()
-      windowControl._redirectGameWindow(url, gameWindow)
+    gameWindow.webContents.on('will-navigate', (evt, url) => {
+      if (windowControl._testRedirectGameWindow(url)) {
+        evt.preventDefault()
+        windowControl._redirectGameWindow(url, gameWindow)
+      }
     })
     gameWindow.webContents.on(
       'console-message',
@@ -259,6 +263,29 @@ const windowControl = {
                 windowControl.closeManagerWindow()
               })
             break
+          case 'start-tool':
+            const toolInfo = args[1]
+            if (!toolInfo.windowOptions) {
+              toolInfo.windowOption = {}
+            }
+            const toolConfig = {
+              ...configs.TOOL_WINDOW_CONFIG,
+              ...toolInfo.windowOptions
+            }
+            const indexPage = toolInfo.index ? toolInfo.index : 'index.html'
+            toolConfig.parent = windowControl.windowMap['manager']
+
+            const toolWindow = new BrowserWindow(toolConfig)
+
+            windowControl.windowMap.toolsMap[toolInfo.filesDir] = toolWindow
+
+            if (process.env.NODE_ENV === 'development') {
+              toolWindow.openDevTools({ mode: 'detach' })
+            }
+
+            toolWindow.loadURL(
+              'file://' + path.join(toolInfo.filesDir, indexPage)
+            )
           default:
             break
         }

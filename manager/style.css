@@ -301,7 +301,7 @@ h1 {
   content: '';
   padding-right: 4px;
 }
-.main-context > section > div.info-cards > article > input[type='checkbox'] {
+.main-context > section > div.info-cards > article > input {
   display: none;
 }
 .main-context > section > div.info-cards > article > input[type='checkbox'] + label {
@@ -348,6 +348,24 @@ h1 {
 .main-context > section > div.info-cards > article > input[type='checkbox']:checked + label::after {
   left: calc(-12px - 2px);
 }
+.main-context > section > div.info-cards > article > input[type='button'] + label {
+  font-style: normal;
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  background-color: transparent;
+  border: 0;
+  color: var(--light-text);
+  cursor: pointer;
+}
+.main-context > section > div.info-cards > article > input[type='button'] + label:hover {
+  color: var(--bold-text);
+}
+.main-context > section > div.info-cards > article > input[type='button'] + label::before {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  content: '';
+}
 .main-context > section > div.info-cards > article > .remove-btn, .main-context > section > div.info-cards > article > .export-btn {
   font-style: normal;
   position: absolute;
@@ -375,7 +393,7 @@ h1 {
 .main-context > section > div.info-cards > article.edit > .remove-btn, .main-context > section > div.info-cards > article.edit > .export-btn {
   display: block;
 }
-.main-context > section > div.info-cards > article.edit > input[type='checkbox'] + label {
+.main-context > section > div.info-cards > article.edit > input + label {
   display: none;
 }
 .main-context > section[data-name='settingPage'] {
