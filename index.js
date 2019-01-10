@@ -19,6 +19,22 @@ const sererHttps = https.createServer(
   server
 )
 
+if (
+  (() => {
+    try {
+      const userConfigs = require('configs-user.json')
+      if (userConfigs['isHardwareAccelerationDisable'] === true) {
+        return true
+      }
+    } catch (err) {
+      return false
+    }
+    return false
+  })()
+) {
+  electronApp.disableHardwareAcceleration()
+}
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 server.get('*', Util.processRequest)

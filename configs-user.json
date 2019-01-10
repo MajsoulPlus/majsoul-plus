@@ -1,5 +1,6 @@
 {
   "update": {
     "prerelease": false
-  }
+  },
+  "isHardwareAccelerationDisable": false
 }
