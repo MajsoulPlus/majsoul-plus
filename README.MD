@@ -2,8 +2,9 @@
 
 在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能
 
+[![Build status](https://ci.appveyor.com/api/projects/status/cx2hgugjts6ed932/branch/master?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus-client/branch/master)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus-client.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus-client)
-![DownloadsLaest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)
+![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)
 ![DownloadsTotal](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/total.svg)
 ![License](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
