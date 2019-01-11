@@ -829,7 +829,7 @@ const getServersJson = () => {
             `https://majsoul.union-game.com/0/${configDir}/config.json?randv=${Math.random()
               .toString()
               .substring(2, 17)
-              .padStart(16, '0')}&service=ws-gateway&protocol=ws&ssl=true`
+              .padStart(16, '0')}`
           )
           xhr.send()
           xhr.addEventListener('readystatechange', () => {
@@ -853,7 +853,7 @@ const getServersJson = () => {
             `https://${result.ip[0].url}?randv=${Math.random()
               .toString()
               .substring(2, 17)
-              .padStart(16, '0')}`
+              .padStart(16, '0')}&service=ws-gateway&protocol=ws&ssl=true`
           )
           xhr.send()
           xhr.addEventListener('readystatechange', () => {
