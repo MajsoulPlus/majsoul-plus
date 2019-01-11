@@ -147,7 +147,7 @@ const windowControl = {
   },
 
   _testRedirectGameWindow: url => {
-    return url.startsWith(configs.REMOTE_DOMAIN) > -1
+    return url.startsWith(configs.REMOTE_DOMAIN)
   },
 
   _redirectGameWindow: (url, gameWindow) => {
