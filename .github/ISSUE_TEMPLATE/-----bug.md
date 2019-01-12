@@ -1,8 +1,8 @@
 ---
 name: 提交一个 BUG
 about: 创建一个BUG报告来改进项目
-title: ''
-labels: ''
+title: "[BUG] 清晰简练的 BUG 描述"
+labels: bug
 assignees: ''
 
 ---
