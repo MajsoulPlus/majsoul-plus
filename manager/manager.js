@@ -133,6 +133,9 @@ class InfoCard {
       preview.src = path.join(__dirname, 'defaultPreview.jpg')
       preview.removeEventListener('error', errFun)
     })
+    preview.addEventListener('dragstart', event => {
+      event.preventDefault()
+    })
 
     h3.innerText = this.name
     address.innerText = this.author
