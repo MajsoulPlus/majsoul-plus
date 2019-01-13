@@ -34,13 +34,25 @@ const drawView = event => {
       new Promise(resolve => imgInner.addEventListener('load', resolve))
     ]).then(() => {
       context.clearRect(0, 0, canvas.width, canvas.height)
-      context.drawImage(img, 122, 122, 780, 780)
+      context.drawImage(
+        img,
+        (122 / 1024) * canvas.width,
+        (122 / 1024) * canvas.height,
+        (780 / 1024) * canvas.width,
+        (780 / 1024) * canvas.height
+      )
       context.fillStyle = `#000000`
       context.globalAlpha = darknessRange.value / 100
       context.fillRect(0, 0, canvas.width, canvas.height)
       context.globalAlpha = 1
-      context.drawImage(imgInner, 122, 122, 780, 780)
-      context.drawImage(imgDesktopBorder, 0, 0, 1024, 1024)
+      context.drawImage(
+        imgInner,
+        (122 / 1024) * canvas.width,
+        (122 / 1024) * canvas.height,
+        (780 / 1024) * canvas.width,
+        (780 / 1024) * canvas.height
+      )
+      context.drawImage(imgDesktopBorder, 0, 0, canvas.width, canvas.height)
 
       contextPreview.clearRect(0, 0, canvasPreview.width, canvasPreview.height)
       contextPreview.drawImage(
@@ -128,7 +140,7 @@ saveAndInstall.addEventListener('click', event => {
   }
   fs.writeFileSync(path.join(dirPath, 'mod.json'), JSON.stringify(modInfo))
   const desktopData = canvas
-    .toDataURL('image/jpeg')
+    .toDataURL('image/jpeg', 1)
     .replace(/^data:image\/\w+;base64,/, '')
   const previewData = canvasPreview
     .toDataURL('image/jpeg')
