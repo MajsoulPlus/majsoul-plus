@@ -264,6 +264,7 @@ h1 {
         & > * {
           float: left;
           cursor: default;
+          word-wrap: break-word;
         }
         & > img {
           width: 144px;

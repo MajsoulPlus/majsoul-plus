@@ -267,6 +267,7 @@ h1 {
 .main-context > section > div.info-cards > article > * {
   float: left;
   cursor: default;
+  word-wrap: break-word;
 }
 .main-context > section > div.info-cards > article > img {
   width: 144px;
