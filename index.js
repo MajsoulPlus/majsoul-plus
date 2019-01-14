@@ -64,20 +64,8 @@ const windowControl = {
   _getGameWindowTitle: () => {
     const titles = [
       {
-        text: '雀魂Plus - 游戏制作不易，请多多在雀魂内氪金支持雀魂猫粮工作室！',
-        weight: 50
-      },
-      {
-        text: '雀魂Plus - 扩展插件可能会损害游戏开发者利益，请尽可能支持付费',
-        weight: 50
-      },
-      {
-        text: '雀魂Plus - 在使用插件的同时，也不要忘记给别人推荐这款游戏哦',
-        weight: 50
-      },
-      {
-        text: '雀魂Plus - 只有氪金获得的装扮和角色才可以让其他玩家查看到',
-        weight: 50
+        text: '雀魂Plus',
+        weight: 200
       },
       {
         text: '喵喵喵！ - 喵喵喵？喵！喵喵喵！喵~~',

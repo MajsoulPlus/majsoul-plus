@@ -46,7 +46,7 @@ const CONFIGS = {
       webSecurity: false,
       allowRunningInsecureContent: true
     },
-    title: '雀魂Plus - 扩展资源管理器',
+    title: '雀魂Plus',
     autoHideMenuBar: true,
     icon: getIcon(),
     maximizable: false,
