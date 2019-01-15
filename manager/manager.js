@@ -777,6 +777,9 @@ document.querySelectorAll('.left-pannel ul li')[0].click()
 /* 分页提供业务逻辑 End */
 
 /* Ping 业务逻辑 Start */
+// 所有主服务器
+const serversArray = []
+// 获取主服务器列表
 const getServersJson = () => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
@@ -849,26 +852,12 @@ const getServersJson = () => {
     )
     .then(
       result =>
-        new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest()
-          xhr.open(
-            'GET',
-            `https://${result.ip[0].url}?randv=${Math.random()
-              .toString()
-              .substring(2, 17)
-              .padStart(16, '0')}&service=ws-gateway&protocol=ws&ssl=true`
-          )
-          xhr.send()
-          xhr.addEventListener('readystatechange', () => {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-              resolve(JSON.parse(xhr.responseText))
-            } else if (
-              xhr.readyState === XMLHttpRequest.DONE &&
-              xhr.status !== 200
-            ) {
-              reject()
-            }
+        new Promise(reslove => {
+          Object.entries(result.ip[0].region_urls).forEach(kv => {
+            serversArray.push(kv)
           })
+          console.log('serversGot')
+          reslove()
         })
     )
 }
@@ -913,9 +902,108 @@ const refreshPing = serversJson => {
     }
   })
 }
-getServersJson().then(result => {
-  refreshPing(result)
-  setInterval(() => refreshPing(result), 5000)
+const getServerName = serverKey => {
+  switch (serverKey) {
+    case 'mainland':
+      return '中国大陆'
+    case 'hk':
+      return '中国香港'
+    case 'tw':
+      return '中国台湾'
+    case 'us':
+      return '美国'
+    case 'uk':
+      return '英国'
+    case 'jp':
+      return '日本'
+    case 'fr':
+      return '法国'
+    case 'kr':
+      return '韩国'
+    case 'sg':
+      return '新加坡'
+    case 'de':
+      return '德国'
+    case 'ru':
+      return '俄罗斯'
+  }
+  return serverKey
+}
+const serverTextDom = document.getElementById('serverText')
+const serverInfoDom = document.getElementById('serverInfo')
+const getChildServer = (serverKey, serverUrl) =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open(
+      'GET',
+      `${serverUrl}?randv=${Math.random()
+        .toString()
+        .substring(2, 17)
+        .padStart(16, '0')}&service=ws-gateway&protocol=ws&ssl=true`
+    )
+    xhr.send()
+    xhr.addEventListener('readystatechange', () => {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        resolve(JSON.parse(xhr.responseText))
+      } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
+        reject()
+      }
+    })
+  })
+let interval
+const reStartPing = () => {
+  console.log('reStartPing')
+  Promise.resolve(
+    (() => {
+      if (!localStorage.getItem('serverChoosed')) {
+        return serversArray[0]
+      } else {
+        const serverChoosed = localStorage.getItem('serverChoosed')
+        let returnFlag = false
+        serversArray.forEach((kv, index) => {
+          if (kv[0] === serverChoosed) {
+            serverInfoDom.dataset.serverIndex = index
+            returnFlag = kv
+          }
+        })
+        if (returnFlag) {
+          return returnFlag
+        }
+        return serversArray[0]
+      }
+    })()
+  )
+    .then(result => {
+      console.log(result)
+      serverTextDom.innerText = getServerName(result[0])
+      clearInterval(interval)
+      document.getElementById('pingInfo').className = 'offline'
+      document.getElementById('pingText').innerText = '--'
+      return getChildServer(...result)
+    })
+    .then(
+      result => {
+        refreshPing(result)
+        interval = setInterval(() => refreshPing(result), 5000)
+      },
+      reject => {}
+    )
+}
+serverInfoDom.addEventListener('click', event => {
+  if (serversArray.length === 0) {
+    return
+  }
+  let index = parseInt(serverInfoDom.dataset.serverIndex, 10) + 1
+  if (index >= serversArray.length) {
+    index = 0
+  }
+  serverInfoDom.dataset.serverIndex = index
+  localStorage.setItem('serverChoosed', serversArray[index][0])
+  reStartPing()
+})
+
+getServersJson().then(reStartPing, reject => {
+  serverTextDom.innerText = '加载失败'
 })
 /* Ping 业务逻辑 End */
 

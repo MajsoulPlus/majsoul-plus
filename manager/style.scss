@@ -488,8 +488,8 @@ h1 {
     & > #pingInfo {
       font-size: 14px;
       position: absolute;
-      line-height: 64px;
-      top: 0;
+      line-height: 14px;
+      top: 34px;
       left: 42px;
       color: var(--light-text);
       &::before {
@@ -499,8 +499,8 @@ h1 {
         content: ' ';
         width: 10px;
         height: 10px;
-        left: -18px;
-        top: 27px;
+        left: -24px;
+        top: -8px;
       }
       &.offline::before {
         background-color: var(--ping-offline);
@@ -514,6 +514,15 @@ h1 {
       &.orange::before {
         background-color: var(--ping-orange);
       }
+    }
+    & > #serverInfo {
+      font-size: 14px;
+      position: absolute;
+      line-height: 14px;
+      top: 16px;
+      left: 42px;
+      color: var(--light-text);
+      cursor: pointer;
     }
   }
 }
