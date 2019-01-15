@@ -11,6 +11,8 @@ const electron = require('electron')
 const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
 const { Menu, MenuItem } = electron
 
+electronApp.commandLine.appendSwitch('in-process-gpu')
+
 const sererHttps = https.createServer(
   {
     key: fs.readFileSync(path.join(__dirname, './certificate/key.pem')),
