@@ -47,9 +47,9 @@ electronApp.commandLine.appendSwitch('ignore-certificate-errors')
 electronApp.on('window-all-closed', () => {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
-  if (process.platform !== 'darwin') {
+  // if (process.platform !== 'darwin') {
     electronApp.quit()
-  }
+  // }
 })
 
 // 阻止证书验证
