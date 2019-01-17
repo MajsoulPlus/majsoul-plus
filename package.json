@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=development electron . --enable_logging",
     "pack": "npm run build",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
-    "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=icons/icon.ico",
+    "build-win32": "electron-packager . Majsoul Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=icons/icon.ico",
     "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=icons/icon.png",
     "build-darwin": "electron-packager . Majsoul_Plus --platform=darwin --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=icons/icon.icns",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "^4.0.1",
+    "electron": "^2.0.12",
     "electron-packager": "^13.0.1"
   }
 }
