@@ -83,6 +83,41 @@
           user-select: none;
   font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-button {
+  height: 0;
+  display: none;
+  background-color: transparent;
+}
+*::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+  padding-right: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  width: 8px;
+  border-radius: 4px;
+  min-height: 64px;
+  max-height: 128px;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0);
+  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
+  transition: background-color var(--animation-time) var(--ease-in-out);
+}
+*:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+*:hover::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+  -webkit-transition: background-color 0;
+  transition: background-color 0;
+}
+*:hover::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 0.2);
+  -webkit-transition: background-color 0;
+  transition: background-color 0;
+}
 
 button {
   outline: none !important;
@@ -207,41 +242,6 @@ h1 {
   top: 40px;
   overflow-y: auto;
   padding-left: 102px;
-}
-.main-context > section > div.info-cards::-webkit-scrollbar {
-  width: 8px;
-}
-.main-context > section > div.info-cards::-webkit-scrollbar-button {
-  height: 0;
-  display: none;
-  background-color: transparent;
-}
-.main-context > section > div.info-cards::-webkit-scrollbar-track-piece {
-  background-color: transparent;
-  padding-right: 8px;
-}
-.main-context > section > div.info-cards::-webkit-scrollbar-thumb {
-  width: 8px;
-  border-radius: 4px;
-  min-height: 64px;
-  max-height: 128px;
-  height: auto;
-  background-color: rgba(0, 0, 0, 0);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
-  transition: background-color var(--animation-time) var(--ease-in-out);
-}
-.main-context > section > div.info-cards:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.main-context > section > div.info-cards:hover::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.15);
-  -webkit-transition: background-color 0;
-  transition: background-color 0;
-}
-.main-context > section > div.info-cards:hover::-webkit-scrollbar-thumb:active {
-  background-color: rgba(0, 0, 0, 0.2);
-  -webkit-transition: background-color 0;
-  transition: background-color 0;
 }
 .main-context > section > div.info-cards > article {
   width: 400px;
@@ -398,8 +398,67 @@ h1 {
   display: none;
 }
 .main-context > section[data-name='settingPage'] {
-  padding-left: 102px;
-  padding-top: 16px;
+  padding: 40px 0 20px 102px;
+}
+.main-context > section[data-name='settingPage'] > .save-btn {
+  left: 102px;
+}
+.main-context > section[data-name='settingPage'] > .save-btn::before {
+  content: '';
+}
+.main-context > section[data-name='settingPage'] > .setting-innner {
+  height: 100%;
+  width: calc(100% - 16px);
+  overflow-y: auto;
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > h3 {
+  cursor: default;
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input {
+  display: none;
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox'] + label {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  line-height: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none !important;
+  display: block;
+  padding-left: 16px;
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox'] + label::before {
+  content: ' ';
+  display: inline-block;
+  width: 32px;
+  height: 16px;
+  border-radius: 8px;
+  position: relative;
+  top: 3px;
+  right: 12px;
+  background-color: var(--switch-disable-color);
+  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
+  transition: background-color var(--animation-time) var(--ease-in-out);
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox'] + label::after {
+  content: ' ';
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  position: relative;
+  left: -10px;
+  bottom: 16px;
+  background-color: var(--switch-ball-color);
+  -webkit-transition: left var(--animation-time) var(--ease-in-out);
+  transition: left var(--animation-time) var(--ease-in-out);
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox']:checked + label::before {
+  background-color: var(--switch-able-color);
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox']:checked + label::after {
+  left: calc(-12px - 2px + 20px);
 }
 .main-context > .left-pannel {
   height: var(--main-height);

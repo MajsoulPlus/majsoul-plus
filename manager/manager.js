@@ -1099,3 +1099,51 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
   )
 })
 /* 检查更新业务逻辑 End */
+
+/* 设置项业务逻辑 Start */
+const getKeyText = key => {
+  const lang = {
+    window: '窗口',
+    isKioskModeOn: '使用原生全屏幕模式(Kiosk)',
+    update: '更新',
+    prerelease: '获取浏览版(Pre-release)',
+    chromium: '核心（需要重启软件）',
+    isHardwareAccelerationDisable: '关闭硬件加速(Hardware Acceleration)'
+  }
+  return lang[key] ? lang[key] : false
+}
+const userConfig = require('../configs-user.json')
+const settingInner = document.getElementById('settingInner')
+settingInner.innerHTML = ''
+Object.entries(userConfig).forEach(([keyGroup, value]) => {
+  const groupName = getKeyText(keyGroup)
+  const h3 = document.createElement('h3')
+  h3.innerText = groupName
+  settingInner.append(h3)
+  Object.entries(value).forEach(([keyConfig, value], index) => {
+    const selectName = getKeyText(keyConfig)
+    const input = document.createElement('input')
+    input.type = 'checkbox'
+    const label = document.createElement('label')
+    input.id = 'config' + keyGroup + keyConfig + index
+    label.setAttribute('for', input.id)
+    label.innerText = selectName
+    input.checked = value
+    input.addEventListener('change', e => {
+      userConfig[keyGroup][keyConfig] = input.checked
+    })
+    settingInner.append(input)
+    settingInner.append(label)
+  })
+})
+const saveConfigsBtn = document.getElementById('saveConfigs')
+saveConfigsBtn.addEventListener('click', e => {
+  try {
+    fs.writeSync('../configs-user.json', JSON.stringify(userConfig))
+    alert('保存成功')
+  } catch (error) {
+    alert('保存失败\n' + error)
+  }
+})
+
+/* 设置项业务逻辑 End */

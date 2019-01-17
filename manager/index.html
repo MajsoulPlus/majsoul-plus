@@ -74,7 +74,23 @@
         <button id="editTool" class="big-btn edit-btn"></button>
         <div id="toolInfos" class="info-cards"></div>
       </section>
-      <section data-name="settingPage"></section>
+      <section data-name="settingPage">
+        <button id="saveConfigs" class="big-btn save-btn"></button>
+        <div id="settingInner" class="setting-innner">
+          <h3>窗口</h3>
+          <input
+            type="checkbox"
+            name="windowSettings1"
+            id="windowSettings1"
+          /><label for="windowSettings1">使用原生全屏幕模式(Kiosk)</label>
+          <h3>更新</h3>
+          <input
+            type="checkbox"
+            name="updateSettings1"
+            id="updateSettings1"
+          /><label for="updateSettings1">获取浏览版(Pre-release)</label>
+        </div>
+      </section>
       <div class="bottom-pannel">
         <span id="serverInfo" data-server-index="0"
           >服务器: <span id="serverText">加载中</span></span

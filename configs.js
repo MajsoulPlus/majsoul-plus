@@ -34,7 +34,8 @@ const CONFIGS = {
     },
     autoHideMenuBar: true,
     useContentSize: true,
-    icon: getIcon()
+    icon: getIcon(),
+    enableLargerThanScreen: true
   },
   MANAGER_WINDOW_CONFIG: {
     width: 1280, // + 16,

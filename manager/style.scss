@@ -89,6 +89,41 @@
   font-weight: 400;
   user-select: none;
   font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-button {
+    height: 0;
+    display: none;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    padding-right: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    width: 8px;
+    border-radius: 4px;
+    min-height: 64px;
+    max-height: 128px;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color var(--animation-time) var(--ease-in-out);
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(0, 0, 0, 0.15);
+      transition: background-color 0;
+    }
+    &::-webkit-scrollbar-thumb:active {
+      background-color: rgba(0, 0, 0, 0.2);
+      transition: background-color 0;
+    }
+  }
 }
 button {
   outline: none !important;
@@ -211,40 +246,6 @@ h1 {
       top: 40px;
       overflow-y: auto;
       padding-left: 102px;
-      &::-webkit-scrollbar {
-        width: 8px;
-      }
-      &::-webkit-scrollbar-button {
-        height: 0;
-        display: none;
-        background-color: transparent;
-      }
-      &::-webkit-scrollbar-track-piece {
-        background-color: transparent;
-        padding-right: 8px;
-      }
-      &::-webkit-scrollbar-thumb {
-        width: 8px;
-        border-radius: 4px;
-        min-height: 64px;
-        max-height: 128px;
-        height: auto;
-        background-color: rgba(0, 0, 0, 0);
-        transition: background-color var(--animation-time) var(--ease-in-out);
-      }
-      &:hover {
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-        &::-webkit-scrollbar-thumb:hover {
-          background-color: rgba(0, 0, 0, 0.15);
-          transition: background-color 0;
-        }
-        &::-webkit-scrollbar-thumb:active {
-          background-color: rgba(0, 0, 0, 0.2);
-          transition: background-color 0;
-        }
-      }
 
       & > article {
         width: 400px;
@@ -403,8 +404,69 @@ h1 {
     }
 
     &[data-name='settingPage'] {
-      padding-left: 102px;
-      padding-top: 16px;
+      padding: 40px 0 20px 102px;
+
+      & > .save-btn {
+        left: 102px;
+        &::before {
+          content: '';
+        }
+      }
+      & > .setting-innner {
+        height: 100%;
+        width: calc(100% - 16px);
+        overflow-y: auto;
+
+        & > h3 {
+          cursor: default;
+        }
+        & > input {
+          display: none;
+        }
+        & > input[type='checkbox'] + label {
+          width: max-content;
+          line-height: 20px;
+          font-size: 14px;
+          cursor: pointer;
+          outline: none !important;
+          display: block;
+          padding-left: 16px;
+          &::before {
+            content: ' ';
+            display: inline-block;
+            width: 32px;
+            height: 16px;
+            border-radius: 8px;
+            position: relative;
+            top: 3px;
+            right: 12px;
+            // bottom: 16px;
+            background-color: var(--switch-disable-color);
+            transition: background-color var(--animation-time)
+              var(--ease-in-out);
+          }
+          &::after {
+            content: ' ';
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
+            position: relative;
+            left: -10px;
+            bottom: 16px;
+            background-color: var(--switch-ball-color);
+            transition: left var(--animation-time) var(--ease-in-out);
+          }
+        }
+        & > input[type='checkbox']:checked + label {
+          &::before {
+            background-color: var(--switch-able-color);
+          }
+          &::after {
+            left: calc(-12px - 2px + 20px);
+          }
+        }
+      }
     }
   }
   & > .left-pannel {

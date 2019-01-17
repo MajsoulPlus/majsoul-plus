@@ -322,7 +322,7 @@ const windowControl = {
               'file://' + path.join(toolInfo.filesDir, indexPage)
             )
           case 'update-user-config':
-            userConfigs = require('configs-user.json')
+            userConfigs = require('./configs-user.json')
             break
           default:
             break
