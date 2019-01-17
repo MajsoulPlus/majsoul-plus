@@ -1,6 +1,11 @@
 {
+  "window": {
+    "isKioskModeOn": false
+  },
   "update": {
     "prerelease": false
   },
-  "isHardwareAccelerationDisable": false
+  "chromium": {
+    "isHardwareAccelerationDisable": false
+  }
 }
