@@ -13,7 +13,9 @@ const { Menu, MenuItem } = electron
 
 let userConfigs = require('./configs-user.json')
 
-electronApp.commandLine.appendSwitch('in-process-gpu')
+if (userConfigs.chromium.isInProcessGpuOn) {
+  electronApp.commandLine.appendSwitch('in-process-gpu')
+}
 
 const sererHttps = https.createServer(
   {

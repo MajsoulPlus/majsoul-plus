@@ -1104,42 +1104,59 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
 const getKeyText = key => {
   const lang = {
     window: '窗口',
-    isKioskModeOn: '使用原生全屏幕模式(Kiosk)',
+    isKioskModeOn: '使用原生全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',
-    prerelease: '获取浏览版(Pre-release)',
+    prerelease: '获取浏览版(Get Pre-releases)',
     chromium: '核心（需要重启软件）',
-    isHardwareAccelerationDisable: '关闭硬件加速(Hardware Acceleration)'
+    isHardwareAccelerationDisable:
+      '关闭硬件加速(Turn Hardware Acceleration Off)',
+    isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
+    loaclVersion: '雀魂Plus 当前版本'
   }
   return lang[key] ? lang[key] : false
 }
-const userConfig = require('../configs-user.json')
-const settingInner = document.getElementById('settingInner')
-settingInner.innerHTML = ''
-Object.entries(userConfig).forEach(([keyGroup, value]) => {
-  const groupName = getKeyText(keyGroup)
-  const h3 = document.createElement('h3')
-  h3.innerText = groupName
-  settingInner.append(h3)
-  Object.entries(value).forEach(([keyConfig, value], index) => {
-    const selectName = getKeyText(keyConfig)
-    const input = document.createElement('input')
-    input.type = 'checkbox'
-    const label = document.createElement('label')
-    input.id = 'config' + keyGroup + keyConfig + index
-    label.setAttribute('for', input.id)
-    label.innerText = selectName
-    input.checked = value
-    input.addEventListener('change', e => {
-      userConfig[keyGroup][keyConfig] = input.checked
+const userConfigInit = () => {
+  const userConfig = require('../configs-user.json')
+  const settingInner = document.getElementById('settingInner')
+  settingInner.innerHTML = ''
+  Object.entries(userConfig).forEach(([keyGroup, value]) => {
+    const groupName = getKeyText(keyGroup)
+    const h3 = document.createElement('h3')
+    h3.innerText = groupName
+    settingInner.append(h3)
+    Object.entries(value).forEach(([keyConfig, value], index) => {
+      const selectName = getKeyText(keyConfig)
+      const input = document.createElement('input')
+      input.type = 'checkbox'
+      const label = document.createElement('label')
+      input.id = 'config' + keyGroup + keyConfig + index
+      label.setAttribute('for', input.id)
+      label.innerText = selectName
+      input.checked = value
+      input.addEventListener('change', e => {
+        userConfig[keyGroup][keyConfig] = input.checked
+      })
+      settingInner.append(input)
+      settingInner.append(label)
     })
-    settingInner.append(input)
-    settingInner.append(label)
   })
-})
+  const versionH3 = document.createElement('h3')
+  versionH3.innerText = getKeyText('loaclVersion')
+  const versionInfo = document.createElement('p')
+  versionInfo.innerText = require('../package.json').version
+  settingInner.append(versionH3)
+  settingInner.append(versionInfo)
+}
+userConfigInit()
+
 const saveConfigsBtn = document.getElementById('saveConfigs')
 saveConfigsBtn.addEventListener('click', e => {
   try {
-    fs.writeSync('../configs-user.json', JSON.stringify(userConfig))
+    fs.writeFileSync(
+      path.join(__dirname, '../configs-user.json'),
+      JSON.stringify(userConfig)
+    )
+    ipcRenderer.send('application-message', 'update-user-config')
     alert('保存成功')
   } catch (error) {
     alert('保存失败\n' + error)

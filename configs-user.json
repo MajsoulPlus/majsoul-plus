@@ -6,6 +6,7 @@
     "prerelease": false
   },
   "chromium": {
-    "isHardwareAccelerationDisable": false
+    "isHardwareAccelerationDisable": false,
+    "isInProcessGpuOn": true
   }
 }

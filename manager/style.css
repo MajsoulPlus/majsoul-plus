@@ -413,6 +413,20 @@ h1 {
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > h3 {
   cursor: default;
+  font-size: 18px;
+  padding-top: 8px;
+  line-height: 22px;
+}
+.main-context > section[data-name='settingPage'] > .setting-innner > p {
+  height: 20px;
+  margin-top: 4px;
+  cursor: default;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  line-height: 20px;
+  font-size: 14px;
+  padding-left: 16px;
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input {
   display: none;
@@ -421,6 +435,8 @@ h1 {
   width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
+  height: 20px;
+  margin-top: 4px;
   line-height: 20px;
   font-size: 14px;
   cursor: pointer;

@@ -419,12 +419,26 @@ h1 {
 
         & > h3 {
           cursor: default;
+          font-size: 18px;
+          padding-top: 8px;
+          line-height: 22px;
+        }
+        & > p {
+          height: 20px;
+          margin-top: 4px;
+          cursor: default;
+          width: max-content;
+          line-height: 20px;
+          font-size: 14px;
+          padding-left: 16px;
         }
         & > input {
           display: none;
         }
         & > input[type='checkbox'] + label {
           width: max-content;
+          height: 20px;
+          margin-top: 4px;
           line-height: 20px;
           font-size: 14px;
           cursor: pointer;
