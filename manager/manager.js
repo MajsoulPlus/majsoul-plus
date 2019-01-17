@@ -339,7 +339,9 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onexportFunction = event => {
       const zip = new AdmZip()
-      const tempZipName = `${executeInfo.name}-${executeInfo.author}.mspe`
+      const tempZipName = `${executeInfo.name}-${
+        executeInfo.author ? executeInfo.author : '无名氏'
+      }.mspe`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(
         executeInfo.filesDir,
@@ -421,7 +423,9 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onexportFunction = event => {
       const zip = new AdmZip()
-      const tempZipName = `${modInfo.name}-${modInfo.author}.mspm`
+      const tempZipName = `${modInfo.name}-${
+        modInfo.author ? modInfo.author : '无名氏'
+      }.mspm`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(modInfo.filesDir, path.basename(modInfo.filesDir))
       zip.writeZip(tempZipPathName, true)
@@ -472,7 +476,9 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onexportFunction = event => {
       const zip = new AdmZip()
-      const tempZipName = `${toolInfo.name}-${toolInfo.author}.mspt`
+      const tempZipName = `${toolInfo.name}-${
+        toolInfo.author ? toolInfo.author : '无名氏'
+      }.mspt`
       const tempZipPathName = path.join(os.tmpdir(), tempZipName)
       zip.addLocalFolder(toolInfo.filesDir, path.basename(toolInfo.filesDir))
       zip.writeZip(tempZipPathName, true)
