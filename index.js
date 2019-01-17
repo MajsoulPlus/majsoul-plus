@@ -11,6 +11,8 @@ const electron = require('electron')
 const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
 const { Menu, MenuItem } = electron
 
+let userConfigs = require('./configs-user.json')
+
 electronApp.commandLine.appendSwitch('in-process-gpu')
 
 const sererHttps = https.createServer(
@@ -24,8 +26,7 @@ const sererHttps = https.createServer(
 if (
   (() => {
     try {
-      const userConfigs = require('configs-user.json')
-      if (userConfigs['isHardwareAccelerationDisable'] === true) {
+      if (userConfigs.chromium['isHardwareAccelerationDisable'] === true) {
         return true
       }
     } catch (err) {
@@ -48,7 +49,7 @@ electronApp.on('window-all-closed', () => {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
   // if (process.platform !== 'darwin') {
-    electronApp.quit()
+  electronApp.quit()
   // }
 })
 
@@ -215,6 +216,21 @@ const windowControl = {
     const gameWindowMenu = new Menu()
     gameWindowMenu.append(
       new MenuItem({
+        label: '程序',
+        role: 'services',
+        submenu: [
+          new MenuItem({
+            label: '退出游戏',
+            accelerator: 'Alt+F4',
+            click: (menuItem, browserWindow, event) => {
+              browserWindow.close()
+            }
+          })
+        ]
+      })
+    )
+    gameWindowMenu.append(
+      new MenuItem({
         label: '窗口',
         role: 'window',
         submenu: [
@@ -222,7 +238,13 @@ const windowControl = {
             label: '全屏',
             accelerator: 'F11',
             click: (menuItem, browserWindow, event) => {
-              browserWindow.setFullScreen(!browserWindow.isFullScreen())
+              console.log(browserWindow.isFullScreen())
+              console.log(browserWindow.isKiosk())
+              if (!userConfigs.window.isKioskModeOn) {
+                browserWindow.setFullScreen(!browserWindow.isFullScreen())
+              } else {
+                browserWindow.setKiosk(!browserWindow.isKiosk())
+              }
             }
           }),
           new MenuItem({
@@ -231,7 +253,11 @@ const windowControl = {
             enabled: true,
             visible: false,
             click: (menuItem, browserWindow, event) => {
-              browserWindow.setFullScreen(!browserWindow.isFullScreen())
+              if (!userConfigs.window.isKioskModeOn) {
+                browserWindow.setFullScreen(!browserWindow.isFullScreen())
+              } else {
+                browserWindow.setKiosk(!browserWindow.isKiosk())
+              }
             }
           }),
           new MenuItem({
@@ -241,6 +267,9 @@ const windowControl = {
               if (browserWindow.isFullScreen()) {
                 browserWindow.setFullScreen(false)
                 return
+              }
+              if (browserWindow.isKiosk()) {
+                browserWindow.setKiosk(false)
               }
             }
           })
@@ -292,6 +321,9 @@ const windowControl = {
             toolWindow.loadURL(
               'file://' + path.join(toolInfo.filesDir, indexPage)
             )
+          case 'update-user-config':
+            userConfigs = require('configs-user.json')
+            break
           default:
             break
         }
