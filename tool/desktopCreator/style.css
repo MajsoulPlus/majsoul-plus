@@ -38,6 +38,9 @@
   padding: 0;
   box-sizing: border-box;
   font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  outline: none;
+  font-size: 14px;
+  font-weight: 300;
 }
 body {
   height: 360px;
@@ -54,4 +57,33 @@ body {
   background-color: black;
   background-image: url('./desktopBorder.png');
   background-size: cover;
+}
+#selectImg {
+  display: none;
+}
+input[type='text'],
+textarea {
+  width: 180px;
+}
+#description {
+  resize: none;
+}
+#selectImgLabel {
+  margin-top: 8px;
+}
+#selectImgLabel,
+#saveAndInstall {
+  padding: 6px 12px;
+  background-color: var(--main-color);
+  cursor: pointer;
+  border: 0;
+  color: var(--white-text);
+  font-size: 14px;
+  line-height: 14px;
+  display: inline-block;
+  font-weight: 300;
+}
+#selectImgLabel:hover,
+#saveAndInstall:hover {
+  background-color: var(--main-dark-color);
 }

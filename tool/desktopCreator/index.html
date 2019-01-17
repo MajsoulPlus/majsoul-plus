@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>雀魂Plus-桌布制作工具</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <input id="selectImg" type="file" accept="image/*" value="选择图像" /><label
+      for="selectImg" id="selectImgLabel"
+      >选择图像</label
+    ><br />
+
     <label for="darknessRange"
       >叠加黑色<span id="darknessRangeText">0.2</span></label
-    >
+    ><br />
     <input
       id="darknessRange"
       type="range"
@@ -20,12 +25,10 @@
       max="100"
     /><br />
 
-    <input id="selectImg" type="file" accept="image/*" value="选择图像" /><br />
-
     <input type="text" placeholder="文件夹名称" id="dirName" /><br />
     <input type="text" placeholder="Mod名称" id="name" /><br />
     <input type="text" placeholder="作者" id="author" /><br />
-    <textarea type="text" placeholder="简介" id="description"></textarea> <br />
+    <textarea placeholder="简介" id="description" rows="4"></textarea> <br />
 
     <input id="saveAndInstall" type="button" value="保存并安装" /><br />
 
