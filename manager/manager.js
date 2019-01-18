@@ -6,6 +6,8 @@ const dialog = electronRemote.dialog
 const AdmZip = require('adm-zip')
 const os = require('os')
 
+const app = electronRemote.app
+
 // 注入脚本根文件根目录
 const executeRootDir = path.join(__dirname, '../', configs.EXECUTE_DIR)
 const executeSettingsFile = path.join(executeRootDir, './active.json')
@@ -1091,11 +1093,10 @@ const isLater = (taga, tagb) => {
 }
 const checkUpdate = userConfig => {
   return new Promise((resolve, reject) => {
-    const locakPackage = require('../package.json')
     /**
      * @type {string}
      */
-    const versionLocal = locakPackage.version
+    const versionLocal = 'v' + app.getVersion()
 
     const xhr = new XMLHttpRequest()
     if (
@@ -1126,7 +1127,7 @@ const checkUpdate = userConfig => {
             version: result.tag_name,
             time: result.published_at,
             body: result.body,
-            local: 'v' + locakPackage.version,
+            local: app.getVersion(),
             html_url: result.html_url
           })
         } else {
@@ -1237,7 +1238,7 @@ const userConfigInit = () => {
   const versionH3 = document.createElement('h3')
   versionH3.innerText = getKeyText('loaclVersion')
   const versionInfo = document.createElement('p')
-  versionInfo.innerText = require('../package.json').version
+  versionInfos.innerText = app.getVersion()
   settingInner.append(versionH3)
   settingInner.append(versionInfo)
 }
