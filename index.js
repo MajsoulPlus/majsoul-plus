@@ -170,7 +170,25 @@ const windowControl = {
     })
   },
   initManagerWindow: managerWindowConfig => {
-    const managerWindow = new BrowserWindow(managerWindowConfig)
+    const config = {
+      ...managerWindowConfig
+    }
+    // hack macOS config
+    if (process.platform === 'darwin') {
+      config.frame = true
+      config.titleBarStyle = 'hidden'
+    }
+
+    config.width *= userConfigs.window.zoomFactor
+    config.height *= userConfigs.window.zoomFactor
+
+    const managerWindow = new BrowserWindow(config)
+
+    managerWindow.once('ready-to-show', () => {
+      managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor)
+      managerWindow.show()
+    })
+
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
@@ -324,7 +342,19 @@ const windowControl = {
               'file://' + path.join(toolInfo.filesDir, indexPage)
             )
           case 'update-user-config':
-            userConfigs = require('./configs-user.json')
+            userConfigs = JSON.parse(
+              fs.readFileSync(path.join(__dirname, './configs-user.json'))
+            )
+
+            windowControl.windowMap['manager'].setContentSize(
+              configs.MANAGER_WINDOW_CONFIG.width *
+                userConfigs.window.zoomFactor,
+              configs.MANAGER_WINDOW_CONFIG.height *
+                userConfigs.window.zoomFactor
+            )
+            windowControl.windowMap['manager'].webContents.setZoomFactor(
+              userConfigs.window.zoomFactor
+            )
             break
           default:
             break
@@ -338,13 +368,7 @@ const windowControl = {
       Menu.setApplicationMenu(null)
       windowControl.addAppListener()
 
-      // hack macOS config
-      if (process.platform === 'darwin') {
-        configs.MANAGER_WINDOW_CONFIG.frame = true
-        configs.MANAGER_WINDOW_CONFIG.titleBarStyle = 'hidden'
-      }
-
-      windowControl.initManagerWindow(configs.MANAGER_WINDOW_CONFIG)
+      windowControl.initManagerWindow({ ...configs.MANAGER_WINDOW_CONFIG })
     })
   }
 }

@@ -51,7 +51,8 @@ const CONFIGS = {
     autoHideMenuBar: true,
     icon: getIcon(),
     maximizable: false,
-    fullscreenable: false
+    fullscreenable: false,
+    show: false
   },
   TOOL_WINDOW_CONFIG: {
     width: 960, // + 16,

@@ -1,10 +1,10 @@
 :root {
   --title-color: #e280ae;
-  --title-text: #fff;
+  --title-text: #ffffff;
 
   --main-color: #e280ae;
   --main-dark-color: #cc6699;
-  --white-text: #fff;
+  --white-text: #ffffff;
 
   --switch-able-color: #e280ae;
   --switch-disable-color: #b1b1b1;
@@ -27,16 +27,16 @@
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   --animation-time: 100ms;
 
-  --ping-red: #d33;
-  --ping-orange: #f80;
-  --ping-green: #3d3;
-  --ping-offline: #888;
+  --ping-red: #dd3333;
+  --ping-orange: #ff8800;
+  --ping-green: #33dd33;
+  --ping-offline: #888888;
 
-  --mac-close-btn: #f44f;
-  --mac-close-btn-border: #d33f;
+  --mac-close-btn: #ff4444;
+  --mac-close-btn-border: #dd3333;
 
-  --mac-close-btn-hover: #f44f;
-  --mac-close-btn-hover-border: #d33f;
+  --mac-close-btn-hover: #ff4444;
+  --mac-close-btn-hover-border: #dd3333;
 
   --main-height: 628px;
 }
@@ -89,7 +89,7 @@
   font-weight: 400;
   user-select: none;
   font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+  zoom: 1;
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -164,7 +164,7 @@ h1 {
     line-height: 28px;
   }
   &:hover::before {
-    background-color: #f12f;
+    background-color: #ff1122;
     color: var(--white-text);
   }
   &.darwin {
@@ -433,7 +433,33 @@ h1 {
           padding-left: 16px;
         }
         & > input {
+          outline: none !important;
+        }
+        & > input[type='number'] {
+          height: 20px;
+          margin-top: 4px;
+          margin-left: 2px;
+          line-height: 20px;
+          font-size: 14px;
+          width: 36px;
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+          }
+        }
+        & > input[type='checkbox'] {
           display: none;
+        }
+        & > input[type='number'] + label {
+          width: max-content;
+          height: 20px;
+          margin-top: 4px;
+          line-height: 20px;
+          font-size: 14px;
+          cursor: pointer;
+          outline: none !important;
+          padding-left: 10px;
         }
         & > input[type='checkbox'] + label {
           width: max-content;

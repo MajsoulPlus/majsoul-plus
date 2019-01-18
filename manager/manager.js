@@ -1174,10 +1174,11 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
 const getKeyText = key => {
   const lang = {
     window: '窗口',
+    zoomFactor: '资源管理器缩放(Zoom Factor)',
     isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',
     prerelease: '获取浏览版(Get Pre-releases)',
-    chromium: '核心（需要重启软件）',
+    chromium: '核心（需重启软件）',
     isHardwareAccelerationDisable:
       '关闭硬件加速(Turn Hardware Acceleration Off)',
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
@@ -1195,7 +1196,7 @@ const userConfigInit = () => {
     settingInner.append(h3)
     Object.entries(value).forEach(([keyConfig, value], index) => {
       switch (typeof value) {
-        case 'boolean':
+        case 'boolean': {
           const selectName = getKeyText(keyConfig)
           const input = document.createElement('input')
           input.type = 'checkbox'
@@ -1209,6 +1210,24 @@ const userConfigInit = () => {
           })
           settingInner.append(input)
           settingInner.append(label)
+          break
+        }
+        case 'number':
+          {
+            const inputName = getKeyText(keyConfig)
+            const input = document.createElement('input')
+            input.type = 'number'
+            const label = document.createElement('label')
+            input.id = 'config' + keyGroup + keyConfig + index
+            label.setAttribute('for', input.id)
+            label.innerText = inputName
+            input.value = value
+            input.addEventListener('change', e => {
+              userConfig[keyGroup][keyConfig] = parseFloat(input.value)
+            })
+            settingInner.append(input)
+            settingInner.append(label)
+          }
           break
         default:
           break
