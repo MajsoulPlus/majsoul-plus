@@ -17,6 +17,8 @@ const modSettingsFile = path.join(modRootDir, './active.json')
 // 工具根目录
 const toolsRootDir = path.join(__dirname, '../', configs.TOOLS_DIR)
 
+const userConfig = require('../configs-user.json')
+
 /**
  * 同步删除文件夹
  * @param {string} dir 要删除的目录
@@ -1014,55 +1016,123 @@ getServersJson().then(reStartPing, reject => {
 /* Ping 业务逻辑 End */
 
 /* 检查更新业务逻辑 Start */
+/**
+ * 判断A标签是否比B标签较新
+ * @param {string} taga A标签
+ * @param {string} tagb B标签
+ */
+const isLater = (taga, tagb) => {
+  let tagaArr = taga.substring(1).split('-')
+  let tagbArr = tagb.substring(1).split('-')
+  let tagaDev = false
+  let tagbDev = false
+  if (tagaArr.length > 1) {
+    tagaDev = true
+  }
+  if (tagbArr.length > 1) {
+    tagbDev = true
+  }
+  let tagaMain = tagaArr[0].split('.')
+  let tagbMain = tagbArr[0].split('.')
+
+  let laterFlag = undefined
+  for (let i = 0; i < 3; i++) {
+    if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
+      laterFlag = true
+      break
+    } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
+      laterFlag = false
+      break
+    }
+  }
+
+  if (typeof laterFlag === 'boolean') {
+    return laterFlag
+  }
+  if (laterFlag === undefined) {
+    if (tagbDev && !tagaDev) {
+      return true
+    } else if (tagaDev && !tagbDev) {
+      return false
+    } else if (tagaDev && tagbDev) {
+      const tagaDevArr = tagaArr[1].split('.')
+      const tagbDevArr = tagbArr[1].split('.')
+      const devStrToNum = devStr => {
+        switch (devStr) {
+          case 'alpha':
+            return 1
+          case 'beta':
+            return 2
+          case 'rc':
+            return 3
+          default:
+            return 0
+        }
+      }
+      tagaDevArr[0] = devStrToNum(tagaDevArr[0])
+      tagbDevArr[0] = devStrToNum(tagbDevArr[0])
+      for (let i = 0; i < 2; i++) {
+        if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
+          laterFlag = true
+          break
+        } else if (parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)) {
+          laterFlag = false
+          break
+        }
+      }
+      if (laterFlag === undefined) {
+        return false
+      }
+      return laterFlag
+    } else {
+      return false
+    }
+  }
+}
 const checkUpdate = userConfig => {
   return new Promise((resolve, reject) => {
     const locakPackage = require('../package.json')
     /**
-     * @type {Array<>}
+     * @type {string}
      */
-    const versionLocal = locakPackage.version.split('.')
-    for (let i in versionLocal) {
-      versionLocal[i] = parseInt(versionLocal[i], 10)
-    }
+    const versionLocal = locakPackage.version
 
     const xhr = new XMLHttpRequest()
-    xhr.open(
-      'GET',
-      `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest`
-    )
+    if (
+      // 判断是否接受浏览版
+      !userConfig.prerelease
+    ) {
+      xhr.open(
+        'GET',
+        `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest`
+      )
+    } else {
+      xhr.open(
+        'GET',
+        `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases`
+      )
+    }
     xhr.send()
     xhr.addEventListener('readystatechange', () => {
       if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        const result = JSON.parse(xhr.responseText)
-        if (
-          // 如果不接受预览版，则跳出
-          !(
-            result.prerelease === userConfig.prerelease ||
-            result.prerelease === false
-          )
-        ) {
+        let result = JSON.parse(xhr.responseText)
+        if (userConfig.prerelease) {
+          result = result[0]
+        }
+        // 远程版本号
+        const versionRemote = result.tag_name
+        if (isLater(versionRemote, versionLocal)) {
+          resolve({
+            version: result.tag_name,
+            time: result.published_at,
+            body: result.body,
+            local: 'v' + locakPackage.version,
+            html_url: result.html_url
+          })
+        } else {
           reject()
           return
         }
-        // 远程版本号
-        const versionRemote = result.tag_name.split('.')
-        versionRemote[0] = versionRemote[0].substring(1)
-        for (let i in versionRemote) {
-          versionRemote[i] = parseInt(versionRemote[i], 10)
-          if (versionRemote[i] > versionLocal[i]) {
-            resolve({
-              version: result.tag_name,
-              time: result.published_at,
-              body: result.body,
-              local: 'v' + locakPackage.version,
-              html_url: result.html_url
-            })
-          } else if (versionRemote[i] < versionLocal[i]) {
-            reject()
-            return
-          }
-        }
-        reject()
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
         reject()
       }
@@ -1116,7 +1186,6 @@ const getKeyText = key => {
   return lang[key] ? lang[key] : false
 }
 const userConfigInit = () => {
-  const userConfig = require('../configs-user.json')
   const settingInner = document.getElementById('settingInner')
   settingInner.innerHTML = ''
   Object.entries(userConfig).forEach(([keyGroup, value]) => {
@@ -1125,19 +1194,25 @@ const userConfigInit = () => {
     h3.innerText = groupName
     settingInner.append(h3)
     Object.entries(value).forEach(([keyConfig, value], index) => {
-      const selectName = getKeyText(keyConfig)
-      const input = document.createElement('input')
-      input.type = 'checkbox'
-      const label = document.createElement('label')
-      input.id = 'config' + keyGroup + keyConfig + index
-      label.setAttribute('for', input.id)
-      label.innerText = selectName
-      input.checked = value
-      input.addEventListener('change', e => {
-        userConfig[keyGroup][keyConfig] = input.checked
-      })
-      settingInner.append(input)
-      settingInner.append(label)
+      switch (typeof value) {
+        case 'boolean':
+          const selectName = getKeyText(keyConfig)
+          const input = document.createElement('input')
+          input.type = 'checkbox'
+          const label = document.createElement('label')
+          input.id = 'config' + keyGroup + keyConfig + index
+          label.setAttribute('for', input.id)
+          label.innerText = selectName
+          input.checked = value
+          input.addEventListener('change', e => {
+            userConfig[keyGroup][keyConfig] = input.checked
+          })
+          settingInner.append(input)
+          settingInner.append(label)
+          break
+        default:
+          break
+      }
     })
   })
   const versionH3 = document.createElement('h3')
