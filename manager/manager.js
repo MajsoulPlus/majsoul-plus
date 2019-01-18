@@ -56,7 +56,7 @@ let executeLaunched = (() => {
   try {
     return JSON.parse(fs.readFileSync(executeSettingsFile).toString('utf-8'))
   } catch (error) {
-    console.warn(error)
+    // console.warn(error)
     return []
   }
 })()
@@ -67,7 +67,7 @@ let modLaunched = (() => {
   try {
     return JSON.parse(fs.readFileSync(modSettingsFile).toString('utf-8'))
   } catch (error) {
-    console.warn(error)
+    // console.warn(error)
     return []
   }
 })()
@@ -85,7 +85,7 @@ let modsWindow
 /**
  * @type {Array<>}
  */
-let toolsWindow
+// let toolsWindow
 
 const infoCardIdMap = {}
 /**
@@ -309,7 +309,7 @@ const reloadDOM = (executes, mods, tools) => {
     element => `${element.name}|${element.author}`
   )
   executeCards = []
-  executes.forEach((executeInfo, index) => {
+  executes.forEach(executeInfo => {
     const keyString = `${executeInfo.name}|${executeInfo.author}`
 
     const infoCard = new InfoCard(executeInfo)
@@ -323,7 +323,7 @@ const reloadDOM = (executes, mods, tools) => {
       infoCard.checked = false
     }
 
-    const onchangeFunction = event => {
+    const onchangeFunction = () => {
       if (infoCard.checked) {
         if (executeLaunchedList.includes(keyString)) {
           return
@@ -341,7 +341,7 @@ const reloadDOM = (executes, mods, tools) => {
         }
       }
     }
-    const onexportFunction = event => {
+    const onexportFunction = () => {
       const zip = new AdmZip()
       const tempZipName = `${executeInfo.name}-${
         executeInfo.author ? executeInfo.author : '无名氏'
@@ -376,7 +376,7 @@ const reloadDOM = (executes, mods, tools) => {
         })
       }
     }
-    const onremoveFunction = event => {
+    const onremoveFunction = () => {
       infoCard.DOM.remove()
       removeDir(infoCard.infos.filesDir)
       refreshFunction()
@@ -393,7 +393,7 @@ const reloadDOM = (executes, mods, tools) => {
     element => `${element.name}|${element.author}`
   )
   modCards = []
-  mods.forEach((modInfo, index) => {
+  mods.forEach(modInfo => {
     const keyString = `${modInfo.name}|${modInfo.author}`
 
     const infoCard = new InfoCard(modInfo)
@@ -407,7 +407,7 @@ const reloadDOM = (executes, mods, tools) => {
       infoCard.checked = false
     }
 
-    const onchangeFunction = event => {
+    const onchangeFunction = () => {
       if (infoCard.checked) {
         if (modLaunchedList.includes(keyString)) {
           return
@@ -425,7 +425,7 @@ const reloadDOM = (executes, mods, tools) => {
         }
       }
     }
-    const onexportFunction = event => {
+    const onexportFunction = () => {
       const zip = new AdmZip()
       const tempZipName = `${modInfo.name}-${
         modInfo.author ? modInfo.author : '无名氏'
@@ -457,7 +457,7 @@ const reloadDOM = (executes, mods, tools) => {
         })
       }
     }
-    const onremoveFunction = event => {
+    const onremoveFunction = () => {
       infoCard.DOM.remove()
       removeDir(infoCard.infos.filesDir)
       refreshFunction()
@@ -471,14 +471,14 @@ const reloadDOM = (executes, mods, tools) => {
 
   // Tool
   toolCards = []
-  tools.forEach((toolInfo, index) => {
+  tools.forEach(toolInfo => {
     const infoCard = new InfoCard(toolInfo, false, true)
     toolCards.push(infoCard)
 
-    const onClickFunction = event => {
+    const onClickFunction = () => {
       ipcRenderer.send('application-message', 'start-tool', toolInfo)
     }
-    const onexportFunction = event => {
+    const onexportFunction = () => {
       const zip = new AdmZip()
       const tempZipName = `${toolInfo.name}-${
         toolInfo.author ? toolInfo.author : '无名氏'
@@ -510,7 +510,7 @@ const reloadDOM = (executes, mods, tools) => {
         })
       }
     }
-    const onremoveFunction = event => {
+    const onremoveFunction = () => {
       infoCard.DOM.remove()
       removeDir(infoCard.infos.filesDir)
       refreshFunction()
@@ -525,7 +525,7 @@ const reloadDOM = (executes, mods, tools) => {
 
 // 安装模组 按钮
 const installMod = document.getElementById('installMod')
-installMod.addEventListener('click', event => {
+installMod.addEventListener('click', () => {
   const userChosenPath = dialog.showOpenDialog({
     title: '选取Mod资源包……',
     filters: [
@@ -556,7 +556,7 @@ installMod.addEventListener('click', event => {
 
 // 安装插件 按钮
 const installExecute = document.getElementById('installExecute')
-installExecute.addEventListener('click', event => {
+installExecute.addEventListener('click', () => {
   const userChosenPath = dialog.showOpenDialog({
     title: '选取插件资源包……',
     filters: [
@@ -587,7 +587,7 @@ installExecute.addEventListener('click', event => {
 
 // 安装工具 按钮
 const installTool = document.getElementById('installTool')
-installTool.addEventListener('click', event => {
+installTool.addEventListener('click', () => {
   const userChosenPath = dialog.showOpenDialog({
     title: '选取工具资源包……',
     filters: [
@@ -622,21 +622,21 @@ let modsEditFlag = false
 let toolsEditFlag = false
 
 const editMod = document.getElementById('editMod')
-editMod.addEventListener('click', event => {
+editMod.addEventListener('click', () => {
   modsEditFlag = !modsEditFlag
   modCards.forEach(card => {
     card.edit = modsEditFlag
   })
 })
 const editExecute = document.getElementById('editExecute')
-editExecute.addEventListener('click', event => {
+editExecute.addEventListener('click', () => {
   executesEditFlag = !executesEditFlag
   executeCards.forEach(card => {
     card.edit = executesEditFlag
   })
 })
 const editTool = document.getElementById('editTool')
-editTool.addEventListener('click', event => {
+editTool.addEventListener('click', () => {
   toolsEditFlag = !toolsEditFlag
   toolCards.forEach(card => {
     card.edit = toolsEditFlag
@@ -644,7 +644,7 @@ editTool.addEventListener('click', event => {
 })
 
 // 刷新事件
-refreshFunction = event => {
+refreshFunction = () => {
   // 清除编辑状态
   executesEditFlag = false
   modsEditFlag = false
@@ -665,7 +665,7 @@ refreshFunction = event => {
         executeInfo.filesDir = executeDir
         executes.push(executeInfo)
       } catch (error) {
-        console.warn(error)
+        // console.warn(error)
       }
     } else {
       // TODO, 若为 "*.mspe" 则作为 zip 文件解压，然后加载
@@ -687,7 +687,7 @@ refreshFunction = event => {
         modInfo.filesDir = modDir
         mods.push(modInfo)
       } catch (error) {
-        console.warn(error)
+        // console.warn(error)
       }
     } else {
       // TODO, 若为 "*.mspm" 则作为 zip 文件解压，然后加载
@@ -709,7 +709,7 @@ refreshFunction = event => {
         toolInfo.filesDir = toolDir
         tools.push(toolInfo)
       } catch (error) {
-        console.warn(error)
+        // console.warn(error)
       }
     } else {
       // TODO, 若为 "*.mspt" 则作为 zip 文件解压，然后加载
@@ -717,7 +717,7 @@ refreshFunction = event => {
   })
   executesWindow = executes
   modsWindow = mods
-  toolsWindow = tools
+  // toolsWindow = tools
 
   reloadDOM(executes, mods, tools)
 }
@@ -764,7 +764,7 @@ refreshFunction()
 Array.prototype.forEach.call(
   document.querySelectorAll('.left-pannel ul li'),
   node => {
-    node.addEventListener('click', event => {
+    node.addEventListener('click', () => {
       const sections = document.getElementsByTagName('section')
       Array.prototype.forEach.call(sections, section => {
         if (section.dataset.name === node.dataset.target) {
@@ -866,13 +866,13 @@ const getServersJson = () => {
           Object.entries(result.ip[0].region_urls).forEach(kv => {
             serversArray.push(kv)
           })
-          console.log('serversGot')
+          // console.log('serversGot')
           reslove()
         })
     )
 }
 const ping = serversJson => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     let resolved = false
     const serversList = serversJson.servers
     const tcpp = require('tcp-ping')
@@ -886,7 +886,7 @@ const ping = serversJson => {
       },
       (err, data) => {
         if (err) {
-          console.error(err)
+          // console.error(err)
         } else {
           if (!resolved) {
             resolved = true
@@ -962,7 +962,7 @@ const getChildServer = (serverKey, serverUrl) =>
   })
 let interval
 const reStartPing = () => {
-  console.log('reStartPing')
+  // console.log('reStartPing')
   Promise.resolve(
     (() => {
       if (!localStorage.getItem('serverChoosed')) {
@@ -984,7 +984,7 @@ const reStartPing = () => {
     })()
   )
     .then(result => {
-      console.log(result)
+      // console.log(result)
       serverTextDom.innerText = getServerName(result[0])
       clearInterval(interval)
       document.getElementById('pingInfo').className = 'offline'
@@ -996,10 +996,10 @@ const reStartPing = () => {
         refreshPing(result)
         interval = setInterval(() => refreshPing(result), 5000)
       },
-      reject => {}
+      () => {}
     )
 }
-serverInfoDom.addEventListener('click', event => {
+serverInfoDom.addEventListener('click', () => {
   if (serversArray.length === 0) {
     return
   }
@@ -1012,7 +1012,7 @@ serverInfoDom.addEventListener('click', event => {
   reStartPing()
 })
 
-getServersJson().then(reStartPing, reject => {
+getServersJson().then(reStartPing, () => {
   serverTextDom.innerText = '加载失败'
 })
 /* Ping 业务逻辑 End */
@@ -1105,12 +1105,12 @@ const checkUpdate = userConfig => {
     ) {
       xhr.open(
         'GET',
-        `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest`
+        'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest'
       )
     } else {
       xhr.open(
         'GET',
-        `https://api.github.com/repos/iamapig120/majsoul-plus-client/releases`
+        'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases'
       )
     }
     xhr.send()
@@ -1127,7 +1127,7 @@ const checkUpdate = userConfig => {
             version: result.tag_name,
             time: result.published_at,
             body: result.body,
-            local: app.getVersion(),
+            local: 'v' + app.getVersion(),
             html_url: result.html_url
           })
         } else {
@@ -1164,8 +1164,8 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
         res.time
       ).toLocaleString()
     },
-    reason => {
-      console.log('rejected')
+    () => {
+      // console.log('rejected')
     }
   )
 })
@@ -1206,7 +1206,7 @@ const userConfigInit = () => {
           label.setAttribute('for', input.id)
           label.innerText = selectName
           input.checked = value
-          input.addEventListener('change', e => {
+          input.addEventListener('change', () => {
             userConfig[keyGroup][keyConfig] = input.checked
           })
           settingInner.append(input)
@@ -1223,7 +1223,7 @@ const userConfigInit = () => {
             label.setAttribute('for', input.id)
             label.innerText = inputName
             input.value = value
-            input.addEventListener('change', e => {
+            input.addEventListener('change', () => {
               userConfig[keyGroup][keyConfig] = parseFloat(input.value)
             })
             settingInner.append(input)
@@ -1238,14 +1238,14 @@ const userConfigInit = () => {
   const versionH3 = document.createElement('h3')
   versionH3.innerText = getKeyText('loaclVersion')
   const versionInfo = document.createElement('p')
-  versionInfos.innerText = app.getVersion()
+  versionInfo.innerText = app.getVersion()
   settingInner.append(versionH3)
   settingInner.append(versionInfo)
 }
 userConfigInit()
 
 const saveConfigsBtn = document.getElementById('saveConfigs')
-saveConfigsBtn.addEventListener('click', e => {
+saveConfigsBtn.addEventListener('click', () => {
   try {
     fs.writeFileSync(
       path.join(__dirname, '../configs-user.json'),
