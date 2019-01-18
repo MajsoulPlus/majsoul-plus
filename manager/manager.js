@@ -1174,7 +1174,7 @@ fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
 const getKeyText = key => {
   const lang = {
     window: '窗口',
-    isKioskModeOn: '使用原生全屏幕模式(Use Kiosk Fullscreen Mode)',
+    isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',
     prerelease: '获取浏览版(Get Pre-releases)',
     chromium: '核心（需要重启软件）',
