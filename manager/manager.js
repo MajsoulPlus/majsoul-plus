@@ -274,6 +274,12 @@ const saveSettings = () => {
   modLaunched = modLaunched.filter(element => {
     return modsWindowList.includes(`${element.name}|${element.author}`)
   })
+  modLaunched.forEach(modInfo=>{
+    if(modInfo.execute){
+      modInfo.execute.filesDir = modInfo.filesDir
+      executeLaunched.push(modInfo.execute)
+    }
+  })
 
   fs.writeFileSync(executeSettingsFile, JSON.stringify(executeLaunched), {
     encoding: 'utf-8'
