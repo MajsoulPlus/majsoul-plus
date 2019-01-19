@@ -144,6 +144,10 @@ const windowControl = {
     return url.startsWith(configs.REMOTE_DOMAIN)
   },
 
+  _testIsLocalGameWindow: url => {
+    return url.startsWith('https://localhost:')
+  },
+
   _redirectGameWindow: (url, gameWindow) => {
     const localUrl = windowControl._getLocalUrlWithParams(url)
     gameWindow.loadURL(localUrl)
@@ -219,10 +223,23 @@ const windowControl = {
     gameWindow.webContents.on('crashed', () =>
       console.warn('web contents crashed')
     )
+    gameWindow.once('ready-to-show', () => {
+      gameWindow.webContents.setZoomFactor(1 / userConfigs.window.gameMSAA)
+    })
     gameWindow.webContents.on('will-navigate', (evt, url) => {
+      gameWindow.webContents.getZoomFactor(number => {
+        console.warn('ZoomFactor ' + number)
+      })
       if (windowControl._testRedirectGameWindow(url)) {
         evt.preventDefault()
         windowControl._redirectGameWindow(url, gameWindow)
+      } else {
+        gameWindow.webContents.setZoomFactor(1)
+      }
+      if (windowControl._testIsLocalGameWindow(url)) {
+        gameWindow.webContents.setZoomFactor(1 / userConfigs.window.gameMSAA)
+      } else {
+        gameWindow.webContents.setZoomFactor(1)
       }
     })
     gameWindow.webContents.on('console-message', (

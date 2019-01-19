@@ -1,6 +1,7 @@
 {
   "window": {
     "zoomFactor": 1,
+    "gameMSAA": 1,
     "isKioskModeOn": false
   },
   "update": {

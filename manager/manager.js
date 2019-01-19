@@ -1182,6 +1182,7 @@ const getKeyText = key => {
   const lang = {
     window: '窗口',
     zoomFactor: '资源管理器缩放(Zoom Factor)',
+    gameMSAA: '游戏渲染分辨率倍数(MSAA)',
     isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',
     prerelease: '获取浏览版(Get Pre-releases)',
@@ -1232,8 +1233,10 @@ const userConfigInit = () => {
             input.addEventListener('change', () => {
               userConfig[keyGroup][keyConfig] = parseFloat(input.value)
             })
+            const br = document.createElement('br')
             settingInner.append(input)
             settingInner.append(label)
+            settingInner.append(br)
           }
           break
         default:
