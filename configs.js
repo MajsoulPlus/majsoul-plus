@@ -21,7 +21,6 @@ const CONFIGS = {
   PLUGINS_DIR: '/plugin',
   TOOLS_DIR: '/tool',
   EXECUTES_DIR: '/execute',
-  SCREENSHOTS_DIR: '/screenshots',
   GAME_WINDOW_CONFIG: {
     width: 1280,
     height: 720,

@@ -315,7 +315,11 @@ const Util = {
     webContents.capturePage(image => {
       const buffer = image.toPNG()
       this.writeFile(
-        path.join(__dirname, configs.SCREENSHOTS_DIR, Date.now() + '.png'),
+        path.join(
+          electron.app.getPath('pictures'),
+          electron.app.getName(),
+          Date.now() + '.png'
+        ),
         buffer
       )
     })
