@@ -1,3 +1,5 @@
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 const express = require('express')
 const server = express()
 const Util = require('./Util.js')
@@ -8,7 +10,7 @@ const path = require('path')
 const https = require('https')
 
 const electron = require('electron')
-const { app: electronApp, BrowserWindow, globalShortcut, ipcMain } = electron
+const { app: electronApp, BrowserWindow, ipcMain } = electron
 const { Menu, MenuItem } = electron
 
 let userConfigs = require('./configs-user.json')
@@ -124,7 +126,6 @@ const windowControl = {
   _execute: gameWindow => {
     const executeScripts = windowControl._getExecuteScripts()
     executeScripts.forEach(executeScript => {
-      console.log('Hack加载 ' + executeScript.name)
       const code = windowControl._getExecuteCode(executeScript)
       gameWindow.webContents.executeJavaScript(code)
     })
@@ -144,7 +145,6 @@ const windowControl = {
   },
 
   _redirectGameWindow: (url, gameWindow) => {
-    console.log(url)
     const localUrl = windowControl._getLocalUrlWithParams(url)
     gameWindow.loadURL(localUrl)
   },
@@ -162,7 +162,7 @@ const windowControl = {
       sererHttps.on('listening', resolve)
       sererHttps.on('error', err => {
         if (err.code === 'EADDRINUSE') {
-          console.log('Port in use, retrying...')
+          console.warn('Port in use, retrying...')
           sererHttps.close()
           sererHttps.listen(0)
         }
@@ -208,12 +208,12 @@ const windowControl = {
       title: windowControl._getGameWindowTitle()
     }
     const gameWindow = new BrowserWindow(config)
-    gameWindow.on('page-title-updated', evt => evt.preventDefault())
+    gameWindow.on('page-title-updated', event => event.preventDefault())
     gameWindow.webContents.on('did-finish-load', () =>
       windowControl._execute(gameWindow)
     )
-    gameWindow.webContents.on('crashed', evt =>
-      console.log('web contents crashed')
+    gameWindow.webContents.on('crashed', () =>
+      console.warn('web contents crashed')
     )
     gameWindow.webContents.on('will-navigate', (evt, url) => {
       if (windowControl._testRedirectGameWindow(url)) {
@@ -221,10 +221,15 @@ const windowControl = {
         windowControl._redirectGameWindow(url, gameWindow)
       }
     })
-    gameWindow.webContents.on(
-      'console-message',
-      (evt, level, msg, line, sourceId) => console.log('Console', msg)
-    )
+    gameWindow.webContents.on('console-message', (
+      evt,
+      level,
+      msg /*, line, sourceId  */
+    ) => {
+      if (level !== 'log') {
+        console.warn('Console', msg)
+      }
+    })
     gameWindow.loadURL(`https://localhost:${sererHttps.address().port}/0/`)
 
     // Add environment config to open developer tools
@@ -242,7 +247,7 @@ const windowControl = {
           new MenuItem({
             label: '退出游戏',
             accelerator: 'Alt+F4',
-            click: (menuItem, browserWindow, event) => {
+            click: (menuItem, browserWindow) => {
               browserWindow.close()
             }
           })
@@ -257,9 +262,7 @@ const windowControl = {
           new MenuItem({
             label: '全屏',
             accelerator: 'F11',
-            click: (menuItem, browserWindow, event) => {
-              console.log(browserWindow.isFullScreen())
-              console.log(browserWindow.isKiosk())
+            click: (menuItem, browserWindow) => {
               if (!userConfigs.window.isKioskModeOn) {
                 browserWindow.setFullScreen(!browserWindow.isFullScreen())
               } else {
@@ -272,7 +275,7 @@ const windowControl = {
             accelerator: 'F5',
             enabled: true,
             visible: false,
-            click: (menuItem, browserWindow, event) => {
+            click: (menuItem, browserWindow) => {
               if (!userConfigs.window.isKioskModeOn) {
                 browserWindow.setFullScreen(!browserWindow.isFullScreen())
               } else {
@@ -283,7 +286,7 @@ const windowControl = {
           new MenuItem({
             label: '退出全屏',
             accelerator: 'Esc',
-            click: (menuItem, browserWindow, event) => {
+            click: (menuItem, browserWindow) => {
               if (browserWindow.isFullScreen()) {
                 browserWindow.setFullScreen(false)
                 return
@@ -310,7 +313,7 @@ const windowControl = {
     ipcMain.on('application-message', (evt, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
-          case 'start-game':
+          case 'start-game': {
             windowControl
               .initLocalMirrorServer(sererHttps, configs.SERVER_PORT)
               .then(() => {
@@ -318,7 +321,8 @@ const windowControl = {
                 windowControl.closeManagerWindow()
               })
             break
-          case 'start-tool':
+          }
+          case 'start-tool': {
             const toolInfo = args[1]
             if (!toolInfo.windowOptions) {
               toolInfo.windowOption = {}
@@ -341,7 +345,9 @@ const windowControl = {
             toolWindow.loadURL(
               'file://' + path.join(toolInfo.filesDir, indexPage)
             )
-          case 'update-user-config':
+            break
+          }
+          case 'update-user-config': {
             userConfigs = JSON.parse(
               fs.readFileSync(path.join(__dirname, './configs-user.json'))
             )
@@ -356,6 +362,7 @@ const windowControl = {
               userConfigs.window.zoomFactor
             )
             break
+          }
           default:
             break
         }
@@ -375,5 +382,5 @@ const windowControl = {
 windowControl.start()
 
 process.on('uncaughtException', err => {
-  console.log(err)
+  console.error(err)
 })
