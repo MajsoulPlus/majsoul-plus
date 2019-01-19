@@ -94,7 +94,7 @@ const windowControl = {
   },
 
   _getExecuteScripts: () => {
-    const executeRootDir = path.join(__dirname, configs.EXECUTE_DIR)
+    const executeRootDir = path.join(__dirname, configs.EXECUTES_DIR)
     let executeScripts
     try {
       const data = fs.readFileSync(path.join(executeRootDir, '/active.json'))
@@ -209,6 +209,10 @@ const windowControl = {
     }
     const gameWindow = new BrowserWindow(config)
     gameWindow.on('page-title-updated', event => event.preventDefault())
+    gameWindow.on('closed', () => {
+      Util.shutoffPlayer()
+    })
+    Util.initPlayer()
     gameWindow.webContents.on('did-finish-load', () =>
       windowControl._execute(gameWindow)
     )
@@ -241,9 +245,16 @@ const windowControl = {
     const gameWindowMenu = new Menu()
     gameWindowMenu.append(
       new MenuItem({
-        label: '程序',
+        label: '游戏',
         role: 'services',
         submenu: [
+          new MenuItem({
+            label: '截图',
+            accelerator: 'F12',
+            click: (menuItem, browserWindow) => {
+              Util.takeScreenshot(browserWindow.webContents)
+            }
+          }),
           new MenuItem({
             label: '退出游戏',
             accelerator: 'Alt+F4',

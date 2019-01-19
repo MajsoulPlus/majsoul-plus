@@ -1,6 +1,9 @@
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+const electron = require('electron')
 
 const configs = require('./configs')
 
@@ -11,6 +14,12 @@ const http = require('https')
 
 // 用于存储Mod对象
 let mods
+
+/**
+ * 播放器
+ * @type {Electron.BrowserWindow}
+ */
+let audioPlayer
 
 const Util = {
   /**
@@ -100,7 +109,7 @@ const Util = {
         })
         httpRes.on('end', () => {
           if (200 > statusCode || 400 <= statusCode) {
-            console.log(
+            console.warn(
               `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
             )
             reject({
@@ -190,7 +199,7 @@ const Util = {
    * @param {express.Response} res Response对象
    * @param {express.NextFunction} next NextFunction对象
    */
-  processRequest(req, res, next) {
+  processRequest(req, res) {
     if (!mods) {
       this.loadMods()
     }
@@ -274,8 +283,9 @@ const Util = {
           res.send(this.encodeData(data).toString('utf-8'))
         }
       )
-      .catch(err => console.error)
+      .catch(err => console.error(err))
   },
+
   /**
    * 加载Mod
    */
@@ -287,11 +297,43 @@ const Util = {
     try {
       const data = fs.readFileSync(path.join(modRootDir, '/active.json'))
       mods = JSON.parse(data.toString('utf-8'))
-      mods.forEach(mod => console.log('Mod 加载 ' + mod.name))
     } catch (error) {
-      console.log(error)
+      console.error(error)
       mods = []
     }
+  },
+
+  /**
+   * 截取屏幕画面
+   * @param {Electron.WebContents} webContents
+   */
+  takeScreenshot(webContents) {
+    audioPlayer.webContents.send(
+      'audio-play',
+      path.join(__dirname, 'bin/audio/screenshot.mp3')
+    )
+    webContents.capturePage(image => {
+      const buffer = image.toPNG()
+      this.writeFile(
+        path.join(__dirname, configs.SCREENSHOTS_DIR, Date.now() + '.png'),
+        buffer
+      )
+    })
+  },
+  /**
+   * 初始化播放器
+   */
+  initPlayer() {
+    audioPlayer = new electron.BrowserWindow({
+      show: false
+    })
+    audioPlayer.loadURL(path.join(__dirname, 'bin/audio/player.html'))
+  },
+  /**
+   * 退出窗口
+   */
+  shutoffPlayer() {
+    audioPlayer.close()
   }
 }
 

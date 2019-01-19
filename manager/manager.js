@@ -9,7 +9,7 @@ const os = require('os')
 const app = electronRemote.app
 
 // 注入脚本根文件根目录
-const executeRootDir = path.join(__dirname, '../', configs.EXECUTE_DIR)
+const executeRootDir = path.join(__dirname, '../', configs.EXECUTES_DIR)
 const executeSettingsFile = path.join(executeRootDir, './active.json')
 
 // Mod文件根目录

@@ -2,12 +2,12 @@ const os = require('os')
 const getIcon = () => {
   switch (os.platform()) {
     case 'win32':
-      return __dirname + '/icons/icon.ico'
+      return __dirname + '/bin/icons/icon.ico'
     case 'darwin':
-      return __dirname + '/icons/icon.icns'
+      return __dirname + '/bin/icons/icon.icns'
     case 'linux':
     default:
-      return __dirname + '/icons/icon.png'
+      return __dirname + '/bin/icons/icon.png'
   }
 }
 const CONFIGS = {
@@ -20,7 +20,8 @@ const CONFIGS = {
   MODS_DIR: '/mod',
   PLUGINS_DIR: '/plugin',
   TOOLS_DIR: '/tool',
-  EXECUTE_DIR: '/execute',
+  EXECUTES_DIR: '/execute',
+  SCREENSHOTS_DIR: '/screenshots',
   GAME_WINDOW_CONFIG: {
     width: 1280,
     height: 720,
