@@ -299,6 +299,20 @@ const windowControl = {
         ]
       })
     )
+    gameWindowMenu.append(
+      new MenuItem({
+        label: '更多',
+        submenu: [
+          new MenuItem({
+            label: '开发者工具',
+            accelerator: 'CmdOrCtrl+I',
+            click: (menuItem, browserWindow) => {
+              browserWindow.openDevTools({ mode: 'detach' })
+            }
+          })
+        ]
+      })
+    )
     Menu.setApplicationMenu(gameWindowMenu)
 
     windowControl.windowMap['game'] = gameWindow
