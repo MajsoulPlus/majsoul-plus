@@ -25,7 +25,7 @@ after_success: if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash pack.sh; fi
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: './build/packed/*.{zip|dmg}'
+  file: './build/packed/*.{zip,dmg}'
   file_glob: true
   skip_cleanup: true
   on:
