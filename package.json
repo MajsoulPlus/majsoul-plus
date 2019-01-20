@@ -1,6 +1,6 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.7.3-alpha.4",
+  "version": "1.7.3-alpha.5",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
@@ -15,13 +15,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
-    "productName": "Majsoul_Plus",
+    "productName": "Majsoul Plus",
     "directories": {
       "output": "build/packed"
     },
     "mac": {
       "icon": "bin/icons/icon.icns",
-      "asar": false
+      "asar": false,
+      "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     }
   },
   "repository": {
