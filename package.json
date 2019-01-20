@@ -1,6 +1,6 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.7.3-alpha.2",
+  "version": "1.7.3-alpha.3",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
@@ -16,7 +16,7 @@
   },
   "build": {
     "directories": {
-      "output": "build/unpacked"
+      "output": "build/packed"
     },
     "mac": {
       "icon": "bin/icons/icon.icns",
