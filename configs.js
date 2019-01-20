@@ -35,6 +35,7 @@ const CONFIGS = {
     autoHideMenuBar: true,
     useContentSize: true,
     icon: getIcon(),
+    show: false,
     enableLargerThanScreen: true
   },
   MANAGER_WINDOW_CONFIG: {

@@ -149,7 +149,7 @@ const windowControl = {
         const ipcRenderer = require('electron').ipcRenderer
         ipcRenderer.on('take-screenshot',()=>{
           console.log('Taking ScreenShot')
-          const dataURL = layaCanvas.toDataURL('image/png')
+          const dataURL = Laya.stage.drawToCanvas(layaCanvas.width, layaCanvas.height, 0, 0).getCanvas().toDataURL()
           ipcRenderer.send('application-message','take-screenshot',{buffer:dataURL})
         })
         console.log('ScreenShoter')
@@ -251,6 +251,7 @@ const windowControl = {
     )
     gameWindow.once('ready-to-show', () => {
       gameWindow.webContents.setZoomFactor(1 / userConfigs.window.gameMSAA)
+      gameWindow.show()
     })
     gameWindow.webContents.on('will-navigate', (evt, url) => {
       gameWindow.webContents.getZoomFactor(number => {
