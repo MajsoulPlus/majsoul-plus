@@ -6,6 +6,6 @@ cd "${build_folder}/unpacked"
 echo "$(pwd)"
 for folder in $(ls .)
 do
-  zip -ry "${build_folder}/packed/${folder}.{zip|dmg}" "${folder}"
+  zip -ry "${build_folder}/packed/${folder}.zip" "${folder}"
 done
 cd "${pwd}"

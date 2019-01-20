@@ -25,7 +25,7 @@ after_success: bash pack.sh
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "./build/packed/*.zip"
+  file: './build/packed/*.{zip|dmg}'
   file_glob: true
   skip_cleanup: true
   on:
