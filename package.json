@@ -1,6 +1,6 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.7.3-alpha.3",
+  "version": "1.7.3-alpha.4",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
@@ -15,6 +15,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
+    "productName": "Majsoul_Plus",
     "directories": {
       "output": "build/packed"
     },
