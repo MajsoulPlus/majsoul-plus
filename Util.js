@@ -312,17 +312,7 @@ const Util = {
       'audio-play',
       path.join(__dirname, 'bin/audio/screenshot.mp3')
     )
-    webContents.capturePage(image => {
-      const buffer = image.toPNG()
-      this.writeFile(
-        path.join(
-          electron.app.getPath('pictures'),
-          electron.app.getName(),
-          Date.now() + '.png'
-        ),
-        buffer
-      )
-    })
+    webContents.send('take-screenshot')
   },
   /**
    * 初始化播放器

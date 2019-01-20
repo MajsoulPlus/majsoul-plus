@@ -110,19 +110,27 @@ const windowControl = {
     return executeScripts
   },
 
-  _getExecuteCode: executeScript => {
-    let codeEntry = executeScript.entry
+  _getExecuteCode: executeScriptInfo => {
+    let codeEntry = executeScriptInfo.entry
     if (!codeEntry) {
       codeEntry = 'script.js'
     }
     let code = fs
-      .readFileSync(path.join(executeScript.filesDir, executeScript.entry))
+      .readFileSync(
+        path.join(executeScriptInfo.filesDir, executeScriptInfo.entry)
+      )
       .toString('utf-8')
-    if (!executeScript.sync) {
+    if (!executeScriptInfo.sync) {
       code = `(()=>{
               let __raf
+              let require = undefined
               const __rafFun = ()=>{if(window.game){(()=>{${code}})()}else{__raf=requestAnimationFrame(__rafFun)}}
               __raf = requestAnimationFrame(__rafFun)})()`
+    } else {
+      code = `(()=>{
+              let require = undefined
+              (()=>{${code}})()
+              })()`
     }
     return code
   },
@@ -133,6 +141,20 @@ const windowControl = {
       const code = windowControl._getExecuteCode(executeScript)
       gameWindow.webContents.executeJavaScript(code)
     })
+    gameWindow.webContents.executeJavaScript(`
+    (()=>{
+      let __raf 
+      const __rafFun = ()=>{if(window.game){(()=>{
+        const layaCanvas = document.getElementById('layaCanvas')
+        const ipcRenderer = require('electron').ipcRenderer
+        ipcRenderer.on('take-screenshot',()=>{
+          console.log('Taking ScreenShot')
+          const dataURL = layaCanvas.toDataURL('image/png')
+          ipcRenderer.send('application-message','take-screenshot',{buffer:dataURL})
+        })
+        console.log('ScreenShoter')
+      })()}else{__raf=requestAnimationFrame(__rafFun)}}
+      __raf = requestAnimationFrame(__rafFun)})()`)
   },
 
   _getLocalUrlWithParams: url => {
@@ -278,9 +300,9 @@ const windowControl = {
           }),
           new MenuItem({
             label: '截图',
-            accelerator: 'CmdOrCtrl+PrintScreen',
+            accelerator: 'CmdOrCtrl+P',
             enabled: true,
-            visible: false,
+            // visible: false,
             click: (menuItem, browserWindow) => {
               Util.takeScreenshot(browserWindow.webContents)
             }
@@ -416,6 +438,23 @@ const windowControl = {
             windowControl.windowMap['manager'].webContents.setZoomFactor(
               userConfigs.window.zoomFactor
             )
+            break
+          }
+          case 'take-screenshot': {
+            const buffer = new Buffer(
+              args[1].buffer.replace(/^data:image\/\w+;base64,/, ''),
+              'base64'
+            )
+            Util.writeFile(
+              path.join(
+                electron.app.getPath('pictures'),
+                electron.app.getName(),
+                Date.now() + '.png'
+              ),
+              args[1].buffer.replace(/^data:image\/\w+;base64,/, ''),
+              'base64'
+            )
+
             break
           }
           default:
