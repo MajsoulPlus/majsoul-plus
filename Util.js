@@ -331,7 +331,9 @@ const Util = {
     audioPlayer = new electron.BrowserWindow({
       show: false
     })
-    audioPlayer.loadURL(path.join(__dirname, 'bin/audio/player.html'))
+    audioPlayer.loadURL(
+      'file://' + path.join(__dirname, 'bin/audio/player.html')
+    )
   },
   /**
    * 退出窗口
