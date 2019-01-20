@@ -47,6 +47,10 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 server.get('*', Util.processRequest)
 
 electronApp.commandLine.appendSwitch('ignore-certificate-errors')
+electronApp.commandLine.appendSwitch(
+  'autoplay-policy',
+  'no-user-gesture-required'
+)
 
 // 当所有窗口被关闭了，退出。
 electronApp.on('window-all-closed', () => {
@@ -268,6 +272,15 @@ const windowControl = {
           new MenuItem({
             label: '截图',
             accelerator: 'F12',
+            click: (menuItem, browserWindow) => {
+              Util.takeScreenshot(browserWindow.webContents)
+            }
+          }),
+          new MenuItem({
+            label: '截图',
+            accelerator: 'CmdOrCtrl+PrintScreen',
+            enabled: true,
+            visible: false,
             click: (menuItem, browserWindow) => {
               Util.takeScreenshot(browserWindow.webContents)
             }
