@@ -11,7 +11,7 @@
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
     "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
     "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
-    "build-darwin": "electron-builder . Majsoul_Plus --platform=darwin --arch=all",
+    "build-darwin": "electron-builder --mac",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
