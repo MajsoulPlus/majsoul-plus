@@ -278,7 +278,8 @@ const windowControl = {
         console.warn('Console', msg)
       }
     })
-    gameWindow.loadURL(`https://localhost:${sererHttps.address().port}/0/`)
+    // gameWindow.loadURL(`https://localhost:${sererHttps.address().port}/0/`)
+    gameWindow.loadURL('file://' + path.join(__dirname, 'bin/main/index.html'))
 
     // Add environment config to open developer tools
     if (process.env.NODE_ENV === 'development') {
@@ -382,6 +383,13 @@ const windowControl = {
     windowControl.windowMap['game'] = gameWindow
   },
 
+  mainLoaderReady(){
+    windowControl.windowMap['game'].webContents.send(
+      'load-url',
+      `https://localhost:${sererHttps.address().port}/0/`
+    )
+  },
+
   closeManagerWindow: () => {
     const managerWindow = windowControl.windowMap['manager']
     managerWindow && managerWindow.close()
@@ -454,7 +462,18 @@ const windowControl = {
               ),
               buffer
             )
-
+            break
+          }
+          default:
+            break
+        }
+      }
+    })
+    ipcMain.on('main-loader-message', (evt, ...args) => {
+      if (args && args.length > 0) {
+        switch (args[0]) {
+          case 'main-loader-ready': {
+            windowControl.mainLoaderReady()
             break
           }
           default:
