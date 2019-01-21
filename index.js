@@ -452,8 +452,7 @@ const windowControl = {
                 electron.app.getName(),
                 Date.now() + '.png'
               ),
-              args[1].buffer.replace(/^data:image\/\w+;base64,/, ''),
-              'base64'
+              buffer
             )
 
             break
