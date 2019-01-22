@@ -1182,7 +1182,7 @@ const getKeyText = key => {
   const lang = {
     window: '窗口',
     zoomFactor: '资源管理器缩放(Zoom Factor)',
-    gameMSAA: '游戏渲染分辨率倍数(MSAA)',
+    gameSSAA: '超采样抗锯齿(SSAA)',
     renderingMultiple: '% 渲染比率(Rendering Multiple)',
     isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',

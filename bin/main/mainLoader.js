@@ -43,7 +43,7 @@ const probuildExecuteCode = executeScriptInfo => {
             __raf = requestAnimationFrame(__rafFun)})()`
   } else {
     code = `(()=>{
-            let require = undefined
+            let require = undefined;
             (()=>{${code}})()
             })()`
   }
