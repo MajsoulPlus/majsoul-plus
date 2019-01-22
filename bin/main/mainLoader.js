@@ -3,8 +3,10 @@
 const fs = require('fs')
 const path = require('path')
 const electron = require('electron')
-const { ipcRenderer } = electron
+const { ipcRenderer, remote } = electron
 const userConfigs = require('../../configs-user.json')
+
+const clipboard = remote.clipboard
 
 /**
  * @type {Electron.WebviewTag}
@@ -82,7 +84,9 @@ ipcRenderer.on('take-screenshot', () => {
   if (webContents) {
     webContents.capturePage(image => {
       ipcRenderer.send('application-message', 'take-screenshot', image.toPNG())
-      showScreenshotLabel(image.toDataURL())
+      const dataURL = image.toDataURL()
+      showScreenshotLabel(dataURL)
+      clipboard.writeImage(image)
     })
   }
 })
