@@ -55,6 +55,9 @@
       #screenshotLabel.show {
         top: calc(100vh - 64px);
       }
+      #screenshotLabel.hide {
+        display: none;
+      }
       #screenshotText {
         font-weight: 300;
         color: #cccccc;
@@ -78,7 +81,7 @@
     <div id="mainWindowBox">
       <webview id="mainWindow" src="./loading.html"></webview>
     </div>
-    <div id="screenshotLabel">
+    <div id="screenshotLabel" class="hide">
       <img id="screenshotImage" src="#" alt="screenshot" />
       <p id="screenshotText">screenshotText</p>
     </div>

@@ -63,11 +63,15 @@ const showScreenshotLabel = dataURL => {
   screenshotText.innerText = screenshotCounter++
     ? `已保存${screenshotCounter}张截图`
     : '截图已保存'
+  screenshotLabel.classList.remove('hide')
   screenshotLabel.classList.add('show')
   clearTimeout(screenshotTimer)
   screenshotTimer = setTimeout(() => {
     screenshotCounter = 0
     screenshotLabel.classList.remove('show')
+    screenshotTimer = setTimeout(() => {
+      screenshotLabel.classList.add('hide')
+    },300)
   }, 3000)
 }
 
