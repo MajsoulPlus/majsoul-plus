@@ -274,8 +274,8 @@ const saveSettings = () => {
   modLaunched = modLaunched.filter(element => {
     return modsWindowList.includes(`${element.name}|${element.author}`)
   })
-  modLaunched.forEach(modInfo=>{
-    if(modInfo.execute){
+  modLaunched.forEach(modInfo => {
+    if (modInfo.execute) {
       modInfo.execute.filesDir = modInfo.filesDir
       executeLaunched.push(modInfo.execute)
     }
@@ -1183,6 +1183,7 @@ const getKeyText = key => {
     window: '窗口',
     zoomFactor: '资源管理器缩放(Zoom Factor)',
     gameMSAA: '游戏渲染分辨率倍数(MSAA)',
+    renderingMultiple: '% 渲染比率(Rendering Multiple)',
     isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
     update: '更新',
     prerelease: '获取浏览版(Get Pre-releases)',
@@ -1192,7 +1193,7 @@ const getKeyText = key => {
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
     loaclVersion: '雀魂Plus 当前版本'
   }
-  return lang[key] ? lang[key] : false
+  return lang[key] ? lang[key] : key
 }
 const userConfigInit = () => {
   const settingInner = document.getElementById('settingInner')

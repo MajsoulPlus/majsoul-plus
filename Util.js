@@ -315,7 +315,7 @@ const Util = {
     webContents.send('take-screenshot')
   },
   /**
-   * 初始化播放器
+   * 初始化音频播放器
    */
   initPlayer() {
     audioPlayer = new electron.BrowserWindow({

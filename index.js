@@ -110,53 +110,6 @@ const windowControl = {
     return executeScripts
   },
 
-  _getExecuteCode: executeScriptInfo => {
-    let codeEntry = executeScriptInfo.entry
-    if (!codeEntry) {
-      codeEntry = 'script.js'
-    }
-    let code = fs
-      .readFileSync(
-        path.join(executeScriptInfo.filesDir, executeScriptInfo.entry)
-      )
-      .toString('utf-8')
-    if (!executeScriptInfo.sync) {
-      code = `(()=>{
-              let __raf
-              let require = undefined
-              const __rafFun = ()=>{if(window.game){(()=>{${code}})()}else{__raf=requestAnimationFrame(__rafFun)}}
-              __raf = requestAnimationFrame(__rafFun)})()`
-    } else {
-      code = `(()=>{
-              let require = undefined
-              (()=>{${code}})()
-              })()`
-    }
-    return code
-  },
-
-  _execute: gameWindow => {
-    const executeScripts = windowControl._getExecuteScripts()
-    executeScripts.forEach(executeScript => {
-      const code = windowControl._getExecuteCode(executeScript)
-      gameWindow.webContents.executeJavaScript(code)
-    })
-    gameWindow.webContents.executeJavaScript(`
-    (()=>{
-      let __raf 
-      const __rafFun = ()=>{if(window.game){(()=>{
-        const layaCanvas = document.getElementById('layaCanvas')
-        const ipcRenderer = require('electron').ipcRenderer
-        ipcRenderer.on('take-screenshot',()=>{
-          console.log('Taking ScreenShot')
-          const dataURL = Laya.stage.drawToCanvas(layaCanvas.width, layaCanvas.height, 0, 0).getCanvas().toDataURL()
-          ipcRenderer.send('application-message','take-screenshot',{buffer:dataURL})
-        })
-        console.log('ScreenShoter')
-      })()}else{__raf=requestAnimationFrame(__rafFun)}}
-      __raf = requestAnimationFrame(__rafFun)})()`)
-  },
-
   _getLocalUrlWithParams: url => {
     if (url.includes('?')) {
       return `https://localhost:${sererHttps.address().port}/0/${url.substring(
@@ -243,31 +196,12 @@ const windowControl = {
       Util.shutoffPlayer()
     })
     Util.initPlayer()
-    gameWindow.webContents.on('did-finish-load', () =>
-      windowControl._execute(gameWindow)
-    )
     gameWindow.webContents.on('crashed', () =>
       console.warn('web contents crashed')
     )
     gameWindow.once('ready-to-show', () => {
-      gameWindow.webContents.setZoomFactor(1 / userConfigs.window.gameMSAA)
+      gameWindow.webContents.setZoomFactor(1)
       gameWindow.show()
-    })
-    gameWindow.webContents.on('will-navigate', (evt, url) => {
-      gameWindow.webContents.getZoomFactor(number => {
-        console.warn('ZoomFactor ' + number)
-      })
-      if (windowControl._testRedirectGameWindow(url)) {
-        evt.preventDefault()
-        windowControl._redirectGameWindow(url, gameWindow)
-      } else {
-        gameWindow.webContents.setZoomFactor(1)
-      }
-      if (windowControl._testIsLocalGameWindow(url)) {
-        gameWindow.webContents.setZoomFactor(1 / userConfigs.window.gameMSAA)
-      } else {
-        gameWindow.webContents.setZoomFactor(1)
-      }
     })
     gameWindow.webContents.on('console-message', (
       evt,
@@ -383,13 +317,6 @@ const windowControl = {
     windowControl.windowMap['game'] = gameWindow
   },
 
-  mainLoaderReady(){
-    windowControl.windowMap['game'].webContents.send(
-      'load-url',
-      `https://localhost:${sererHttps.address().port}/0/`
-    )
-  },
-
   closeManagerWindow: () => {
     const managerWindow = windowControl.windowMap['manager']
     managerWindow && managerWindow.close()
@@ -450,10 +377,7 @@ const windowControl = {
             break
           }
           case 'take-screenshot': {
-            const buffer = new Buffer(
-              args[1].buffer.replace(/^data:image\/\w+;base64,/, ''),
-              'base64'
-            )
+            const buffer = args[1]
             Util.writeFile(
               path.join(
                 electron.app.getPath('pictures'),
@@ -473,7 +397,18 @@ const windowControl = {
       if (args && args.length > 0) {
         switch (args[0]) {
           case 'main-loader-ready': {
-            windowControl.mainLoaderReady()
+            const executeScripts = windowControl._getExecuteScripts()
+            windowControl.windowMap['game'].webContents.send(
+              'executes-load',
+              executeScripts
+            )
+            break
+          }
+          case 'executes-loaded': {
+            windowControl.windowMap['game'].webContents.send(
+              'load-url',
+              `https://localhost:${sererHttps.address().port}/0/`
+            )
             break
           }
           default:
