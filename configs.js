@@ -29,7 +29,7 @@ const CONFIGS = {
     backgroundColor: '#000000',
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: false
+      // nodeIntegration: false
       // plugins: true
     },
     autoHideMenuBar: true,
