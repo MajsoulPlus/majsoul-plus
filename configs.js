@@ -1,7 +1,12 @@
 const os = require('os')
 const fs = require('fs')
-const { app } = require('electron')
+const electron = require('electron')
 const path = require('path')
+
+let app = electron.app
+if (!app) {
+  app = electron.remote.app
+}
 
 const getIcon = () => {
   switch (os.platform()) {
@@ -24,12 +29,12 @@ const CONFIGS = {
   MODS_DIR: '/mod',
   MODS_CONFIG_PATH: path.join(app.getPath('userData'), 'modsEnabled.json'),
   PLUGINS_DIR: '/plugin',
-  PLUGINS_CONFIG_PATH: path.join(
-    app.getPath('userData'),
-    'pluginsEnabled.json'
-  ),
   TOOLS_DIR: '/tool',
   EXECUTES_DIR: '/execute',
+  EXECUTES_CONFIG_PATH: path.join(
+    app.getPath('userData'),
+    'executesEnabled.json'
+  ),
   USER_CONFIG_PATH: path.join(app.getPath('userData'), 'configs-user.json'),
   GAME_WINDOW_CONFIG: {
     width: 1280,
@@ -83,18 +88,18 @@ const CONFIGS = {
   }
 }
 try {
-  fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
+  fs.statSync(CONFIGS.EXECUTES_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'active.json'),
-    CONFIGS.PLUGINS_CONFIG_PATH
+    path.join(__dirname, CONFIGS.EXECUTES_DIR, 'active.json'),
+    CONFIGS.EXECUTES_CONFIG_PATH
   )
 }
 try {
   fs.statSync(CONFIGS.MODS_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.MODS_CONFIG_PATH, 'active.json'),
+    path.join(__dirname, CONFIGS.MODS_DIR, 'active.json'),
     CONFIGS.MODS_CONFIG_PATH
   )
 }
