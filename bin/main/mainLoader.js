@@ -176,6 +176,7 @@ mainWindow.addEventListener('dom-ready', () => {
 
   if (testIsLocalGameWindow(mainWindow.src)) {
     scaleWindow(scalePercent)
+    mainWindow.insertCSS('body{overflow:hidden;}')
   } else {
     scaleWindow(100)
   }
