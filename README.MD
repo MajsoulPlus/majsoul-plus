@@ -81,11 +81,13 @@
 
 ## 支持的快捷键
 
-截图    `F12 / Cmd+P (Mac OS) / Ctrl+P (Windows / Linux)`
-全屏    `F5 / F11`
-退出全屏    `Esc`
-退出程序    `Alt+F4`
-开发者工具    `Cmd+I (Mac OS) / Ctrl+I (Windows / Linux)`
+以下所有快捷键均在开始载入游戏后才生效
+
+- 截图    `F12 / Cmd+P (Mac OS) / Ctrl+P (Windows / Linux)`
+- 全屏    `F5 / F11`
+- 退出全屏    `Esc`
+- 退出程序    `Alt+F4`
+- 开发者工具    `Cmd+I (Mac OS) / Ctrl+I (Windows / Linux)`
 
 截取的图片会自动保存至`用户>图片>Majsoul Plus`路径下
 
