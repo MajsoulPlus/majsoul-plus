@@ -86,16 +86,16 @@ try {
   fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.MODS_DIR, 'active.json'),
-    CONFIGS.MODS_CONFIG_PATH
+    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'active.json'),
+    CONFIGS.PLUGINS_CONFIG_PATH
   )
 }
 try {
-  fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
+  fs.statSync(CONFIGS.MODS_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'active.json'),
-    CONFIGS.PLUGINS_CONFIG_PATH
+    path.join(__dirname, CONFIGS.MODS_CONFIG_PATH, 'active.json'),
+    CONFIGS.MODS_CONFIG_PATH
   )
 }
 try {
