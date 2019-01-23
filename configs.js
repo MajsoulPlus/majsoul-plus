@@ -94,13 +94,16 @@ try {
   fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'configs-user.json'),
+    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'active.json'),
     CONFIGS.PLUGINS_CONFIG_PATH
   )
 }
 try {
   fs.statSync(CONFIGS.USER_CONFIG_PATH)
 } catch (error) {
-  fs.copyFileSync(path.join(__dirname, 'active.json'), CONFIGS.USER_CONFIG_PATH)
+  fs.copyFileSync(
+    path.join(__dirname, 'configs-user.json'),
+    CONFIGS.USER_CONFIG_PATH
+  )
 }
 module.exports = CONFIGS
