@@ -166,19 +166,17 @@ mainWindow.addEventListener('dom-ready', () => {
       if (testRedirectGameWindow(url)) {
         evt.preventDefault()
         redirectGameWindow(url, mainWindow)
-      } else {
-        webContents.setZoomFactor(1)
-      }
-
-      if (testIsLocalGameWindow(url)) {
-        scaleWindow()
-      } else {
-        scaleWindow(100)
       }
     })
 
     if (process.env.NODE_ENV === 'development') {
       mainWindow.openDevTools({ mode: 'detach' })
     }
+  }
+
+  if (testIsLocalGameWindow(mainWindow.src)) {
+    scaleWindow(scalePercent)
+  } else {
+    scaleWindow(100)
   }
 })
