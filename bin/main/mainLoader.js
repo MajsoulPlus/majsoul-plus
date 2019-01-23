@@ -5,6 +5,7 @@ const path = require('path')
 const electron = require('electron')
 const { ipcRenderer, remote } = electron
 const userConfigs = require('../../configs-user.json')
+const configs = require('../../configs')
 
 const clipboard = remote.clipboard
 
@@ -18,12 +19,22 @@ const mainWindow = document.getElementById('mainWindow')
  */
 const mainWindowBox = document.getElementById('mainWindowBox')
 
-const scalePercent = userConfigs.window.renderingMultiple
+let scalePercent = userConfigs.window.renderingMultiple
 
 /**
  * @type {Electron.webContents}
  */
 let webContents
+
+/**
+ * @type {Array<string>}
+ */
+let executeScriptsCodes = []
+
+/**
+ * @type {number}
+ */
+let serverPort
 
 const probuildExecuteCode = executeScriptInfo => {
   let codeEntry = executeScriptInfo.entry
@@ -71,7 +82,7 @@ const showScreenshotLabel = dataURL => {
     screenshotLabel.classList.remove('show')
     screenshotTimer = setTimeout(() => {
       screenshotLabel.classList.add('hide')
-    },300)
+    }, 300)
   }, 3000)
 }
 
@@ -95,11 +106,33 @@ ipcRenderer.on('take-screenshot', () => {
   }
 })
 
-/**
- * @type {Array<string>}
- */
-let executeScriptsCodes
+const testRedirectGameWindow = url => {
+  return url.startsWith(configs.REMOTE_DOMAIN)
+}
+const testIsLocalGameWindow = url => {
+  return url.startsWith('https://localhost:')
+}
+const getLocalUrlWithParams = url => {
+  if (url.includes('?')) {
+    return `https://localhost:${serverPort}/0/${url.substring(
+      url.indexOf('?')
+    )}`
+  }
+  return `https://localhost:${serverPort}/0/`
+}
+const redirectGameWindow = (url, gameWindow) => {
+  const localUrl = getLocalUrlWithParams(url)
+  gameWindow.loadURL(localUrl)
+}
+
+ipcRenderer.on('server-port-load', (event, ...args) => {
+  console.warn('server-port-load')
+  serverPort = args[0]
+  ipcRenderer.send('main-loader-message', 'server-port-loaded')
+})
+
 ipcRenderer.on('executes-load', (event, ...args) => {
+  console.warn('executes-load')
   const executeScripts = args[0]
   executeScriptsCodes = []
   executeScripts.forEach(executeScript => {
@@ -109,27 +142,43 @@ ipcRenderer.on('executes-load', (event, ...args) => {
   ipcRenderer.send('main-loader-message', 'executes-loaded')
 })
 
+const scaleWindow = (percent = scalePercent) => {
+  mainWindowBox.style.width = `${percent}vw`
+  mainWindowBox.style.height = `${percent}vh`
+  mainWindowBox.style.transform = `scale(${100 / percent}) translate(${(100 -
+    percent) /
+    2}%, ${(100 - percent) / 2}%)`
+}
+
 mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
     webContents = mainWindow.getWebContents()
     webContents.setZoomFactor(1)
     ipcRenderer.send('main-loader-message', 'main-loader-ready')
 
-    webContents.on('did-finish-load', () => {
+    webContents.on('did-navigate', () => {
       executeScriptsCodes.forEach(executeScriptCode => {
         webContents.executeJavaScript(executeScriptCode)
       })
     })
 
+    webContents.on('will-navigate', (evt, url) => {
+      if (testRedirectGameWindow(url)) {
+        evt.preventDefault()
+        redirectGameWindow(url, mainWindow)
+      } else {
+        webContents.setZoomFactor(1)
+      }
+
+      if (testIsLocalGameWindow(url)) {
+        scaleWindow()
+      } else {
+        scaleWindow(100)
+      }
+    })
+
     if (process.env.NODE_ENV === 'development') {
       mainWindow.openDevTools({ mode: 'detach' })
     }
-  } else {
-    mainWindowBox.style.width = `${scalePercent}vw`
-    mainWindowBox.style.height = `${scalePercent}vh`
-    mainWindowBox.style.transform = `scale(${100 /
-      scalePercent}) translate(${(100 - scalePercent) / 2}%, ${(100 -
-      scalePercent) /
-      2}%)`
   }
 })

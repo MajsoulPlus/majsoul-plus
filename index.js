@@ -110,28 +110,6 @@ const windowControl = {
     return executeScripts
   },
 
-  _getLocalUrlWithParams: url => {
-    if (url.includes('?')) {
-      return `https://localhost:${sererHttps.address().port}/0/${url.substring(
-        url.indexOf('?')
-      )}`
-    }
-    return `https://localhost:${sererHttps.address().port}/0/`
-  },
-
-  _testRedirectGameWindow: url => {
-    return url.startsWith(configs.REMOTE_DOMAIN)
-  },
-
-  _testIsLocalGameWindow: url => {
-    return url.startsWith('https://localhost:')
-  },
-
-  _redirectGameWindow: (url, gameWindow) => {
-    const localUrl = windowControl._getLocalUrlWithParams(url)
-    gameWindow.loadURL(localUrl)
-  },
-
   electronReady: () => {
     return new Promise(resolve => electronApp.once('ready', resolve))
   },
@@ -397,6 +375,13 @@ const windowControl = {
       if (args && args.length > 0) {
         switch (args[0]) {
           case 'main-loader-ready': {
+            windowControl.windowMap['game'].webContents.send(
+              'server-port-load',
+              sererHttps.address().port
+            )
+            break
+          }
+          case 'server-port-loaded': {
             const executeScripts = windowControl._getExecuteScripts()
             windowControl.windowMap['game'].webContents.send(
               'executes-load',
