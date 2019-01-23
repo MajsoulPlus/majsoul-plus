@@ -79,6 +79,20 @@
 }
 ```
 
+## 支持的快捷键
+
+截图    `F12 / Cmd+P (Mac OS) / Ctrl+P (Windows / Linux)`
+全屏    `F5 / F11`
+退出全屏    `Esc`
+退出程序    `Alt+F4`
+开发者工具    `Cmd+I (Mac OS) / Ctrl+I (Windows / Linux)`
+
+截取的图片会自动保存至`用户>图片>Majsoul Plus`路径下
+
+## 需要你的帮助
+
+雀魂 Plus 正筹备支持多语言的本地化特性，但是文本的翻译需要你来协助！如果您方便帮助，请加Q群 660996459 ，或是发邮件给 mail#bysb.net （请将 # 替换为 @）
+
 ## 贡献者
 
 
