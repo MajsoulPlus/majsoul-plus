@@ -10,16 +10,18 @@ const app = electronRemote.app
 
 // 注入脚本根文件根目录
 const executeRootDir = path.join(__dirname, '../', configs.EXECUTES_DIR)
-const executeSettingsFile = path.join(executeRootDir, './active.json')
+// const executeSettingsFile = path.join(executeRootDir, './active.json')
+const executeSettingsFile = configs.PLUGINS_CONFIG_PATH
 
 // Mod文件根目录
 const modRootDir = path.join(__dirname, '../', configs.MODS_DIR)
-const modSettingsFile = path.join(modRootDir, './active.json')
+// const modSettingsFile = path.join(modRootDir, './active.json')
+const modSettingsFile = configs.MODS_CONFIG_PATH
 
 // 工具根目录
 const toolsRootDir = path.join(__dirname, '../', configs.TOOLS_DIR)
 
-const userConfig = require('../configs-user.json')
+const userConfig = require(configs.USER_CONFIG_PATH)
 
 /**
  * 同步删除文件夹
@@ -1146,7 +1148,7 @@ const checkUpdate = userConfig => {
     })
   })
 }
-fs.readFile(path.join(__dirname, '../configs-user.json'), (err, data) => {
+fs.readFile(configs.USER_CONFIG_PATH, (err, data) => {
   if (err) {
     return
   }
@@ -1257,10 +1259,7 @@ userConfigInit()
 const saveConfigsBtn = document.getElementById('saveConfigs')
 saveConfigsBtn.addEventListener('click', () => {
   try {
-    fs.writeFileSync(
-      path.join(__dirname, '../configs-user.json'),
-      JSON.stringify(userConfig)
-    )
+    fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
     alert('保存成功')
   } catch (error) {

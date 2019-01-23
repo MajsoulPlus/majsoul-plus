@@ -1,4 +1,8 @@
 const os = require('os')
+const fs = require('fs')
+const { app } = require('electron')
+const path = require('path')
+
 const getIcon = () => {
   switch (os.platform()) {
     case 'win32':
@@ -18,9 +22,15 @@ const CONFIGS = {
   REMOTE_DOMAIN: 'https://majsoul.union-game.com/',
   LOCAL_DIR: '/static',
   MODS_DIR: '/mod',
+  MODS_CONFIG_PATH: path.join(app.getPath('userData'), 'modsEnabled.json'),
   PLUGINS_DIR: '/plugin',
+  PLUGINS_CONFIG_PATH: path.join(
+    app.getPath('userData'),
+    'pluginsEnabled.json'
+  ),
   TOOLS_DIR: '/tool',
   EXECUTES_DIR: '/execute',
+  USER_CONFIG_PATH: path.join(app.getPath('userData'), 'configs-user.json'),
   GAME_WINDOW_CONFIG: {
     width: 1280,
     height: 720,
@@ -28,7 +38,7 @@ const CONFIGS = {
     resizable: true,
     backgroundColor: '#000000',
     webPreferences: {
-      webSecurity: false,
+      webSecurity: false
       // nodeIntegration: false
       // plugins: true
     },
@@ -71,5 +81,26 @@ const CONFIGS = {
     fullscreenable: false,
     useContentSize: true
   }
+}
+try {
+  fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
+} catch (error) {
+  fs.copyFileSync(
+    path.join(__dirname, CONFIGS.MODS_DIR, 'active.json'),
+    CONFIGS.MODS_CONFIG_PATH
+  )
+}
+try {
+  fs.statSync(CONFIGS.PLUGINS_CONFIG_PATH)
+} catch (error) {
+  fs.copyFileSync(
+    path.join(__dirname, CONFIGS.PLUGINS_DIR, 'configs-user.json'),
+    CONFIGS.PLUGINS_CONFIG_PATH
+  )
+}
+try {
+  fs.statSync(CONFIGS.USER_CONFIG_PATH)
+} catch (error) {
+  fs.copyFileSync(path.join(__dirname, 'active.json'), CONFIGS.USER_CONFIG_PATH)
 }
 module.exports = CONFIGS

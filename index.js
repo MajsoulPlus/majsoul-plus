@@ -13,7 +13,7 @@ const electron = require('electron')
 const { app: electronApp, BrowserWindow, ipcMain } = electron
 const { Menu, MenuItem } = electron
 
-let userConfigs = require('./configs-user.json')
+let userConfigs = require(configs.USER_CONFIG_PATH)
 
 if (userConfigs.chromium.isInProcessGpuOn) {
   electronApp.commandLine.appendSwitch('in-process-gpu')
@@ -98,10 +98,10 @@ const windowControl = {
   },
 
   _getExecuteScripts: () => {
-    const executeRootDir = path.join(__dirname, configs.EXECUTES_DIR)
+    // const executeRootDir = path.join(__dirname, configs.EXECUTES_DIR)
     let executeScripts
     try {
-      const data = fs.readFileSync(path.join(executeRootDir, '/active.json'))
+      const data = fs.readFileSync(configs.PLUGINS_CONFIG_PATH)
       executeScripts = JSON.parse(data.toString('utf-8'))
     } catch (error) {
       console.error(error)
@@ -340,7 +340,7 @@ const windowControl = {
           }
           case 'update-user-config': {
             userConfigs = JSON.parse(
-              fs.readFileSync(path.join(__dirname, './configs-user.json'))
+              fs.readFileSync(configs.USER_CONFIG_PATH)
             )
 
             windowControl.windowMap['manager'].setContentSize(

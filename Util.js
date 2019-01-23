@@ -291,11 +291,11 @@ const Util = {
    */
   loadMods() {
     // Mod文件根目录
-    const modRootDir = path.join(__dirname, configs.MODS_DIR)
+    // const modRootDir = path.join(__dirname, configs.MODS_DIR)
     // 所有已在目录中的Mod目录
     // const modDirs = fs.readdirSync(modRootDir)
     try {
-      const data = fs.readFileSync(path.join(modRootDir, '/active.json'))
+      const data = fs.readFileSync(configs.MODS_CONFIG_PATH)
       mods = JSON.parse(data.toString('utf-8'))
     } catch (error) {
       console.error(error)

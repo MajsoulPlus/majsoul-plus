@@ -4,8 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const electron = require('electron')
 const { ipcRenderer, remote } = electron
-const userConfigs = require('../../configs-user.json')
 const configs = require('../../configs')
+const userConfigs = require(configs.USER_CONFIG_PATH)
 
 const clipboard = remote.clipboard
 
