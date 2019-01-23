@@ -156,7 +156,7 @@ mainWindow.addEventListener('dom-ready', () => {
     webContents.setZoomFactor(1)
     ipcRenderer.send('main-loader-message', 'main-loader-ready')
 
-    webContents.on('did-navigate', () => {
+    webContents.on('dom-ready', () => {
       executeScriptsCodes.forEach(executeScriptCode => {
         webContents.executeJavaScript(executeScriptCode)
       })
