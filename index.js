@@ -101,7 +101,7 @@ const windowControl = {
     // const executeRootDir = path.join(__dirname, configs.EXECUTES_DIR)
     let executeScripts
     try {
-      const data = fs.readFileSync(configs.PLUGINS_CONFIG_PATH)
+      const data = fs.readFileSync(configs.EXECUTES_CONFIG_PATH)
       executeScripts = JSON.parse(data.toString('utf-8'))
     } catch (error) {
       console.error(error)
