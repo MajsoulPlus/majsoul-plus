@@ -170,6 +170,15 @@ const windowControl = {
     }
     const gameWindow = new BrowserWindow(config)
     gameWindow.on('page-title-updated', event => event.preventDefault())
+    gameWindow.on('resize', () => {
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds())
+    })
+    gameWindow.on('move', () => {
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds())
+    })
+    gameWindow.on('moved', () => {
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds())
+    })
     gameWindow.on('closed', () => {
       Util.shutoffPlayer()
     })
@@ -339,10 +348,7 @@ const windowControl = {
             break
           }
           case 'update-user-config': {
-            userConfigs = JSON.parse(
-              fs.readFileSync(configs.USER_CONFIG_PATH)
-            )
-
+            userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
             windowControl.windowMap['manager'].setContentSize(
               configs.MANAGER_WINDOW_CONFIG.width *
                 userConfigs.window.zoomFactor,

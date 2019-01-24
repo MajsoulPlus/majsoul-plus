@@ -8,6 +8,7 @@ const configs = require('../../configs')
 const userConfigs = require(configs.USER_CONFIG_PATH)
 
 const clipboard = remote.clipboard
+const electronScreen = electron.screen
 
 /**
  * @type {Electron.WebviewTag}
@@ -35,6 +36,11 @@ let executeScriptsCodes = []
  * @type {number}
  */
 let serverPort
+
+/**
+ * @type {ClientRectList | DOMRectList}
+ */
+let clientRect
 
 const probuildExecuteCode = executeScriptInfo => {
   let codeEntry = executeScriptInfo.entry
@@ -95,14 +101,34 @@ ipcRenderer.on('load-url', (event, ...args) => {
   mainWindowBox.style.transform = 'none'
 })
 
+ipcRenderer.on('window-resize', (event, ...args) => {
+  clientRect = args[0]
+})
+
 ipcRenderer.on('take-screenshot', () => {
   if (webContents) {
-    webContents.capturePage(image => {
+    const callbackFunction = image => {
       ipcRenderer.send('application-message', 'take-screenshot', image.toPNG())
       const dataURL = image.toDataURL()
       showScreenshotLabel(dataURL)
       clipboard.writeImage(image)
+    }
+    const rect = clientRect
+    const display = electronScreen.getDisplayMatching({
+      x: parseInt(rect.x),
+      y: parseInt(rect.y),
+      width: parseInt(rect.width),
+      height: parseInt(rect.height)
     })
+    webContents.capturePage(
+      {
+        x: 0,
+        y: 0,
+        width: parseInt(mainWindow.clientWidth * display.scaleFactor),
+        height: parseInt(mainWindow.clientHeight * display.scaleFactor)
+      },
+      callbackFunction
+    )
   }
 })
 
