@@ -4,6 +4,7 @@ const configs = require('../configs')
 const { ipcRenderer, remote: electronRemote, shell } = require('electron')
 const dialog = electronRemote.dialog
 const AdmZip = require('adm-zip')
+const Util = require('../Util')
 const os = require('os')
 
 const app = electronRemote.app
@@ -22,28 +23,6 @@ const modSettingsFile = configs.MODS_CONFIG_PATH
 const toolsRootDir = path.join(__dirname, '../', configs.TOOLS_DIR)
 
 const userConfig = require(configs.USER_CONFIG_PATH)
-
-/**
- * 同步删除文件夹
- * @param {string} dir 要删除的目录
- * @author romin
- * @description 同步删除文件夹，https://juejin.im/post/5ab32b20518825557f00d36c
- */
-function removeDir(dir) {
-  let files = fs.readdirSync(dir)
-  for (var i = 0; i < files.length; i++) {
-    let newPath = path.join(dir, files[i])
-    let stat = fs.statSync(newPath)
-    if (stat.isDirectory()) {
-      //如果是文件夹就递归下去
-      removeDir(newPath)
-    } else {
-      //删除文件
-      fs.unlinkSync(newPath)
-    }
-  }
-  fs.rmdirSync(dir) //如果文件夹是空的，就将自己删除掉
-}
 
 /**
  * 刷新所有模组和插件并重新加载DOM
@@ -386,7 +365,7 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
-      removeDir(infoCard.infos.filesDir)
+      Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('change', onchangeFunction)
@@ -467,7 +446,7 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
-      removeDir(infoCard.infos.filesDir)
+      Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('change', onchangeFunction)
@@ -520,7 +499,7 @@ const reloadDOM = (executes, mods, tools) => {
     }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
-      removeDir(infoCard.infos.filesDir)
+      Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('click', onClickFunction)

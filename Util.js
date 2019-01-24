@@ -304,6 +304,27 @@ const Util = {
   },
 
   /**
+   * 同步删除文件夹
+   * @param {string} dir 要删除的目录
+   * @author romin
+   * @description 同步删除文件夹，https://juejin.im/post/5ab32b20518825557f00d36c
+   */
+  removeDir(dir) {
+    let files = fs.readdirSync(dir)
+    for (var i = 0; i < files.length; i++) {
+      let newPath = path.join(dir, files[i])
+      let stat = fs.statSync(newPath)
+      if (stat.isDirectory()) {
+        //如果是文件夹就递归下去
+        this.removeDir(newPath)
+      } else {
+        //删除文件
+        fs.unlinkSync(newPath)
+      }
+    }
+    fs.rmdirSync(dir) //如果文件夹是空的，就将自己删除掉
+  },
+  /**
    * 截取屏幕画面
    * @param {Electron.WebContents} webContents
    */
@@ -326,7 +347,7 @@ const Util = {
     )
   },
   /**
-   * 退出窗口
+   * 退出播放器窗口
    */
   shutoffPlayer() {
     audioPlayer.close()
