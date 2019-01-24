@@ -586,6 +586,7 @@ h1 {
   background-color: var(--main-dark-color);
 }
 .main-context > .bottom-pannel > #pingInfo {
+  cursor: default;
   font-size: 14px;
   position: absolute;
   line-height: 14px;
