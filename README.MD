@@ -2,12 +2,14 @@
 
 在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能
 
-<a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">获取稳定版</a> <a href="https://github.com/iamapig120/majsoul-plus-client/releases/">浏览所有版本</a>
+<a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">稳定版: ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
+![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)</a> 
+
+<a href="https://github.com/iamapig120/majsoul-plus-client/releases/">开发板: ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
+![DownloadsLatestPre](https://img.shields.io/github/downloads-pre/MajsoulPlus/majsoul-plus-client/latest/total.svg)</a>
 
 [![Build status](https://ci.appveyor.com/api/projects/status/cx2hgugjts6ed932/branch/master?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus-client/branch/master)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus-client.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus-client)
-![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)
-![DownloadsTotal](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/total.svg)
 ![License](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 ## 特性
