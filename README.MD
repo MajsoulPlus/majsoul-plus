@@ -2,10 +2,10 @@
 
 在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能
 
-<a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">稳定版: ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
+<a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">稳定版： ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
 ![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)</a> 
 
-<a href="https://github.com/iamapig120/majsoul-plus-client/releases/">开发板: ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
+<a href="https://github.com/iamapig120/majsoul-plus-client/releases/">开发板： ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
 ![DownloadsLatestPre](https://img.shields.io/github/downloads-pre/MajsoulPlus/majsoul-plus-client/latest/total.svg)</a>
 
 [![Build status](https://ci.appveyor.com/api/projects/status/cx2hgugjts6ed932/branch/master?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus-client/branch/master)
@@ -15,10 +15,9 @@
 ## 特性
 
 - 除首次加载较慢，其余均可高速加载
-- 轻量级，仅依赖 express 、 electron 以及 AdmZip
-- 桌面端跨平台
-- 本地文件不加密
-- 支持魔改模组和代码执行
+- 可使用如OBS等视频采集软件采集画面
+- Windows、Mac OS、Linux，桌面端跨平台
+- 支持替换游戏静态资源以及对游戏注入代码
 
 ## 如何使用
 
@@ -27,6 +26,16 @@
 3. 运行
 
 在客户端中玩的开心！
+
+
+## 从源码启动
+
+请确保 Git, node.js 和 NPM 已经被正确安装
+
+1. ```git clone git@github.com:MajsoulPlus/majsoul-plus-client.git```
+2. ```cd majsoul-plus-client```
+3. ```npm i```
+4. ```npm start```
 
 ## 自制模组
 
@@ -56,7 +65,9 @@
       "from": "/0/[^/]+/myres2/tablecloth/tablecloth_default/preview\\.jpg",
       "to": "/0/v0.4.1.w/myres2/tablecloth/tablecloth_default/preview\\.jpg"
     }
-  ]
+  ],
+  "//注释":"可选，一个内置在模组内的插件，其定义请参考下方插件部分",
+  "execute":{}
 }
 ```
 
