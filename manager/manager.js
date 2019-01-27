@@ -355,27 +355,35 @@ const reloadDOM = (executes, mods, tools) => {
   })
 }
 
-// 安装模组 按钮
-const installMod = document.getElementById('installMod')
-installMod.addEventListener('click', () => {
+// 安装扩展资源 函数
+const installResources = () => {
   dialog.showOpenDialog(
     {
-      title: '选取Mod资源包……',
+      title: '选取扩展资源包……',
       filters: [
         {
-          name: '雀魂Plus Mod',
-          extensions: ['mspm']
-        },
-        {
-          name: '所有文件',
-          extensions: ['*']
+          name: '雀魂Plus扩展',
+          extensions: ['mspm', 'mspe', 'mspt']
         }
       ]
     },
     filename => {
       if (filename) {
         const unzip = new AdmZip(filename)
-        unzip.extractAllToAsync(modRootDir, true, err => {
+        const extname = path.extname(filename)
+        let installDir
+        switch (extname) {
+          case 'mspm':
+            installDir = modRootDir
+            break
+          case 'mspe':
+            installDir = executeRootDir
+            break
+          case 'mspt':
+            installDir = toolsRootDir
+            break
+        }
+        unzip.extractAllToAsync(installDir, true, err => {
           if (err) {
             alert('安装失败！\n错误信息如下:\n' + err)
           } else {
@@ -386,73 +394,19 @@ installMod.addEventListener('click', () => {
       }
     }
   )
-})
+}
+
+// 安装模组 按钮
+const installMod = document.getElementById('installMod')
+installMod.addEventListener('click', installResources)
 
 // 安装插件 按钮
 const installExecute = document.getElementById('installExecute')
-installExecute.addEventListener('click', () => {
-  dialog.showOpenDialog(
-    {
-      title: '选取插件资源包……',
-      filters: [
-        {
-          name: '雀魂Plus插件',
-          extensions: ['mspe']
-        },
-        {
-          name: '所有文件',
-          extensions: ['*']
-        }
-      ]
-    },
-    filename => {
-      if (filename) {
-        const unzip = new AdmZip(filename)
-        unzip.extractAllToAsync(executeRootDir, true, err => {
-          if (err) {
-            alert('安装失败！\n错误信息如下:\n' + err)
-          } else {
-            alert('安装成功！')
-            refreshFunction()
-          }
-        })
-      }
-    }
-  )
-})
+installExecute.addEventListener('click', installResources)
 
 // 安装工具 按钮
 const installTool = document.getElementById('installTool')
-installTool.addEventListener('click', () => {
-  dialog.showOpenDialog(
-    {
-      title: '选取工具资源包……',
-      filters: [
-        {
-          name: '雀魂Plus工具',
-          extensions: ['mspt']
-        },
-        {
-          name: '所有文件',
-          extensions: ['*']
-        }
-      ]
-    },
-    filename => {
-      if (filename) {
-        const unzip = new AdmZip(filename)
-        unzip.extractAllToAsync(toolsRootDir, true, err => {
-          if (err) {
-            alert('安装失败！\n错误信息如下:\n' + err)
-          } else {
-            alert('安装成功！')
-            refreshFunction()
-          }
-        })
-      }
-    }
-  )
-})
+installTool.addEventListener('click', installResources)
 
 // 记录编辑状态使用的变量
 let executesEditFlag = false
