@@ -367,19 +367,20 @@ const installResources = () => {
         }
       ]
     },
-    filename => {
-      if (filename) {
+    filenameArr => {
+      if (filenameArr && filenameArr[0]) {
+        const filename = filenameArr[0]
         const unzip = new AdmZip(filename)
         const extname = path.extname(filename)
         let installDir
         switch (extname) {
-          case 'mspm':
+          case '.mspm':
             installDir = modRootDir
             break
-          case 'mspe':
+          case '.mspe':
             installDir = executeRootDir
             break
-          case 'mspt':
+          case '.mspt':
             installDir = toolsRootDir
             break
         }
