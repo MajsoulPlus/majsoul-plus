@@ -21,7 +21,7 @@ class InfoCard {
     )
     this._inputType = isButton ? 'button' : 'checkbox'
     /**
-     * @type {{[x:string]:Array<>}}
+     * @type {{[x:string]:Array<EventListener>}}
      */
     this._eventListeners = {}
     this.initDOM()
@@ -32,6 +32,7 @@ class InfoCard {
   }
   set DOM(value) {
     this._dom = value
+    return value
   }
   initDOM() {
     const article = document.createElement('article')
@@ -154,6 +155,7 @@ class InfoCard {
     } else {
       this.DOM.className = ''
     }
+    return value
   }
 }
 module.exports = InfoCard
