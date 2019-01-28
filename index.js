@@ -70,6 +70,100 @@ electronApp.on(
   }
 )
 
+// 设置一个菜单
+const gameWindowMenu = new Menu()
+gameWindowMenu.append(
+  new MenuItem({
+    label: '游戏',
+    role: 'services',
+    submenu: [
+      new MenuItem({
+        label: '截图',
+        accelerator: 'F12',
+        click: (menuItem, browserWindow) => {
+          Util.takeScreenshot(browserWindow.webContents)
+        }
+      }),
+      new MenuItem({
+        label: '截图',
+        accelerator: 'CmdOrCtrl+P',
+        enabled: true,
+        // visible: false,
+        click: (menuItem, browserWindow) => {
+          Util.takeScreenshot(browserWindow.webContents)
+        }
+      }),
+      new MenuItem({
+        label: '退出游戏',
+        accelerator: 'Alt+F4',
+        click: (menuItem, browserWindow) => {
+          browserWindow.close()
+        }
+      })
+    ]
+  })
+)
+gameWindowMenu.append(
+  new MenuItem({
+    label: '窗口',
+    role: 'window',
+    submenu: [
+      new MenuItem({
+        label: '全屏',
+        accelerator: 'F11',
+        click: (menuItem, browserWindow) => {
+          if (!userConfigs.window.isKioskModeOn) {
+            browserWindow.setFullScreen(!browserWindow.isFullScreen())
+          } else {
+            browserWindow.setKiosk(!browserWindow.isKiosk())
+          }
+        }
+      }),
+      new MenuItem({
+        label: '全屏',
+        accelerator: 'F5',
+        enabled: true,
+        visible: false,
+        click: (menuItem, browserWindow) => {
+          if (!userConfigs.window.isKioskModeOn) {
+            browserWindow.setFullScreen(!browserWindow.isFullScreen())
+          } else {
+            browserWindow.setKiosk(!browserWindow.isKiosk())
+          }
+        }
+      }),
+      new MenuItem({
+        label: '退出全屏',
+        accelerator: 'Esc',
+        click: (menuItem, browserWindow) => {
+          if (browserWindow.isFullScreen()) {
+            browserWindow.setFullScreen(false)
+            return
+          }
+          if (browserWindow.isKiosk()) {
+            browserWindow.setKiosk(false)
+          }
+        }
+      })
+    ]
+  })
+)
+gameWindowMenu.append(
+  new MenuItem({
+    label: '更多',
+    submenu: [
+      new MenuItem({
+        label: '开发者工具',
+        accelerator: 'CmdOrCtrl+I',
+        click: (menuItem, browserWindow) => {
+          browserWindow.openDevTools({ mode: 'detach' })
+          browserWindow.send('open-devtools')
+        }
+      })
+    ]
+  })
+)
+
 const windowControl = {
   windowMap: { toolsMap: {} },
   _getGameWindowTitle: () => {
@@ -207,98 +301,6 @@ const windowControl = {
       gameWindow.openDevTools({ mode: 'detach' })
     }
 
-    // 设置一个菜单
-    const gameWindowMenu = new Menu()
-    gameWindowMenu.append(
-      new MenuItem({
-        label: '游戏',
-        role: 'services',
-        submenu: [
-          new MenuItem({
-            label: '截图',
-            accelerator: 'F12',
-            click: (menuItem, browserWindow) => {
-              Util.takeScreenshot(browserWindow.webContents)
-            }
-          }),
-          new MenuItem({
-            label: '截图',
-            accelerator: 'CmdOrCtrl+P',
-            enabled: true,
-            // visible: false,
-            click: (menuItem, browserWindow) => {
-              Util.takeScreenshot(browserWindow.webContents)
-            }
-          }),
-          new MenuItem({
-            label: '退出游戏',
-            accelerator: 'Alt+F4',
-            click: (menuItem, browserWindow) => {
-              browserWindow.close()
-            }
-          })
-        ]
-      })
-    )
-    gameWindowMenu.append(
-      new MenuItem({
-        label: '窗口',
-        role: 'window',
-        submenu: [
-          new MenuItem({
-            label: '全屏',
-            accelerator: 'F11',
-            click: (menuItem, browserWindow) => {
-              if (!userConfigs.window.isKioskModeOn) {
-                browserWindow.setFullScreen(!browserWindow.isFullScreen())
-              } else {
-                browserWindow.setKiosk(!browserWindow.isKiosk())
-              }
-            }
-          }),
-          new MenuItem({
-            label: '全屏',
-            accelerator: 'F5',
-            enabled: true,
-            visible: false,
-            click: (menuItem, browserWindow) => {
-              if (!userConfigs.window.isKioskModeOn) {
-                browserWindow.setFullScreen(!browserWindow.isFullScreen())
-              } else {
-                browserWindow.setKiosk(!browserWindow.isKiosk())
-              }
-            }
-          }),
-          new MenuItem({
-            label: '退出全屏',
-            accelerator: 'Esc',
-            click: (menuItem, browserWindow) => {
-              if (browserWindow.isFullScreen()) {
-                browserWindow.setFullScreen(false)
-                return
-              }
-              if (browserWindow.isKiosk()) {
-                browserWindow.setKiosk(false)
-              }
-            }
-          })
-        ]
-      })
-    )
-    gameWindowMenu.append(
-      new MenuItem({
-        label: '更多',
-        submenu: [
-          new MenuItem({
-            label: '开发者工具',
-            accelerator: 'CmdOrCtrl+I',
-            click: (menuItem, browserWindow) => {
-              browserWindow.openDevTools({ mode: 'detach' })
-            }
-          })
-        ]
-      })
-    )
     Menu.setApplicationMenu(gameWindowMenu)
 
     windowControl.windowMap['game'] = gameWindow

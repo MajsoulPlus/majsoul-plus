@@ -132,6 +132,12 @@ ipcRenderer.on('take-screenshot', () => {
   }
 })
 
+ipcRenderer.on('open-devtools', () => {
+  if (webContents) {
+    mainWindow.openDevTools({ mode: 'detach' })
+  }
+})
+
 const testRedirectGameWindow = url => {
   return url.startsWith(configs.REMOTE_DOMAIN)
 }
