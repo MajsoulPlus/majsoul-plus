@@ -136,6 +136,58 @@ const reloadDOM = (executes, mods, tools) => {
   executeInfos.innerHTML = ''
   toolInfos.innerHTML = ''
 
+  const exportFunction = (info, type) => {
+    let extname
+    let typeText
+    switch (type) {
+      case 'execute': {
+        extname = 'mspe'
+        typeText = '插件'
+        break
+      }
+      case 'mod': {
+        extname = 'mspm'
+        typeText = '模组'
+        break
+      }
+      case 'tool': {
+        extname = 'mspt'
+        typeText = '工具'
+        break
+      }
+    }
+    const zip = new AdmZip()
+    const tempZipName = `${info.name}-${
+      info.author ? info.author : '无名氏'
+    }.${extname}`
+    const tempZipPathName = path.join(os.tmpdir(), tempZipName)
+    zip.addLocalFolder(info.filesDir, path.basename(info.filesDir))
+    zip.writeZip(tempZipPathName, true)
+    const userChosenPath = dialog.showSaveDialog({
+      title: `导出${typeText}到……`,
+      filters: [
+        {
+          name: `雀魂Plus${typeText}`,
+          extensions: [extname]
+        },
+        {
+          name: '所有文件',
+          extensions: ['*']
+        }
+      ],
+      defaultPath: tempZipName
+    })
+    if (userChosenPath) {
+      fs.copyFile(tempZipPathName, userChosenPath, err => {
+        if (err) {
+          alert('导出失败！\n错误信息如下:\n' + err)
+        } else {
+          alert('导出成功！')
+        }
+      })
+    }
+  }
+
   // Execute
   const executeLaunchedList = executeLaunched.map(
     element => `${element.name}|${element.author}`
@@ -173,48 +225,15 @@ const reloadDOM = (executes, mods, tools) => {
         }
       }
     }
-    const onexportFunction = () => {
-      const zip = new AdmZip()
-      const tempZipName = `${executeInfo.name}-${
-        executeInfo.author ? executeInfo.author : '无名氏'
-      }.mspe`
-      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
-      zip.addLocalFolder(
-        executeInfo.filesDir,
-        path.basename(executeInfo.filesDir)
-      )
-      zip.writeZip(tempZipPathName, true)
-      const userChosenPath = dialog.showSaveDialog({
-        title: '导出插件到……',
-        filters: [
-          {
-            name: '雀魂Plus插件',
-            extensions: ['mspe']
-          },
-          {
-            name: '所有文件',
-            extensions: ['*']
-          }
-        ],
-        defaultPath: tempZipName
-      })
-      if (userChosenPath) {
-        fs.copyFile(tempZipPathName, userChosenPath, err => {
-          if (err) {
-            alert('导出失败！\n错误信息如下:\n' + err)
-          } else {
-            alert('导出成功！')
-          }
-        })
-      }
-    }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
       Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('change', onchangeFunction)
-    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('export', () =>
+      exportFunction(executeInfo, 'execute')
+    )
     infoCard.addEventListener('remove', onremoveFunction)
 
     executeInfos.appendChild(infoCard.DOM)
@@ -257,45 +276,13 @@ const reloadDOM = (executes, mods, tools) => {
         }
       }
     }
-    const onexportFunction = () => {
-      const zip = new AdmZip()
-      const tempZipName = `${modInfo.name}-${
-        modInfo.author ? modInfo.author : '无名氏'
-      }.mspm`
-      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
-      zip.addLocalFolder(modInfo.filesDir, path.basename(modInfo.filesDir))
-      zip.writeZip(tempZipPathName, true)
-      const userChosenPath = dialog.showSaveDialog({
-        title: '导出Mod到……',
-        filters: [
-          {
-            name: '雀魂Plus Mod',
-            extensions: ['mspm']
-          },
-          {
-            name: '所有文件',
-            extensions: ['*']
-          }
-        ],
-        defaultPath: tempZipName
-      })
-      if (userChosenPath) {
-        fs.copyFile(tempZipPathName, userChosenPath, err => {
-          if (err) {
-            alert('导出失败！\n错误信息如下:\n' + err)
-          } else {
-            alert('导出成功！')
-          }
-        })
-      }
-    }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
       Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('change', onchangeFunction)
-    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('export', () => exportFunction(modInfo, 'mod'))
     infoCard.addEventListener('remove', onremoveFunction)
 
     modInfos.appendChild(infoCard.DOM)
@@ -310,45 +297,13 @@ const reloadDOM = (executes, mods, tools) => {
     const onClickFunction = () => {
       ipcRenderer.send('application-message', 'start-tool', toolInfo)
     }
-    const onexportFunction = () => {
-      const zip = new AdmZip()
-      const tempZipName = `${toolInfo.name}-${
-        toolInfo.author ? toolInfo.author : '无名氏'
-      }.mspt`
-      const tempZipPathName = path.join(os.tmpdir(), tempZipName)
-      zip.addLocalFolder(toolInfo.filesDir, path.basename(toolInfo.filesDir))
-      zip.writeZip(tempZipPathName, true)
-      const userChosenPath = dialog.showSaveDialog({
-        title: '导出工具到……',
-        filters: [
-          {
-            name: '雀魂Plus工具',
-            extensions: ['mspt']
-          },
-          {
-            name: '所有文件',
-            extensions: ['*']
-          }
-        ],
-        defaultPath: tempZipName
-      })
-      if (userChosenPath) {
-        fs.copyFile(tempZipPathName, userChosenPath, err => {
-          if (err) {
-            alert('导出失败！\n错误信息如下:\n' + err)
-          } else {
-            alert('导出成功！')
-          }
-        })
-      }
-    }
     const onremoveFunction = () => {
       infoCard.DOM.remove()
       Util.removeDir(infoCard.infos.filesDir)
       refreshFunction()
     }
     infoCard.addEventListener('click', onClickFunction)
-    infoCard.addEventListener('export', onexportFunction)
+    infoCard.addEventListener('export', () => exportFunction(toolInfo, 'tool'))
     infoCard.addEventListener('remove', onremoveFunction)
 
     toolInfos.appendChild(infoCard.DOM)
