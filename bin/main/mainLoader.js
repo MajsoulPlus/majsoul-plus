@@ -47,11 +47,20 @@ const probuildExecuteCode = executeScriptInfo => {
   if (!codeEntry) {
     codeEntry = 'script.js'
   }
-  let code = fs
-    .readFileSync(
-      path.join(executeScriptInfo.filesDir, executeScriptInfo.entry)
-    )
-    .toString('utf-8')
+  let code = ''
+  if (Array.isArray(codeEntry)) {
+    codeEntry.forEach(codeEntry => {
+      code +=
+        '\n' +
+        fs
+          .readFileSync(path.join(executeScriptInfo.filesDir, codeEntry))
+          .toString('utf-8')
+    })
+  } else {
+    code = fs
+      .readFileSync(path.join(executeScriptInfo.filesDir, codeEntry))
+      .toString('utf-8')
+  }
   if (!executeScriptInfo.sync) {
     code = `(()=>{
             let __raf
