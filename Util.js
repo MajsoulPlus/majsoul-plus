@@ -6,6 +6,7 @@ const fs = require('fs')
 const electron = require('electron')
 
 const configs = require('./configs')
+const AdmZip = require('adm-zip')
 
 /**
  * @type {typeof import("https")}
@@ -351,6 +352,14 @@ const Util = {
    */
   shutoffPlayer() {
     audioPlayer.close()
+  },
+  /**
+   * 选取一个路径和目标，生成一个压缩文件
+   * @param {string} from 要被打包的文件夹
+   * @param {*} to 打包到的路径
+   */
+  zipDir(from, to) {
+    // TODO
   }
 }
 
