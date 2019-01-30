@@ -109,6 +109,13 @@ gameWindowMenu.append(
     role: 'window',
     submenu: [
       new MenuItem({
+        label: '置顶',
+        accelerator: 'CmdOrCtrl+T',
+        click: (menuItem, browserWindow) => {
+          browserWindow.setAlwaysOnTop(!browserWindow.isAlwaysOnTop())
+        }
+      }),
+      new MenuItem({
         label: '全屏',
         accelerator: 'F11',
         click: (menuItem, browserWindow) => {
