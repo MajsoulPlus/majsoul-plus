@@ -99,6 +99,7 @@
 - 截图    `F12 / Cmd+P (Mac OS) / Ctrl+P (Windows / Linux)`
 - 全屏    `F5 / F11`
 - 退出全屏    `Esc`
+- 置顶窗口    `Cmd+T (Mac OS) / Ctrl+T (Windows / Linux)`
 - 退出程序    `Alt+F4`
 - 开发者工具    `Cmd+I (Mac OS) / Ctrl+I (Windows / Linux)`
 
