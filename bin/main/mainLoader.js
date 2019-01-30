@@ -7,7 +7,6 @@ const { ipcRenderer, remote } = electron
 const configs = require('../../configs')
 const userConfigs = require(configs.USER_CONFIG_PATH)
 
-const clipboard = remote.clipboard
 const electronScreen = electron.screen
 
 /**
@@ -78,14 +77,14 @@ const probuildExecuteCode = executeScriptInfo => {
 
 let screenshotCounter = 0
 let screenshotTimer
-const showScreenshotLabel = dataURL => {
+const showScreenshotLabel = src => {
   /**
    * @type {HTMLImageElement}
    */
   const screenshotImage = document.getElementById('screenshotImage')
   const screenshotText = document.getElementById('screenshotText')
   const screenshotLabel = document.getElementById('screenshotLabel')
-  screenshotImage.src = dataURL
+  screenshotImage.src = src
   screenshotText.innerText = screenshotCounter++
     ? `已保存${screenshotCounter}张截图`
     : '截图已保存'
@@ -93,12 +92,13 @@ const showScreenshotLabel = dataURL => {
   screenshotLabel.classList.add('show')
   clearTimeout(screenshotTimer)
   screenshotTimer = setTimeout(() => {
-    screenshotCounter = 0
     screenshotLabel.classList.remove('show')
+    clearTimeout(screenshotTimer)
     screenshotTimer = setTimeout(() => {
       screenshotLabel.classList.add('hide')
+      screenshotCounter = 0
     }, 300)
-  }, 3000)
+  }, 8000)
 }
 
 ipcRenderer.on('load-url', (event, ...args) => {
@@ -116,11 +116,12 @@ ipcRenderer.on('window-resize', (event, ...args) => {
 
 ipcRenderer.on('take-screenshot', () => {
   if (webContents) {
+    /**
+     * 回调函数
+     * @param {Electron.NativeImage} image
+     */
     const callbackFunction = image => {
       ipcRenderer.send('application-message', 'take-screenshot', image.toPNG())
-      const dataURL = image.toDataURL()
-      showScreenshotLabel(dataURL)
-      clipboard.writeImage(image)
     }
     const rect = clientRect
     const display = electronScreen.getDisplayMatching({
@@ -139,6 +140,11 @@ ipcRenderer.on('take-screenshot', () => {
       callbackFunction
     )
   }
+})
+
+ipcRenderer.on('screenshot-saved', (event, ...args) => {
+  const src = args[0]
+  showScreenshotLabel('file://' + src)
 })
 
 ipcRenderer.on('open-devtools', () => {

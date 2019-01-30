@@ -10,7 +10,7 @@ const path = require('path')
 const https = require('https')
 
 const electron = require('electron')
-const { app: electronApp, BrowserWindow, ipcMain } = electron
+const { app: electronApp, BrowserWindow, ipcMain, clipboard } = electron
 const { Menu, MenuItem } = electron
 
 let userConfigs = require(configs.USER_CONFIG_PATH)
@@ -363,15 +363,22 @@ const windowControl = {
             break
           }
           case 'take-screenshot': {
+            /**
+             * @type {Buffer}
+             */
             const buffer = args[1]
-            Util.writeFile(
-              path.join(
-                electron.app.getPath('pictures'),
-                electron.app.getName(),
-                Date.now() + '.png'
-              ),
-              buffer
+            const filepath = path.join(
+              electron.app.getPath('pictures'),
+              electron.app.getName(),
+              Date.now() + '.png'
             )
+            Util.writeFile(filepath, buffer).then(() => {
+              windowControl.windowMap['game'].webContents.send(
+                'screenshot-saved',
+                filepath
+              )
+            })
+            clipboard.writeImage(electron.nativeImage.createFromBuffer(buffer))
             break
           }
           default:

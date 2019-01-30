@@ -163,7 +163,9 @@ const Util = {
     return new Promise((resolve, reject) => {
       this.mkdirs(path.dirname(localURI)).then(() => {
         fs.writeFile(localURI, data, encoding, err => {
-          if (err) reject(err)
+          if (err) {
+            reject(err)
+          }
           resolve()
         })
       })
