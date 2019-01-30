@@ -354,12 +354,15 @@ const Util = {
     audioPlayer.close()
   },
   /**
-   * 选取一个路径和目标，生成一个压缩文件
+   * 选取一个路径和目标，生成一个压缩文件，返回生成的压缩文件路径
    * @param {string} from 要被打包的文件夹
-   * @param {*} to 打包到的路径
+   * @param {string} to 打包到的路径
    */
   zipDir(from, to) {
-    // TODO
+    const zip = new AdmZip()
+    zip.addLocalFolder(from, path.basename(from))
+    zip.writeZip(to, true)
+    return to
   }
 }
 

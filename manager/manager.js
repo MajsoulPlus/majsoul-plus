@@ -156,13 +156,11 @@ const reloadDOM = (executes, mods, tools) => {
         break
       }
     }
-    const zip = new AdmZip()
     const tempZipName = `${info.name}-${
       info.author ? info.author : '无名氏'
     }.${extname}`
     const tempZipPathName = path.join(os.tmpdir(), tempZipName)
-    zip.addLocalFolder(info.filesDir, path.basename(info.filesDir))
-    zip.writeZip(tempZipPathName, true)
+    Util.zipDir(info.filesDir, tempZipPathName)
     const userChosenPath = dialog.showSaveDialog({
       title: `导出${typeText}到……`,
       filters: [
