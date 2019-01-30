@@ -25,6 +25,7 @@ const CONFIGS = {
   XOR_KEY: 73,
   EXTEND_RES_KEYWORD: 'extendRes',
   REMOTE_DOMAIN: 'https://majsoul.union-game.com/',
+  HTTP_REMOTE_DOMAIN: 'http://majsoul.union-game.com/',
   LOCAL_DIR: '/static',
   MODS_DIR: '/mod',
   MODS_CONFIG_PATH: path.join(app.getPath('userData'), 'modsEnabled.json'),

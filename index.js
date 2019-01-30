@@ -283,6 +283,7 @@ const windowControl = {
     gameWindow.once('ready-to-show', () => {
       gameWindow.webContents.setZoomFactor(1)
       gameWindow.show()
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds())
     })
     gameWindow.webContents.on('console-message', (
       evt,
@@ -405,10 +406,22 @@ const windowControl = {
             break
           }
           case 'executes-loaded': {
-            windowControl.windowMap['game'].webContents.send(
-              'load-url',
-              `https://localhost:${sererHttps.address().port}/0/`
-            )
+            const clipboardText = clipboard.readText()
+            if (
+              clipboardText &&
+              (clipboardText.startsWith(configs.REMOTE_DOMAIN) ||
+                clipboardText.startsWith(configs.HTTP_REMOTE_DOMAIN))
+            ) {
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
+                clipboardText
+              )
+            } else {
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
+                `https://localhost:${sererHttps.address().port}/0/`
+              )
+            }
             break
           }
           default:

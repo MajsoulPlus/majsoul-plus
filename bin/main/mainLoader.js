@@ -101,15 +101,6 @@ const showScreenshotLabel = src => {
   }, 8000)
 }
 
-ipcRenderer.on('load-url', (event, ...args) => {
-  const url = args[0]
-  console.warn('LoadURL', url)
-  mainWindow.loadURL(url)
-  mainWindowBox.style.width = '100vw'
-  mainWindowBox.style.height = '100vh'
-  mainWindowBox.style.transform = 'none'
-})
-
 ipcRenderer.on('window-resize', (event, ...args) => {
   clientRect = args[0]
 })
@@ -154,8 +145,12 @@ ipcRenderer.on('open-devtools', () => {
 })
 
 const testRedirectGameWindow = url => {
-  return url.startsWith(configs.REMOTE_DOMAIN)
+  return (
+    url.startsWith(configs.REMOTE_DOMAIN) ||
+    url.startsWith(configs.HTTP_REMOTE_DOMAIN)
+  )
 }
+
 const testIsLocalGameWindow = url => {
   return url.startsWith('https://localhost:')
 }
@@ -169,6 +164,7 @@ const getLocalUrlWithParams = url => {
 }
 const redirectGameWindow = (url, gameWindow) => {
   const localUrl = getLocalUrlWithParams(url)
+  console.warn('Redirect Target:' + localUrl)
   gameWindow.loadURL(localUrl)
 }
 
@@ -227,4 +223,17 @@ mainWindow.addEventListener('dom-ready', () => {
   } else {
     scaleWindow(100)
   }
+})
+
+ipcRenderer.on('load-url', (event, ...args) => {
+  const url = args[0]
+  console.warn('LoadURL', url)
+  if (testRedirectGameWindow(url)) {
+    redirectGameWindow(url, mainWindow)
+  } else {
+    mainWindow.loadURL(url)
+  }
+  mainWindowBox.style.width = '100vw'
+  mainWindowBox.style.height = '100vh'
+  mainWindowBox.style.transform = 'none'
 })
