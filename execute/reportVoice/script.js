@@ -25,7 +25,10 @@ if (game) {
       a = cfg.item_definition.character.get(n)
     if (!a) return null
     for (
-      var r = /* e.level */ 6, o = cfg.voice.sound.findGroup(a.sound), s = [], h = 0;
+      var r = /* e.level */ 6,
+        o = cfg.voice.sound.findGroup(a.sound),
+        s = [],
+        h = 0;
       h < o.length;
       h++
     )
@@ -37,4 +40,23 @@ if (game) {
       sound: this.PlaySound(o[l].path, a.sound_volume, i)
     }
   }
+
+  requestAnimationFrame(function autoRun() {
+    try {
+      const arrBackup = cfg.voice.sound.groups_
+      if (!arrBackup || arrBackup.length === 0) {
+        throw new Error()
+      }
+      console.log('Hacked所有语音')
+      Object.entries(cfg.voice.sound.groups_).forEach(
+        ([soundID, soundGroup]) => {
+          soundGroup.forEach((soundObject, index) => {
+            soundObject.level_limit = 0
+          })
+        }
+      )
+    } catch (error) {
+      requestAnimationFrame(autoRun)
+    }
+  })
 }
