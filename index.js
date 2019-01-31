@@ -199,7 +199,6 @@ const windowControl = {
   },
 
   _getExecuteScripts: () => {
-    // const executeRootDir = path.join(__dirname, configs.EXECUTES_DIR)
     let executeScripts
     try {
       const data = fs.readFileSync(configs.EXECUTES_CONFIG_PATH)
@@ -267,7 +266,8 @@ const windowControl = {
   initGameWindow: gameWindowConfig => {
     const config = {
       ...gameWindowConfig,
-      title: windowControl._getGameWindowTitle()
+      title: windowControl._getGameWindowTitle(),
+      frame: !userConfigs.window.isNoBorder
     }
     const gameWindow = new BrowserWindow(config)
     gameWindow.on('page-title-updated', event => event.preventDefault())
@@ -301,7 +301,7 @@ const windowControl = {
         console.warn('Console', msg)
       }
     })
-    // gameWindow.loadURL(`https://localhost:${sererHttps.address().port}/0/`)
+    // 载入本地启动器
     gameWindow.loadURL('file://' + path.join(__dirname, 'bin/main/index.html'))
 
     // Add environment config to open developer tools

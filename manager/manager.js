@@ -931,19 +931,33 @@ const getKeyText = key => {
     isHardwareAccelerationDisable:
       '关闭硬件加速(Turn Hardware Acceleration Off)',
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
+    isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
     loaclVersion: '雀魂Plus 当前版本'
   }
   return lang[key] ? lang[key] : key
 }
 const userConfigInit = () => {
+  const localUserConfig = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../configs-user.json'))
+  )
   const settingInner = document.getElementById('settingInner')
   settingInner.innerHTML = ''
-  Object.entries(userConfig).forEach(([keyGroup, value]) => {
+  Object.entries(localUserConfig).forEach(([keyGroup, value]) => {
+    // 如果有新选项，则加载到设置文档中
+    if (userConfig[keyGroup] === undefined) {
+      userConfig[keyGroup] = value
+    }
+
     const groupName = getKeyText(keyGroup)
     const h3 = document.createElement('h3')
     h3.innerText = groupName
     settingInner.append(h3)
     Object.entries(value).forEach(([keyConfig, value], index) => {
+      if (userConfig[keyGroup][keyConfig] === undefined) {
+        userConfig[keyGroup][keyConfig] = value
+      }
+      value = userConfig[keyGroup][keyConfig]
+
       switch (typeof value) {
         case 'boolean': {
           const selectName = getKeyText(keyConfig)

@@ -2,7 +2,8 @@
   "window": {
     "zoomFactor": 1,
     "renderingMultiple": 100,
-    "isKioskModeOn": false
+    "isKioskModeOn": false,
+    "isNoBorder": false
   },
   "update": {
     "prerelease": false
