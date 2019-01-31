@@ -86,7 +86,10 @@ const CONFIGS = {
     maximizable: false,
     fullscreenable: false,
     useContentSize: true
-  }
+  },
+  HTTP_GET_USER_AGENT: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
+    process.versions.chrome
+  }`
 }
 try {
   fs.statSync(CONFIGS.EXECUTES_CONFIG_PATH)

@@ -7,7 +7,7 @@ const electron = require('electron')
 
 const configs = require('./configs')
 const AdmZip = require('adm-zip')
-
+const url = require('url')
 /**
  * @type {typeof import("https")}
  */
@@ -101,34 +101,40 @@ const Util = {
   getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
-      http.get(remoteUrl, httpRes => {
-        const { statusCode } = httpRes
-        httpRes.setEncoding(encoding)
-        let fileData = ''
-        httpRes.on('data', chunk => {
-          fileData += chunk
-        })
-        httpRes.on('end', () => {
-          if (200 > statusCode || 400 <= statusCode) {
-            console.warn(
-              `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-            )
-            reject({
-              statusCode,
-              data: encrypt
-                ? this.XOR(this.encodeData(fileData, encoding))
-                : fileData
-            })
-          } else {
-            resolve({
-              statusCode,
-              data: encrypt
-                ? this.XOR(this.encodeData(fileData, encoding))
-                : fileData
-            })
-          }
-        })
-      })
+      http.get(
+        {
+          ...url.parse(remoteUrl),
+          headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
+        },
+        httpRes => {
+          const { statusCode } = httpRes
+          httpRes.setEncoding(encoding)
+          let fileData = ''
+          httpRes.on('data', chunk => {
+            fileData += chunk
+          })
+          httpRes.on('end', () => {
+            if (200 > statusCode || 400 <= statusCode) {
+              console.warn(
+                `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
+              )
+              reject({
+                statusCode,
+                data: encrypt
+                  ? this.XOR(this.encodeData(fileData, encoding))
+                  : fileData
+              })
+            } else {
+              resolve({
+                statusCode,
+                data: encrypt
+                  ? this.XOR(this.encodeData(fileData, encoding))
+                  : fileData
+              })
+            }
+          })
+        }
+      )
     })
   },
 
