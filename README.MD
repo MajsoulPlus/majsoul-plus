@@ -1,6 +1,6 @@
 # [雀魂 Plus - 雀魂麻将第三方桌面客户端](https://github.com/iamapig120/majsoul-plus-client)
 
-在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能
+在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能，并对直播环境进行了一定优化
 
 <a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">稳定版： ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
 ![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)</a> 
