@@ -376,8 +376,9 @@ const Util = {
    * 判断A标签是否比B标签较新
    * @param {string} taga A标签，类似 v1.2.3
    * @param {string} tagb B标签，类似 v1.2.3
+   * @return {number} 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
    */
-  isLaterVersion(taga, tagb) {
+  compareVersion(taga, tagb) {
     let tagaArr = taga.substring(1).split('-')
     let tagbArr = tagb.substring(1).split('-')
     let tagaDev = false
@@ -394,15 +395,15 @@ const Util = {
     let laterFlag = undefined
     for (let i = 0; i < 3; i++) {
       if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
-        laterFlag = true
+        laterFlag = i + 1
         break
       } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
-        laterFlag = false
+        laterFlag = 0
         break
       }
     }
 
-    if (typeof laterFlag === 'boolean') {
+    if (typeof laterFlag === 'number') {
       return laterFlag
     }
     if (laterFlag === undefined) {
@@ -429,21 +430,21 @@ const Util = {
         tagbDevArr[0] = devStrToNum(tagbDevArr[0])
         for (let i = 0; i < 2; i++) {
           if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
-            laterFlag = true
+            laterFlag = 4
             break
           } else if (
             parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)
           ) {
-            laterFlag = false
+            laterFlag = 0
             break
           }
         }
         if (laterFlag === undefined) {
-          return false
+          return 0
         }
         return laterFlag
       } else {
-        return false
+        return 0
       }
     }
   }

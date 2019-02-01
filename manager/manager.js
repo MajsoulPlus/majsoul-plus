@@ -795,13 +795,16 @@ const checkUpdate = userConfig => {
         }
         // 远程版本号
         const versionRemote = result.tag_name
-        if (Util.isLaterVersion(versionRemote, versionLocal)) {
+        const updateMode = Util.compareVersion(versionRemote, versionLocal)
+        if (updateMode > 0) {
           resolve({
             version: result.tag_name,
             time: result.published_at,
             body: result.body,
             local: 'v' + app.getVersion(),
-            html_url: result.html_url
+            html_url: result.html_url,
+            result: result,
+            update_mode: updateMode
           })
         } else {
           reject()
@@ -813,35 +816,58 @@ const checkUpdate = userConfig => {
     })
   })
 }
-fs.readFile(configs.USER_CONFIG_PATH, (err, data) => {
-  if (err) {
-    return
-  }
-  checkUpdate(JSON.parse(data).update).then(
-    res => {
-      document.getElementById('updateCard').classList.add('show')
-      document
-        .getElementById('updateCard_close')
-        .addEventListener('click', () => {
-          document.getElementById('updateCard').classList.remove('show')
-        })
-      document
-        .getElementById('updateCard_view')
-        .addEventListener('click', () => {
-          shell.openExternal(res.html_url)
-          document.getElementById('updateCard').classList.remove('show')
-        })
-      document.getElementById('localVersion').innerText = res.local
-      document.getElementById('remoteVersion').innerText = res.version
-      document.getElementById('publishTime').innerText = new Date(
-        res.time
-      ).toLocaleString()
-    },
-    () => {
-      // console.log('rejected')
+// 立即检查更新
+checkUpdate(userConfig.update).then(
+  res => {
+    if (res.update_mode !== 1) {
+      // 隐藏浏览发布页按钮
+      document.getElementById('updateCard_view').classList.add('hide')
+      document.getElementById('updateCard_autoupdate').classList.remove('hide')
+    } else {
+      // 隐藏在线更新按钮
+      document.getElementById('updateCard_view').classList.remove('hide')
+      document.getElementById('updateCard_autoupdate').classList.add('hide')
     }
-  )
-})
+
+    // 显示更新面板
+    document.getElementById('updateCard').classList.add('show')
+
+    // 下次提醒我
+    document
+      .getElementById('updateCard_close')
+      .addEventListener('click', () => {
+        document.getElementById('updateCard').classList.remove('show')
+      })
+
+    // 浏览发布页
+    document.getElementById('updateCard_view').addEventListener('click', () => {
+      shell.openExternal(res.html_url)
+      document.getElementById('updateCard').classList.remove('show')
+    })
+
+    // 在线更新
+    // TODO
+    document
+      .getElementById('updateCard_autoupdate')
+      .addEventListener('click', () => {
+        document.getElementById('launch').disabled = true
+        document.getElementById('updateCard').classList.remove('show')
+      })
+
+    // 本地版本号
+    document.getElementById('localVersion').innerText = res.local
+    // 远程版本号
+    document.getElementById('remoteVersion').innerText = res.version
+    // 版本发布时间
+    document.getElementById('publishTime').innerText = new Date(
+      res.time
+    ).toLocaleString()
+  },
+  () => {
+    // console.log('rejected')
+  }
+)
+
 /* 检查更新业务逻辑 End */
 
 /* 设置项业务逻辑 Start */

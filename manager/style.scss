@@ -5,6 +5,7 @@
   --main-color: #e280ae;
   --main-dark-color: #cc6699;
   --white-text: #ffffff;
+  --disabled-color: #808080;
 
   --switch-able-color: #e280ae;
   --switch-disable-color: #b1b1b1;
@@ -127,7 +128,7 @@
 }
 button {
   outline: none !important;
-  cursor: pointer !important;
+  cursor: pointer;
 }
 body {
   width: 1280px;
@@ -586,6 +587,10 @@ h1 {
       &:hover {
         background-color: var(--main-dark-color);
       }
+      &:disabled {
+        cursor: not-allowed;
+        background-color: var(--disabled-color);
+      }
     }
     & > #pingInfo {
       cursor: default;
@@ -672,6 +677,9 @@ h1 {
   & > button {
     font-size: 12px;
     font-weight: 400;
+    &.hide {
+      display: none;
+    }
     &.updateCard_close {
       color: var(--light-text);
       border: none;
