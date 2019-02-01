@@ -764,79 +764,6 @@ getServersJson().then(reStartPing, () => {
 /* Ping 业务逻辑 End */
 
 /* 检查更新业务逻辑 Start */
-/**
- * 判断A标签是否比B标签较新
- * @param {string} taga A标签
- * @param {string} tagb B标签
- */
-const isLater = (taga, tagb) => {
-  let tagaArr = taga.substring(1).split('-')
-  let tagbArr = tagb.substring(1).split('-')
-  let tagaDev = false
-  let tagbDev = false
-  if (tagaArr.length > 1) {
-    tagaDev = true
-  }
-  if (tagbArr.length > 1) {
-    tagbDev = true
-  }
-  let tagaMain = tagaArr[0].split('.')
-  let tagbMain = tagbArr[0].split('.')
-
-  let laterFlag = undefined
-  for (let i = 0; i < 3; i++) {
-    if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
-      laterFlag = true
-      break
-    } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
-      laterFlag = false
-      break
-    }
-  }
-
-  if (typeof laterFlag === 'boolean') {
-    return laterFlag
-  }
-  if (laterFlag === undefined) {
-    if (tagbDev && !tagaDev) {
-      return true
-    } else if (tagaDev && !tagbDev) {
-      return false
-    } else if (tagaDev && tagbDev) {
-      const tagaDevArr = tagaArr[1].split('.')
-      const tagbDevArr = tagbArr[1].split('.')
-      const devStrToNum = devStr => {
-        switch (devStr) {
-          case 'alpha':
-            return 1
-          case 'beta':
-            return 2
-          case 'rc':
-            return 3
-          default:
-            return 0
-        }
-      }
-      tagaDevArr[0] = devStrToNum(tagaDevArr[0])
-      tagbDevArr[0] = devStrToNum(tagbDevArr[0])
-      for (let i = 0; i < 2; i++) {
-        if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
-          laterFlag = true
-          break
-        } else if (parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)) {
-          laterFlag = false
-          break
-        }
-      }
-      if (laterFlag === undefined) {
-        return false
-      }
-      return laterFlag
-    } else {
-      return false
-    }
-  }
-}
 const checkUpdate = userConfig => {
   return new Promise((resolve, reject) => {
     /**
@@ -868,7 +795,7 @@ const checkUpdate = userConfig => {
         }
         // 远程版本号
         const versionRemote = result.tag_name
-        if (isLater(versionRemote, versionLocal)) {
+        if (Util.isLaterVersion(versionRemote, versionLocal)) {
           resolve({
             version: result.tag_name,
             time: result.published_at,

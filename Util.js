@@ -371,6 +371,81 @@ const Util = {
     zip.addLocalFolder(from, path.basename(from))
     zip.writeZip(to, true)
     return to
+  },
+  /**
+   * 判断A标签是否比B标签较新
+   * @param {string} taga A标签，类似 v1.2.3
+   * @param {string} tagb B标签，类似 v1.2.3
+   */
+  isLaterVersion(taga, tagb) {
+    let tagaArr = taga.substring(1).split('-')
+    let tagbArr = tagb.substring(1).split('-')
+    let tagaDev = false
+    let tagbDev = false
+    if (tagaArr.length > 1) {
+      tagaDev = true
+    }
+    if (tagbArr.length > 1) {
+      tagbDev = true
+    }
+    let tagaMain = tagaArr[0].split('.')
+    let tagbMain = tagbArr[0].split('.')
+
+    let laterFlag = undefined
+    for (let i = 0; i < 3; i++) {
+      if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
+        laterFlag = true
+        break
+      } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
+        laterFlag = false
+        break
+      }
+    }
+
+    if (typeof laterFlag === 'boolean') {
+      return laterFlag
+    }
+    if (laterFlag === undefined) {
+      if (tagbDev && !tagaDev) {
+        return true
+      } else if (tagaDev && !tagbDev) {
+        return false
+      } else if (tagaDev && tagbDev) {
+        const tagaDevArr = tagaArr[1].split('.')
+        const tagbDevArr = tagbArr[1].split('.')
+        const devStrToNum = devStr => {
+          switch (devStr) {
+            case 'alpha':
+              return 1
+            case 'beta':
+              return 2
+            case 'rc':
+              return 3
+            default:
+              return 0
+          }
+        }
+        tagaDevArr[0] = devStrToNum(tagaDevArr[0])
+        tagbDevArr[0] = devStrToNum(tagbDevArr[0])
+        for (let i = 0; i < 2; i++) {
+          if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
+            laterFlag = true
+            break
+          } else if (
+            parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)
+          ) {
+            laterFlag = false
+            break
+          }
+        }
+        if (laterFlag === undefined) {
+          return false
+        }
+        return laterFlag
+      } else {
+        return false
+      }
+    }
   }
 }
 
