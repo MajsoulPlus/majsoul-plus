@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# jetbrains ide file
+.idea/
+
 package-lock.json
 static/
 build/
