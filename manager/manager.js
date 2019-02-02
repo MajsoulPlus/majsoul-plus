@@ -911,16 +911,11 @@ checkUpdate(userConfig.update).then(
             const files = fs.readdirSync(fs.readdirSync(unzipDir)[0])
             const rootDir = path.join('../', __dirname)
             files.forEach(file => {
-              fs.copyFile(file, rootDir, err => {
-                if (err) {
-                  alert('安装失败！\n错误信息如下:\n' + err)
-                } else {
-                  Util.removeDir(unzipDir)
-                  fs.unlinkSync(filedir)
-                  window.close()
-                }
-              })
+              fs.copyFileSync(file, path.join(rootDir, file))
             })
+            Util.removeDir(unzipDir)
+            fs.unlinkSync(filedir)
+            window.close()
           } catch (error) {
             return
           }
