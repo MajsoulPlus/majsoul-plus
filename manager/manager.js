@@ -764,79 +764,6 @@ getServersJson().then(reStartPing, () => {
 /* Ping 业务逻辑 End */
 
 /* 检查更新业务逻辑 Start */
-/**
- * 判断A标签是否比B标签较新
- * @param {string} taga A标签
- * @param {string} tagb B标签
- */
-const isLater = (taga, tagb) => {
-  let tagaArr = taga.substring(1).split('-')
-  let tagbArr = tagb.substring(1).split('-')
-  let tagaDev = false
-  let tagbDev = false
-  if (tagaArr.length > 1) {
-    tagaDev = true
-  }
-  if (tagbArr.length > 1) {
-    tagbDev = true
-  }
-  let tagaMain = tagaArr[0].split('.')
-  let tagbMain = tagbArr[0].split('.')
-
-  let laterFlag = undefined
-  for (let i = 0; i < 3; i++) {
-    if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
-      laterFlag = true
-      break
-    } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
-      laterFlag = false
-      break
-    }
-  }
-
-  if (typeof laterFlag === 'boolean') {
-    return laterFlag
-  }
-  if (laterFlag === undefined) {
-    if (tagbDev && !tagaDev) {
-      return true
-    } else if (tagaDev && !tagbDev) {
-      return false
-    } else if (tagaDev && tagbDev) {
-      const tagaDevArr = tagaArr[1].split('.')
-      const tagbDevArr = tagbArr[1].split('.')
-      const devStrToNum = devStr => {
-        switch (devStr) {
-          case 'alpha':
-            return 1
-          case 'beta':
-            return 2
-          case 'rc':
-            return 3
-          default:
-            return 0
-        }
-      }
-      tagaDevArr[0] = devStrToNum(tagaDevArr[0])
-      tagbDevArr[0] = devStrToNum(tagbDevArr[0])
-      for (let i = 0; i < 2; i++) {
-        if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
-          laterFlag = true
-          break
-        } else if (parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)) {
-          laterFlag = false
-          break
-        }
-      }
-      if (laterFlag === undefined) {
-        return false
-      }
-      return laterFlag
-    } else {
-      return false
-    }
-  }
-}
 const checkUpdate = userConfig => {
   return new Promise((resolve, reject) => {
     /**
@@ -868,13 +795,16 @@ const checkUpdate = userConfig => {
         }
         // 远程版本号
         const versionRemote = result.tag_name
-        if (isLater(versionRemote, versionLocal)) {
+        const updateMode = Util.compareVersion(versionRemote, versionLocal)
+        if (updateMode > 0) {
           resolve({
             version: result.tag_name,
             time: result.published_at,
             body: result.body,
             local: 'v' + app.getVersion(),
-            html_url: result.html_url
+            html_url: result.html_url,
+            result: result,
+            update_mode: updateMode
           })
         } else {
           reject()
@@ -886,35 +816,58 @@ const checkUpdate = userConfig => {
     })
   })
 }
-fs.readFile(configs.USER_CONFIG_PATH, (err, data) => {
-  if (err) {
-    return
-  }
-  checkUpdate(JSON.parse(data).update).then(
-    res => {
-      document.getElementById('updateCard').classList.add('show')
-      document
-        .getElementById('updateCard_close')
-        .addEventListener('click', () => {
-          document.getElementById('updateCard').classList.remove('show')
-        })
-      document
-        .getElementById('updateCard_view')
-        .addEventListener('click', () => {
-          shell.openExternal(res.html_url)
-          document.getElementById('updateCard').classList.remove('show')
-        })
-      document.getElementById('localVersion').innerText = res.local
-      document.getElementById('remoteVersion').innerText = res.version
-      document.getElementById('publishTime').innerText = new Date(
-        res.time
-      ).toLocaleString()
-    },
-    () => {
-      // console.log('rejected')
+// 立即检查更新
+checkUpdate(userConfig.update).then(
+  res => {
+    if (res.update_mode !== 1) {
+      // 隐藏浏览发布页按钮
+      document.getElementById('updateCard_view').classList.add('hide')
+      document.getElementById('updateCard_autoupdate').classList.remove('hide')
+    } else {
+      // 隐藏在线更新按钮
+      document.getElementById('updateCard_view').classList.remove('hide')
+      document.getElementById('updateCard_autoupdate').classList.add('hide')
     }
-  )
-})
+
+    // 显示更新面板
+    document.getElementById('updateCard').classList.add('show')
+
+    // 下次提醒我
+    document
+      .getElementById('updateCard_close')
+      .addEventListener('click', () => {
+        document.getElementById('updateCard').classList.remove('show')
+      })
+
+    // 浏览发布页
+    document.getElementById('updateCard_view').addEventListener('click', () => {
+      shell.openExternal(res.html_url)
+      document.getElementById('updateCard').classList.remove('show')
+    })
+
+    // 在线更新
+    // TODO
+    document
+      .getElementById('updateCard_autoupdate')
+      .addEventListener('click', () => {
+        document.getElementById('launch').disabled = true
+        document.getElementById('updateCard').classList.remove('show')
+      })
+
+    // 本地版本号
+    document.getElementById('localVersion').innerText = res.local
+    // 远程版本号
+    document.getElementById('remoteVersion').innerText = res.version
+    // 版本发布时间
+    document.getElementById('publishTime').innerText = new Date(
+      res.time
+    ).toLocaleString()
+  },
+  () => {
+    // console.log('rejected')
+  }
+)
+
 /* 检查更新业务逻辑 End */
 
 /* 设置项业务逻辑 Start */

@@ -60,6 +60,6 @@ typings/
 # next.js build output
 .next
 
-package-lock.json
+# MajsoulPlus Dirs
 static/
 build/
