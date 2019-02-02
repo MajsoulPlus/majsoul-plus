@@ -61,5 +61,6 @@ typings/
 .next
 
 # MajsoulPlus Dirs
+package-lock.json
 static/
 build/
