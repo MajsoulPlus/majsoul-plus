@@ -1,3 +1,5 @@
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 const fs = require('fs')
 const path = require('path')
 const configs = require('../configs')
@@ -884,7 +886,6 @@ checkUpdate(userConfig.update).then(
           speedPreSenc += chuck.length
         })
           .then(resutlt => {
-            console.log(resutlt)
             Util.writeFile(
               path.join(os.tmpdir(), 'majsoulUpdate.zip'),
               resutlt.data
@@ -905,19 +906,36 @@ checkUpdate(userConfig.update).then(
       .addEventListener('click', () => {
         Util.mkdirs(unzipDir).then(() => {
           try {
+            const copyFile = (from, to) => {
+              const stat = fs.statSync(from)
+              if (stat.isDirectory()) {
+                fs.readdirSync(from).forEach(file => {
+                  copyFile(path.join(from, file),path.join(to, file))
+                })
+              } else {
+                fs.copyFileSync(from, to)
+              }
+            }
             fs.statSync(filedir)
             const admzip = new AdmZip(filedir)
             admzip.extractAllTo(unzipDir)
-            const files = fs.readdirSync(fs.readdirSync(unzipDir)[0])
-            const rootDir = path.join('../', __dirname)
+            const newVersionRootDir = path.join(
+              unzipDir,
+              fs.readdirSync(unzipDir)[0]
+            )
+            const files = fs.readdirSync(newVersionRootDir)
+            const rootDir = path.join(__dirname, '../')
             files.forEach(file => {
-              fs.copyFileSync(file, path.join(rootDir, file))
+              copyFile(
+                path.join(newVersionRootDir, file),
+                path.join(rootDir, file)
+              )
             })
             Util.removeDir(unzipDir)
             fs.unlinkSync(filedir)
             window.close()
           } catch (error) {
-            return
+            console.error(error)
           }
         })
       })

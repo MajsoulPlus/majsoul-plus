@@ -145,10 +145,12 @@ const Util = {
               })
             } else {
               if (statusCode === 302 || statusCode === 301) {
-                return this.getRemoteSource(
-                  httpRes.headers.location,
-                  encrypt,
-                  encoding
+                return resolve(
+                  this.getRemoteSource(
+                    httpRes.headers.location,
+                    encrypt,
+                    encoding
+                  )
                 )
               }
               resolve({
