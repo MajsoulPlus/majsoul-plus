@@ -661,6 +661,7 @@ h1 {
   width: calc(256px + 2px);
   background-color: var(--info-card-color);
   border: 1px solid var(--border-color);
+  user-select: none;
   & > h3 {
     color: var(--bold-text);
     font-size: 14px;
@@ -681,6 +682,9 @@ h1 {
       display: none;
     }
     &.updateCard_close {
+      position: absolute;
+      top: 100px;
+      left: 24px;
       color: var(--light-text);
       border: none;
       text-underline-position: under;
@@ -692,6 +696,9 @@ h1 {
       }
     }
     &.updateCard_view {
+      position: absolute;
+      top: 100px;
+      right: 24px;
       border: none;
       color: var(--white-text);
       background-color: var(--main-color);
@@ -700,6 +707,10 @@ h1 {
       float: right;
       &:hover {
         background-color: var(--main-dark-color);
+      }
+      &:disabled {
+        background-color: var(--disabled-color);
+        cursor: not-allowed;
       }
     }
   }

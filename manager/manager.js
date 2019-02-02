@@ -846,12 +846,85 @@ checkUpdate(userConfig.update).then(
     })
 
     // 在线更新
-    // TODO
+
+    const filedir = path.join(os.tmpdir(), 'majsoulUpdate.zip')
+    const unzipDir = path.join(os.tmpdir(), 'majsoulUpdateTemp')
+
     document
       .getElementById('updateCard_autoupdate')
       .addEventListener('click', () => {
         document.getElementById('launch').disabled = true
+        // 隐藏更新卡片
         document.getElementById('updateCard').classList.remove('show')
+        // 显示下载中卡片
+        document.getElementById('downloadCard').classList.add('show')
+        // 测速器
+        let timer
+        let speedPreSenc = 0
+        /**
+         * 转换数字到速度
+         * @param {number} speedNum 数字，单元B
+         */
+        const calcSpeed = speedNum => {
+          const units = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'EB/s']
+          let unitsPos = 0
+          while (speedNum > 1024) {
+            unitsPos++
+            speedNum /= 1024
+          }
+          return `${speedNum.toFixed(2)} ${units[unitsPos]}`
+        }
+        timer = setInterval(() => {
+          document.getElementById('downloadCardSpeed').innerText = calcSpeed(
+            speedPreSenc
+          )
+          speedPreSenc = 0
+        }, 1000)
+        Util.httpsGetFile(res.result['zipball_url'], 'binary', chuck => {
+          speedPreSenc += chuck.length
+        })
+          .then(resutlt => {
+            console.log(resutlt)
+            Util.writeFile(
+              path.join(os.tmpdir(), 'majsoulUpdate.zip'),
+              resutlt.data
+            )
+          })
+          .then(() => {
+            clearInterval(timer)
+            document.getElementById('downloadCardTitle').innerText = '下载完毕'
+            document.getElementById('downloadCardText').innerText =
+              '更新已下载完毕，是否安装并重启？'
+            document.getElementById('downloadCard_install').disabled = false
+          })
+      })
+
+    // 安装按钮
+    document
+      .getElementById('downloadCard_install')
+      .addEventListener('click', () => {
+        Util.mkdirs(unzipDir).then(() => {
+          try {
+            fs.statSync(filedir)
+            const admzip = new AdmZip(filedir)
+            admzip.extractAllTo(unzipDir)
+            const files = fs.readdirSync(fs.readdirSync(unzipDir)[0])
+            const rootDir = path.join('../', __dirname)
+            files.forEach(file => {
+              fs.copyFile(file, rootDir, err => {
+                if (err) {
+                  alert('安装失败！\n错误信息如下:\n' + err)
+                } else {
+                  Util.removeDir(unzipDir)
+                  fs.unlinkSync(filedir)
+                  window.close()
+                }
+              })
+            })
+          } catch (error) {
+            return
+          }
+        })
       })
 
     // 本地版本号
