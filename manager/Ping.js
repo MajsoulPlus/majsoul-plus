@@ -1,4 +1,5 @@
 const NetworkUtil = require('./Network')
+const tcpPing = require('tcp-ping')
 
 class Ping {
   constructor () {
@@ -75,7 +76,9 @@ class Ping {
             const originUrl = `${this.services[this.currentService]}`
             const url = `${this._getRandomUrl(originUrl)}&service=ws-gateway&protocol=ws&ssl=true`
             NetworkUtil.getJson(url)
-            .then(resolve)
+            .then(res => {
+              resolve(res.servers[0])
+            })
             .catch(reject)
         } else {
             reject('services is not null')
@@ -99,10 +102,29 @@ class Ping {
     return Promise.resolve()
   }
 
-  _renderPing (time) {}
+  _renderPing (time) {
+    const pingTextDom = document.getElementById('pingText')
+    const pingInfoDom = document.getElementById('pingInfo')
+    pingTextDom.innerText = time >> 0
+    pingInfoDom.className = time < 150? 'green': time < 500? 'orange': 'red' 
+  }
 
   _ping (service) {
-
+    return new Promise((resolve, reject) => {
+      const address = service.split(':')[0]
+      const port = service.split(':')[1]
+      tcpPing.ping({
+        address,
+        port,
+        attempts: 3
+      }, (err, data) => {
+        if (err) {
+          console.error(err)
+          reject('tcp-ping error')
+        }
+        resolve(data.avg)
+      })
+    })
   }
 
   _initPing () {
@@ -112,6 +134,7 @@ class Ping {
       .then(this._getChildService)
       .then(this._ping)
       .then(this._renderPing)
+      .catch(console.error)
   }
 
   _getNextService(){
@@ -147,8 +170,6 @@ class Ping {
       this._initPing()
       this.addEventListener()
   }
-
-
 }
 
 module.exports = new Ping()
