@@ -1,4 +1,4 @@
-import NetworkUtil from './Network';
+const NetworkUtil = require('./Network')
 const {remote: {app}, shell} = require('electron')
 const defaultOptions = {
     releaseApi:'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest',
@@ -6,7 +6,7 @@ const defaultOptions = {
     usePreRlease: false,
 }
 
-export default class Update {
+class Update {
     constructor(options){
         this.options = {...defaultOptions, ...options}
     }
@@ -137,3 +137,4 @@ export default class Update {
         shouldUpdate && this._renderUpdateHint({remoteVersion, localVersion, time, body, url})
     }
 }
+module.exports = Update

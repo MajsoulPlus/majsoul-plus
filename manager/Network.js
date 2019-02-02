@@ -26,4 +26,4 @@ function _processJson(response){
     return response.json()
 }
 
-export default new NetWork()
+module.exports = new NetWork()

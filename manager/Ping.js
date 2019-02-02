@@ -1,0 +1,154 @@
+const NetworkUtil = require('./Network')
+
+class Ping {
+  constructor () {
+    this.services = null
+    this.currentService = null
+    this.serviceList = []
+  }
+
+  _getRandomUrl (url) {
+    return `${url}?randv=${Math.random().toString().substring(2, 17).padStart(16, '0')}`
+  }
+
+  _getVersion () {
+    const url = this._getRandomUrl('https://majsoul.union-game.com/0/version.json')
+    return NetworkUtil.getJson(url)
+      .then(res => res.version)
+  }
+
+  _getResVersion (version) {
+    const originUrl = `https://majsoul.union-game.com/0/resversion${version}.json`
+    const url = this._getRandomUrl(originUrl)
+    return NetworkUtil.getJson(url)
+      .then(res => res.res['config.json'].prefix)
+  }
+
+  _getConfig (prefix) {
+    const originUrl = `https://majsoul.union-game.com/0/${prefix}/config.json`
+    const url = this._getRandomUrl(originUrl)
+    return NetworkUtil.getJson(url)
+      .then(res => res.ip)
+  }
+
+  _saveSevices (ips) {
+    this.services = ips[0].region_urls
+    this.serviceList = Object.keys(this.services)
+  }
+
+  _getServices () {
+    return this._getVersion()
+      .then(this._getResVersion)
+      .then(this._getConfig)
+      .then(this._saveSevices)
+  }
+
+  _getService () {
+      if (!this.services) return Promise.reject('services is null')
+    const choosedService = localStorage.getItem('choosedService')
+    if (choosedService) {
+      this.currentService = this.serviceList.find(service => service === choosedService) || this.serviceList[0]
+    }
+    return Promise.resolve()
+  }
+
+  _getServiceName (service) {
+    const map = {
+      mainland: '中国大陆',
+      hk: '中国香港',
+      tw: '中国台湾',
+      us: '美国',
+      uk: '英国',
+      jp: '日本',
+      fr: '法国',
+      kr: '韩国',
+      sg: '新加坡',
+      de: '德国',
+      ru: '俄罗斯'
+    }
+    return map[service] || service
+  }
+
+  _getChildService = () => {
+      return new Promise((resolve, reject) => {
+        if (this.services) {
+            const originUrl = `${this.services[this.currentService]}`
+            const url = `${this._getRandomUrl(originUrl)}&service=ws-gateway&protocol=ws&ssl=true`
+            NetworkUtil.getJson(url)
+            .then(resolve)
+            .catch(reject)
+        } else {
+            reject('services is not null')
+        }
+      })
+  }
+
+  _renderError (err) {
+    console.error(err)
+    const serverTextDom = document.getElementById('serverText')
+    serverTextDom.innerText = '加载失败'
+  }
+
+  _renderService () {
+    const serverTextDom = document.getElementById('serverText')
+    const pingInfoDom = document.getElementById('pingInfo')
+    const pingTextDom = document.getElementById('pingText')
+    pingInfoDom.className = 'offline'
+    pingTextDom.innerText = '--'
+    serverTextDom.innerText = this._getServiceName(this.currentService)
+    return Promise.resolve()
+  }
+
+  _renderPing (time) {}
+
+  _ping (service) {
+
+  }
+
+  _initPing () {
+    this._getServices()
+      .then(this._getService)
+      .then(this._renderService)
+      .then(this._getChildService)
+      .then(this._ping)
+      .then(this._renderPing)
+  }
+
+  _getNextService(){
+    let index = this.serviceList.indexOf(this.currentService)
+    index = index > this.serviceList.length? 0: index +1
+    this.currentService = this.serviceList[index]
+    localStorage.setItem('choosedService', this.currentService)
+    return Promise.resolve()
+  }
+
+  _changeService(){
+    this._getNextService()
+    .then(this._renderService)
+    .then(this._getChildService)  
+    .then(this._ping)
+    .then(this._renderPing)
+  }
+
+  addEventListener(){
+      const serverInfoDom = document.getElementById('serverInfo')
+      serverInfoDom.addEventListener('click', this._changeService)
+  }
+
+  _refresh(){
+      this._getService()
+      .then(this._renderService)
+      .then(this._getChildService)
+      .then(this._ping)
+      .then(this._renderPing)
+  }
+
+  init(){
+      this._initPing()
+      this.addEventListener()
+  }
+
+
+}
+
+module.exports = new Ping()

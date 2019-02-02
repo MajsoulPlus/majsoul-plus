@@ -1,11 +1,11 @@
-import fs from 'fs'
-import path from 'path'
-import { ipcRrenderer, remote } from 'electron'
+const fs = require('fs')
+const path = require('path')
+const {ipcRenderer, remote} = require('electron')
 const {app} = remote
 const configs = require('../configs')
 const defaultUserConfig = JSON.parse(require(configs.USER_CONFIG_PATH))
 
-export default class Settings {
+class Settings {
 
   constructor (options) {
     this.userConfig = options.userConfig || defaultUserConfig
@@ -113,13 +113,14 @@ export default class Settings {
     settingInner.append(p)
   }
 
-  _saveConfig(){
-      try {
-          fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(this.userConfig))
-          alert('保存成功')
-      } catch (error) {
-          alert(`保存失败\n${error}`)
-      }
+  _saveConfig () {
+    try {
+      fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(this.userConfig))
+      ipcRenderer.send('application-message', 'update-user-config')
+      alert('保存成功')
+    } catch (error) {
+      alert(`保存失败\n${error}`)
+    }
   }
 
   _addSaveListener () {
@@ -138,3 +139,5 @@ export default class Settings {
     this.render()
   }
 }
+
+module.exports = Settings
