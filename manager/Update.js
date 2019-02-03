@@ -2,8 +2,8 @@ const NetworkUtil = require('./Network')
 const {remote: {app}, shell} = require('electron')
 const defaultOptions = {
     releaseApi:'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest',
-    preReleasApi: 'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases',
-    usePreRlease: false,
+    preReleaseApi: 'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases',
+    usePreRelease: false,
 }
 
 class Update {
@@ -15,10 +15,10 @@ class Update {
     _getLocalVersion() { return `v${app.getVersion()}`}
 
     _getRemoteVersionInfo () {
-        const checkApi = this.options.usePreRlease? this.options.preReleasApi: this.options.releaseApi
+        const checkApi = this.options.usePreRelease? this.options.preReleaseApi: this.options.releaseApi
         return NetworkUtil.getJson(checkApi)
         .then(res => {
-            const result = this.options.usePreRlease? res[0]: res
+            const result = this.options.usePreRelease? res[0]: res
             return {
                 remoteVersion: result.tag_name,
                 body: result.body,
@@ -32,7 +32,7 @@ class Update {
         })
     }
 
-    _compareVersion (taga, tagb) {
+    compareVersion (taga, tagb) {
         if (taga && tagb) {
             let tagaArr = taga.substring(1).split('-')
             let tagbArr = tagb.substring(1).split('-')
@@ -133,7 +133,7 @@ class Update {
         const localVersion = await this._getLocalVersion()
         const remoteVersionInfo = await this._getRemoteVersionInfo()
         const {remoteVersion, body, time, url } = remoteVersionInfo
-        const shouldUpdate = this._compareVersion(remoteVersion, localVersion)
+        const shouldUpdate = this.compareVersion(remoteVersion, localVersion)
         shouldUpdate && this._renderUpdateHint({remoteVersion, localVersion, time, body, url})
     }
 }

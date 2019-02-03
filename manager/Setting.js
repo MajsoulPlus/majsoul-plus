@@ -7,7 +7,7 @@ const defaultUserConfig = JSON.parse(require(configs.USER_CONFIG_PATH))
 
 class Settings {
 
-  constructor (options) {
+  constructor (options = {}) {
     this.userConfig = options.userConfig || defaultUserConfig
   }
 
