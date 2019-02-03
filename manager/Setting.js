@@ -88,7 +88,7 @@ class Settings {
     }
     const processes = {
       'boolean': () => this._renderCheckBoxSectionItem({settingInner, section, item, data, index}),
-      'number': () => this._renderNumberSectionItem({settingInner, sectoin, item, data, index})
+      'number': () => this._renderNumberSectionItem({settingInner, section, item, data, index})
     }
     const type = typeof data
     processes[type] && processes[type].call()
