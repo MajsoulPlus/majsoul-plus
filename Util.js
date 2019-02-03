@@ -68,8 +68,8 @@ const Util = {
    */
   mkdirs(dirname) {
     return new Promise(resolve => {
-      fs.exists(dirname, exists => {
-        if (exists) {
+      fs.stat(dirname, err => {
+        if (!err) {
           resolve()
         } else {
           resolve(
@@ -122,14 +122,21 @@ const Util = {
                 fileData = new Buffer(0)
                 break
               case 1:
-                fileData = chunks[0]
+                fileData = Buffer.from(chunks[0], encoding)
                 break
               default:
                 fileData = new Buffer(chunksSize)
-                for (var i = 0, pos = 0, l = chunks.length; i < l; i++) {
-                  var chunk = chunks[i]
-                  chunk.copy(fileData, pos)
-                  pos += chunk.length
+                for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
+                  /**
+                   * @type {string | Buffer}
+                   */
+                  const chunk = chunks[i]
+                  if (Buffer.isBuffer(chunk)) {
+                    chunk.copy(fileData, position)
+                  } else {
+                    Buffer.from(chunk, encoding).copy(fileData, position)
+                  }
+                  position += chunk.length
                 }
                 break
             }
@@ -139,9 +146,9 @@ const Util = {
               )
               reject({
                 res: httpRes,
-                data: encrypt
-                  ? this.XOR(this.encodeData(fileData, encoding))
-                  : fileData
+                data: (encrypt ? this.XOR(fileData) : fileData).toString(
+                  encoding
+                )
               })
             } else {
               if (statusCode === 302 || statusCode === 301) {
@@ -155,9 +162,9 @@ const Util = {
               }
               resolve({
                 res: httpRes,
-                data: encrypt
-                  ? this.XOR(this.encodeData(fileData, encoding))
-                  : fileData
+                data: (encrypt ? this.XOR(fileData) : fileData).toString(
+                  encoding
+                )
               })
             }
           })
@@ -372,14 +379,14 @@ const Util = {
         data => data,
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
-            ({ data, result }) => {
+            ({ data, res: result }) => {
               res.statusCode = result.statusCode
               if (!isPath) {
                 this.writeFile(localURI, data)
               }
               return data
             },
-            ({ data, result }) => {
+            ({ data, res: result }) => {
               res.statusCode = result.statusCode
               return Promise.reject(data)
             }

@@ -553,13 +553,13 @@ const getServersJson = () => {
       if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         resolve(JSON.parse(xhr.responseText))
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
-        reject()
+        reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
       }
     })
   })
     .then(
       result =>
-        new Promise((reslove, reject) => {
+        new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest()
           xhr.open(
             'GET',
@@ -573,12 +573,12 @@ const getServersJson = () => {
           xhr.send()
           xhr.addEventListener('readystatechange', () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-              reslove(JSON.parse(xhr.responseText).res['config.json'])
+              resolve(JSON.parse(xhr.responseText).res['config.json'])
             } else if (
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject()
+              reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
             }
           })
         })
@@ -603,19 +603,19 @@ const getServersJson = () => {
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject()
+              reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
             }
           })
         })
     )
     .then(
       result =>
-        new Promise(reslove => {
+        new Promise(resolve => {
           Object.entries(result.ip[0].region_urls).forEach(kv => {
             serversArray.push(kv)
           })
           // console.log('serversGot')
-          reslove()
+          resolve()
         })
     )
 }
@@ -809,11 +809,11 @@ const checkUpdate = userConfig => {
             update_mode: updateMode
           })
         } else {
-          reject()
+          reject('Need not to update')
           return
         }
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
-        reject()
+        reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
       }
     })
   })
@@ -910,7 +910,7 @@ checkUpdate(userConfig.update).then(
               const stat = fs.statSync(from)
               if (stat.isDirectory()) {
                 fs.readdirSync(from).forEach(file => {
-                  copyFile(path.join(from, file),path.join(to, file))
+                  copyFile(path.join(from, file), path.join(to, file))
                 })
               } else {
                 fs.copyFileSync(from, to)

@@ -11,12 +11,12 @@ if (!app) {
 const getIcon = () => {
   switch (os.platform()) {
     case 'win32':
-      return __dirname + '/bin/icons/icon.ico'
+      return path.join(__dirname + '/bin/icons/icon.ico')
     case 'darwin':
-      return __dirname + '/bin/icons/icon.icns'
+      return path.join(__dirname + '/bin/icons/icon.icns')
     case 'linux':
     default:
-      return __dirname + '/bin/icons/icon.png'
+      return path.join(__dirname + '/bin/icons/icon.png')
   }
 }
 const CONFIGS = {
