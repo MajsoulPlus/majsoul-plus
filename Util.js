@@ -122,7 +122,7 @@ const Util = {
                 fileData = new Buffer(0)
                 break
               case 1:
-                fileData = chunks[0]
+                fileData = Buffer.from(chunks[0], encoding)
                 break
               default:
                 fileData = new Buffer(chunksSize)
@@ -146,9 +146,9 @@ const Util = {
               )
               reject({
                 res: httpRes,
-                data: encrypt
-                  ? this.XOR(this.encodeData(fileData, encoding))
-                  : fileData
+                data: (encrypt ? this.XOR(fileData) : fileData).toString(
+                  encoding
+                )
               })
             } else {
               if (statusCode === 302 || statusCode === 301) {
@@ -162,9 +162,9 @@ const Util = {
               }
               resolve({
                 res: httpRes,
-                data: encrypt
-                  ? this.XOR(this.encodeData(fileData, encoding))
-                  : fileData
+                data: (encrypt ? this.XOR(fileData) : fileData).toString(
+                  encoding
+                )
               })
             }
           })
@@ -395,14 +395,16 @@ const Util = {
       )
       .then(
         data => {
-          let sendData = isPath ? data.toString('utf-8') : data
+          let sendData = isPath
+            ? this.encodeData(data).toString('utf-8')
+            : this.encodeData(data)
           if (encrypt) {
             sendData = this.XOR(sendData)
           }
           res.send(sendData)
         },
         data => {
-          res.send(data.toString('utf-8'))
+          res.send(this.encodeData(data).toString('utf-8'))
         }
       )
       .catch(err => console.error(err))
