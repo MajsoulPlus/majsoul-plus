@@ -379,14 +379,14 @@ const Util = {
         data => data,
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
-            ({ data, result }) => {
+            ({ data, res: result }) => {
               res.statusCode = result.statusCode
               if (!isPath) {
                 this.writeFile(localURI, data)
               }
               return data
             },
-            ({ data, result }) => {
+            ({ data, res: result }) => {
               res.statusCode = result.statusCode
               return Promise.reject(data)
             }
@@ -395,16 +395,14 @@ const Util = {
       )
       .then(
         data => {
-          let sendData = isPath
-            ? this.encodeData(data).toString('utf-8')
-            : this.encodeData(data)
+          let sendData = isPath ? data.toString('utf-8') : data
           if (encrypt) {
             sendData = this.XOR(sendData)
           }
           res.send(sendData)
         },
         data => {
-          res.send(this.encodeData(data).toString('utf-8'))
+          res.send(data.toString('utf-8'))
         }
       )
       .catch(err => console.error(err))
