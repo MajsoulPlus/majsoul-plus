@@ -126,10 +126,17 @@ const Util = {
                 break
               default:
                 fileData = new Buffer(chunksSize)
-                for (var i = 0, pos = 0, l = chunks.length; i < l; i++) {
-                  var chunk = chunks[i]
-                  chunk.copy(fileData, pos)
-                  pos += chunk.length
+                for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
+                  /**
+                   * @type {string | Buffer}
+                   */
+                  const chunk = chunks[i]
+                  if (Buffer.isBuffer(chunk)) {
+                    chunk.copy(fileData, position)
+                  } else {
+                    Buffer.from(chunk, encoding).copy(fileData, position)
+                  }
+                  position += chunk.length
                 }
                 break
             }
