@@ -6,6 +6,7 @@ class Ping {
     this.services = null
     this.currentService = null
     this.serviceList = []
+    this.interval = null
   }
 
   _getRandomUrl (url) {
@@ -132,8 +133,7 @@ class Ping {
       .then(this._getService)
       .then(this._renderService)
       .then(this._getChildService)
-      .then(this._ping)
-      .then(this._renderPing)
+      .then(this.ping)
       .catch(console.error)
   }
 
@@ -149,8 +149,8 @@ class Ping {
     this._getNextService()
     .then(this._renderService)
     .then(this._getChildService)  
-    .then(this._ping)
-    .then(this._renderPing)
+    .then(this.ping)
+    .catch(console.error)
   }
 
   addEventListener(){
@@ -162,8 +162,16 @@ class Ping {
       this._getService()
       .then(this._renderService)
       .then(this._getChildService)
-      .then(this._ping)
+      .then(this.ping)
+      .catch(console.error)
+  }
+
+  ping(service){
+    clearInterval(this.interval)
+    this.interval = setInterval(() => {
+      this._ping(service)
       .then(this._renderPing)
+    }, 5000);
   }
 
   init(){
