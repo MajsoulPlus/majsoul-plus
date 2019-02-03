@@ -11,7 +11,7 @@ const url = require('url')
 /**
  * @type {typeof import("https")}
  */
-const http = require('https')
+const https = require('https')
 
 // 用于存储Mod对象
 let mods
@@ -101,7 +101,7 @@ const Util = {
   getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
-      http.get(
+      https.get(
         {
           ...url.parse(remoteUrl),
           headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
@@ -109,27 +109,135 @@ const Util = {
         httpRes => {
           const { statusCode } = httpRes
           httpRes.setEncoding(encoding)
-          let fileData = ''
+          const chunks = []
+          let chunksSize = 0
           httpRes.on('data', chunk => {
-            fileData += chunk
+            chunks.push(chunk)
+            chunksSize += chunk.length
           })
           httpRes.on('end', () => {
+            let fileData = null
+            switch (chunks.length) {
+              case 0:
+                fileData = new Buffer(0)
+                break
+              case 1:
+                fileData = chunks[0]
+                break
+              default:
+                fileData = new Buffer(chunksSize)
+                for (var i = 0, pos = 0, l = chunks.length; i < l; i++) {
+                  var chunk = chunks[i]
+                  chunk.copy(fileData, pos)
+                  pos += chunk.length
+                }
+                break
+            }
             if (200 > statusCode || 400 <= statusCode) {
               console.warn(
                 `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
               )
               reject({
-                statusCode,
+                res: httpRes,
                 data: encrypt
                   ? this.XOR(this.encodeData(fileData, encoding))
                   : fileData
               })
             } else {
+              if (statusCode === 302 || statusCode === 301) {
+                return resolve(
+                  this.getRemoteSource(
+                    httpRes.headers.location,
+                    encrypt,
+                    encoding
+                  )
+                )
+              }
               resolve({
-                statusCode,
+                res: httpRes,
                 data: encrypt
                   ? this.XOR(this.encodeData(fileData, encoding))
                   : fileData
+              })
+            }
+          })
+        }
+      )
+    })
+  },
+
+  /**
+   * 使用https，从指定网址获取一个文件到一个指定路径
+   * @param {string} URI 远程URI地址
+   * @param {string} encoding 编码格式
+   * @param {Function} dataCallback 当获取到数据时候的callback
+   */
+  httpsGetFile(URI, encoding = 'binary', dataCallback) {
+    return new Promise((resolve, reject) => {
+      https.get(
+        {
+          ...url.parse(URI),
+          headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
+        },
+        httpRes => {
+          const { statusCode } = httpRes
+          httpRes.setEncoding(encoding)
+          const chunks = []
+          let chunksSize = 0
+          httpRes.on('data', chunk => {
+            chunks.push(chunk)
+            chunksSize += chunk.length
+            if (dataCallback) {
+              dataCallback(chunk)
+            }
+          })
+          httpRes.on('end', () => {
+            let fileData = null
+            switch (chunks.length) {
+              case 0:
+                fileData = new Buffer(0)
+                break
+              case 1:
+                fileData = chunks[0]
+                break
+              default:
+                fileData = new Buffer(chunksSize)
+                for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
+                  /**
+                   * @type {string | Buffer}
+                   */
+                  const chunk = chunks[i]
+                  if (Buffer.isBuffer(chunk)) {
+                    chunk.copy(fileData, position)
+                  } else {
+                    Buffer.from(chunk, encoding).copy(fileData, position)
+                  }
+                  position += chunk.length
+                }
+                break
+            }
+            if (200 > statusCode || 400 <= statusCode) {
+              console.warn(
+                `尝试下载资源 ${URI} 失败, statusCode = ${statusCode}`
+              )
+              reject({
+                res: httpRes,
+                data: fileData
+              })
+            } else {
+              if (statusCode === 302 || statusCode === 301) {
+                console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
+                return resolve(
+                  this.httpsGetFile(
+                    httpRes.headers.location,
+                    encoding,
+                    dataCallback
+                  )
+                )
+              }
+              resolve({
+                res: httpRes,
+                data: fileData
               })
             }
           })
@@ -160,15 +268,15 @@ const Util = {
 
   /**
    * 写入本地文件
-   * @param {string} localURI
+   * @param {string} pathToWrite
    * @param {Buffer | string} data
    * @param {string} encoding 默认是'binary'
    * @return {Promise<void>}
    */
-  writeFile(localURI, data, encoding = 'binary') {
+  writeFile(pathToWrite, data, encoding = 'binary') {
     return new Promise((resolve, reject) => {
-      this.mkdirs(path.dirname(localURI)).then(() => {
-        fs.writeFile(localURI, data, encoding, err => {
+      this.mkdirs(path.dirname(pathToWrite)).then(() => {
+        fs.writeFile(pathToWrite, data, encoding, err => {
           if (err) {
             reject(err)
           }
@@ -264,15 +372,15 @@ const Util = {
         data => data,
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
-            ({ data, statusCode }) => {
-              res.statusCode = statusCode
+            ({ data, result }) => {
+              res.statusCode = result.statusCode
               if (!isPath) {
                 this.writeFile(localURI, data)
               }
               return data
             },
-            ({ data, statusCode }) => {
-              res.statusCode = statusCode
+            ({ data, result }) => {
+              res.statusCode = result.statusCode
               return Promise.reject(data)
             }
           )

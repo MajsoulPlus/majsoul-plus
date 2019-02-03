@@ -641,6 +641,10 @@ h1 {
   width: calc(256px + 2px);
   background-color: var(--info-card-color);
   border: 1px solid var(--border-color);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 @-webkit-keyframes fadeInFromNone {
   0% {
@@ -691,6 +695,9 @@ h1 {
   display: none;
 }
 .update-card > button.updateCard_close {
+  position: absolute;
+  top: 100px;
+  left: 24px;
   color: var(--light-text);
   border: none;
   text-underline-position: under;
@@ -703,6 +710,9 @@ h1 {
   color: var(--bold-text);
 }
 .update-card > button.updateCard_view {
+  position: absolute;
+  top: 100px;
+  right: 24px;
   border: none;
   color: var(--white-text);
   background-color: var(--main-color);
@@ -713,6 +723,10 @@ h1 {
 }
 .update-card > button.updateCard_view:hover {
   background-color: var(--main-dark-color);
+}
+.update-card > button.updateCard_view:disabled {
+  background-color: var(--disabled-color);
+  cursor: not-allowed;
 }
 .update-card.show {
   display: block;
