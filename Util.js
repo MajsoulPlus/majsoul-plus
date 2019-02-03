@@ -68,8 +68,8 @@ const Util = {
    */
   mkdirs(dirname) {
     return new Promise(resolve => {
-      fs.exists(dirname, exists => {
-        if (exists) {
+      fs.stat(dirname, err => {
+        if (!err) {
           resolve()
         } else {
           resolve(
