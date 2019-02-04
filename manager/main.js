@@ -3,7 +3,6 @@ const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
 
-const fs = require('fs')
 const {ipcRenderer} = require('electron')
 
 const update = new Update()
