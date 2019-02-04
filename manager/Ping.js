@@ -46,7 +46,7 @@ class Ping {
   }
 
   _getService () {
-      if (!this.services) return Promise.reject('services is null')
+    if (!this.services) return Promise.reject('services is null')
     const choosedService = localStorage.getItem('choosedService')
     if (choosedService) {
       this.currentService = this.serviceList.find(service => service === choosedService) || this.serviceList[0]
@@ -71,20 +71,20 @@ class Ping {
     return map[service] || service
   }
 
-  _getChildService = () => {
-      return new Promise((resolve, reject) => {
-        if (this.services) {
-            const originUrl = `${this.services[this.currentService]}`
-            const url = `${this._getRandomUrl(originUrl)}&service=ws-gateway&protocol=ws&ssl=true`
-            NetworkUtil.getJson(url)
-            .then(res => {
-              resolve(res.servers[0])
-            })
-            .catch(reject)
-        } else {
-            reject('services is not null')
-        }
-      })
+  _getChildService()  {
+    return new Promise((resolve, reject) => {
+      if (this.services) {
+        const originUrl = `${this.services[this.currentService]}`
+        const url = `${this._getRandomUrl(originUrl)}&service=ws-gateway&protocol=ws&ssl=true`
+        NetworkUtil.getJson(url)
+          .then(res => {
+            resolve(res.servers[0])
+          })
+          .catch(reject)
+      } else {
+        reject('services is not null')
+      }
+    })
   }
 
   _renderError (err) {
@@ -147,19 +147,19 @@ class Ping {
 
   _changeService(){
     this._getNextService()
-    .then(this._renderService)
-    .then(this._getChildService)  
-    .then(this.ping)
-    .catch(console.error)
+      .then(this._renderService)
+      .then(this._getChildService)  
+      .then(this.ping)
+      .catch(console.error)
   }
 
   addEventListener(){
-      const serverInfoDom = document.getElementById('serverInfo')
-      serverInfoDom.addEventListener('click', this._changeService)
+    const serverInfoDom = document.getElementById('serverInfo')
+    serverInfoDom.addEventListener('click', this._changeService)
   }
 
   _refresh(){
-      this._getService()
+    this._getService()
       .then(this._renderService)
       .then(this._getChildService)
       .then(this.ping)
@@ -170,13 +170,13 @@ class Ping {
     clearInterval(this.interval)
     this.interval = setInterval(() => {
       this._ping(service)
-      .then(this._renderPing)
-    }, 5000);
+        .then(this._renderPing)
+    }, 5000)
   }
 
   init(){
-      this._initPing()
-      this.addEventListener()
+    this._initPing()
+    this.addEventListener()
   }
 }
 
