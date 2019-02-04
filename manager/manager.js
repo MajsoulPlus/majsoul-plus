@@ -1066,3 +1066,29 @@ saveConfigsBtn.addEventListener('click', () => {
 })
 
 /* 设置项业务逻辑 End */
+
+/* 春节额外css Start */
+/**
+ * @type {HTMLLinkElement}
+ */
+const extraCss = document.getElementById('extraCss')
+const isSpringFestival = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = now.getMonth() + 1
+  const day = now.getDate()
+  if (year === 2019) {
+    if (month === 2) {
+      if (day > 3 && day < 12) {
+        return true
+      }
+    }
+  }
+  return false
+}
+setTimeout(() => {
+  if (isSpringFestival()) {
+    extraCss.href = './styles/springfestival/springfestival.css'
+  }
+}, 0)
+/* 春节额外css End */
