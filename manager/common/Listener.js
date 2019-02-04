@@ -13,9 +13,8 @@ class Listener {
       }
     }
     this.handles.push({
-        event,
-        handle
-    })
+      event,
+      handle})
   }
 
   off (event, handle) {
@@ -32,12 +31,12 @@ class Listener {
     }
   }
 
-  emit (event) {
+  emit (event, ...args) {
     if ('string' !== typeof event) throw 'invalid event !'
     for (let index = 0; index < this.handles.length; index++) {
       const element = this.handles[index]
       if (element.event === event) {
-        element.handle.call()
+        element.handle.call(...args)
       }
     }
   }
