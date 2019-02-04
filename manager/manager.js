@@ -578,7 +578,9 @@ const getServersJson = () => {
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
+              reject(
+                new Error('XMLHttpRequest Failed with status: ' + xhr.status)
+              )
             }
           })
         })
@@ -603,7 +605,9 @@ const getServersJson = () => {
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
+              reject(
+                new Error('XMLHttpRequest Failed with status: ' + xhr.status)
+              )
             }
           })
         })
@@ -876,14 +880,16 @@ checkUpdate(userConfig.update).then(
           }
           return `${speedNum.toFixed(2)} ${units[unitsPos]}`
         }
-        timer = setInterval(() => {
-          document.getElementById('downloadCardSpeed').innerText = calcSpeed(
-            speedPreSenc
-          )
-          speedPreSenc = 0
-        }, 1000)
         Util.httpsGetFile(res.result['zipball_url'], 'binary', chuck => {
           speedPreSenc += chuck.length
+          if (!timer) {
+            timer = setInterval(() => {
+              document.getElementById(
+                'downloadCardSpeed'
+              ).innerText = calcSpeed(speedPreSenc)
+              speedPreSenc = 0
+            }, 1000)
+          }
         })
           .then(resutlt => {
             Util.writeFile(
@@ -933,7 +939,8 @@ checkUpdate(userConfig.update).then(
             })
             Util.removeDir(unzipDir)
             fs.unlinkSync(filedir)
-            window.close()
+            app.relaunch()
+            app.exit(0)
           } catch (error) {
             console.error(error)
           }

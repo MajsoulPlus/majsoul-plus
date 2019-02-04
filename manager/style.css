@@ -645,6 +645,7 @@ h1 {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  cursor: default;
 }
 @-webkit-keyframes fadeInFromNone {
   0% {

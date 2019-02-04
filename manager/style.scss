@@ -662,6 +662,7 @@ h1 {
   background-color: var(--info-card-color);
   border: 1px solid var(--border-color);
   user-select: none;
+  cursor: default;
   & > h3 {
     color: var(--bold-text);
     font-size: 14px;
