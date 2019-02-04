@@ -378,6 +378,7 @@ h1 {
   border: 0;
   color: var(--light-text);
   display: none;
+  cursor: pointer;
 }
 .main-context > section > div.info-cards > article > .remove-btn:hover, .main-context > section > div.info-cards > article > .export-btn:hover {
   color: var(--bold-text);

@@ -377,6 +377,7 @@ h1 {
           border: 0;
           color: var(--light-text);
           display: none;
+          cursor: pointer;
           &:hover {
             color: var(--bold-text);
           }
