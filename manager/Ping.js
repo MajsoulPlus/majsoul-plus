@@ -1,3 +1,5 @@
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
 
