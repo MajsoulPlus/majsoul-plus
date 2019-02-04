@@ -645,7 +645,6 @@ h1 {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  cursor: default;
 }
 @-webkit-keyframes fadeInFromNone {
   0% {
@@ -681,12 +680,14 @@ h1 {
   line-height: 14px;
   max-width: 100%;
   margin-bottom: 8px;
+  cursor: default;
 }
 .update-card > p {
   font-size: 14px;
   line-height: 18px;
   color: var(--light-text);
   margin-bottom: 8px;
+  cursor: default;
 }
 .update-card > button {
   font-size: 12px;
