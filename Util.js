@@ -83,6 +83,23 @@ const Util = {
   },
 
   /**
+   * 递归创建目录，同步方法
+   * @param {string} dirname 文件夹路径
+   * @returns {void}
+   */
+  mkdirsSync(dirname) {
+    try {
+      const stat = fs.statSync(dirname)
+      if (!stat.isDirectory()) {
+        throw new Error('Not a Directory')
+      }
+    } catch (error) {
+      this.mkdirsSync(path.dirname(dirname))
+      fs.mkdirSync(dirname)
+    }
+  },
+
+  /**
    * 转换远程Url
    * @param {string} originalUrl
    * @returns {string}
