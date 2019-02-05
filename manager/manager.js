@@ -1040,6 +1040,17 @@ const userConfigInit = () => {
             settingInner.append(br)
           }
           break
+        case 'string': {
+          switch (value) {
+            case 'function': {
+              // TODO 这里将会插入一个按钮，从 item 读取 函数 和 名称
+              break
+            }
+            default:
+              break
+          }
+          break
+        }
         default:
           break
       }
