@@ -119,7 +119,6 @@ class Update {
   _openDownloadPage() {}
 
   _renderUpdateHint({ remoteVersion, localVersion, time, body, url }) {
-    console.log(remoteVersion, localVersion, time, body, url)
     const updateCard = document.getElementById('updateCard'),
       updateCard_close = document.getElementById('updateCard_close'),
       updateCard_view = document.getElementById('updateCard_view'),
