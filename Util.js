@@ -89,10 +89,7 @@ const Util = {
    */
   mkdirsSync(dirname) {
     try {
-      const stat = fs.statSync(dirname)
-      if (!stat.isDirectory()) {
-        throw new Error('Not a Directory')
-      }
+      fs.statSync(dirname)
     } catch (error) {
       this.mkdirsSync(path.dirname(dirname))
       fs.mkdirSync(dirname)

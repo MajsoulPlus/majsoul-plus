@@ -12,10 +12,7 @@ if (!app) {
 // 防止首次运行时扑街
 const appDataDir = app.getPath('userData')
 try {
-  const stat = fs.statSync(appDataDir)
-  if (!stat.isDirectory()) {
-    throw new Error('Not a directory')
-  }
+  fs.statSync(appDataDir)
 } catch (error) {
   fs.mkdirSync(appDataDir)
 }
