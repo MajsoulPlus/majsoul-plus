@@ -919,7 +919,9 @@ checkUpdate(userConfig.update).then(
                   copyFile(path.join(from, file), path.join(to, file))
                 })
               } else {
-                fs.copyFileSync(from, to)
+                Util.mkdirs(path.basename(to)).then(() =>
+                  fs.copyFileSync(from, to)
+                )
               }
             }
             fs.statSync(filedir)
