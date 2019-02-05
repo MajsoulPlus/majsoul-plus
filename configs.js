@@ -3,9 +3,21 @@ const fs = require('fs')
 const electron = require('electron')
 const path = require('path')
 
+// 提供app模块
 let app = electron.app
 if (!app) {
   app = electron.remote.app
+}
+
+// 防止首次运行时扑街
+const appDataDir = app.getPath('userData')
+try {
+  const stat = fs.statSync(appDataDir)
+  if (!stat.isDirectory()) {
+    throw new Error('Not a directory')
+  }
+} catch (error) {
+  fs.mkdirSync(appDataDir)
 }
 
 const getIcon = () => {
@@ -28,15 +40,12 @@ const CONFIGS = {
   HTTP_REMOTE_DOMAIN: 'http://majsoul.union-game.com/',
   LOCAL_DIR: '/static',
   MODS_DIR: '/mod',
-  MODS_CONFIG_PATH: path.join(app.getPath('userData'), 'modsEnabled.json'),
+  MODS_CONFIG_PATH: path.join(appDataDir, 'modsEnabled.json'),
   PLUGINS_DIR: '/plugin',
   TOOLS_DIR: '/tool',
   EXECUTES_DIR: '/execute',
-  EXECUTES_CONFIG_PATH: path.join(
-    app.getPath('userData'),
-    'executesEnabled.json'
-  ),
-  USER_CONFIG_PATH: path.join(app.getPath('userData'), 'configs-user.json'),
+  EXECUTES_CONFIG_PATH: path.join(appDataDir, 'executesEnabled.json'),
+  USER_CONFIG_PATH: path.join(appDataDir, 'configs-user.json'),
   GAME_WINDOW_CONFIG: {
     width: 1280,
     height: 720,
