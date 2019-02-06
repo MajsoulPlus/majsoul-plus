@@ -15,17 +15,18 @@ const InfoCard = require('./InfoCard')
 const app = electronRemote.app
 
 // 注入脚本根文件根目录
-const executeRootDir = path.join(__dirname, '../', configs.EXECUTES_DIR)
+const userDataPaths = [__dirname, userConfigs.UserData.userLibPath]
+const executeRootDirs = userDataPaths.map(root => path.join(root, configs.EXECUTES_DIR))
 // const executeSettingsFile = path.join(executeRootDir, './active.json')
 const executeSettingsFile = configs.EXECUTES_CONFIG_PATH
 
 // Mod文件根目录
-const modRootDir = path.join(__dirname, '../', configs.MODS_DIR)
+const modRootDirs = userDataPaths.map(root => path.join(root, configs.MODS_DIR))
 // const modSettingsFile = path.join(modRootDir, './active.json')
 const modSettingsFile = configs.MODS_CONFIG_PATH
 
 // 工具根目录
-const toolsRootDir = path.join(__dirname, '../', configs.TOOLS_DIR)
+const toolRootDirs = userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
 
 const userConfig = require(configs.USER_CONFIG_PATH)
 
@@ -331,13 +332,13 @@ const installResources = () => {
         let installDir
         switch (extname) {
           case '.mspm':
-            installDir = modRootDir
+            installDir = executeRootDirs[1]
             break
           case '.mspe':
-            installDir = executeRootDir
+            installDir = executeRootDirs[1]
             break
           case '.mspt':
-            installDir = toolsRootDir
+            installDir = toolRootDirs[1]
             break
         }
         unzip.extractAllToAsync(installDir, true, err => {
@@ -399,12 +400,11 @@ refreshFunction = () => {
   modsEditFlag = false
   toolsEditFlag = false
   // 所有已在目录中的注入脚本目录
-  const executeDirs = fs.readdirSync(executeRootDir)
+  const executeDirs = [].concat(...executeRootDirs.map(executeRootDir => fs.readdirSync(executeRootDir).map(executeDir => path.join(executeRootDir, executeDir))))
   // 用于存储注入脚本对象
   const executes = []
   // 遍历所有注入脚本文件夹，寻找 execute.json并加载
-  executeDirs.forEach(dir => {
-    const executeDir = path.join(executeRootDir, dir)
+  executeDirs.forEach(executeDir => {
     const stats = fs.statSync(executeDir)
 
     if (stats.isDirectory()) {
@@ -422,12 +422,11 @@ refreshFunction = () => {
   })
 
   // 所有已在目录中的Mod目录
-  const modDirs = fs.readdirSync(modRootDir)
+  const modDirs = [].concat(...modRootDirs.map(modRootDir => fs.readdirSync(modRootDir).map(modDir => path.join(modRootDir, modDir))))
   // 用于存储Mod对象
   const mods = []
   // 遍历所有Mod文件夹，寻找 Mod.json并加载
-  modDirs.forEach(dir => {
-    const modDir = path.join(modRootDir, dir)
+  modDirs.forEach(modDir => {
     const stats = fs.statSync(modDir)
     if (stats.isDirectory()) {
       try {
@@ -444,12 +443,11 @@ refreshFunction = () => {
   })
 
   // 所有已在目录中的 tool 目录
-  const toolDirs = fs.readdirSync(toolsRootDir)
+  const toolDirs = [].concat(...toolRootDirs.map(toolRootDir => fs.readdirSync(toolRootDir).map(toolDir => path.join(toolRootDir, toolDir))))
   // 用于存储 tool 对象
   const tools = []
   // 遍历所有 tool 文件夹，寻找 Tool.json并加载
-  toolDirs.forEach(dir => {
-    const toolDir = path.join(toolsRootDir, dir)
+  toolDirs.forEach(toolDir => {
     const stats = fs.statSync(toolDir)
     if (stats.isDirectory()) {
       try {
@@ -979,6 +977,9 @@ const getKeyText = key => {
       '关闭硬件加速(Turn Hardware Acceleration Off)',
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
     isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
+    isUseDefaultPath: '使用默认用户库目录',
+    userData: '用户数据',
+    userLibPath: '用户库目录',
     localVersion: '雀魂Plus 当前版本'
   }
   return lang[key] ? lang[key] : key

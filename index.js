@@ -15,6 +15,20 @@ const { Menu, MenuItem } = electron
 
 let userConfigs = require(configs.USER_CONFIG_PATH)
 
+// 同步 configs-user.json
+let newUserConfigs = require('./configs-user.json')
+
+userConfigs.UserData.userLibPath = electronApp.getPath('userData')
+if (!fs.existsSync(path.join(userConfigs.UserData.userLibPath, configs.EXECUTE_DIR))) {
+  fs.mkdirSync(path.join(userConfigs.UserData.userLibPath, configs.EXECUTE_DIR))
+}
+if (!fs.existsSync(path.join(userConfigs.UserData.userLibPath, configs.MODS_DIR))) {
+  fs.mkdirSync(path.join(userConfigs.UserData.userLibPath, configs.MODS_DIR))
+}
+if (!fs.existsSync(path.join(userConfigs.UserData.userLibPath, configs.TOOLS_DIR))) {
+  fs.mkdirSync(path.join(userConfigs.UserData.userLibPath, configs.TOOLS_DIR))
+}
+
 if (userConfigs.chromium.isInProcessGpuOn) {
   electronApp.commandLine.appendSwitch('in-process-gpu')
 }
