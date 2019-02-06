@@ -13,12 +13,12 @@
   --bold-text: #303030;
   --icon-color: #404040;
   --border-color: #d0d0d0;
-  --left-pannel-color: #f0f0f0;
-  --left-pannel-active-color: #e0e0e0;
-  --left-pannel-hover-color: #d8d8d8;
+  --left-panel-color: #f0f0f0;
+  --left-panel-active-color: #e0e0e0;
+  --left-panel-hover-color: #d8d8d8;
   --section-color: #fafafa;
   --info-card-color: #ffffff;
-  --bottom-pannel-color: #fff;
+  --bottom-panel-color: #fff;
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   --animation-time: 100ms;
   --ping-red: #dd3333;
@@ -506,17 +506,17 @@ h1 {
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox']:checked + label::after {
   left: calc(-12px - 2px + 20px);
 }
-.main-context > .left-pannel {
+.main-context > .left-panel {
   height: var(--main-height);
   width: calc(240px + 1px);
   border-right: 1px solid var(--border-color);
-  background-color: var(--left-pannel-color);
+  background-color: var(--left-panel-color);
 }
-.main-context > .left-pannel > ul {
+.main-context > .left-panel > ul {
   cursor: pointer;
   width: 100%;
 }
-.main-context > .left-pannel > ul > li {
+.main-context > .left-panel > ul > li {
   display: block;
   width: 100%;
   height: 48px;
@@ -527,13 +527,13 @@ h1 {
   -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
-.main-context > .left-pannel > ul > li.active {
-  background-color: var(--left-pannel-active-color);
+.main-context > .left-panel > ul > li.active {
+  background-color: var(--left-panel-active-color);
 }
-.main-context > .left-pannel > ul > li:hover {
-  background-color: var(--left-pannel-hover-color);
+.main-context > .left-panel > ul > li:hover {
+  background-color: var(--left-panel-hover-color);
 }
-.main-context > .left-pannel > ul > li::before {
+.main-context > .left-panel > ul > li::before {
   font-family: 'iconfont' !important;
   position: absolute;
   left: 0;
@@ -544,30 +544,30 @@ h1 {
   line-height: 48px;
   color: var(--icon-color);
 }
-.main-context > .left-pannel > ul > li[data-target='modPage']::before {
+.main-context > .left-panel > ul > li[data-target='modPage']::before {
   content: '';
 }
-.main-context > .left-pannel > ul > li[data-target='executePage']::before {
+.main-context > .left-panel > ul > li[data-target='executePage']::before {
   content: '';
   font-size: 16px;
 }
-.main-context > .left-pannel > ul > li[data-target='toolPage']::before {
+.main-context > .left-panel > ul > li[data-target='toolPage']::before {
   content: '';
   font-size: 18px;
 }
-.main-context > .left-pannel > ul > li[data-target='settingPage']::before {
+.main-context > .left-panel > ul > li[data-target='settingPage']::before {
   content: '';
   font-size: 18px;
 }
-.main-context > .bottom-pannel {
+.main-context > .bottom-panel {
   height: calc(64px + 1px);
   width: 100%;
   position: relative;
-  background-color: var(--bottom-pannel-color);
+  background-color: var(--bottom-panel-color);
   border-top: 1px solid var(--border-color);
   margin: 0 auto;
 }
-.main-context > .bottom-pannel > .launch-btn {
+.main-context > .bottom-panel > .launch-btn {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -584,14 +584,14 @@ h1 {
   -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
-.main-context > .bottom-pannel > .launch-btn:hover {
+.main-context > .bottom-panel > .launch-btn:hover {
   background-color: var(--main-dark-color);
 }
-.main-context > .bottom-pannel > .launch-btn:disabled {
+.main-context > .bottom-panel > .launch-btn:disabled {
   cursor: not-allowed;
   background-color: var(--disabled-color);
 }
-.main-context > .bottom-pannel > #pingInfo {
+.main-context > .bottom-panel > #pingInfo {
   cursor: default;
   font-size: 14px;
   position: absolute;
@@ -600,7 +600,7 @@ h1 {
   left: 42px;
   color: var(--light-text);
 }
-.main-context > .bottom-pannel > #pingInfo::before {
+.main-context > .bottom-panel > #pingInfo::before {
   display: block;
   position: absolute;
   border-radius: 50%;
@@ -610,19 +610,19 @@ h1 {
   left: -24px;
   top: -8px;
 }
-.main-context > .bottom-pannel > #pingInfo.offline::before {
+.main-context > .bottom-panel > #pingInfo.offline::before {
   background-color: var(--ping-offline);
 }
-.main-context > .bottom-pannel > #pingInfo.red::before {
+.main-context > .bottom-panel > #pingInfo.red::before {
   background-color: var(--ping-red);
 }
-.main-context > .bottom-pannel > #pingInfo.green::before {
+.main-context > .bottom-panel > #pingInfo.green::before {
   background-color: var(--ping-green);
 }
-.main-context > .bottom-pannel > #pingInfo.orange::before {
+.main-context > .bottom-panel > #pingInfo.orange::before {
   background-color: var(--ping-orange);
 }
-.main-context > .bottom-pannel > #serverInfo {
+.main-context > .bottom-panel > #serverInfo {
   font-size: 14px;
   position: absolute;
   line-height: 14px;

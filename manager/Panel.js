@@ -20,8 +20,8 @@ class Panel {
   render(){
     if (this.panels.length) {
       const currentPanel = this.panels[this.activeIndex]
-      const activeSection = sections.find(section => section.dataset.name === currentPanel.dataset.target)
       const sections = Array.from(document.getElementsByTagName('section'))
+      const activeSection = sections.find(section => section.dataset.name === currentPanel.dataset.target)
       sections.forEach(section => {
         section.className = ''
       })

@@ -20,12 +20,12 @@ try {
 const getIcon = () => {
   switch (os.platform()) {
     case 'win32':
-      return path.join(__dirname + '/bin/icons/icon.ico')
+      return path.join(__dirname, '/bin/icons/icon.ico')
     case 'darwin':
-      return path.join(__dirname + '/bin/icons/icon.icns')
+      return path.join(__dirname, '/bin/icons/icon.icns')
     case 'linux':
     default:
-      return path.join(__dirname + '/bin/icons/icon.png')
+      return path.join(__dirname, '/bin/icons/icon.png')
   }
 }
 const CONFIGS = {

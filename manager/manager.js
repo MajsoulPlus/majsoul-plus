@@ -717,13 +717,13 @@ const reStartPing = () => {
   // console.log('reStartPing')
   Promise.resolve(
     (() => {
-      if (!localStorage.getItem('serverChoosed')) {
+      if (!localStorage.getItem('serverChose')) {
         return serversArray[0]
       } else {
-        const serverChoosed = localStorage.getItem('serverChoosed')
+        const serverChose = localStorage.getItem('serverChose')
         let returnFlag = false
         serversArray.forEach((kv, index) => {
-          if (kv[0] === serverChoosed) {
+          if (kv[0] === serverChose) {
             serverInfoDom.dataset.serverIndex = index
             returnFlag = kv
           }
@@ -760,7 +760,7 @@ serverInfoDom.addEventListener('click', () => {
     index = 0
   }
   serverInfoDom.dataset.serverIndex = index
-  localStorage.setItem('serverChoosed', serversArray[index][0])
+  localStorage.setItem('serverChose', serversArray[index][0])
   reStartPing()
 })
 
@@ -853,7 +853,7 @@ checkUpdate(userConfig.update).then(
 
     // 在线更新
 
-    const filedir = path.join(os.tmpdir(), 'majsoulUpdate.zip')
+    const fileDir = path.join(os.tmpdir(), 'majsoulUpdate.zip')
     const unzipDir = path.join(os.tmpdir(), 'majsoulUpdateTemp')
 
     document
@@ -891,10 +891,10 @@ checkUpdate(userConfig.update).then(
             }, 1000)
           }
         })
-          .then(resutlt => {
+          .then(result => {
             Util.writeFile(
               path.join(os.tmpdir(), 'majsoulUpdate.zip'),
-              resutlt.data
+              result.data
             )
           })
           .then(() => {
@@ -923,8 +923,8 @@ checkUpdate(userConfig.update).then(
                 fs.copyFileSync(from, to)
               }
             }
-            fs.statSync(filedir)
-            const admzip = new AdmZip(filedir)
+            fs.statSync(fileDir)
+            const admzip = new AdmZip(fileDir)
             admzip.extractAllTo(unzipDir)
             const newVersionRootDir = path.join(
               unzipDir,
@@ -939,7 +939,7 @@ checkUpdate(userConfig.update).then(
               )
             })
             Util.removeDir(unzipDir)
-            fs.unlinkSync(filedir)
+            fs.unlinkSync(fileDir)
             app.relaunch()
             app.exit(0)
           } catch (error) {
@@ -979,7 +979,7 @@ const getKeyText = key => {
       '关闭硬件加速(Turn Hardware Acceleration Off)',
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
     isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
-    loaclVersion: '雀魂Plus 当前版本'
+    localVersion: '雀魂Plus 当前版本'
   }
   return lang[key] ? lang[key] : key
 }
@@ -1057,8 +1057,10 @@ const userConfigInit = () => {
       }
     })
   })
+
+  // 在结尾叠加版本号信息
   const versionH3 = document.createElement('h3')
-  versionH3.innerText = getKeyText('loaclVersion')
+  versionH3.innerText = getKeyText('localVersion')
   const versionInfo = document.createElement('p')
   versionInfo.innerText = app.getVersion()
   settingInner.append(versionH3)
