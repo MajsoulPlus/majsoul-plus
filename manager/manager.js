@@ -322,7 +322,7 @@ const installResources = () => {
         let installDir
         switch (extname) {
           case '.mspm':
-            installDir = executeRootDirs[1]
+            installDir = modRootDirs[1]
             break
           case '.mspe':
             installDir = executeRootDirs[1]
@@ -989,7 +989,7 @@ const userConfigInit = () => {
           {
             const inputName = getKeyText(keyConfig)
             const input = document.createElement('input')
-            input.type = 'button'
+            input.type = 'number'
             const label = document.createElement('label')
             input.id = 'config' + keyGroup + keyConfig + index
             label.setAttribute('for', input.id)
@@ -1006,6 +1006,7 @@ const userConfigInit = () => {
           break
         case 'string': {
           {
+            // TODO 待完成
           }
           break
         }

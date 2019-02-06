@@ -34,6 +34,12 @@ function jsonKeyUpdate (ja, jb) {
 jsonKeyUpdate(userConfigs, require(path.join(__dirname, '/configs-user.json')))
 
 userConfigs.userData.userLibPath = electronApp.getPath('userData')
+const paths = [
+  configs.EXECUTES_DIR,
+  configs.MODS_DIR,
+  configs.TOOLS_DIR
+]
+paths.map(dir => path.join(userConfigs.userData.userLibPath, dir)).forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
 fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfigs))
 
 if (userConfigs.chromium.isInProcessGpuOn) {
