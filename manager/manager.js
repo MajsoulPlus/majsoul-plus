@@ -919,7 +919,7 @@ checkUpdate(userConfig.update).then(
                   copyFile(path.join(from, file), path.join(to, file))
                 })
               } else {
-                Util.mkdirsSync(path.basename(to))
+                Util.mkdirsSync(path.dirname(to))
                 fs.copyFileSync(from, to)
               }
             }
