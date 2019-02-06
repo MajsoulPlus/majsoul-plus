@@ -510,7 +510,7 @@ refreshFunction()
 
 /* 分页提供业务逻辑 Start */
 Array.prototype.forEach.call(
-  document.querySelectorAll('.left-pannel ul li'),
+  document.querySelectorAll('.left-panel ul li'),
   node => {
     node.addEventListener('click', () => {
       const sections = document.getElementsByTagName('section')
@@ -522,7 +522,7 @@ Array.prototype.forEach.call(
         }
       })
       Array.prototype.forEach.call(
-        document.querySelectorAll('.left-pannel ul li'),
+        document.querySelectorAll('.left-panel ul li'),
         node => {
           node.className = ''
         }
@@ -531,7 +531,7 @@ Array.prototype.forEach.call(
     })
   }
 )
-document.querySelectorAll('.left-pannel ul li')[0].click()
+document.querySelectorAll('.left-panel ul li')[0].click()
 /* 分页提供业务逻辑 End */
 
 /* Ping 业务逻辑 Start */

@@ -1,6 +1,6 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.10.4-alpha.1",
+  "version": "1.10.4-alpha.2",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
@@ -40,12 +40,11 @@
     "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0",
     "electron": "^2.0.12",
+    "cross-env": "^5.2.0",
     "electron-builder": "^20.38.5",
     "electron-packager": "^13.0.1",
     "eslint": "^5.13.0",
-    "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0"
   }
 }

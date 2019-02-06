@@ -10,7 +10,7 @@ class Panel {
   }
 
   init(){
-    this.panels = Array.from(document.querySelectorAll('.left-pannel ul li'))
+    this.panels = Array.from(document.querySelectorAll('.left-panel ul li'))
     this.panels.forEach((panel, index) => {
       panel.addEventListener('click', () => this._handleClick(index))
     })
