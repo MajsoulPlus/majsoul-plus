@@ -117,13 +117,7 @@ const saveSettings = () => {
     encoding: 'utf-8'
   })
 }
-/**
- * 启动游戏
- */
-const startGame = () => {
-  saveSettings()
-  ipcRenderer.send('application-message', 'start-game')
-}
+
 /**
  * 刷新所有DOM节点
  * @param {Array<>} executes 插件
@@ -211,7 +205,6 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (executeLaunchedList.includes(keyString)) {
-
         } else {
           executeLaunched.push(executeInfo)
           executeLaunchedList.push(keyString)
@@ -222,7 +215,6 @@ const reloadDOM = (executes, mods, tools) => {
           executeLaunched.splice(index, 1)
           executeLaunchedList.splice(index, 1)
         } else {
-
         }
       }
     }
@@ -262,7 +254,6 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (modLaunchedList.includes(keyString)) {
-
         } else {
           modLaunched.push(modInfo)
           modLaunchedList.push(keyString)
@@ -273,7 +264,6 @@ const reloadDOM = (executes, mods, tools) => {
           modLaunched.splice(index, 1)
           modLaunchedList.splice(index, 1)
         } else {
-
         }
       }
     }
@@ -470,34 +460,6 @@ refreshFunction = () => {
 
   reloadDOM(executes, mods, tools)
 }
-
-// 刷新模组 按钮
-document.getElementById('refreshMod').addEventListener('click', refreshFunction)
-// 刷新插件 按钮
-document
-  .getElementById('refreshExecute')
-  .addEventListener('click', refreshFunction)
-// 刷新插件 按钮
-document
-  .getElementById('refreshTool')
-  .addEventListener('click', refreshFunction)
-
-// 启动游戏 按钮
-document.getElementById('launch').addEventListener('click', startGame)
-
-// 关闭页面 按钮
-const closeBtn = document.getElementById('closeBtn')
-if (os.platform() === 'darwin') {
-  closeBtn.className = 'close-btn darwin'
-  // hack close bar
-  const body = document.querySelector('body')
-  body.classList.add('darwin')
-  const closeButton = document.querySelector('body > .close-btn.darwin')
-  body.removeChild(closeButton)
-}
-closeBtn.addEventListener('click', () => {
-  window.close()
-})
 
 // 标题配色
 window.addEventListener('blur', () => {
@@ -1069,7 +1031,7 @@ const userConfigInit = () => {
 userConfigInit()
 
 const saveConfigsBtn = document.getElementById('saveConfigs')
-saveConfigsBtn.addEventListener('click', () => {
+const saveUserConfigs = () => {
   try {
     fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
@@ -1077,7 +1039,8 @@ saveConfigsBtn.addEventListener('click', () => {
   } catch (error) {
     alert('保存失败\n' + error)
   }
-})
+}
+saveConfigsBtn.addEventListener('click', saveUserConfigs)
 
 /* 设置项业务逻辑 End */
 
@@ -1106,3 +1069,40 @@ setTimeout(() => {
   }
 }, 0)
 /* 春节额外css End */
+
+/**
+ * 启动游戏
+ */
+const startGame = () => {
+  saveSettings()
+  saveUserConfigs()
+  ipcRenderer.send('application-message', 'start-game')
+}
+
+// 刷新模组 按钮
+document.getElementById('refreshMod').addEventListener('click', refreshFunction)
+// 刷新插件 按钮
+document
+  .getElementById('refreshExecute')
+  .addEventListener('click', refreshFunction)
+// 刷新插件 按钮
+document
+  .getElementById('refreshTool')
+  .addEventListener('click', refreshFunction)
+
+// 启动游戏 按钮
+document.getElementById('launch').addEventListener('click', startGame)
+
+// 关闭页面 按钮
+const closeBtn = document.getElementById('closeBtn')
+if (os.platform() === 'darwin') {
+  closeBtn.className = 'close-btn darwin'
+  // hack close bar
+  const body = document.querySelector('body')
+  body.classList.add('darwin')
+  const closeButton = document.querySelector('body > .close-btn.darwin')
+  body.removeChild(closeButton)
+}
+closeBtn.addEventListener('click', () => {
+  window.close()
+})
