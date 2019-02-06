@@ -560,6 +560,9 @@ h1 {
           content: '';
           font-size: 18px;
         }
+        &[data-target='aboutPage']::before {
+          content: '';
+        }
       }
     }
   }

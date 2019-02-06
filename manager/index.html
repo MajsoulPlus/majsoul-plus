@@ -12,15 +12,18 @@
     <h1>雀魂Plus</h1>
     <span class="close-btn" id="closeBtn"></span>
     <div class="main-context">
+      <!-- 左侧选单 -->
       <div class="left-panel">
         <ul>
           <li data-target="modPage">模组</li>
           <li data-target="executePage">插件</li>
           <li data-target="toolPage">工具箱</li>
           <li data-target="settingPage">设置</li>
+          <li data-target="aboutPage">关于</li>
         </ul>
       </div>
 
+      <!-- 模组页面 -->
       <section data-name="modPage">
         <button id="refreshMod" class="big-btn refresh-btn"></button>
         <button id="installMod" class="big-btn install-btn"></button>
@@ -40,6 +43,7 @@
         </div>
       </section>
 
+      <!-- 插件页面 -->
       <section data-name="executePage">
         <button id="refreshExecute" class="big-btn refresh-btn"></button>
         <button id="installExecute" class="big-btn install-btn"></button>
@@ -57,12 +61,15 @@
         </div>
       </section>
 
+      <!-- 工具页面 -->
       <section data-name="toolPage">
         <button id="refreshTool" class="big-btn refresh-btn"></button>
         <button id="installTool" class="big-btn install-btn"></button>
         <button id="editTool" class="big-btn edit-btn"></button>
         <div id="toolInfos" class="info-cards"></div>
       </section>
+
+      <!-- 设置面板 -->
       <section data-name="settingPage">
         <button id="saveConfigs" class="big-btn save-btn"></button>
         <div id="settingInner" class="setting-innner">
@@ -71,9 +78,7 @@
             type="checkbox"
             name="windowSettings1"
             id="windowSettings1"
-          /><label for="windowSettings1"
-            >设置描述（Text）</label
-          >
+          /><label for="windowSettings1">设置描述（Text）</label>
           <h3>更新</h3>
           <input
             type="checkbox"
@@ -82,6 +87,15 @@
           /><label for="updateSettings1">获取浏览版(Get Pre-releases)</label>
         </div>
       </section>
+
+      <!-- 关于页面 -->
+      <section data-name="aboutPage">
+        <!-- <button id="saveConfigs" class="big-btn save-btn"></button> -->
+        <div id="aboutInner" class="setting-innner">
+        </div>
+      </section>
+
+      <!-- 底部面板 -->
       <div class="bottom-panel">
         <span id="serverInfo" data-server-index="0"
           >服务器: <span id="serverText">加载中</span></span
@@ -92,6 +106,8 @@
         <button id="launch" class="launch-btn">启动游戏</button>
       </div>
     </div>
+
+    <!-- 版本卡标签 -->
     <div id="updateCard" class="update-card">
       <h3>发现新版本</h3>
       <p>
@@ -117,6 +133,8 @@
         安装并重启
       </button>
     </div>
+    <!-- 版本卡标签结束 -->
+
     <script src="./manager.js"></script>
   </body>
 </html>
