@@ -11,5 +11,8 @@
   "chromium": {
     "isHardwareAccelerationDisable": false,
     "isInProcessGpuOn": true
+  },
+  "userData":{
+    "userLibPath": ""
   }
 }

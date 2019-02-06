@@ -6,14 +6,35 @@ const Util = require('./Util.js')
 const configs = require('./configs')
 const fs = require('fs')
 const path = require('path')
-
 const https = require('https')
 
 const electron = require('electron')
-const { app: electronApp, BrowserWindow, ipcMain, clipboard } = electron
+const { app: electronApp, BrowserWindow, ipcMain, clipboard, dialog } = electron
 const { Menu, MenuItem } = electron
 
-let userConfigs = require(configs.USER_CONFIG_PATH)
+let userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
+
+// 同步 configs-user.json
+function jsonKeyUpdate (ja, jb) {
+  Object.keys(ja).forEach(key => {
+    if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
+      jsonKeyUpdate(ja[key], jb[key])
+    }
+    if (jb[key] === undefined) {
+      delete ja[key]
+    }
+  })
+  Object.keys(jb).forEach(key => {
+    if (ja[key] === undefined) {
+      ja[key] = jb[key]
+    }
+  })
+}
+
+jsonKeyUpdate(userConfigs, require(path.join(__dirname, '/configs-user.json')))
+
+userConfigs.userData.userLibPath = electronApp.getPath('userData')
+fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfigs))
 
 if (userConfigs.chromium.isInProcessGpuOn) {
   electronApp.commandLine.appendSwitch('in-process-gpu')
@@ -429,6 +450,14 @@ const windowControl = {
                 `https://localhost:${sererHttps.address().port}/0/`
               )
             }
+            break
+          }
+          case 'open-file-dialog': {
+            dialog.showOpenDialog({
+              properties: ['openFile', 'openDirectory']
+            }, function (files) {
+              if (files) event.sender.send('selected-directory', files)
+            })
             break
           }
           default:
