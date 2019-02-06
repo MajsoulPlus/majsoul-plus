@@ -1,4 +1,4 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
@@ -37,7 +37,7 @@ class Ping {
     return NetworkUtil.getJson(url).then(res => res.ip)
   }
 
-  _saveSevices(ips) {
+  _saveServices(ips) {
     this.services = ips[0].region_urls
     this.serviceList = Object.keys(this.services)
   }
@@ -46,12 +46,12 @@ class Ping {
     return this._getVersion()
       .then(this._getResVersion)
       .then(this._getConfig)
-      .then(this._saveSevices)
+      .then(this._saveServices)
   }
 
   _getService() {
-    if (!this.services) return Promise.reject('services is null')
-    const choseService = localStorage.getItem('chosedService')
+    if (!this.services) return Promise.reject(new Error('services is null'))
+    const choseService = localStorage.getItem('choseService')
     if (choseService) {
       this.currentService =
         this.serviceList.find(service => service === choseService) ||
@@ -90,7 +90,7 @@ class Ping {
           })
           .catch(reject)
       } else {
-        reject('services is not null')
+        reject(new Error(new Error('services is not null')))
       }
     })
   }
@@ -131,7 +131,7 @@ class Ping {
         (err, data) => {
           if (err) {
             console.error(err)
-            reject('tcp-ping error')
+            reject(new Error('tcp-ping error'))
           }
           resolve(data.avg)
         }

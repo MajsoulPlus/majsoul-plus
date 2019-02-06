@@ -12,10 +12,6 @@ const defaultOptions = {
 }
 
 class Mods extends CardList {
-  constructor (options) {
-    super(options)
-  }
-
   _getExportInfo () {
     return {
       extend: 'mspm',

@@ -12,12 +12,12 @@
   --bold-text: #303030;
   --icon-color: #404040;
   --border-color: #d0d0d0;
-  --left-pannel-color: #f0f0f0;
-  --left-pannel-active-color: #e0e0e0;
-  --left-pannel-hover-color: #d8d8d8;
+  --left-panel-color: #f0f0f0;
+  --left-panel-active-color: #e0e0e0;
+  --left-panel-hover-color: #d8d8d8;
   --section-color: #fafafa;
   --info-card-color: #ffffff;
-  --bottom-pannel-color: #fff;
+  --bottom-panel-color: #fff;
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   --animation-time: 100ms;
 }

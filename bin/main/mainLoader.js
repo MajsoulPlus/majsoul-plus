@@ -1,9 +1,9 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const fs = require('fs')
 const path = require('path')
 const electron = require('electron')
-const { ipcRenderer, remote } = electron
+const { ipcRenderer } = electron
 const configs = require('../../configs')
 const userConfigs = require(configs.USER_CONFIG_PATH)
 
@@ -41,7 +41,7 @@ let serverPort
  */
 let clientRect
 
-const probuildExecuteCode = executeScriptInfo => {
+const proBuildExecuteCode = executeScriptInfo => {
   let codeEntry = executeScriptInfo.entry
   if (!codeEntry) {
     codeEntry = 'script.js'
@@ -179,7 +179,7 @@ ipcRenderer.on('executes-load', (event, ...args) => {
   const executeScripts = args[0]
   executeScriptsCodes = []
   executeScripts.forEach(executeScript => {
-    const code = probuildExecuteCode(executeScript)
+    const code = proBuildExecuteCode(executeScript)
     executeScriptsCodes.push(code)
   })
   ipcRenderer.send('main-loader-message', 'executes-loaded')

@@ -1,11 +1,11 @@
 const Card = require('./Card')
 class CheckboxCard extends Card {
-  constructor(options){
+  constructor (options) {
     super(options)
     this.checked = false
   }
 
-  _createInputElements(){
+  _createInputElements () {
     const input = document.createElement('input')
     const label = document.createElement('label')
     input.type = 'checkbox'
@@ -15,7 +15,7 @@ class CheckboxCard extends Card {
     })
     Object.defineProperty(this, 'checked', {
       get: () => input.checked,
-      set: value => input.checked = value
+      set: value => { input.checked = value }
     })
     label.setAttribute('for', input.id)
     return {
