@@ -15,7 +15,7 @@ const { Menu, MenuItem } = electron
 let userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
 
 // 同步 configs-user.json
-function jsonKeyUpdate (ja, jb) {
+function jsonKeyUpdate(ja, jb) {
   Object.keys(ja).forEach(key => {
     if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
       jsonKeyUpdate(ja[key], jb[key])
@@ -32,15 +32,13 @@ function jsonKeyUpdate (ja, jb) {
 }
 
 jsonKeyUpdate(userConfigs, require(path.join(__dirname, '/configs-user.json')))
-
-userConfigs.userData.userLibPath = electronApp.getPath('userData')
-const paths = [
-  configs.EXECUTES_DIR,
-  configs.MODS_DIR,
-  configs.TOOLS_DIR
-]
-paths.map(dir => path.join(userConfigs.userData.userLibPath, dir)).forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
 fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfigs))
+
+const userDataDir = electronApp.getPath('userData')
+const paths = [configs.EXECUTES_DIR, configs.MODS_DIR, configs.TOOLS_DIR]
+paths
+  .map(dir => path.join(userDataDir, dir))
+  .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
 
 if (userConfigs.chromium.isInProcessGpuOn) {
   electronApp.commandLine.appendSwitch('in-process-gpu')
@@ -459,11 +457,14 @@ const windowControl = {
             break
           }
           case 'open-file-dialog': {
-            dialog.showOpenDialog({
-              properties: ['openFile', 'openDirectory']
-            }, function (files) {
-              if (files) event.sender.send('selected-directory', files)
-            })
+            dialog.showOpenDialog(
+              {
+                properties: ['openFile', 'openDirectory']
+              },
+              function(files) {
+                if (files) event.sender.send('selected-directory', files)
+              }
+            )
             break
           }
           default:

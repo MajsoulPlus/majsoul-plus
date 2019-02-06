@@ -12,7 +12,7 @@
     "isHardwareAccelerationDisable": false,
     "isInProcessGpuOn": true
   },
-  "userData":{
-    "userLibPath": ""
+  "userData": {
+    "useAppdataLibrary": false
   }
 }

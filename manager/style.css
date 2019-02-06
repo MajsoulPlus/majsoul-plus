@@ -403,12 +403,6 @@ h1 {
 .main-context > section[data-name='settingPage'] {
   padding: 40px 0 20px 102px;
 }
-.main-context > section[data-name='settingPage'] > .save-btn {
-  left: 102px;
-}
-.main-context > section[data-name='settingPage'] > .save-btn::before {
-  content: '';
-}
 .main-context > section[data-name='settingPage'] > .setting-innner {
   height: 100%;
   width: calc(100% - 16px);
@@ -505,6 +499,34 @@ h1 {
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox']:checked + label::after {
   left: calc(-12px - 2px + 20px);
+}
+.main-context > section[data-name='aboutPage'] {
+  padding: 40px 0 20px 102px;
+}
+.main-context > section[data-name='aboutPage'] > .save-btn {
+  left: 102px;
+}
+.main-context > section[data-name='aboutPage'] > .save-btn::before {
+  content: '';
+}
+.main-context > section[data-name='aboutPage'] > .about-innner {
+  height: 100%;
+  width: calc(100% - 80px);
+  overflow-y: auto;
+}
+.main-context > section[data-name='aboutPage'] > .about-innner > h3 {
+  cursor: default;
+  font-size: 18px;
+  padding-top: 8px;
+  line-height: 22px;
+}
+.main-context > section[data-name='aboutPage'] > .about-innner > p {
+  margin-top: 4px;
+  padding-bottom: 4px;
+  cursor: default;
+  line-height: 20px;
+  font-size: 14px;
+  padding-left: 16px;
 }
 .main-context > .left-panel {
   height: var(--main-height);
