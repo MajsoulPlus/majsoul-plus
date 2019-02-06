@@ -15,10 +15,15 @@ const InfoCard = require('./InfoCard')
 const app = electronRemote.app
 const userConfig = require(configs.USER_CONFIG_PATH)
 
-const userDataPaths = [path.join(__dirname, '../'), userConfig.userData.userLibPath]
+const userDataPaths = [
+  path.join(__dirname, '../'),
+  userConfig.userData.userLibPath
+]
 
 // 注入脚本根文件根目录
-const executeRootDirs = userDataPaths.map(root => path.join(root, configs.EXECUTES_DIR))
+const executeRootDirs = userDataPaths.map(root =>
+  path.join(root, configs.EXECUTES_DIR)
+)
 // const executeSettingsFile = path.join(executeRootDir, './active.json')
 const executeSettingsFile = configs.EXECUTES_CONFIG_PATH
 
@@ -28,7 +33,31 @@ const modRootDirs = userDataPaths.map(root => path.join(root, configs.MODS_DIR))
 const modSettingsFile = configs.MODS_CONFIG_PATH
 
 // 工具根目录
-const toolRootDirs = userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
+const toolRootDirs = userDataPaths.map(root =>
+  path.join(root, configs.TOOLS_DIR)
+)
+
+/**
+ * 同步 UserConfig
+ */
+const syncUserConfig = () => {
+  const localUserConfig = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '../configs-user.json'))
+  )
+  Object.entries(localUserConfig).forEach(([keyGroup, value]) => {
+    // 如果有新选项，则加载到设置文档中
+    if (userConfig[keyGroup] === undefined) {
+      userConfig[keyGroup] = value
+    }
+    Object.entries(value).forEach(([keyConfig, value], index) => {
+      if (userConfig[keyGroup][keyConfig] === undefined) {
+        userConfig[keyGroup][keyConfig] = value
+      }
+      value = userConfig[keyGroup][keyConfig]
+    })
+  })
+}
+syncUserConfig()
 
 /**
  * 刷新所有模组和插件并重新加载DOM
@@ -390,7 +419,13 @@ refreshFunction = () => {
   modsEditFlag = false
   toolsEditFlag = false
   // 所有已在目录中的注入脚本目录
-  const executeDirs = [].concat(...executeRootDirs.map(executeRootDir => fs.readdirSync(executeRootDir).map(executeDir => path.join(executeRootDir, executeDir))))
+  const executeDirs = [].concat(
+    ...executeRootDirs.map(executeRootDir =>
+      fs
+        .readdirSync(executeRootDir)
+        .map(executeDir => path.join(executeRootDir, executeDir))
+    )
+  )
   // 用于存储注入脚本对象
   const executes = []
   // 遍历所有注入脚本文件夹，寻找 execute.json并加载
@@ -412,7 +447,11 @@ refreshFunction = () => {
   })
 
   // 所有已在目录中的Mod目录
-  const modDirs = [].concat(...modRootDirs.map(modRootDir => fs.readdirSync(modRootDir).map(modDir => path.join(modRootDir, modDir))))
+  const modDirs = [].concat(
+    ...modRootDirs.map(modRootDir =>
+      fs.readdirSync(modRootDir).map(modDir => path.join(modRootDir, modDir))
+    )
+  )
   // 用于存储Mod对象
   const mods = []
   // 遍历所有Mod文件夹，寻找 Mod.json并加载
@@ -433,7 +472,13 @@ refreshFunction = () => {
   })
 
   // 所有已在目录中的 tool 目录
-  const toolDirs = [].concat(...toolRootDirs.map(toolRootDir => fs.readdirSync(toolRootDir).map(toolDir => path.join(toolRootDir, toolDir))))
+  const toolDirs = [].concat(
+    ...toolRootDirs.map(toolRootDir =>
+      fs
+        .readdirSync(toolRootDir)
+        .map(toolDir => path.join(toolRootDir, toolDir))
+    )
+  )
   // 用于存储 tool 对象
   const tools = []
   // 遍历所有 tool 文件夹，寻找 Tool.json并加载
@@ -942,32 +987,20 @@ const getKeyText = key => {
     userData: '用户数据',
     isUseDefaultPath: '使用默认用户库目录',
     userLibPath: '用户库目录',
-    localVersion: '雀魂Plus 当前版本'
+    programName: '雀魂Plus',
+    localVersion: '当前版本'
   }
   return lang[key] ? lang[key] : key
 }
 const userConfigInit = () => {
-  const localUserConfig = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../configs-user.json'))
-  )
   const settingInner = document.getElementById('settingInner')
   settingInner.innerHTML = ''
-  Object.entries(localUserConfig).forEach(([keyGroup, value]) => {
-    // 如果有新选项，则加载到设置文档中
-    if (userConfig[keyGroup] === undefined) {
-      userConfig[keyGroup] = value
-    }
-
+  Object.entries(userConfig).forEach(([keyGroup, value]) => {
     const groupName = getKeyText(keyGroup)
     const h3 = document.createElement('h3')
     h3.innerText = groupName
     settingInner.append(h3)
     Object.entries(value).forEach(([keyConfig, value], index) => {
-      if (userConfig[keyGroup][keyConfig] === undefined) {
-        userConfig[keyGroup][keyConfig] = value
-      }
-      value = userConfig[keyGroup][keyConfig]
-
       switch (typeof value) {
         case 'boolean': {
           const selectName = getKeyText(keyConfig)
@@ -1014,16 +1047,20 @@ const userConfigInit = () => {
       }
     })
   })
-
+}
+const aboutPageInit = () => {
   // 在结尾叠加版本号信息
+  const aboutInner = document.getElementById('aboutInner')
+  aboutInner.innerHTML = ''
   const versionH3 = document.createElement('h3')
-  versionH3.innerText = getKeyText('localVersion')
+  versionH3.innerText = getKeyText('programName')
   const versionInfo = document.createElement('p')
-  versionInfo.innerText = app.getVersion()
-  settingInner.append(versionH3)
-  settingInner.append(versionInfo)
+  versionInfo.innerText = `${getKeyText('localVersion')} ${app.getVersion()}`
+  aboutInner.append(versionH3)
+  aboutInner.append(versionInfo)
 }
 userConfigInit()
+aboutPageInit()
 
 const saveConfigsBtn = document.getElementById('saveConfigs')
 const saveUserConfigs = () => {

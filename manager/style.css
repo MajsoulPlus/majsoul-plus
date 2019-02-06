@@ -559,6 +559,9 @@ h1 {
   content: '';
   font-size: 18px;
 }
+.main-context > .left-panel > ul > li[data-target='aboutPage']::before {
+  content: '';
+}
 .main-context > .bottom-panel {
   height: calc(64px + 1px);
   width: 100%;
