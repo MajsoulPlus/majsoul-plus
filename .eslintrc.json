@@ -1,0 +1,24 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "linebreak-style": ["error", "windows"],
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"]
+  }
+}

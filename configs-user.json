@@ -3,7 +3,8 @@
     "zoomFactor": 1,
     "renderingMultiple": 100,
     "isKioskModeOn": false,
-    "isNoBorder": false
+    "isNoBorder": false,
+    "isManagerHide": false
   },
   "update": {
     "prerelease": false

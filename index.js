@@ -307,6 +307,11 @@ const windowControl = {
     })
     gameWindow.on('closed', () => {
       Util.shutoffPlayer()
+      sererHttps.close()
+      if (userConfigs.window.isManagerHide) {
+        const managerWindow = windowControl.windowMap['manager']
+        managerWindow && managerWindow.show()
+      }
     })
     Util.initPlayer()
     gameWindow.webContents.on('crashed', () =>
@@ -344,6 +349,14 @@ const windowControl = {
     managerWindow && managerWindow.close()
   },
 
+  hideManagerWindow: () => {
+    /**
+     * @type {Electron.BrowserWindow}
+     */
+    const managerWindow = windowControl.windowMap['manager']
+    managerWindow && managerWindow.hide()
+  },
+
   addAppListener: () => {
     ipcMain.on('application-message', (evt, ...args) => {
       if (args && args.length > 0) {
@@ -353,7 +366,11 @@ const windowControl = {
               .initLocalMirrorServer(sererHttps, configs.SERVER_PORT)
               .then(() => {
                 windowControl.initGameWindow(configs.GAME_WINDOW_CONFIG)
-                windowControl.closeManagerWindow()
+                if (userConfigs.window.isManagerHide) {
+                  windowControl.hideManagerWindow()
+                } else {
+                  windowControl.closeManagerWindow()
+                }
               })
             break
           }

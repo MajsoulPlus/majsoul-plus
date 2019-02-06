@@ -999,7 +999,8 @@ const getKeyText = key => {
       '使用AppData存储扩展资源(Use AppData dir to storage resources)',
     userLibPath: '用户库目录',
     programName: '雀魂Plus(Majsoul Plus)',
-    localVersion: '版本(Version)'
+    localVersion: '版本(Version)',
+    isManagerHide: '退出游戏后回到管理器界面(Exit back to manager panel)'
   }
   return lang[key] ? lang[key] : key
 }
@@ -1108,13 +1109,17 @@ userConfigInit()
 aboutPageInit()
 
 const saveConfigsBtn = document.getElementById('saveConfigs')
-const saveUserConfigs = () => {
+const saveUserConfigs = (alertMsg = true) => {
   try {
     fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
-    alert('保存成功')
+    if (alertMsg === true) {
+      alert('保存成功')
+    }
   } catch (error) {
-    alert('保存失败\n' + error)
+    if (alertMsg === true) {
+      alert('保存失败\n' + error)
+    }
   }
 }
 saveConfigsBtn.addEventListener('click', saveUserConfigs)
@@ -1152,7 +1157,7 @@ setTimeout(() => {
  */
 const startGame = () => {
   saveSettings()
-  saveUserConfigs()
+  saveUserConfigs(false)
   ipcRenderer.send('application-message', 'start-game')
 }
 
