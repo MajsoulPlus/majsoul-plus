@@ -13,9 +13,11 @@ const os = require('os')
 const InfoCard = require('./InfoCard')
 
 const app = electronRemote.app
+const userConfig = require(configs.USER_CONFIG_PATH)
+
+const userDataPaths = [path.join(__dirname, '../'), userConfig.userData.userLibPath]
 
 // 注入脚本根文件根目录
-const userDataPaths = [__dirname, userConfigs.UserData.userLibPath]
 const executeRootDirs = userDataPaths.map(root => path.join(root, configs.EXECUTES_DIR))
 // const executeSettingsFile = path.join(executeRootDir, './active.json')
 const executeSettingsFile = configs.EXECUTES_CONFIG_PATH
@@ -27,8 +29,6 @@ const modSettingsFile = configs.MODS_CONFIG_PATH
 
 // 工具根目录
 const toolRootDirs = userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
-
-const userConfig = require(configs.USER_CONFIG_PATH)
 
 /**
  * 刷新所有模组和插件并重新加载DOM
@@ -939,8 +939,8 @@ const getKeyText = key => {
       '关闭硬件加速(Turn Hardware Acceleration Off)',
     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
     isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
-    isUseDefaultPath: '使用默认用户库目录',
     userData: '用户数据',
+    isUseDefaultPath: '使用默认用户库目录',
     userLibPath: '用户库目录',
     localVersion: '雀魂Plus 当前版本'
   }
@@ -989,7 +989,7 @@ const userConfigInit = () => {
           {
             const inputName = getKeyText(keyConfig)
             const input = document.createElement('input')
-            input.type = 'number'
+            input.type = 'button'
             const label = document.createElement('label')
             input.id = 'config' + keyGroup + keyConfig + index
             label.setAttribute('for', input.id)
@@ -1005,13 +1005,7 @@ const userConfigInit = () => {
           }
           break
         case 'string': {
-          switch (value) {
-            case 'function': {
-              // TODO 这里将会插入一个按钮，从 item 读取 函数 和 名称
-              break
-            }
-            default:
-              break
+          {
           }
           break
         }
