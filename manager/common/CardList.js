@@ -1,18 +1,19 @@
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
-const {remote: {dialog}} = require('electron')
+const { remote: { dialog } } = require('electron')
 const CheckboxCard = require('./CheckboxCard')
 const Util = require('../../Util')
 
+// eslint-disable-next-line no-unused-vars
 const defaultOptions = {
   rootDir: '',
   config: '',
   checkedKeys: [],
-  renderTargert: '',
+  renderTarget: ''
 }
 class CardList {
-  constructor(options){
+  constructor (options) {
     this._cardList = []
     this.options = options
     this._getCardInfo = this._getCardInfo.bind(this)
@@ -21,8 +22,8 @@ class CardList {
     this._renderCards = this._renderCards.bind(this)
   }
 
-  _getCardInfo(dir){
-    const {rootDir, config} = this.options
+  _getCardInfo (dir) {
+    const { rootDir, config } = this.options
     const dirPath = path.join(rootDir, dir)
     const stat = fs.statSync(dirPath)
     if (stat.isDirectory()) {
@@ -35,24 +36,24 @@ class CardList {
         return null
       }
     } else {
-      return null        
+      return null
     }
   }
 
-  _getCardInfos(){
-    const {rootDir} = this.options
+  _getCardInfos () {
+    const { rootDir } = this.options
     const dirs = fs.readdirSync(rootDir)
     return Promise.all(dirs.map(this._getCardInfo))
       .then(list => list.filter(item => !!item))
   }
 
-  _getCards(cardInfos = []){
+  _getCards (cardInfos = []) {
     const cards = cardInfos.map(this._getCard)
     this._cardList = cards
     return Promise.resolve(cards)
   }
 
-  _getCard(cardInfo){
+  _getCard (cardInfo) {
     const card = new CheckboxCard(cardInfo)
     const key = `${cardInfo.name}|${cardInfo.author}`
     card.checked = this.options.checkedKeys.includes(key)
@@ -61,12 +62,12 @@ class CardList {
     card.on('remove', () => this._handleRemove(key))
     return {
       key,
-      card,
+      card
     }
   }
 
-  _handleCheckedChange(key){
-    const {card} = this._cardList.find(item => item.key === key)
+  _handleCheckedChange (key) {
+    const { card } = this._cardList.find(item => item.key === key)
     if (card.checked && !this.options.checkedKeys.includes(key)) {
       this.options.checkedKeys.push(key)
     } else if (!card.checked && this.options.checkedKeys.includes(key)) {
@@ -75,21 +76,21 @@ class CardList {
     }
   }
 
-  _getExportInfo(){
+  _getExportInfo () {
 
   }
 
-  _changeEditable(){
+  _changeEditable () {
     this._cardList.forEach(item => {
       item.card.editable = !item.card.editable
     })
   }
 
-  _handleExport(key){
-    const {card:{options: {name, author, filesDir}}} = this._cardList.find(item => item.key === key)
-    const {extend, typeText} = this._getExportInfo()
-    const tempZipname = `${name}-${author}.${extend}`
-    const tempZipPath = path.join(os.tmpdir(), tempZipname)
+  _handleExport (key) {
+    const { card: { options: { name, author, filesDir } } } = this._cardList.find(item => item.key === key)
+    const { extend, typeText } = this._getExportInfo()
+    const tempZipName = `${name}-${author}.${extend}`
+    const tempZipPath = path.join(os.tmpdir(), tempZipName)
     Util.zipDir(filesDir, tempZipPath)
     const userChosenPath = dialog.showSaveDialog({
       title: `导出${typeText}到......`,
@@ -101,9 +102,9 @@ class CardList {
         {
           name: '所有文件',
           extensions: ['*']
-        },
+        }
       ],
-      defaultPath: tempZipname
+      defaultPath: tempZipName
     })
     if (userChosenPath) {
       fs.copyFile(tempZipPath, userChosenPath, err => {
@@ -116,40 +117,40 @@ class CardList {
     }
   }
 
-  _handleRemove(key){
-    const {card} = this._cardList.find(item => item.key === key)
+  _handleRemove (key) {
+    const { card } = this._cardList.find(item => item.key === key)
     card.DOM.remove()
-    const {filesDir} = card.options
+    const { filesDir } = card.options
     Util.removeDir(filesDir)
     this.load()
   }
 
-  _renderCards(){
-    const {renderTarget} = this.options
+  _renderCards () {
+    const { renderTarget } = this.options
     const target = document.getElementById(renderTarget)
     target.innerHTML = ''
-    this._cardList.forEach(({card}) => {
-      const {DOM} = card
+    this._cardList.forEach(({ card }) => {
+      const { DOM } = card
       target.appendChild(DOM)
     })
   }
 
-  load(){
+  load () {
     this._getCardInfos()
       .then(this._getCards)
       .then(this._renderCards)
   }
 
-  save(){
-    const {checkedKeys, settingFilePath} = this.options
-    const lauchedCards = this._cardList
+  save () {
+    const { checkedKeys, settingFilePath } = this.options
+    const launchedCards = this._cardList
       .filter(item => checkedKeys.includes(item.key))
       .map(item => item.card.options)
-    console.log(lauchedCards, settingFilePath)
-    fs.writeFileSync(settingFilePath, JSON.stringify(lauchedCards), {encoding: 'utf-8'})
+    console.log(launchedCards, settingFilePath)
+    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), { encoding: 'utf-8' })
   }
 
-  get cardList(){
+  get cardList () {
     return this._cardList
   }
 }

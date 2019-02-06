@@ -1,4 +1,5 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint-disable */
 
 const fs = require('fs')
 const path = require('path')
@@ -210,7 +211,7 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (executeLaunchedList.includes(keyString)) {
-          return
+
         } else {
           executeLaunched.push(executeInfo)
           executeLaunchedList.push(keyString)
@@ -221,7 +222,7 @@ const reloadDOM = (executes, mods, tools) => {
           executeLaunched.splice(index, 1)
           executeLaunchedList.splice(index, 1)
         } else {
-          return
+
         }
       }
     }
@@ -261,7 +262,7 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (modLaunchedList.includes(keyString)) {
-          return
+
         } else {
           modLaunched.push(modInfo)
           modLaunchedList.push(keyString)
@@ -272,7 +273,7 @@ const reloadDOM = (executes, mods, tools) => {
           modLaunched.splice(index, 1)
           modLaunchedList.splice(index, 1)
         } else {
-          return
+
         }
       }
     }
@@ -814,7 +815,6 @@ const checkUpdate = userConfig => {
           })
         } else {
           reject('Need not to update')
-          return
         }
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
         reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))

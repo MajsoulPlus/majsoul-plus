@@ -4,8 +4,8 @@ class Listener {
   }
 
   on (event, handle) {
-    if ('string' !== typeof event) throw 'event must be a string !'
-    if ('function' !== typeof handle) throw 'handle is not a function !'
+    if (typeof event !== 'string') throw new Error('event must be a string !')
+    if (typeof handle !== 'function') throw new Error('handle is not a function !')
     for (let index = 0; index < this.handles.length; index++) {
       const element = this.handles[index]
       if (element.event === event && element.handle === handle) {
@@ -14,11 +14,11 @@ class Listener {
     }
     this.handles.push({
       event,
-      handle})
+      handle })
   }
 
   off (event, handle) {
-    if ('string' !== typeof event) throw 'invalid event !'
+    if (typeof event !== 'string') throw new Error('invalid event !')
     if (!handle) {
       this.handles = this.handles.filter(item => item.event !== event)
     } else {
@@ -32,7 +32,7 @@ class Listener {
   }
 
   emit (event, ...args) {
-    if ('string' !== typeof event) throw 'invalid event !'
+    if (typeof event !== 'string') throw new Error('invalid event !')
     for (let index = 0; index < this.handles.length; index++) {
       const element = this.handles[index]
       if (element.event === event) {

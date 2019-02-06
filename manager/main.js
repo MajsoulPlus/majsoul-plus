@@ -3,14 +3,12 @@ const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
 
-const {ipcRenderer} = require('electron')
+const { ipcRenderer } = require('electron')
 
 const update = new Update()
 const setting = new Setting()
 
 class Manager {
-  constructor () {}
-
   _saveSettings () {}
 
   init () {
@@ -26,5 +24,5 @@ class Manager {
   }
 }
 
-const manager = new Manager
+const manager = new Manager()
 manager.init()

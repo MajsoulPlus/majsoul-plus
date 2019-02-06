@@ -1,4 +1,4 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const NetworkUtil = require('./Network')
 const {
@@ -14,15 +14,15 @@ const defaultOptions = {
 }
 
 class Update {
-  constructor(options) {
+  constructor (options) {
     this.options = { ...defaultOptions, ...options }
   }
 
-  _getLocalVersion() {
+  _getLocalVersion () {
     return `v${app.getVersion()}`
   }
 
-  _getRemoteVersionInfo() {
+  _getRemoteVersionInfo () {
     const checkApi = this.options.usePreRelease
       ? this.options.preReleaseApi
       : this.options.releaseApi
@@ -42,7 +42,7 @@ class Update {
       })
   }
 
-  compareVersion(taga, tagb) {
+  compareVersion (taga, tagb) {
     if (taga && tagb) {
       let tagaArr = taga.substring(1).split('-')
       let tagbArr = tagb.substring(1).split('-')
@@ -57,7 +57,7 @@ class Update {
       let tagaMain = tagaArr[0].split('.')
       let tagbMain = tagbArr[0].split('.')
 
-      let laterFlag = undefined
+      let laterFlag
       for (let i = 0; i < 3; i++) {
         if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
           laterFlag = true
@@ -116,20 +116,25 @@ class Update {
     return false
   }
 
-  _openDownloadPage() {}
+  _openDownloadPage () {}
 
-  _renderUpdateHint({ remoteVersion, localVersion, time, url }) {
-    const updateCard = document.getElementById('updateCard'),
-      updateCard_close = document.getElementById('updateCard_close'),
-      updateCard_view = document.getElementById('updateCard_view'),
-      localVersionDOM = document.getElementById('localVersion'),
-      remoteVersionDOM = document.getElementById('remoteVersion'),
-      publishTime = document.getElementById('publishTime')
+  _renderUpdateHint ({ remoteVersion, localVersion, time, url }) {
+    const updateCard = document.getElementById('updateCard')
+
+    const updateCardClose = document.getElementById('updateCard_close')
+
+    const updateCardView = document.getElementById('updateCard_view')
+
+    const localVersionDOM = document.getElementById('localVersion')
+
+    const remoteVersionDOM = document.getElementById('remoteVersion')
+
+    const publishTime = document.getElementById('publishTime')
     updateCard.classList.add('show')
-    updateCard_close.addEventListener('click', () => {
+    updateCardClose.addEventListener('click', () => {
       updateCard.classList.remove('show')
     })
-    updateCard_view.addEventListener('click', () => {
+    updateCardView.addEventListener('click', () => {
       shell.openExternal(url)
       updateCard.classList.remove('show')
     })
@@ -138,7 +143,7 @@ class Update {
     publishTime.innerText = new Date(time).toLocaleString()
   }
 
-  async checkUpdate() {
+  async checkUpdate () {
     const localVersion = await this._getLocalVersion()
     const remoteVersionInfo = await this._getRemoteVersionInfo()
     const { remoteVersion, body, time, url } = remoteVersionInfo
