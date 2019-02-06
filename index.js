@@ -1,4 +1,4 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const express = require('express')
 const server = express()
@@ -66,7 +66,7 @@ electronApp.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
     event.preventDefault()
-    callback(true)
+    callback(true) // eslint-disable-line standard/no-callback-literal
   }
 )
 
@@ -375,15 +375,15 @@ const windowControl = {
              * @type {Buffer}
              */
             const buffer = args[1]
-            const filepath = path.join(
+            const filePath = path.join(
               electron.app.getPath('pictures'),
               electron.app.getName(),
               Date.now() + '.png'
             )
-            Util.writeFile(filepath, buffer).then(() => {
+            Util.writeFile(filePath, buffer).then(() => {
               windowControl.windowMap['game'].webContents.send(
                 'screenshot-saved',
-                filepath
+                filePath
               )
             })
             clipboard.writeImage(electron.nativeImage.createFromBuffer(buffer))

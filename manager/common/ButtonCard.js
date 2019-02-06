@@ -1,11 +1,7 @@
 const Card = require('./Card')
 
 class ButtonCard extends Card {
-  constructor(options){
-    super(options)
-  }
-
-  _createInputElements(){
+  _createInputElements () {
     const input = document.createElement('input')
     const label = document.createElement('label')
     input.type = 'button'
@@ -16,7 +12,7 @@ class ButtonCard extends Card {
     label.setAttribute('for', input.id)
     return {
       input,
-      label,
+      label
     }
   }
 }

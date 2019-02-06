@@ -6,11 +6,11 @@ const configs = require('../configs')
 const defaultUserConfig = JSON.parse(require(configs.USER_CONFIG_PATH))
 
 class Settings {
-  constructor(options = {}) {
+  constructor (options = {}) {
     this.userConfig = options.userConfig || defaultUserConfig
   }
 
-  static _keyToTitle(key) {
+  static _keyToTitle (key) {
     const map = {
       window: '窗口',
       zoomFactor: '资源管理器缩放(Zoom Factor)',
@@ -30,14 +30,14 @@ class Settings {
     return map[key] || key
   }
 
-  _getUserLocalConfig() {
+  _getUserLocalConfig () {
     const configPath = path.join(__dirname, '../configs-user.json')
     const configJson = fs.readFileSync(configPath)
     return JSON.parse(configJson)
   }
 
-  _renderSection({ settingInner, section, data }) {
-    if ('undefined' === typeof this.userConfig[section]) {
+  _renderSection ({ settingInner, section, data }) {
+    if (typeof this.userConfig[section] === 'undefined') {
       this.userConfig[section] = data
     }
     const sectionName = Settings._keyToTitle(section)
@@ -49,7 +49,7 @@ class Settings {
     })
   }
 
-  _renderCheckBoxSectionItem({ settingInner, section, item, data, index }) {
+  _renderCheckBoxSectionItem ({ settingInner, section, item, data, index }) {
     const itemName = Settings._keyToTitle(item)
     const checkBox = document.createElement('input')
     checkBox.type = 'checkbox'
@@ -65,7 +65,7 @@ class Settings {
     settingInner.append(label)
   }
 
-  _renderNumberSectionItem({ settingInner, section, item, data, index }) {
+  _renderNumberSectionItem ({ settingInner, section, item, data, index }) {
     const itemName = Settings._keyToTitle(item)
     const input = document.createElement('input')
     input.type = 'number'
@@ -83,12 +83,12 @@ class Settings {
     settingInner.append(br)
   }
 
-  _renderFunctionSectionItem({ settingInner, section, item, data, index }) {
+  _renderFunctionSectionItem ({ settingInner, section, item, data, index }) {
     // TODO 这里将会插入一个按钮，从 item 读取 函数 和 名称
   }
 
-  _renderSectionItem({ settingInner, section, item, data, index }) {
-    if ('undefined' === typeof this.userConfig[section][item]) {
+  _renderSectionItem ({ settingInner, section, item, data, index }) {
+    if (typeof this.userConfig[section][item] === 'undefined') {
       this.userConfig[section][item] = data
     }
     const processes = {
@@ -126,7 +126,7 @@ class Settings {
     processes[type] && processes[type].call(data)
   }
 
-  _renderSections() {
+  _renderSections () {
     const userLocalConfig = this._getUserLocalConfig()
     const settingInner = document.getElementById('settingInner')
     settingInner.innerHTML = ''
@@ -135,7 +135,7 @@ class Settings {
     })
   }
 
-  _renderVersionInfo() {
+  _renderVersionInfo () {
     const settingInner = document.getElementById('settingInner')
     const h3 = document.createElement('h3')
     h3.innerText = Settings._keyToTitle('localVersion')
@@ -145,7 +145,7 @@ class Settings {
     settingInner.append(p)
   }
 
-  _saveConfig() {
+  _saveConfig () {
     try {
       fs.writeFileSync(
         configs.USER_CONFIG_PATH,
@@ -158,18 +158,18 @@ class Settings {
     }
   }
 
-  _addSaveListener() {
+  _addSaveListener () {
     const saveBtn = document.getElementById('saveConfig')
     saveBtn.addEventListener('click', this._saveConfig)
   }
 
-  render() {
+  render () {
     this._renderSections()
     this._renderVersionInfo()
     this._renderSaveButton()
   }
 
-  init() {
+  init () {
     this._addSaveListener()
     this.render()
   }

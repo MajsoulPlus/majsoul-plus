@@ -1,4 +1,5 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint-disable */
 
 const fs = require('fs')
 const path = require('path')
@@ -210,7 +211,7 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (executeLaunchedList.includes(keyString)) {
-          return
+
         } else {
           executeLaunched.push(executeInfo)
           executeLaunchedList.push(keyString)
@@ -221,7 +222,7 @@ const reloadDOM = (executes, mods, tools) => {
           executeLaunched.splice(index, 1)
           executeLaunchedList.splice(index, 1)
         } else {
-          return
+
         }
       }
     }
@@ -261,7 +262,7 @@ const reloadDOM = (executes, mods, tools) => {
     const onchangeFunction = () => {
       if (infoCard.checked) {
         if (modLaunchedList.includes(keyString)) {
-          return
+
         } else {
           modLaunched.push(modInfo)
           modLaunchedList.push(keyString)
@@ -272,7 +273,7 @@ const reloadDOM = (executes, mods, tools) => {
           modLaunched.splice(index, 1)
           modLaunchedList.splice(index, 1)
         } else {
-          return
+
         }
       }
     }
@@ -510,7 +511,7 @@ refreshFunction()
 
 /* 分页提供业务逻辑 Start */
 Array.prototype.forEach.call(
-  document.querySelectorAll('.left-pannel ul li'),
+  document.querySelectorAll('.left-panel ul li'),
   node => {
     node.addEventListener('click', () => {
       const sections = document.getElementsByTagName('section')
@@ -522,7 +523,7 @@ Array.prototype.forEach.call(
         }
       })
       Array.prototype.forEach.call(
-        document.querySelectorAll('.left-pannel ul li'),
+        document.querySelectorAll('.left-panel ul li'),
         node => {
           node.className = ''
         }
@@ -531,7 +532,7 @@ Array.prototype.forEach.call(
     })
   }
 )
-document.querySelectorAll('.left-pannel ul li')[0].click()
+document.querySelectorAll('.left-panel ul li')[0].click()
 /* 分页提供业务逻辑 End */
 
 /* Ping 业务逻辑 Start */
@@ -814,7 +815,6 @@ const checkUpdate = userConfig => {
           })
         } else {
           reject('Need not to update')
-          return
         }
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
         reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))

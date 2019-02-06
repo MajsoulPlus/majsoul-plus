@@ -9,7 +9,7 @@ class InfoCard {
    * @param {{name:string,author:string,description:string,preview:string,filesDir:string}} infos
    * @param {boolean} checked
    */
-  constructor(infos, checked = false, isButton = false) {
+  constructor (infos, checked = false, isButton = false) {
     this.infos = infos
     this.checked = checked
     this.name = infos.name ? infos.name : '未知'
@@ -27,14 +27,14 @@ class InfoCard {
     this.initDOM()
     this.edit = false
   }
-  get DOM() {
+  get DOM () {
     return this._dom
   }
-  set DOM(value) {
+  set DOM (value) {
     this._dom = value
     return value
   }
-  initDOM() {
+  initDOM () {
     const article = document.createElement('article')
     const preview = document.createElement('img')
     const h3 = document.createElement('h3')
@@ -46,7 +46,7 @@ class InfoCard {
     const removeBtn = document.createElement('button')
 
     preview.src = this.previewSrc
-    preview.addEventListener('error', function errFun() {
+    preview.addEventListener('error', function errFun () {
       preview.src = path.join(__dirname, 'defaultPreview.jpg')
       preview.removeEventListener('error', errFun)
     })
@@ -83,7 +83,7 @@ class InfoCard {
       })
     }
 
-    input.id = (function getRandomId() {
+    input.id = (function getRandomId () {
       let str = 'infoCard_'
       window.crypto.getRandomValues(new Uint32Array(3)).forEach(value => {
         str += value.toString(32)
@@ -128,27 +128,26 @@ class InfoCard {
 
     this.DOM = article
   }
-  addEventListener(type, listener) {
+  addEventListener (type, listener) {
     if (!this._eventListeners[type]) {
       this._eventListeners[type] = []
     }
     this._eventListeners[type].push(listener)
   }
-  removeEventListener(type, listener) {
+  removeEventListener (type, listener) {
     if (!this._eventListeners[type]) {
       return
     }
     this._eventListeners[type].forEach((addedListener, index) => {
       if (addedListener === listener) {
         this._eventListeners[type].splice(index, 1)
-        return
       }
     })
   }
-  get edit() {
+  get edit () {
     return this._edit
   }
-  set edit(value) {
+  set edit (value) {
     this._edit = value
     if (value === true) {
       this.DOM.className = 'edit'

@@ -12,14 +12,10 @@ const defaultOptions = {
 }
 
 class Executes extends CardList {
-  constructor(options) {
-    super(options)
-  }
-
-  _getExportInfo() {
+  _getExportInfo () {
     return {
       extend: 'mspe',
-      typeText: '插件',
+      typeText: '插件'
     }
   }
 }

@@ -1,4 +1,4 @@
-/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
@@ -35,7 +35,7 @@ class Ping {
       .then(res => res.ip)
   }
 
-  _saveSevices (ips) {
+  _saveServices (ips) {
     this.services = ips[0].region_urls
     this.serviceList = Object.keys(this.services)
   }
@@ -44,14 +44,14 @@ class Ping {
     return this._getVersion()
       .then(this._getResVersion)
       .then(this._getConfig)
-      .then(this._saveSevices)
+      .then(this._saveServices)
   }
 
   _getService () {
-    if (!this.services) return Promise.reject('services is null')
-    const choosedService = localStorage.getItem('choosedService')
-    if (choosedService) {
-      this.currentService = this.serviceList.find(service => service === choosedService) || this.serviceList[0]
+    if (!this.services) return Promise.reject(new Error(new Error('services is null')))
+    const choseService = localStorage.getItem('choseService')
+    if (choseService) {
+      this.currentService = this.serviceList.find(service => service === choseService) || this.serviceList[0]
     }
     return Promise.resolve()
   }
@@ -73,7 +73,7 @@ class Ping {
     return map[service] || service
   }
 
-  _getChildService()  {
+  _getChildService () {
     return new Promise((resolve, reject) => {
       if (this.services) {
         const originUrl = `${this.services[this.currentService]}`
@@ -84,7 +84,7 @@ class Ping {
           })
           .catch(reject)
       } else {
-        reject('services is not null')
+        reject(new Error(new Error('services is not null')))
       }
     })
   }
@@ -109,7 +109,7 @@ class Ping {
     const pingTextDom = document.getElementById('pingText')
     const pingInfoDom = document.getElementById('pingInfo')
     pingTextDom.innerText = time >> 0
-    pingInfoDom.className = time < 150? 'green': time < 500? 'orange': 'red' 
+    pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
   }
 
   _ping (service) {
@@ -123,7 +123,7 @@ class Ping {
       }, (err, data) => {
         if (err) {
           console.error(err)
-          reject('tcp-ping error')
+          reject(new Error('tcp-ping error'))
         }
         resolve(data.avg)
       })
@@ -139,28 +139,28 @@ class Ping {
       .catch(console.error)
   }
 
-  _getNextService(){
+  _getNextService () {
     let index = this.serviceList.indexOf(this.currentService)
-    index = index > this.serviceList.length? 0: index +1
+    index = index > this.serviceList.length ? 0 : index + 1
     this.currentService = this.serviceList[index]
-    localStorage.setItem('choosedService', this.currentService)
+    localStorage.setItem('choseService', this.currentService)
     return Promise.resolve()
   }
 
-  _changeService(){
+  _changeService () {
     this._getNextService()
       .then(this._renderService)
-      .then(this._getChildService)  
+      .then(this._getChildService)
       .then(this.ping)
       .catch(console.error)
   }
 
-  addEventListener(){
+  addEventListener () {
     const serverInfoDom = document.getElementById('serverInfo')
     serverInfoDom.addEventListener('click', this._changeService)
   }
 
-  _refresh(){
+  _refresh () {
     this._getService()
       .then(this._renderService)
       .then(this._getChildService)
@@ -168,7 +168,7 @@ class Ping {
       .catch(console.error)
   }
 
-  ping(service){
+  ping (service) {
     clearInterval(this.interval)
     this.interval = setInterval(() => {
       this._ping(service)
@@ -176,7 +176,7 @@ class Ping {
     }, 5000)
   }
 
-  init(){
+  init () {
     this._initPing()
     this.addEventListener()
   }

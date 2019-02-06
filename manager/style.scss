@@ -17,13 +17,13 @@
 
   --border-color: #d0d0d0;
 
-  --left-pannel-color: #f0f0f0;
-  --left-pannel-active-color: #e0e0e0;
-  --left-pannel-hover-color: #d8d8d8;
+  --left-panel-color: #f0f0f0;
+  --left-panel-active-color: #e0e0e0;
+  --left-panel-hover-color: #d8d8d8;
 
   --section-color: #fafafa;
   --info-card-color: #ffffff;
-  --bottom-pannel-color: #fff;
+  --bottom-panel-color: #fff;
 
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
   --animation-time: 100ms;
@@ -511,11 +511,11 @@ h1 {
       }
     }
   }
-  & > .left-pannel {
+  & > .left-panel {
     height: var(--main-height);
     width: calc(240px + 1px);
     border-right: 1px solid var(--border-color);
-    background-color: var(--left-pannel-color);
+    background-color: var(--left-panel-color);
     & > ul {
       cursor: pointer;
       width: 100%;
@@ -529,10 +529,10 @@ h1 {
         padding-left: 48px;
         transition: background-color var(--animation-time) var(--ease-in-out);
         &.active {
-          background-color: var(--left-pannel-active-color);
+          background-color: var(--left-panel-active-color);
         }
         &:hover {
-          background-color: var(--left-pannel-hover-color);
+          background-color: var(--left-panel-hover-color);
         }
         &::before {
           font-family: 'iconfont' !important;
@@ -563,11 +563,11 @@ h1 {
       }
     }
   }
-  & > .bottom-pannel {
+  & > .bottom-panel {
     height: calc(64px + 1px);
     width: 100%;
     position: relative;
-    background-color: var(--bottom-pannel-color);
+    background-color: var(--bottom-panel-color);
     border-top: 1px solid var(--border-color);
     margin: 0 auto;
     & > .launch-btn {

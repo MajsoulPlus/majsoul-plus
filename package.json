@@ -7,12 +7,13 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron . --enable_logging",
-    "pack": "npm run build",
+    "pack": "npm run lint && npm run build",
+    "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
     "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
     "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
     "build-darwin": "electron-builder --mac",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
   "build": {
     "productName": "Majsoul Plus",
@@ -25,6 +26,21 @@
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     }
   },
+  "standard": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "es6": true,
+      "node": true
+    },
+    "ignore": [
+      "/static/",
+      "/mod/",
+      "/tool/",
+      "/execute"
+    ]
+  },
+  "pre-commit": [ "lint", "test" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iamapig120/majsoul-custorm-server.git"
@@ -46,6 +62,8 @@
     "electron-packager": "^13.0.1",
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0"
+    "eslint-plugin-import": "^2.16.0",
+    "snazzy": "^8.0.0",
+    "standard": "^12.0.1"
   }
 }
