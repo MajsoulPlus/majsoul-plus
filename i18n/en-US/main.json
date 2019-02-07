@@ -1,0 +1,17 @@
+{
+  "programName": "Majsoul Plus",
+  "mod": "Mods",
+  "execute": "Executes",
+  "tool": "Tools",
+  "setting": "Settings",
+  "about": "About",
+
+  "nya": "nya nya nya!",
+
+  "getRemoteSourceFailed": "Get Remote Source Failed $0 with code $1",
+  "httpsGetFileFailed": "Get $0 Failed with code $1",
+  "httpsGetFileRedirect": "Get $0 Redirect with code $1",
+
+  "portInUse": "Port in use, Retrying...",
+  "consoleMessage": "ConsoleMsg"
+}

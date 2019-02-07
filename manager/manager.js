@@ -17,6 +17,8 @@ const userConfig = require(configs.USER_CONFIG_PATH)
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
+console.warn("码农何苦难为码农")
+
 // 注入脚本根文件根目录
 const executeRootDirs = userDataPaths.map(root =>
   path.join(root, configs.EXECUTES_DIR)

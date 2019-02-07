@@ -1,0 +1,24 @@
+{
+  "window": "窗口",
+  "zoomFactor": "资源管理器缩放",
+  "gameSSAA": "超采样抗锯齿",
+  "renderingMultiple": "% 渲染比率",
+  "isKioskModeOn": "使用原生模式代替默认全屏幕模式",
+  "update": "更新",
+  "prerelease": "获取浏览版",
+  "chromium": "核心（需重启软件）",
+  "isHardwareAccelerationDisable": "关闭硬件加速",
+  "isInProcessGpuOn": "启用进程内GPU处理",
+  "isNoBorder": "使用无边框窗口进入游戏",
+  "userData": "用户数据",
+  "isUseDefaultPath": "使用默认用户库目录",
+  "useAppdataLibrary": "使用AppData存储扩展资源",
+  "userLibPath": "用户库目录",
+  "localVersion": "版本",
+  "isManagerHide": "退出游戏后回到管理器界面",
+  "clearCache": "清除资源缓存",
+  "clearCacheSuccess": "清除资源缓存成功！",
+
+  "saveSuccessd": "保存成功！",
+  "saveFailed": "保存失败！"
+}

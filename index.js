@@ -15,7 +15,7 @@ const { Menu, MenuItem } = electron
 let userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
 
 // 同步 configs-user.json
-function jsonKeyUpdate(ja, jb) {
+function jsonKeyUpdate (ja, jb) {
   Object.keys(ja).forEach(key => {
     if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
       jsonKeyUpdate(ja[key], jb[key])
@@ -478,8 +478,8 @@ const windowControl = {
               {
                 properties: ['openFile', 'openDirectory']
               },
-              function(files) {
-                if (files) event.sender.send('selected-directory', files)
+              function (files) {
+                if (files) evt.sender.send('selected-directory', files)
               }
             )
             break

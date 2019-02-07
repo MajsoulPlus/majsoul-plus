@@ -1,0 +1,24 @@
+{
+  "window": "Window",
+  "zoomFactor": "Zoom Factor",
+  "gameSSAA": "SSAA",
+  "renderingMultiple": "% Rendering Multiple",
+  "isKioskModeOn": "Use Kiosk Fullscreen Mode",
+  "update": "Update",
+  "prerelease": "Get Pre-releases",
+  "chromium": "Core (Restart app needed)",
+  "isHardwareAccelerationDisable": "Turn Hardware Acceleration Off",
+  "isInProcessGpuOn": "Turn in-process-gpu On",
+  "isNoBorder": "Turn BorderLess On",
+  "userData": "User Data",
+  "isUseDefaultPath": "Use Default Path",
+  "useAppdataLibrary": "Use AppData dir to storage resources",
+  "userLibPath": "User  path",
+  "localVersion": "Version",
+  "isManagerHide": "Exit back to manager panel",
+  "clearCache": "Clear resources cache",
+  "clearCacheSuccess": "Clear resources cache succeed!",
+
+  "saveSuccessd":"Save Successed!",
+  "saveFailed":"Save Failed!"
+}
