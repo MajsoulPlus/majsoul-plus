@@ -447,14 +447,14 @@ const Util = {
    * @author romin
    * @description 同步删除文件夹，https://juejin.im/post/5ab32b20518825557f00d36c
    */
-  removeDir (dir) {
+  removeDirSync (dir) {
     let files = fs.readdirSync(dir)
     for (var i = 0; i < files.length; i++) {
       let newPath = path.join(dir, files[i])
       let stat = fs.statSync(newPath)
       if (stat.isDirectory()) {
         // 如果是文件夹就递归下去
-        this.removeDir(newPath)
+        this.removeDirSync(newPath)
       } else {
         // 删除文件
         fs.unlinkSync(newPath)
