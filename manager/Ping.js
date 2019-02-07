@@ -9,6 +9,17 @@ class Ping {
     this.currentService = null
     this.serviceList = []
     this.interval = null
+    this._getVersion = this._getVersion.bind(this)
+    this._getResVersion = this._getResVersion.bind(this)
+    this._getChildService = this._getChildService.bind(this)
+    this._getService = this._getService.bind(this)
+    this._getServices = this._getServices.bind(this)
+    this._getConfig = this._getConfig.bind(this)
+    this._saveServices = this._saveServices.bind(this)
+    this._renderService = this._renderService.bind(this)
+    this._changeService = this._changeService.bind(this)
+    this._getNextService = this._getNextService.bind(this)
+    this.ping = this.ping.bind(this)
   }
 
   _getRandomUrl (url) {
@@ -56,6 +67,8 @@ class Ping {
       this.currentService =
         this.serviceList.find(service => service === choseService) ||
         this.serviceList[0]
+    } else {
+      this.currentService = this.serviceList[0]
     }
     return Promise.resolve()
   }
@@ -150,7 +163,7 @@ class Ping {
 
   _getNextService () {
     let index = this.serviceList.indexOf(this.currentService)
-    index = index > this.serviceList.length ? 0 : index + 1
+    index = index + 1 >= this.serviceList.length ? 0 : index + 1
     this.currentService = this.serviceList[index]
     localStorage.setItem('choseService', this.currentService)
     return Promise.resolve()

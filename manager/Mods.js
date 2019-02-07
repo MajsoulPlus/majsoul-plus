@@ -12,6 +12,9 @@ const defaultOptions = {
 }
 
 class Mods extends CardList {
+  constructor(options){
+    super({...defaultOptions, ...options})
+  }
   _getExportInfo () {
     return {
       extend: 'mspm',
@@ -20,4 +23,4 @@ class Mods extends CardList {
   }
 }
 
-module.exports = new Mods(defaultOptions)
+module.exports = Mods

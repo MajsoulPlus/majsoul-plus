@@ -3,26 +3,195 @@ const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
 
-const { ipcRenderer } = require('electron')
+const { ipcRenderer, remote: {dialog, app} } = require('electron')
+const AdmZip = require('adm-zip')
+const path = require('path')
+const os = require('os')
 
 const update = new Update()
 const setting = new Setting()
+const Mods = require('./Mods')
+const Executes = require('./Executes')
+const Tools = require('./Tools')
+
+const configs = require('../configs')
+
+
 
 class Manager {
-  _saveSettings () {}
+  constructor(options){
+    this.options = options
+    this.mods = null
+    this.executes = null
+    this.tools = null
+    this._extends = []
+
+    this._addEventListener = this._addEventListener.bind(this)
+    this._import = this._import.bind(this)
+    this._changeModEditable = this._changeModEditable.bind(this)
+    this._changeExecuteEditable = this._changeExecuteEditable.bind(this)
+    this._changeToolEditable = this._changeToolEditable.bind(this)
+    this._loadCards = this._loadCards.bind(this)
+    this._saveSettings = this._saveSettings.bind(this)
+    this._getRootDirs = this._getRootDirs.bind(this)
+    this._getInstallDirByExtname = this._getInstallDirByExtname.bind(this)
+    this._runExtends = this._runExtends.bind(this)
+    this.gameStart = this.gameStart.bind(this)
+  }
+  
+  _saveSettings () {
+    this.mods.save()
+    this.executes.save()
+    this.tools.save()
+  }
+
+  _changeModEditable(){
+    this.mods.changeEditable()
+  }
+
+  _changeExecuteEditable(){
+    this.executes.changeEditable()
+  }
+
+  _changeToolEditable(){
+    this.tools.changeEditable()
+  }
+
+  _getRootDirs(){
+    const { userConfig: { userData: { useAppdataLibrary } }, modRootDirs, executeRootDirs, toolRootDirs } = this.options
+    const index = Number(!!useAppdataLibrary)
+    return {
+      modRootDir: modRootDirs[index],
+      executeRootDir: executeRootDirs[index],
+      toolRootDir: toolRootDirs[index]
+    }
+  }
+
+  _getInstallDirByExtname(extname){
+    const {modRootDir, executeRootDir, toolRootDir} = this._getRootDirs()
+    const map = {
+      '.mspm': modRootDir,
+      '.mspe': executeRootDir,
+      '.mspt': toolRootDir
+    }
+    return map[extname]
+  }
+
+  _import(){
+    dialog.showOpenDialog({
+      title: '选区扩展资源包...',
+      filters: [
+        {
+          name: '雀魂Plus扩展',
+          extensions: ['mspm', 'mspe', 'mspt']
+        }
+      ]
+    }, filenames => {
+      if (filenames && filenames.length) {
+        const filename = filenames[0]
+        const unzip = new AdmZip(filename)
+        const extname = path.extname(filename)
+        const installDir = this._getInstallDirByExtname(extname)
+        unzip.extractAllToAsync(installDir, true, err => {
+          if (err) {
+            alert(`安装失败！\n错误信息如下：\n${err.message}`)
+          } else {
+            alert('安装成功！')
+            this._loadCards()
+          }
+        })
+      }
+    })
+  }
+
+  _addEventListener(){
+    const installMod = document.getElementById('installMod')
+    const installExecute = document.getElementById('installExecute')
+    const installTool = document.getElementById('installTool')
+    installMod.addEventListener('click', this._import)
+    installExecute.addEventListener('click', this._import)
+    installTool.addEventListener('click', this._import)
+
+    const editMod = document.getElementById('editMod')
+    editMod.addEventListener('click', this._changeModEditable)
+    const editExecute = document.getElementById('editExecute')
+    editExecute.addEventListener('click', this._changeExecuteEditable)
+    const editTool = document.getElementById('editTool')
+    editTool.addEventListener('click', this._changeToolEditable)
+
+    window.addEventListener('blur', () => document.body.classList.add('blur'))
+    window.addEventListener('focus', () => document.body.classList.remove('blur'))
+
+    const refreshMod = document.getElementById('refreshMod')
+    const refreshExecute = document.getElementById('refreshExecute')
+    const refreshTool = document.getElementById('refreshTool')
+    refreshMod.addEventListener('click', this._loadCards)
+    refreshExecute.addEventListener('click', this._loadCards)
+    refreshTool.addEventListener('click', this._loadCards)
+
+    const launch = document.getElementById('launch')
+    launch.addEventListener('click', this.gameStart)
+
+    const closeBtn = document.getElementById('closeBtn')
+    if (os.platform() === 'darwin') {
+      closeBtn.className = 'close-btn darwin'
+      //hack close bar
+      const body = document.querySelector('body')
+      body.classList.add('darwin')
+      const closeButton = document.querySelector('body > .close-btn.darwin')
+      body.removeChild(closeButton)
+    }
+    closeBtn.addEventListener('click', window.close)
+  }
+
+  _loadCards(){
+    const {modRootDir, executeRootDir, toolRootDir} = this._getRootDirs()
+    this.mods = new Mods({rootDir: modRootDir})
+    this.executes = new Executes({rootDir: executeRootDir})
+    this.tools = new Tools({rootDir: toolRootDir})
+    this.mods.load()
+    this.executes.load()
+    this.tools.load()
+  }
+
+  _runExtends(){
+    this._extends.forEach(fun => fun.call())
+  }
 
   init () {
     update.checkUpdate()
     ping.init()
     panel.init()
     setting.init()
+    this._loadCards()
+    this._addEventListener()
+    this._runExtends()
   }
 
   gameStart () {
     this._saveSettings()
-    ipcRenderer.send('application-message', 'start-game')
+    // ipcRenderer.send('application-message', 'start-game')
   }
+
+  //add a function after init to run
+  extend(fun){
+    if ('function' !== typeof fun) throw new Error('extend accept 1 function as argument')
+    this._extends.push(fun)
+  }
+
 }
 
-const manager = new Manager()
+const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
+
+const springFestivalExtend = require('./extra/SpringFestival')
+
+const options = {
+  userConfig: require(configs.USER_CONFIG_PATH),
+  modRootDirs: userDataPaths.map(root => path.join(root, configs.MODS_DIR)),
+  executeRootDirs: userDataPaths.map(root => path.join(root, configs.EXECUTES_DIR)),
+  toolRootDirs: userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
+}
+
+const manager = new Manager(options)
+manager.extend(springFestivalExtend)
 manager.init()

@@ -12,6 +12,9 @@ const defaultOptions = {
 }
 
 class Tools extends CardList {
+  constructor(options){
+    super({...defaultOptions, ...options})
+  }
   _handleCardClick (key) {
     const { card } = this._cardList.find(item => item.key === key)
     ipcRenderer.send('application-message', 'start-tool', card.options)
@@ -38,4 +41,4 @@ class Tools extends CardList {
 
   save () {}
 }
-module.exports = new Tools(defaultOptions)
+module.exports = Tools

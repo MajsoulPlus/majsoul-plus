@@ -12,6 +12,9 @@ const defaultOptions = {
 }
 
 class Executes extends CardList {
+  constructor(options){
+    super({...defaultOptions, ...options})
+  }
   _getExportInfo () {
     return {
       extend: 'mspe',
@@ -19,4 +22,4 @@ class Executes extends CardList {
     }
   }
 }
-module.exports = new Executes(defaultOptions)
+module.exports = Executes

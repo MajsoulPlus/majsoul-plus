@@ -56,7 +56,7 @@ class Card {
     const preview = document.createElement('img')
     preview.src = this._getPreviewPath()
     preview.addEventListener('error', function errFun () {
-      preview.src = path.join(__dirname, 'defaultPreview.jpg')
+      preview.src = path.join(__dirname, '../', 'defaultPreview.jpg')
       preview.removeEventListener('error', errFun)
     })
     preview.addEventListener('dragstart', evt => evt.preventDefault())
@@ -84,6 +84,7 @@ class Card {
     removeButton.addEventListener('click', evt => {
       this._listener.emit('remove', evt)
     })
+    return removeButton
   }
 
   _createDOM () {

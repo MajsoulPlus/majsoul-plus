@@ -3,7 +3,7 @@ const path = require('path')
 const { ipcRenderer, remote } = require('electron')
 const { app } = remote
 const configs = require('../configs')
-const defaultUserConfig = JSON.parse(require(configs.USER_CONFIG_PATH))
+const defaultUserConfig = require(configs.USER_CONFIG_PATH)
 
 class Settings {
   constructor (options = {}) {
@@ -159,14 +159,13 @@ class Settings {
   }
 
   _addSaveListener () {
-    const saveBtn = document.getElementById('saveConfig')
+    const saveBtn = document.getElementById('saveConfigs')
     saveBtn.addEventListener('click', this._saveConfig)
   }
 
   render () {
     this._renderSections()
     this._renderVersionInfo()
-    this._renderSaveButton()
   }
 
   init () {

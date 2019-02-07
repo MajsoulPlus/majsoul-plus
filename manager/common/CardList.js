@@ -80,11 +80,6 @@ class CardList {
 
   }
 
-  _changeEditable () {
-    this._cardList.forEach(item => {
-      item.card.editable = !item.card.editable
-    })
-  }
 
   _handleExport (key) {
     const { card: { options: { name, author, filesDir } } } = this._cardList.find(item => item.key === key)
@@ -121,7 +116,7 @@ class CardList {
     const { card } = this._cardList.find(item => item.key === key)
     card.DOM.remove()
     const { filesDir } = card.options
-    Util.removeDir(filesDir)
+    Util.removeDirSync(filesDir)
     this.load()
   }
 
@@ -152,6 +147,13 @@ class CardList {
 
   get cardList () {
     return this._cardList
+  }
+
+
+  changeEditable() {
+    this._cardList.forEach(item => {
+      item.card.editable = !item.card.editable
+    })
   }
 }
 
