@@ -17,8 +17,20 @@
   "localVersion": "版本",
   "isManagerHide": "退出游戏后回到管理器界面",
   "clearCache": "清除资源缓存",
-  "clearCacheSuccess": "清除资源缓存成功！",
+  "clearCacheSuccessd": "清除资源缓存成功！",
 
   "saveSuccessd": "保存成功！",
-  "saveFailed": "保存失败！"
+  "saveFailed": "保存失败！",
+
+  "selectExtendResources": "选取扩展资源包……",
+  "majsoulPlusExtendResources": "雀魂Plus扩展",
+  "installExtendResourcesFailed": "安装失败！\n错误信息如下:\n$0",
+  "installExtendResourcesSuccessd": "安装成功！",
+
+  "loadFailed": "加载失败",
+  "needNotToUpdate": "无需更新",
+  "XMLHttpRequestFailed": "AJAX 请求失败，状态码: $0",
+
+  "downloadFinished": "下载完毕",
+  "downloadFinishedInfo": "更新已下载完毕，是否安装并重启？"
 }

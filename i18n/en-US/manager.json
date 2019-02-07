@@ -17,8 +17,20 @@
   "localVersion": "Version",
   "isManagerHide": "Exit back to manager panel",
   "clearCache": "Clear resources cache",
-  "clearCacheSuccess": "Clear resources cache succeed!",
+  "clearCacheSuccessd": "Clear resources cache successed!",
 
-  "saveSuccessd":"Save Successed!",
-  "saveFailed":"Save Failed!"
+  "saveSuccessd": "Save Successed!",
+  "saveFailed": "Save Failed!",
+
+  "selectExtendResources": "Select Extend Resources...",
+  "majsoulPlusExtendResources": "Majsoul Plus Extends",
+  "installExtendResourcesFailed": "Install Failed,\nAt:\n$0",
+  "installExtendResourcesSuccessd": "Install Successed!",
+
+  "loadFailed": "Load Failed",
+  "needNotToUpdate": "Need not to update",
+  "XMLHttpRequestFailed": "XMLHttpRequest Failed with code: $0",
+
+  "downloadFinished": "Download Finished",
+  "downloadFinishedInfo": "New version has been downloaded, install and restart the application now?"
 }
