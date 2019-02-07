@@ -1106,8 +1106,7 @@ const aboutPageInit = () => {
       info.innerHTML = `在 PC 上跨平台的雀魂麻将第三方客户端，提供资源替换和代码注入功能，并对直播环境进行了一定优化
       <br>
       <a href="https://github.com/MajsoulPlus/majsoul-plus-client">
-        <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social">
-      </a>
+        <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social"></a>
       <br>
       <input type="button" value="${getKeyText('clearCache')}">
       <br>
@@ -1142,11 +1141,11 @@ const saveUserConfigs = (alertMsg = true) => {
   try {
     fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
-    if (alertMsg === true) {
+    if (!alertMsg === false) {
       alert('保存成功')
     }
   } catch (error) {
-    if (alertMsg === true) {
+    if (!alertMsg === false) {
       alert('保存失败\n' + error)
     }
   }

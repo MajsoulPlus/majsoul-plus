@@ -407,7 +407,12 @@ h1 {
 
     &[data-name='settingPage'] {
       padding: 40px 0 20px 102px;
-
+      & > .save-btn {
+        left: 102px;
+        &::before {
+          content: '';
+        }
+      }
       & > .setting-innner {
         height: 100%;
         width: calc(100% - 16px);
@@ -508,12 +513,6 @@ h1 {
     &[data-name='aboutPage'] {
       padding: 40px 0 20px 102px;
 
-      & > .save-btn {
-        left: 102px;
-        &::before {
-          content: '';
-        }
-      }
       & > .about-innner {
         height: 100%;
         width: calc(100% - 80px);

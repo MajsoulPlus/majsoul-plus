@@ -403,6 +403,12 @@ h1 {
 .main-context > section[data-name='settingPage'] {
   padding: 40px 0 20px 102px;
 }
+.main-context > section[data-name='settingPage'] > .save-btn {
+  left: 102px;
+}
+.main-context > section[data-name='settingPage'] > .save-btn::before {
+  content: '';
+}
 .main-context > section[data-name='settingPage'] > .setting-innner {
   height: 100%;
   width: calc(100% - 16px);
@@ -502,12 +508,6 @@ h1 {
 }
 .main-context > section[data-name='aboutPage'] {
   padding: 40px 0 20px 102px;
-}
-.main-context > section[data-name='aboutPage'] > .save-btn {
-  left: 102px;
-}
-.main-context > section[data-name='aboutPage'] > .save-btn::before {
-  content: '';
 }
 .main-context > section[data-name='aboutPage'] > .about-innner {
   height: 100%;
