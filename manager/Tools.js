@@ -12,8 +12,8 @@ const defaultOptions = {
 }
 
 class Tools extends CardList {
-  constructor(options){
-    super({...defaultOptions, ...options})
+  constructor (options) {
+    super({ ...defaultOptions, ...options })
   }
   _handleCardClick (key) {
     const { card } = this._cardList.find(item => item.key === key)

@@ -3,7 +3,7 @@ const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
 
-const { ipcRenderer, remote: {dialog, app} } = require('electron')
+const { ipcRenderer, remote: { dialog, app } } = require('electron')
 const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
@@ -16,10 +16,8 @@ const Tools = require('./Tools')
 
 const configs = require('../configs')
 
-
-
 class Manager {
-  constructor(options){
+  constructor (options) {
     this.options = options
     this.mods = null
     this.executes = null
@@ -38,26 +36,26 @@ class Manager {
     this._runExtends = this._runExtends.bind(this)
     this.gameStart = this.gameStart.bind(this)
   }
-  
+
   _saveSettings () {
     this.mods.save()
     this.executes.save()
     this.tools.save()
   }
 
-  _changeModEditable(){
+  _changeModEditable () {
     this.mods.changeEditable()
   }
 
-  _changeExecuteEditable(){
+  _changeExecuteEditable () {
     this.executes.changeEditable()
   }
 
-  _changeToolEditable(){
+  _changeToolEditable () {
     this.tools.changeEditable()
   }
 
-  _getRootDirs(){
+  _getRootDirs () {
     const { userConfig: { userData: { useAppdataLibrary } }, modRootDirs, executeRootDirs, toolRootDirs } = this.options
     const index = Number(!!useAppdataLibrary)
     return {
@@ -67,8 +65,8 @@ class Manager {
     }
   }
 
-  _getInstallDirByExtname(extname){
-    const {modRootDir, executeRootDir, toolRootDir} = this._getRootDirs()
+  _getInstallDirByExtname (extname) {
+    const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
     const map = {
       '.mspm': modRootDir,
       '.mspe': executeRootDir,
@@ -77,7 +75,7 @@ class Manager {
     return map[extname]
   }
 
-  _import(){
+  _import () {
     dialog.showOpenDialog({
       title: '选区扩展资源包...',
       filters: [
@@ -104,7 +102,7 @@ class Manager {
     })
   }
 
-  _addEventListener(){
+  _addEventListener () {
     const installMod = document.getElementById('installMod')
     const installExecute = document.getElementById('installExecute')
     const installTool = document.getElementById('installTool')
@@ -135,7 +133,7 @@ class Manager {
     const closeBtn = document.getElementById('closeBtn')
     if (os.platform() === 'darwin') {
       closeBtn.className = 'close-btn darwin'
-      //hack close bar
+      // hack close bar
       const body = document.querySelector('body')
       body.classList.add('darwin')
       const closeButton = document.querySelector('body > .close-btn.darwin')
@@ -144,17 +142,17 @@ class Manager {
     closeBtn.addEventListener('click', window.close)
   }
 
-  _loadCards(){
-    const {modRootDir, executeRootDir, toolRootDir} = this._getRootDirs()
-    this.mods = new Mods({rootDir: modRootDir})
-    this.executes = new Executes({rootDir: executeRootDir})
-    this.tools = new Tools({rootDir: toolRootDir})
+  _loadCards () {
+    const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
+    this.mods = new Mods({ rootDir: modRootDir })
+    this.executes = new Executes({ rootDir: executeRootDir })
+    this.tools = new Tools({ rootDir: toolRootDir })
     this.mods.load()
     this.executes.load()
     this.tools.load()
   }
 
-  _runExtends(){
+  _runExtends () {
     this._extends.forEach(fun => fun.call())
   }
 
@@ -170,15 +168,14 @@ class Manager {
 
   gameStart () {
     this._saveSettings()
-    // ipcRenderer.send('application-message', 'start-game')
+    ipcRenderer.send('application-message', 'start-game')
   }
 
-  //add a function after init to run
-  extend(fun){
-    if ('function' !== typeof fun) throw new Error('extend accept 1 function as argument')
+  // add a function after init to run
+  extend (fun) {
+    if (typeof fun !== 'function') throw new Error('extend accept 1 function as argument')
     this._extends.push(fun)
   }
-
 }
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]

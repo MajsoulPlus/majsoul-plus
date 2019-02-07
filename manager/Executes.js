@@ -12,8 +12,8 @@ const defaultOptions = {
 }
 
 class Executes extends CardList {
-  constructor(options){
-    super({...defaultOptions, ...options})
+  constructor (options) {
+    super({ ...defaultOptions, ...options })
   }
   _getExportInfo () {
     return {

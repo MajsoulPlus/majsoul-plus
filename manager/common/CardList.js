@@ -80,7 +80,6 @@ class CardList {
 
   }
 
-
   _handleExport (key) {
     const { card: { options: { name, author, filesDir } } } = this._cardList.find(item => item.key === key)
     const { extend, typeText } = this._getExportInfo()
@@ -149,8 +148,7 @@ class CardList {
     return this._cardList
   }
 
-
-  changeEditable() {
+  changeEditable () {
     this._cardList.forEach(item => {
       item.card.editable = !item.card.editable
     })

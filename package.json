@@ -59,12 +59,16 @@
     "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
-    "electron": "^2.0.12",
     "cross-env": "^5.2.0",
+    "electron": "^2.0.12",
     "electron-builder": "^20.38.5",
     "electron-packager": "^13.0.1",
     "eslint": "^5.13.0",
+    "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1"
   }
