@@ -17,7 +17,7 @@ const userConfig = require(configs.USER_CONFIG_PATH)
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
-console.warn("码农何苦难为码农")
+console.warn('码农何苦难为码农')
 
 // 注入脚本根文件根目录
 const executeRootDirs = userDataPaths.map(root =>
@@ -522,6 +522,9 @@ refreshFunction()
 /* 分页提供业务逻辑 Start */
 Array.prototype.forEach.call(
   document.querySelectorAll('.left-panel ul li'),
+  /**
+   * @param {HTMLLIElement} node
+   */
   node => {
     node.addEventListener('click', () => {
       const sections = document.getElementsByTagName('section')
@@ -541,10 +544,10 @@ Array.prototype.forEach.call(
       Array.prototype.forEach.call(
         document.querySelectorAll('.left-panel ul li'),
         node => {
-          node.classList.remove('show')
+          node.classList.remove('active')
         }
       )
-      node.classList.add('show')
+      node.classList.add('active')
     })
   }
 )
