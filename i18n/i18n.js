@@ -15,7 +15,10 @@ const readJsonLikeFile = filePath => {
   }
 }
 class i18n {
-  constructor({
+  /**
+   * 构造函数
+   */
+  constructor ({
     directory = path.join(__dirname, 'locales'),
     actives = ['zh_CN'],
     defaultLocale = 'zh_CN',
@@ -43,21 +46,23 @@ class i18n {
     })
   }
   /**
+   * 已经加载的翻译文本
    * @returns {{[localTag: string] : {[type:string]:string}}}
    */
-  get locals() {
+  get locals () {
     return this._locals
   }
   /**
+   * 活动的语言列表
    * @returns {string[]}
    */
-  get actives() {
+  get actives () {
     return this._actives
   }
   /**
    * @param {string[]} localTag
    */
-  set actives(localTag) {
+  set actives (localTag) {
     this._actives = localTag
   }
 }
