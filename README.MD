@@ -26,14 +26,19 @@
 
 - 除首次加载较慢，其余均可高速加载
 - 可使用如OBS等视频采集软件采集画面
-- Windows、Mac OS、Linux，桌面端跨平台
+- Windows、macOS、Linux，桌面端跨平台
 - 支持替换游戏静态资源以及对游戏注入代码
 
 ## 使用
-
+### 手动下载安装
 1. 访问 <a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">releases 页面</a> 下载最新版本
 2. 解压
 3. 运行
+### 使用 Homebrew 安装 （仅限于 macOS 用户）
+在终端运行指令：
+```
+brew cask install majsoul-plus
+```
 
 在客户端中玩的开心！
 
