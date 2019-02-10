@@ -1,0 +1,10 @@
+{
+  "name": "大厅背景制作工具",
+  "author": "青龙圣者",
+  "description": "简单几步生成大厅背景Mod，背景随心换",
+  "index": "index.html",
+  "windowOptions": {
+    "width": 640,
+    "height": 360
+  }
+}

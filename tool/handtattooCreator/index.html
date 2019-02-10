@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>雀魂Plus-手纹制作工具</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <input id="selectImg" type="file" accept="image/*" value="选择图像" /><label
+      for="selectImg" id="selectImgLabel"
+      >选择图像</label
+    ><br />
+
+    <label for="darknessRange"
+      >叠加黑色<span id="darknessRangeText">0</span></label
+    ><br />
+    <input
+      id="darknessRange"
+      type="range"
+      id="img_dark"
+      value="0"
+      min="0"
+      max="100"
+    /><br />
+
+    <input type="text" placeholder="文件夹名称" id="dirName" /><br />
+    <input type="text" placeholder="Mod名称" id="name" /><br />
+    <input type="text" placeholder="作者" id="author" /><br />
+    <textarea placeholder="简介" id="description" rows="4"></textarea> <br />
+
+    <input id="saveAndInstall" type="button" value="保存并安装" /><br />
+
+    <canvas width="1024" height="1024" id="canvas"></canvas>
+    <script src="script.js"></script>
+  </body>
+</html>

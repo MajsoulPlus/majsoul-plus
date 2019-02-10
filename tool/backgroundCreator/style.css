@@ -1,0 +1,89 @@
+@charset "UTF-8";
+:root {
+  --title-color: #e280ae;
+  --title-text: #fff;
+  --main-color: #e280ae;
+  --main-dark-color: #cc6699;
+  --white-text: #fff;
+  --switch-able-color: #e280ae;
+  --switch-disable-color: #b1b1b1;
+  --switch-ball-color: #fff;
+  --light-text: #808080;
+  --bold-text: #303030;
+  --icon-color: #404040;
+  --border-color: #d0d0d0;
+  --left-pannel-color: #f0f0f0;
+  --left-pannel-active-color: #e0e0e0;
+  --left-pannel-hover-color: #d8d8d8;
+  --section-color: #fafafa;
+  --info-card-color: #ffffff;
+  --bottom-pannel-color: #fff;
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --animation-time: 100ms;
+}
+
+@font-face {
+  font-family: '思源黑体 CN';
+  src: url('../../manager/SourceHanSansCN-Light.otf') format('opentype');
+  font-weight: 300;
+}
+@font-face {
+  font-family: '思源黑体 CN';
+  src: url('../../manager/SourceHanSansCN-Normal.otf') format('opentype');
+  font-weight: 400;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  outline: none;
+  font-size: 14px;
+  font-weight: 300;
+}
+body {
+  height: 360px;
+  width: 640px;
+  overflow: hidden;
+  background-color: var(--section-color);
+}
+#canvas {
+  width: 256px;
+  height: 256px;
+  position: fixed;
+  right: 48px;
+  top: 52px;
+  background-color: black;
+  background-image: url('./desktopBorder.png');
+  background-size: cover;
+}
+#selectImg {
+  display: none;
+}
+input[type='text'],
+textarea {
+  width: 180px;
+}
+#description {
+  resize: none;
+}
+#selectImgLabel {
+  margin-top: 8px;
+}
+#selectImgLabel,
+#saveAndInstall {
+  padding: 6px 12px;
+  background-color: var(--main-color);
+  cursor: pointer;
+  border: 0;
+  color: var(--white-text);
+  font-size: 14px;
+  line-height: 14px;
+  display: inline-block;
+  font-weight: 300;
+}
+#selectImgLabel:hover,
+#saveAndInstall:hover {
+  background-color: var(--main-dark-color);
+}

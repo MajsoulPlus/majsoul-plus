@@ -1,0 +1,11 @@
+{
+  "name": "手纹制作工具",
+  "author": "青龙圣者",
+  "description": "简单几步生成手纹Mod，手纹随心换。\n（最好是背景透明的PNG）",
+  "index": "index.html",
+  "preview": "preview.png",
+  "windowOptions": {
+    "width": 640,
+    "height": 360
+  }
+}
