@@ -17,6 +17,8 @@ const userConfig = require(configs.USER_CONFIG_PATH)
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
+const i18n = new (require('../i18n/i18n'))()
+
 console.warn('码农何苦难为码农')
 
 // 注入脚本根文件根目录
