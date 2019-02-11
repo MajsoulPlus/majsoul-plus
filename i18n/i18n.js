@@ -59,8 +59,10 @@ class i18n {
     if (!files) {
       throw new Error('directory is empty, please make sure there is any files')
     }
-    // 所有翻译文本
+    // 读取所有翻译文本
     this._locals = readLangDir(directory)
+    // 设置一个绑定列表
+    this._bindElementList = []
     // 当优先语言全部不存在，则加载该默认语言
     this.defaultLocale = defaultLocale
     // 设置活动的语言列表
@@ -102,12 +104,66 @@ class i18n {
           if (eventType === 'change') {
             // 重新载入所有翻译文本
             this._locals = readLangDir(directory)
+            // 如果出现新文件夹，自动监听
             recursiveDir(dirPath, dirWatcher)
+            // 更新绑定的翻译
+            this._updateLocales()
           }
         })
       }
       recursiveDir(directory, dirWatcher)
     }
+  }
+  /**
+   * 更新所有绑定翻译的内容
+   */
+  _updateLocales () {
+    this._bindElementList.forEach(({ locale, htmlElement, type, args }) => {
+      const text = locale(...args)
+      switch (type) {
+        case 'text': {
+          htmlElement.innerText = text
+          break
+        }
+        case 'html': {
+          htmlElement.innerHTML = text
+        }
+      }
+    })
+  }
+  /**
+   * 绑定一条翻译到指定DOM元素
+   * @param {function} locale 一个locale函数对象
+   * @param {HTMLElement} htmlElement HTMLElement
+   * @param {"text" | "html"} type 绑定到的类型
+   * @param  {...string} args locale参数
+   */
+  _bindElement (locale, htmlElement, type, ...args) {
+    this._bindElementList.push({
+      locale: locale,
+      htmlElement: htmlElement,
+      type: type,
+      args: args
+    })
+    this._updateLocales()
+  }
+  /**
+   * 绑定一条翻译到指定DOM元素的 innerText
+   * @param {function} locale 一个locale函数对象
+   * @param {HTMLElement} htmlElement HTMLElement
+   * @param  {...string} args locale参数
+   */
+  bindElementText (locale, htmlElement, ...args) {
+    return this._bindElement(locale, htmlElement, 'text', ...args)
+  }
+  /**
+   * 绑定一条翻译到指定DOM元素的 innerHTML
+   * @param {function} locale 一个locale函数对象
+   * @param {HTMLElement} htmlElement HTMLElement
+   * @param  {...string} args locale参数
+   */
+  bindElementHTML (locale, htmlElement, ...args) {
+    return this._bindElement(locale, htmlElement, 'html', ...args)
   }
   /**
    * 获取翻译文本
@@ -136,7 +192,7 @@ class i18n {
             for (let i = 0; i < this._actives.length; i++) {
               let localeObj = this.locals[this._actives[i]]
               if (!localeObj) {
-                break
+                continue
               }
               for (let j = 0; j < f._chains.length; j++) {
                 localeObj = localeObj[f._chains[j]]
@@ -147,9 +203,23 @@ class i18n {
                 }
               }
             }
-            return undefined
+            return 'MissingText'
           }
           f._chains = chainsArray
+          /**
+           * @param {HTMLElement} htmlElement
+           * @param {...string} args
+           */
+          f.renderAsText = (htmlElement, ...args) => {
+            this.bindElementText(f, htmlElement, ...args)
+          }
+          /**
+           * @param {HTMLElement} htmlElement
+           * @param {...string} args
+           */
+          f.renderAsHTML = (htmlElement, ...args) => {
+            this.bindElementHTML(f, htmlElement, ...args)
+          }
           return f
         })(),
         {
@@ -198,6 +268,7 @@ class i18n {
    */
   set actives (localTags) {
     this._actives = localTags.concat(this.defaultLocale)
+    this._updateLocales()
   }
 }
 module.exports = i18n

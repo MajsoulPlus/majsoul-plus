@@ -1022,20 +1022,25 @@ const userConfigInit = () => {
   const settingInner = document.getElementById('settingInner')
   settingInner.innerHTML = ''
   Object.entries(userConfig).forEach(([keyGroup, value]) => {
-    const groupName = getKeyText(keyGroup)
+    // const groupName = getKeyText(keyGroup)
     const h3 = document.createElement('h3')
-    h3.innerText = groupName
+    // h3.innerText = groupName
+    i18n.t.manager[keyGroup].renderAsText(h3)
+
     settingInner.append(h3)
     Object.entries(value).forEach(([keyConfig, value], index) => {
       switch (typeof value) {
         case 'boolean': {
-          const selectName = getKeyText(keyConfig)
+          // const selectName = getKeyText(keyConfig)
           const input = document.createElement('input')
           input.type = 'checkbox'
           const label = document.createElement('label')
           input.id = 'config' + keyGroup + keyConfig + index
           label.setAttribute('for', input.id)
-          label.innerText = selectName
+
+          // label.innerText = selectName
+          i18n.t.manager[keyConfig].renderAsText(label)
+
           input.checked = value
           input.addEventListener('change', () => {
             userConfig[keyGroup][keyConfig] = input.checked
@@ -1046,13 +1051,17 @@ const userConfigInit = () => {
         }
         case 'number':
           {
-            const inputName = getKeyText(keyConfig)
+            // const inputName = getKeyText(keyConfig)
+
             const input = document.createElement('input')
             input.type = 'number'
             const label = document.createElement('label')
             input.id = 'config' + keyGroup + keyConfig + index
             label.setAttribute('for', input.id)
-            label.innerText = inputName
+
+            // label.innerText = inputName
+            i18n.t.manager[keyConfig].renderAsText(label)
+
             input.value = value
             input.addEventListener('change', () => {
               userConfig[keyGroup][keyConfig] = parseFloat(input.value)
