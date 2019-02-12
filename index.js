@@ -314,6 +314,8 @@ const windowControl = {
       }
     })
     Util.initPlayer()
+    // 如果重复启动游戏，则重新加载模组
+    Util.loadMods()
     gameWindow.webContents.on('crashed', () =>
       console.warn('web contents crashed')
     )
