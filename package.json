@@ -23,6 +23,10 @@
     "mac": {
       "icon": "bin/icons/icon.icns",
       "asar": false,
+      "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}",
+      "darkModeSupport": true
+    },
+    "dmg": {
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     }
   },
