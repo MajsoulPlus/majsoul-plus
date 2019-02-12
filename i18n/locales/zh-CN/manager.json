@@ -20,10 +20,24 @@
   "clearCacheSuccessd": "清除资源缓存成功！",
 
   "saveSuccessd": "保存成功！",
-  "saveFailed": "保存失败！",
+  "saveFailed": "保存失败！\n$0",
 
   "selectExtendResources": "选取扩展资源包……",
   "majsoulPlusExtendResources": "雀魂Plus扩展",
+
+  "fileTypeAllfiles": "所有文件",
+  "fileTypeMSPM": "雀魂Plus模组",
+  "fileTypeMSPE": "雀魂Plus插件",
+  "fileTypeMSPT": "雀魂Plus工具",
+  "fileTypeMajsoulPlusExtendResourcesPack": "雀魂Plus扩展",
+
+
+  "exportTo": "导出到……",
+  "installFrom": "选取扩展资源包……",
+
+  "missingAuthor": "无名氏",
+  "exportExtendResourcesFailed": "导出失败！\n错误信息如下:\n$0",
+  "exportExtendResourcesSuccessd": "导出成功！",
   "installExtendResourcesFailed": "安装失败！\n错误信息如下:\n$0",
   "installExtendResourcesSuccessd": "安装成功！",
 

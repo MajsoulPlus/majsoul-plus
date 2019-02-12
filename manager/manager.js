@@ -17,9 +17,8 @@ const userConfig = require(configs.USER_CONFIG_PATH)
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
-const i18n = new (require('../i18n/i18n'))()
-
-console.warn('码农何苦难为码农')
+// const i18n = new (require('../i18n/i18n'))()
+const i18n = require('../i18n/i18nInstance')
 
 // 注入脚本根文件根目录
 const executeRootDirs = userDataPaths.map(root =>
@@ -170,34 +169,34 @@ const reloadDOM = (executes, mods, tools) => {
     switch (type) {
       case 'execute': {
         extname = 'mspe'
-        typeText = '插件'
+        typeText = i18n.t.manager.fileTypeMSPE()
         break
       }
       case 'mod': {
         extname = 'mspm'
-        typeText = '模组'
+        typeText = i18n.t.manager.fileTypeMSPM()
         break
       }
       case 'tool': {
         extname = 'mspt'
-        typeText = '工具'
+        typeText = i18n.t.manager.fileTypeMSPT()
         break
       }
     }
     const tempZipName = `${info.name}-${
-      info.author ? info.author : '无名氏'
+      info.author ? info.author : i18n.t.manager.missingAuthor()
     }.${extname}`
     const tempZipPathName = path.join(os.tmpdir(), tempZipName)
     Util.zipDir(info.filesDir, tempZipPathName)
     const userChosenPath = dialog.showSaveDialog({
-      title: `导出${typeText}到……`,
+      title: i18n.t.manager.exportTo(),
       filters: [
         {
-          name: `雀魂Plus${typeText}`,
+          name: typeText,
           extensions: [extname]
         },
         {
-          name: '所有文件',
+          name: i18n.t.manager.fileTypeAllfiles(),
           extensions: ['*']
         }
       ],
@@ -206,9 +205,9 @@ const reloadDOM = (executes, mods, tools) => {
     if (userChosenPath) {
       fs.copyFile(tempZipPathName, userChosenPath, err => {
         if (err) {
-          alert('导出失败！\n错误信息如下:\n' + err)
+          alert(i18n.t.manager.exportExtendResourcesFailed(err))
         } else {
-          alert('导出成功！')
+          alert(i18n.t.manager.exportExtendResourcesSuccessd())
         }
       })
     }
@@ -336,10 +335,10 @@ const reloadDOM = (executes, mods, tools) => {
 const installResources = () => {
   dialog.showOpenDialog(
     {
-      title: '选取扩展资源包……',
+      title: i18n.t.manager.installFrom(),
       filters: [
         {
-          name: '雀魂Plus扩展',
+          name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
           extensions: ['mspm', 'mspe', 'mspt']
         }
       ]
@@ -369,9 +368,9 @@ const installResources = () => {
         }
         unzip.extractAllToAsync(installDir, true, err => {
           if (err) {
-            alert('安装失败！\n错误信息如下:\n' + err)
+            alert(i18n.t.manager.installExtendResourcesFailed(err))
           } else {
-            alert('安装成功！')
+            alert(i18n.t.manager.installExtendResourcesSuccessd())
             refreshFunction()
           }
         })
@@ -575,7 +574,7 @@ const getServersJson = () => {
       if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         resolve(JSON.parse(xhr.responseText))
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
-        reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
+        reject(new Error(i18n.t.manager.XMLHttpRequestFailed(xhr.status)))
       }
     })
   })
@@ -600,9 +599,7 @@ const getServersJson = () => {
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject(
-                new Error('XMLHttpRequest Failed with status: ' + xhr.status)
-              )
+              reject(new Error(i18n.t.manager.XMLHttpRequestFailed(xhr.status)))
             }
           })
         })
@@ -627,9 +624,7 @@ const getServersJson = () => {
               xhr.readyState === XMLHttpRequest.DONE &&
               xhr.status !== 200
             ) {
-              reject(
-                new Error('XMLHttpRequest Failed with status: ' + xhr.status)
-              )
+              reject(new Error(i18n.t.manager.XMLHttpRequestFailed(xhr.status)))
             }
           })
         })
@@ -687,31 +682,7 @@ const refreshPing = serversJson => {
   })
 }
 const getServerName = serverKey => {
-  switch (serverKey) {
-    case 'mainland':
-      return '中国大陆'
-    case 'hk':
-      return '中国香港'
-    case 'tw':
-      return '中国台湾'
-    case 'us':
-      return '美国'
-    case 'uk':
-      return '英国'
-    case 'jp':
-      return '日本'
-    case 'fr':
-      return '法国'
-    case 'kr':
-      return '韩国'
-    case 'sg':
-      return '新加坡'
-    case 'de':
-      return '德国'
-    case 'ru':
-      return '俄罗斯'
-  }
-  return serverKey
+  return i18n.t.servers[serverKey]
 }
 const serverTextDom = document.getElementById('serverText')
 const serverInfoDom = document.getElementById('serverInfo')
@@ -759,7 +730,10 @@ const reStartPing = () => {
   )
     .then(result => {
       // console.log(result)
-      serverTextDom.innerText = getServerName(result[0])
+      // 绑定文本
+      i18n.unbindElement(serverTextDom)
+      getServerName(result[0]).renderAsText(serverTextDom)
+
       clearInterval(interval)
       document.getElementById('pingInfo').className = 'offline'
       document.getElementById('pingText').innerText = '--'
@@ -787,7 +761,9 @@ serverInfoDom.addEventListener('click', () => {
 })
 
 getServersJson().then(reStartPing, () => {
-  serverTextDom.innerText = '加载失败'
+  i18n.unbindElement(serverTextDom)
+  // 输出加载失败
+  i18n.t.manager.loadFailed.renderAsText(serverTextDom)
 })
 /* Ping 业务逻辑 End */
 
@@ -835,10 +811,10 @@ const checkUpdate = userConfig => {
             update_mode: updateMode
           })
         } else {
-          reject('Need not to update')
+          reject(i18n.t.manager.needNotToUpdate())
         }
       } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
-        reject(new Error('XMLHttpRequest Failed with status: ' + xhr.status))
+        reject(new Error(i18n.t.manager.XMLHttpRequestFailed(xhr.status)))
       }
     })
   })
@@ -920,9 +896,17 @@ checkUpdate(userConfig.update).then(
           })
           .then(() => {
             clearInterval(timer)
-            document.getElementById('downloadCardTitle').innerText = '下载完毕'
-            document.getElementById('downloadCardText').innerText =
-              '更新已下载完毕，是否安装并重启？'
+
+            i18n.unbindElement(document.getElementById('downloadCardTitle'))
+            i18n.t.manager.downloadFinished.renderAsText(
+              document.getElementById('downloadCardTitle')
+            )
+
+            i18n.unbindElement(document.getElementById('downloadCardText'))
+            i18n.t.manager.downloadFinishedInfo.renderAsText(
+              document.getElementById('downloadCardText')
+            )
+
             document.getElementById('downloadCard_install').disabled = false
           })
       })
@@ -986,38 +970,42 @@ checkUpdate(userConfig.update).then(
 /* 检查更新业务逻辑 End */
 
 /* 设置项业务逻辑 Start */
+// /**
+//  * 由key返回文本
+//  * @param {string} key Key
+//  * @returns {string}
+//  */
+// const getKeyText = key => {
+//   const lang = {
+//     window: '窗口(Window)',
+//     zoomFactor: '资源管理器缩放(Zoom Factor)',
+//     gameSSAA: '超采样抗锯齿(SSAA)',
+//     renderingMultiple: '% 渲染比率(Rendering Multiple)',
+//     isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
+//     update: '更新(Update)',
+//     prerelease: '获取浏览版(Get Pre-releases)',
+//     chromium: '核心（需重启软件）(Core - Restart app needed)',
+//     isHardwareAccelerationDisable:
+//       '关闭硬件加速(Turn Hardware Acceleration Off)',
+//     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
+//     isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
+//     userData: '用户数据(User Data)',
+//     isUseDefaultPath: '使用默认用户库目录',
+//     useAppdataLibrary:
+//       '使用AppData存储扩展资源(Use AppData dir to storage resources)',
+//     userLibPath: '用户库目录',
+//     programName: '雀魂Plus(Majsoul Plus)',
+//     localVersion: '版本(Version)',
+//     isManagerHide: '退出游戏后回到管理器界面(Exit back to manager panel)',
+//     clearCache: '清除资源缓存(Clear resources cache)',
+//     clearCacheSuccess: '清除资源缓存成功！(Clear resources cache succeed!)'
+//   }
+//   return lang[key] ? lang[key] : key
+// }
+
 /**
- * 由key返回文本
- * @param {string} key Key
- * @returns {string}
+ * 初始化设置面板
  */
-const getKeyText = key => {
-  const lang = {
-    window: '窗口(Window)',
-    zoomFactor: '资源管理器缩放(Zoom Factor)',
-    gameSSAA: '超采样抗锯齿(SSAA)',
-    renderingMultiple: '% 渲染比率(Rendering Multiple)',
-    isKioskModeOn: '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
-    update: '更新(Update)',
-    prerelease: '获取浏览版(Get Pre-releases)',
-    chromium: '核心（需重启软件）(Core - Restart app needed)',
-    isHardwareAccelerationDisable:
-      '关闭硬件加速(Turn Hardware Acceleration Off)',
-    isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
-    isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
-    userData: '用户数据(User Data)',
-    isUseDefaultPath: '使用默认用户库目录',
-    useAppdataLibrary:
-      '使用AppData存储扩展资源(Use AppData dir to storage resources)',
-    userLibPath: '用户库目录',
-    programName: '雀魂Plus(Majsoul Plus)',
-    localVersion: '版本(Version)',
-    isManagerHide: '退出游戏后回到管理器界面(Exit back to manager panel)',
-    clearCache: '清除资源缓存(Clear resources cache)',
-    clearCacheSuccess: '清除资源缓存成功！(Clear resources cache succeed!)'
-  }
-  return lang[key] ? lang[key] : key
-}
 const userConfigInit = () => {
   const settingInner = document.getElementById('settingInner')
   settingInner.innerHTML = ''
@@ -1113,7 +1101,7 @@ const aboutPageInit = () => {
   )
   addBlock(
     // 标题
-    getKeyText('programName'),
+    i18n.t.main.programName(),
     (() => {
       // P 段落
       const info = document.createElement('p')
@@ -1124,9 +1112,9 @@ const aboutPageInit = () => {
       <a href="https://github.com/MajsoulPlus/majsoul-plus-client">
         <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social"></a>
       <br>
-      <input type="button" value="${getKeyText('clearCache')}">
+      <input type="button" value="${i18n.t.manager.clearCache()}">
       <br>
-      ${getKeyText('localVersion')} ${app.getVersion()}`
+      ${i18n.t.manager.localVersion()} ${app.getVersion()}`
 
       // 对内部所有 a 标签进行处理
       ;[...info.getElementsByTagName('a')].forEach(a => {
@@ -1142,7 +1130,7 @@ const aboutPageInit = () => {
         .addEventListener('click', event => {
           event.preventDefault()
           Util.removeDirSync(path.join(__dirname, '../', configs.LOCAL_DIR))
-          alert(getKeyText('clearCacheSuccess'))
+          alert(i18n.t.manager.clearCacheSuccess())
         })
 
       return info
@@ -1158,11 +1146,11 @@ const saveUserConfigs = (alertMsg = true) => {
     fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
     if (!alertMsg === false) {
-      alert('保存成功')
+      alert(i18n.t.manager.saveSuccessd())
     }
   } catch (error) {
     if (!alertMsg === false) {
-      alert('保存失败\n' + error)
+      alert(i18n.t.manager.saveFailed(error))
     }
   }
 }

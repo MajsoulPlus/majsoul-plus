@@ -62,6 +62,9 @@ class i18n {
     // 读取所有翻译文本
     this._locals = readLangDir(directory)
     // 设置一个绑定列表
+    /**
+     * @type {any[]}
+     */
     this._bindElementList = []
     // 当优先语言全部不存在，则加载该默认语言
     this.defaultLocale = defaultLocale
@@ -146,6 +149,17 @@ class i18n {
       args: args
     })
     this._updateLocales()
+  }
+  /**
+   * 解绑指定DOM元素的所有绑定
+   * @param {HTMLElement} htmlElement HTMLElement
+   */
+  unbindElement (htmlElement) {
+    this._bindElementList = this._bindElementList.filter(
+      ({ htmlElementTest }) => {
+        return htmlElementTest !== htmlElement
+      }
+    )
   }
   /**
    * 绑定一条翻译到指定DOM元素的 innerText

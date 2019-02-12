@@ -20,10 +20,23 @@
   "clearCacheSuccessd": "Clear resources cache successed!",
 
   "saveSuccessd": "Save Successed!",
-  "saveFailed": "Save Failed!",
+  "saveFailed": "Save Failed!\n$0",
 
   "selectExtendResources": "Select Extend Resources...",
   "majsoulPlusExtendResources": "Majsoul Plus Extends",
+
+  "fileTypeAllfiles": "All Files",
+  "fileTypeMSPM": "Majsoul+ Mods",
+  "fileTypeMSPE": "Majsoul+ Plugins",
+  "fileTypeMSPT": "Majsoul+ Tools",
+  "fileTypeMajsoulPlusExtendResourcesPack": "Majsoul+ Extends",
+
+  "exportTo": "Export to……",
+  "installFrom": "Select extend resources pack...",
+
+  "missingAuthor": "MissingName",
+  "exportExtendResourcesFailed": "Export Failed,\nAt:\n$0",
+  "exportExtendResourcesSuccessd": "Export Successed!",
   "installExtendResourcesFailed": "Install Failed,\nAt:\n$0",
   "installExtendResourcesSuccessd": "Install Successed!",
 
