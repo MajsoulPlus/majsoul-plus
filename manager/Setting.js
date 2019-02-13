@@ -8,6 +8,15 @@ const defaultUserConfig = require(configs.USER_CONFIG_PATH)
 class Settings {
   constructor (options = {}) {
     this.userConfig = options.userConfig || defaultUserConfig
+    this._saveConfig = this._saveConfig.bind(this)
+    this._renderSection = this._renderSection.bind(this)
+    this._renderSections = this._renderSections.bind(this)
+    this._renderSectionItem = this._renderSectionItem.bind(this)
+    this._renderCheckBoxSectionItem = this._renderCheckBoxSectionItem.bind(this)
+    this._renderNumberSectionItem = this._renderNumberSectionItem.bind(this)
+    this._addSaveListener = this._addSaveListener.bind(this)
+    this.render = this.render.bind(this)
+    this.init = this.init.bind(this)
   }
 
   static _keyToTitle (key) {
@@ -31,9 +40,9 @@ class Settings {
   }
 
   _getUserLocalConfig () {
-    const configPath = path.join(__dirname, '../configs-user.json')
-    const configJson = fs.readFileSync(configPath)
-    return JSON.parse(configJson)
+    const defaultConfigPath = path.join(__dirname, '../configs-user.json')
+    const defaultConfigJson = fs.readFileSync(defaultConfigPath)
+    return this.userConfig || JSON.parse(defaultConfigJson)
   }
 
   _renderSection ({ settingInner, section, data }) {
@@ -57,9 +66,9 @@ class Settings {
     const label = document.createElement('label')
     label.setAttribute('for', checkBox.id)
     label.innerText = itemName
-    checkBox.value = data
+    checkBox.checked = data
     checkBox.addEventListener('change', () => {
-      this.userConfig[section][item] = checkBox.value
+      this.userConfig[section][item] = checkBox.checked
     })
     settingInner.append(checkBox)
     settingInner.append(label)
