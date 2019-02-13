@@ -13,5 +13,6 @@
   "httpsGetFileRedirect": "Get $0 Redirect with code $1",
 
   "portInUse": "Port in use, Retrying...",
-  "consoleMessage": "ConsoleMsg"
+  "consoleMessage": "ConsoleMsg",
+  "webContentsCrashed": "Web Contents Crashed"
 }

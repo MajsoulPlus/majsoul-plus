@@ -8,6 +8,8 @@ const fs = require('fs')
 const path = require('path')
 const https = require('https')
 
+const i18n = require('./i18nInstance')
+
 const electron = require('electron')
 const { app: electronApp, BrowserWindow, ipcMain, clipboard, dialog } = electron
 const { Menu, MenuItem } = electron
@@ -248,7 +250,7 @@ const windowControl = {
       sererHttps.on('listening', resolve)
       sererHttps.on('error', err => {
         if (err.code === 'EADDRINUSE') {
-          console.warn('Port in use, retrying...')
+          console.warn(i18n.t.main.portInUse())
           sererHttps.close()
           sererHttps.listen(0)
         }
@@ -317,7 +319,7 @@ const windowControl = {
     // 如果重复启动游戏，则重新加载模组
     Util.loadMods()
     gameWindow.webContents.on('crashed', () =>
-      console.warn('web contents crashed')
+      console.warn(i18n.t.main.webContentsCrashed())
     )
     gameWindow.once('ready-to-show', () => {
       gameWindow.webContents.setZoomFactor(1)
@@ -330,7 +332,7 @@ const windowControl = {
       msg /*, line, sourceId  */
     ) => {
       if (level !== 'log') {
-        console.warn('Console', msg)
+        console.warn(i18n.t.main.consoleMessage() + msg)
       }
     })
     // 载入本地启动器
