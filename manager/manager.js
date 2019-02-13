@@ -18,7 +18,7 @@ const userConfig = require(configs.USER_CONFIG_PATH)
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
 // const i18n = new (require('../i18n/i18n'))()
-const i18n = require('../i18n/i18nInstance')
+const i18n = require('../i18nInstance')
 
 // 注入脚本根文件根目录
 const executeRootDirs = userDataPaths.map(root =>

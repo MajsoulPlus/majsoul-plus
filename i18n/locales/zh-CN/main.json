@@ -8,9 +8,9 @@
 
   "nya": "喵喵喵！",
 
-  "getRemoteSourceFailed": "从远端服务器请求 $0 失败, 状态码为 $1",
-  "httpsGetFileFailed": "尝试下载资源 $0 失败, 状态码为 $1`",
-  "httpsGetFileRedirect": "访问 $0 被重定向, 状态码为 $1",
+  "getRemoteSourceFailed": "从远端服务器请求 $0 失败，状态码为 $1",
+  "httpsGetFileFailed": "尝试下载资源 $0 失败，状态码为 $1`",
+  "httpsGetFileRedirect": "访问 $0 被重定向，状态码为 $1",
 
   "portInUse": "端口被占用，重试中……",
   "consoleMessage": "控制台消息"

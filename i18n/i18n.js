@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const CSV = require('./csv')
 
 /**
  * 自动地判断并读取一个js或者是json
@@ -12,6 +13,18 @@ const readLangFile = filePath => {
       return require(filePath)
     case '.json':
       return JSON.parse(fs.readFileSync(filePath))
+    case '.csv':
+      /**
+       * @type {string[][]}
+       */
+      const csv = new CSV(fs.readFileSync(filePath).toString(), {
+        cast: false
+      }).parse()
+      const localeObj = {}
+      csv.forEach(line => {
+        localeObj[line[0]] = line[2]
+      })
+      return localeObj
     default:
       return {}
   }
