@@ -1220,3 +1220,6 @@ if (os.platform() === 'darwin') {
 closeBtn.addEventListener('click', () => {
   window.close()
 })
+
+
+// extraCss.href = './styles/dark/dark.css'
