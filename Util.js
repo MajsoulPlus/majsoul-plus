@@ -415,13 +415,11 @@ const Util = {
           if (encrypt) {
             sendData = this.XOR(sendData)
           }
-          res.setHeader('Content-Length', sendData.length)
           res.end(sendData)
         },
         data => {
           let sendData = this.encodeData(data).toString('utf-8')
-          res.setHeader('Content-Length', sendData.length)
-          res.end(sendData)
+          res.send(sendData)
         }
       )
       .catch(err => console.error(err))
