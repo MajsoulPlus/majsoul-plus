@@ -27,7 +27,7 @@
 
 &emsp;&emsp;作为“始作俑者”，我不希望《雀魂 Plus》被滥用，我希望的是《雀魂 Plus》可以为《雀魂》提供一个 PC 稳定的游戏环境和体验，在这基础上体验一些《雀魂》尚未实现的、或是其他游戏中存在的优秀功能，并非为了让使用者白嫖《雀魂》，这是一个不健康的发展路径，无论你我，当然不希望《雀魂》会走上《雀龙门》的老路，成为一款冷门游戏，或是成为下一个《X 海战记》。《雀魂》当前的付费点主要就是装扮，还望各位手下留情，使用魔改的同时别忘为游戏付费，一款好的游戏值得去为其体验埋单。
 
-&emsp;&emsp;在版本 v1.9.0 更新后，《雀魂 Plus》将会将更新重点转移到作为一个游戏客户端体验的优化上，对于目前已有的扩展功能将仅做维护，感谢您的理解。相信您在思考后，也会在《雀魂》中“补票”吧。
+&emsp;&emsp;在版本 v1.9.0 更新后，《雀魂 Plus》将会将更新重点转移到作为一款游戏用浏览器体验的优化上，对于目前已有的扩展功能将仅做维护，感谢您的理解。相信您在思考后，也会在《雀魂》中“补票”吧。
 
 ## 安装
 
@@ -64,7 +64,7 @@
 
 1. `git clone git@github.com:MajsoulPlus/majsoul-plus-client.git`
 2. `cd majsoul-plus-client`
-3. `npm i`
+3. `npm install`
 4. `npm start`
 
 ## 制作模组
@@ -124,7 +124,7 @@
 
 ## 开发工具
 
-雀魂 Plus 支持使用额外的工具增强客户端的功能，仓库中的`./tool/desktopCreator`路径已经包含了一个示例工具，这个工具可以轻松生成一个桌布模组，替换默认桌布。
+雀魂 Plus 支持使用额外的工具增强功能，仓库中的`./tool/desktopCreator`路径已经包含了一个示例工具，这个工具可以轻松生成一个桌布模组，替换默认桌布。
 您可以参照这个工具进行修改和编辑
 
 一个插件由一个`tool.json`文件和若干 Electron 的 BrowserWindow 所需文件组成，工具会在资源管理器加载时同步读取并展现，以下为`tool.json`的一个示例：
@@ -134,7 +134,7 @@
   "name": "桌布制作工具",
   "author": "Handle",
   "description": "简单几步生成桌布Mod，桌布随心换",
-  "//注释": "定义了 客户端调用 Electron 的 BrowserWindow 时，要加载的入口页面",
+  "//注释": "定义了 浏览器调用 Electron 的 BrowserWindow 时，要加载的入口页面",
   "index": "index.html",
   "//注释": "一个标准的 BrowserWindow 选项，详情请参考 https://electronjs.org/docs/api/browser-window#new-browserwindowoptions",
   "windowOptions": {
