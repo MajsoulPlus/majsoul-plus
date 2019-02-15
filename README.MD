@@ -1,6 +1,6 @@
 # [雀魂 Plus](https://github.com/iamapig120/majsoul-plus-client)
 
-雀魂 Plus 是一款设计用于雀魂麻将的 PC 专用浏览器
+雀魂 Plus 是一款设计用于雀魂麻将的 PC 专用浏览器 [Wiki](https://github.com/MajsoulPlus/majsoul-plus-client/wiki)
 
 包含以下核心特性：
 
