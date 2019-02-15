@@ -147,8 +147,9 @@
 ## 协助翻译
 
 雀魂 Plus 正筹备支持多语言的本地化特性，您可以通过以下方式参与到项目翻译中：
-- 日本語 [Join with ParaTranz](https://paratranz.cn/projects/196)
-- English, 正體中文 台灣, 繁體中文 香港, 한국어 [Join with OneSky](https://osh1flm.oneskyapp.com/admin/project/dashboard/project/329038)
+
+- [Join with ParaTranz](https://paratranz.cn/projects/196): 日本語
+- [Join with OneSky](https://osh1flm.oneskyapp.com/admin/project/dashboard/project/329038): English, 正體中文 台灣, 繁體中文 香港, 한국어
 
 ## 贡献者
 
