@@ -17,7 +17,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/cx2hgugjts6ed932/branch/master?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus-client/branch/master)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus-client.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus-client)
-![License](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
+![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 ## 致用户
 
@@ -159,5 +159,6 @@
 
 ## 开源协议
 
-AGPL-3.0
+![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
+
 注：软件图标、图像、SVG 矢量图形均不遵循以上协议，您不可以将这些内容用于雀魂 Plus 以外的内容
