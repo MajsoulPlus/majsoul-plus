@@ -1162,6 +1162,28 @@ setTimeout(() => {
 }, 0)
 /* 春节额外css End */
 
+const changeTheme = function (mode) {
+  if (mode === 'dark') {
+    extraCss.href = './styles/dark/dark.css'
+  } else {
+    extraCss.href = './style.css'
+  }
+}
+
+if (process.platform === 'darwin') {
+  const { systemPreferences } = electronRemote
+
+  const setOSTheme = function () {
+    let mode = systemPreferences.isDarkMode() ? 'dark' : 'light'
+    changeTheme(mode)
+  }
+
+  systemPreferences.subscribeLocalNotification(
+    'AppleInterfaceThemeChangeNotification',
+    setOSTheme
+  )
+}
+
 /**
  * 启动游戏
  */
