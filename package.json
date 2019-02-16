@@ -41,7 +41,8 @@
       "/static/",
       "/mod/",
       "/tool/",
-      "/execute"
+      "/execute",
+      "i18n/csv.js"
     ]
   },
   "pre-commit": [

@@ -38,28 +38,6 @@ const toolRootDirs = userDataPaths.map(root =>
 )
 
 /**
- * 同步 UserConfig
- */
-const syncUserConfig = () => {
-  const localUserConfig = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../configs-user.json'))
-  )
-  Object.entries(localUserConfig).forEach(([keyGroup, value]) => {
-    // 如果有新选项，则加载到设置文档中
-    if (userConfig[keyGroup] === undefined) {
-      userConfig[keyGroup] = value
-    }
-    Object.entries(value).forEach(([keyConfig, value], index) => {
-      if (userConfig[keyGroup][keyConfig] === undefined) {
-        userConfig[keyGroup][keyConfig] = value
-      }
-      value = userConfig[keyGroup][keyConfig]
-    })
-  })
-}
-syncUserConfig()
-
-/**
  * 刷新所有模组和插件并重新加载DOM
  * @type {function}
  */
@@ -1193,6 +1171,14 @@ const startGame = () => {
   ipcRenderer.send('application-message', 'start-game')
 }
 
+ipcRenderer.on('changeConfig', (event, data) => {
+  
+  let obj = JSON.parse(data)
+  console.log(obj)
+  console.log(userConfig[obj.mainKey])
+  userConfig[obj.mainKey][obj.key] = obj.value
+})
+
 // 刷新模组 按钮
 document.getElementById('refreshMod').addEventListener('click', refreshFunction)
 // 刷新插件 按钮
@@ -1220,6 +1206,3 @@ if (os.platform() === 'darwin') {
 closeBtn.addEventListener('click', () => {
   window.close()
 })
-
-
-// extraCss.href = './styles/dark/dark.css'

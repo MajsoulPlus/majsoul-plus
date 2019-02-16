@@ -1,5 +1,7 @@
 {
   "window": {
+    "OSTheme": "light",
+    "gameWindowSize":"",
     "zoomFactor": 1,
     "renderingMultiple": 100,
     "isKioskModeOn": false,
