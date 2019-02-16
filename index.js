@@ -296,9 +296,21 @@ const windowControl = {
       title: windowControl._getGameWindowTitle(),
       frame: !userConfigs.window.isNoBorder
     }
+    if (userConfigs['window']['gameWindowSize'] !== '') {
+      let windowSize = userConfigs['window']['gameWindowSize'].split(',').map(value => parseInt(value))
+      config.width = windowSize[0]
+      config.height = windowSize[1]
+    }
     const gameWindow = new BrowserWindow(config)
     gameWindow.on('page-title-updated', event => event.preventDefault())
     gameWindow.on('resize', () => {
+      userConfigs['window']['gameWindowSize'] = gameWindow.getSize().toString()
+      let obj = {
+        mainKey: 'window',
+        key: 'gameWindowSize',
+        value: userConfigs['window']['gameWindowSize']
+      }
+      windowControl.windowMap['manager'].send('changeConfig', JSON.stringify(obj))
       gameWindow.webContents.send('window-resize', gameWindow.getBounds())
     })
     gameWindow.on('move', () => {
