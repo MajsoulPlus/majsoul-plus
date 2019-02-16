@@ -1,6 +1,10 @@
-# [雀魂 Plus](https://github.com/iamapig120/majsoul-plus-client)
+![Banner](https://github.com/iamapig120/simpad-ebay-imgs/blob/master/majsoul_plus_banner.png?raw=true)
+
+# 雀魂 Plus
 
 雀魂 Plus 是一款设计用于雀魂麻将的 PC 专用浏览器
+
+浏览 [Wiki](https://github.com/MajsoulPlus/majsoul-plus-client/wiki)
 
 包含以下核心特性：
 
@@ -17,7 +21,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/cx2hgugjts6ed932/branch/master?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus-client/branch/master)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus-client.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus-client)
-![License](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
+![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 ## 致用户
 
@@ -37,7 +41,7 @@
 2. 解压压缩文件
 3. 运行应用程序，启动浏览器
 
-### 社区维护版本（非官方）
+### 社区维护源
 
 | 平台                  | 维护者                      | 安装命令                         |
 | --------------------- | --------------------------- | -------------------------------- |
@@ -47,14 +51,16 @@
 
 ## 快捷键
 
-以下所有快捷键均在载入游戏后才会生效
+请注意，雀魂 Plus 的所有快捷键均在载入游戏后才会生效
 
-- 截图 `F12 / Cmd+P (macOS) / Ctrl+P (Windows / Linux)`
-- 全屏 `F5 / F11`
-- 退出全屏 `Esc`
-- 置顶窗口 `Cmd+T (macOS) / Ctrl+T (Windows / Linux)`
-- 退出程序 `Alt+F4`
-- 开发者工具 `Cmd+I (macOS) / Ctrl+I (Windows / Linux)`
+| 功能       | 快捷键                                               |
+| ---------- | ---------------------------------------------------- |
+| 截图       | `F12` / `Cmd+P` (macOS) / `Ctrl+P` (Windows / Linux) |
+| 全屏       | `F5` / `F11`                                         |
+| 退出全屏   | `Esc`                                                |
+| 置顶窗口   | `Cmd+T` (macOS) / `Ctrl+T` (Windows / Linux)         |
+| 退出程序   | `Alt+F4`                                             |
+| 开发者工具 | `Cmd+I` (macOS) / `Ctrl+I` (Windows / Linux)         |
 
 截取的图片会自动保存至`用户>图片>Majsoul Plus`路径下
 
@@ -157,5 +163,6 @@
 
 ## 开源协议
 
-AGPL-3.0
+![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
+
 注：软件图标、图像、SVG 矢量图形均不遵循以上协议，您不可以将这些内容用于雀魂 Plus 以外的内容
