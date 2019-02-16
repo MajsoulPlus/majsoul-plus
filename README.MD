@@ -1,4 +1,6 @@
-# [雀魂 Plus](https://github.com/iamapig120/majsoul-plus-client)
+![Banner](https://github.com/iamapig120/simpad-ebay-imgs/blob/master/majsoul_plus_banner.png?raw=true)
+
+# 雀魂 Plus
 
 雀魂 Plus 是一款设计用于雀魂麻将的 PC 专用浏览器 [Wiki](https://github.com/MajsoulPlus/majsoul-plus-client/wiki)
 
