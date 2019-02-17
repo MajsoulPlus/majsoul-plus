@@ -2,6 +2,7 @@ const panel = require('./Panel')
 const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
+const About = require('./About')
 
 const { ipcRenderer, remote: { dialog, app } } = require('electron')
 const AdmZip = require('adm-zip')
@@ -10,6 +11,7 @@ const os = require('os')
 
 const update = new Update()
 const setting = new Setting()
+const about = new About()
 const Mods = require('./Mods')
 const Executes = require('./Executes')
 const Tools = require('./Tools')
@@ -164,6 +166,7 @@ class Manager {
     this._loadCards()
     this._addEventListener()
     this._runExtends()
+    about.render()
   }
 
   gameStart () {
