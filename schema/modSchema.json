@@ -1,0 +1,125 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "JSON schema for Majsoul Plus Mod configuration files",
+    "type": "object",
+    "definitions": {
+        "person": {
+            "description": "A person who has been involved in creating or maintaining this package",
+            "type": [
+                "object",
+                "string"
+            ],
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        },
+        "execute": {
+            "description": "Execute from mod.",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The name of the execute.",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "entry": {
+                    "description": "The execute script file path.",
+                    "type": "string"
+                }
+            },
+            "required": ["name", "entry"]
+        },
+        "dependency": {
+            "description": "Dependencies are specified with a simple hash of plugin-package name to version range. The version range is a string which has one or more space-separated descriptors.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+        },
+        "replaceItem": {
+            "type": "object",
+            "properties": {
+                "from": {
+                    "description": "Original resource path.",
+                    "type": "string"
+                },
+                "to": {
+                    "description": "Replaced resource path.",
+                    "type": "string"
+                }
+            },
+            "required": ["from", "to"]
+        }
+    },
+    "properties": {
+        "idName": {
+            "description": "The id name of the mod.",
+            "type": "string",
+            "maxLength": 214,
+            "minLength": 1,
+            "pattern": "^(?:@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
+        },
+        "name": {
+            "description": "The name of the mod.",
+            "type": "string",
+            "minLength": 1
+        },
+        "author": {
+            "$ref": "#/definitions/person"
+        },
+        "version": {
+            "description": "Version must be parseable by node-semver.",
+            "type": "string"
+        },
+        "description": {
+            "description": "This helps people discover your mod.",
+            "type": "string"
+        },
+        "execute": {
+            "$ref": "#/definitions/execute"
+        },
+        "replace": {
+            "description": "Resource replacement rule.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "$ref": "#/definitions/replaceItem"
+            }
+        },
+        "repository": {
+            "description": "Specify the place where your code lives. This is helpful for people who want to contribute.",
+            "type": ["object", "string"],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          },
+          "dependencies": {
+            "$ref": "#/definitions/dependency"
+          }
+    },
+    "required": [
+        "name",
+        "description",
+        "idName",
+        "author",
+        "version"
+    ]
+}
