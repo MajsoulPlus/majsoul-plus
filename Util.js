@@ -8,6 +8,7 @@ const electron = require('electron')
 const configs = require('./configs')
 const AdmZip = require('adm-zip')
 const url = require('url')
+const child_process = require('child_process')
 /**
  * @type {typeof import("https")}
  */
@@ -445,24 +446,18 @@ const Util = {
   /**
    * 同步删除文件夹
    * @param {string} dir 要删除的目录
-   * @author romin
-   * @description 同步删除文件夹，https://juejin.im/post/5ab32b20518825557f00d36c
    */
   removeDirSync (dir) {
-    let files = fs.readdirSync(dir)
-    for (var i = 0; i < files.length; i++) {
-      let newPath = path.join(dir, files[i])
-      let stat = fs.statSync(newPath)
-      if (stat.isDirectory()) {
-        // 如果是文件夹就递归下去
-        this.removeDirSync(newPath)
-      } else {
-        // 删除文件
-        fs.unlinkSync(newPath)
-      }
+    console.log(dir)
+    let command = ''
+    if (process.platform === 'win32') {
+      command = `rmdir /s/q "${dir}"`
+    } else {
+      command = `rm -rf "${dir}"`
     }
-    fs.rmdirSync(dir) // 如果文件夹是空的，就将自己删除掉
+    child_process.execSync(command)
   },
+  
   /**
    * 截取屏幕画面
    * @param {Electron.WebContents} webContents
