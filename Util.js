@@ -7,8 +7,7 @@ const electron = require('electron')
 
 const configs = require('./configs')
 const AdmZip = require('adm-zip')
-const url = require('url')
-const child_process = require('child_process')
+const childProcess = require('child_process')
 /**
  * @type {typeof import("https")}
  */
@@ -118,7 +117,7 @@ const Util = {
       const remoteUrl = this.getRemoteUrl(originalUrl)
       https.get(
         {
-          ...url.parse(remoteUrl),
+          ...new URL(remoteUrl),
           headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
@@ -198,7 +197,7 @@ const Util = {
     return new Promise((resolve, reject) => {
       https.get(
         {
-          ...url.parse(URI),
+          ...new URL(URI),
           headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
@@ -448,16 +447,15 @@ const Util = {
    * @param {string} dir 要删除的目录
    */
   removeDirSync (dir) {
-    console.log(dir)
     let command = ''
     if (process.platform === 'win32') {
       command = `rmdir /s/q "${dir}"`
     } else {
       command = `rm -rf "${dir}"`
     }
-    child_process.execSync(command)
+    childProcess.execSync(command)
   },
-  
+
   /**
    * 截取屏幕画面
    * @param {Electron.WebContents} webContents
