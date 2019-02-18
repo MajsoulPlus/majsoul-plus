@@ -13,11 +13,11 @@
 - 易于自定义的本地缓存
 - 为额外功能提供插件接口支持
 
-<a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">稳定版： ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
-![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)</a>
+[稳定版： ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
+![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)](https://github.com/iamapig120/majsoul-plus-client/releases/latest)
 
-<a href="https://github.com/iamapig120/majsoul-plus-client/releases/">开发版： ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
-![DownloadsLatestPre](https://img.shields.io/github/downloads-pre/MajsoulPlus/majsoul-plus-client/latest/total.svg)</a>
+[开发版： ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
+![DownloadsLatestPre](https://img.shields.io/github/downloads-pre/MajsoulPlus/majsoul-plus-client/latest/total.svg)](https://github.com/iamapig120/majsoul-plus-client/releases/)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/urk43pwjb60ckvh5?svg=true)](https://ci.appveyor.com/project/iamapig120/majsoul-plus/branch/master)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus)
@@ -37,7 +37,7 @@
 
 ### 手动下载和安装
 
-1. 访问 <a href="https://github.com/iamapig120/majsoul-plus-client/releases/latest">releases 页面</a> 下载适用于您计算机系统的版本
+1. 访问 [releases 页面](https://github.com/iamapig120/majsoul-plus-client/releases/latest) 下载适用于您计算机系统的版本
 2. 解压压缩文件
 3. 运行应用程序，启动浏览器
 
