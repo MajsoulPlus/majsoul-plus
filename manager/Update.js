@@ -6,8 +6,6 @@ const {
   shell
 } = require('electron')
 
-const i18n = require('../i18nInstance')
-
 const defaultOptions = {
   releaseApi:
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest',

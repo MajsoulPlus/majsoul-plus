@@ -160,14 +160,14 @@ class Settings {
     settingInner.append(p)
   }
 
-  _handleSaveConfigClick(){
+  _handleSaveConfigClick () {
     this._saveConfig()
-    .then(() => {
-      alert(i18n.t.manager.saveFailed(error))
-    })
-    .catch(err => {
-      alert(i18n.t.manager.saveFailed(err))
-    })
+      .then(() => {
+        alert(i18n.t.manager.saveSuccessd())
+      })
+      .catch(err => {
+        alert(i18n.t.manager.saveFailed(err))
+      })
   }
 
   _saveConfig () {
@@ -182,7 +182,6 @@ class Settings {
       } catch (error) {
         reject(error)
       }
-
     })
   }
 
@@ -201,7 +200,7 @@ class Settings {
     this.render()
   }
 
-  save(){
+  save () {
     this._saveConfig()
   }
 }

@@ -2,6 +2,7 @@
 
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
+const i18n = require('../i18nInstance')
 
 class Ping {
   constructor () {
@@ -75,20 +76,20 @@ class Ping {
 
   _getServiceName (service) {
     return i18n.t.servers[service]
-    const map = {
-      mainland: '中国大陆',
-      hk: '中国香港',
-      tw: '中国台湾',
-      us: '美国',
-      uk: '英国',
-      jp: '日本',
-      fr: '法国',
-      kr: '韩国',
-      sg: '新加坡',
-      de: '德国',
-      ru: '俄罗斯'
-    }
-    return map[service] || service
+    // const map = {
+    //   mainland: '中国大陆',
+    //   hk: '中国香港',
+    //   tw: '中国台湾',
+    //   us: '美国',
+    //   uk: '英国',
+    //   jp: '日本',
+    //   fr: '法国',
+    //   kr: '韩国',
+    //   sg: '新加坡',
+    //   de: '德国',
+    //   ru: '俄罗斯'
+    // }
+    // return map[service] || service
   }
 
   _getChildService () {
@@ -123,7 +124,7 @@ class Ping {
     pingTextDom.innerText = '--'
     i18n.unbindElement(serverTextDom)
     this._getServiceName(this.currentService)
-    .renderAsText(serverTextDom)
+      .renderAsText(serverTextDom)
     return Promise.resolve()
   }
 
@@ -134,7 +135,7 @@ class Ping {
     pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
   }
 
-  _renderPingFail(err){
+  _renderPingFail () {
     const serverTextDom = document.getElementById('serverText')
     i18n.unbindElement(serverTextDom)
     i18n.t.manager.loadFailed.renderAsText(serverTextDom)
