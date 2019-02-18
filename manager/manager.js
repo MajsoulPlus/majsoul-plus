@@ -1108,7 +1108,7 @@ const aboutPageInit = () => {
         .addEventListener('click', event => {
           event.preventDefault()
           Util.removeDirSync(path.join(__dirname, '../', configs.LOCAL_DIR))
-          alert(i18n.t.manager.clearCacheSuccess())
+          alert(i18n.t.manager.clearCacheSuccessd())
         })
 
       return info
