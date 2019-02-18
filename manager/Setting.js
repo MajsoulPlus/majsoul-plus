@@ -4,6 +4,7 @@ const { ipcRenderer, remote } = require('electron')
 const { app } = remote
 const configs = require('../configs')
 const defaultUserConfig = require(configs.USER_CONFIG_PATH)
+const i18n = require('../i18nInstance')
 
 class Settings {
   constructor (options = {}) {
@@ -14,9 +15,11 @@ class Settings {
     this._renderSectionItem = this._renderSectionItem.bind(this)
     this._renderCheckBoxSectionItem = this._renderCheckBoxSectionItem.bind(this)
     this._renderNumberSectionItem = this._renderNumberSectionItem.bind(this)
+    this._handleSaveConfigClick = this._handleSaveConfigClick.bind(this)
     this._addSaveListener = this._addSaveListener.bind(this)
     this.render = this.render.bind(this)
     this.init = this.init.bind(this)
+    this.save = this.save.bind(this)
   }
 
   static _keyToTitle (key) {
@@ -49,9 +52,10 @@ class Settings {
     if (typeof this.userConfig[section] === 'undefined') {
       this.userConfig[section] = data
     }
-    const sectionName = Settings._keyToTitle(section)
     const h3 = document.createElement('h3')
-    h3.innerText = sectionName
+    i18n.t.manager[section].renderAsText(h3)
+    // const sectionName = Settings._keyToTitle(section)
+    // h3.innerText = sectionName
     settingInner.append(h3)
     Object.entries(data).forEach(([item, data], index) => {
       this._renderSectionItem({ settingInner, section, item, data, index })
@@ -59,13 +63,14 @@ class Settings {
   }
 
   _renderCheckBoxSectionItem ({ settingInner, section, item, data, index }) {
-    const itemName = Settings._keyToTitle(item)
+    // const itemName = Settings._keyToTitle(item)
     const checkBox = document.createElement('input')
     checkBox.type = 'checkbox'
     checkBox.id = `config${section}${item}${index}`
     const label = document.createElement('label')
     label.setAttribute('for', checkBox.id)
-    label.innerText = itemName
+    i18n.t.manager[item].renderAsText(label)
+    // label.innerText = itemName
     checkBox.checked = data
     checkBox.addEventListener('change', () => {
       this.userConfig[section][item] = checkBox.checked
@@ -75,14 +80,15 @@ class Settings {
   }
 
   _renderNumberSectionItem ({ settingInner, section, item, data, index }) {
-    const itemName = Settings._keyToTitle(item)
+    // const itemName = Settings._keyToTitle(item)
     const input = document.createElement('input')
     input.type = 'number'
     input.id = `config${section}${item}${index}`
     input.value = data
     const label = document.createElement('label')
     label.setAttribute('for', input.id)
-    label.innerText = itemName
+    // label.innerText = itemName
+    i18n.t.manager[item].renderAsText(label)
     input.addEventListener('change', () => {
       this.userConfig[section][item] = Number(input.value)
     })
@@ -154,22 +160,35 @@ class Settings {
     settingInner.append(p)
   }
 
+  _handleSaveConfigClick(){
+    this._saveConfig()
+    .then(() => {
+      alert(i18n.t.manager.saveFailed(error))
+    })
+    .catch(err => {
+      alert(i18n.t.manager.saveFailed(err))
+    })
+  }
+
   _saveConfig () {
-    try {
-      fs.writeFileSync(
-        configs.USER_CONFIG_PATH,
-        JSON.stringify(this.userConfig)
-      )
-      ipcRenderer.send('application-message', 'update-user-config')
-      alert('保存成功')
-    } catch (error) {
-      alert(`保存失败\n${error}`)
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        fs.writeFileSync(
+          configs.USER_CONFIG_PATH,
+          JSON.stringify(this.userConfig)
+        )
+        ipcRenderer.send('application-message', 'update-user-config')
+        resolve()
+      } catch (error) {
+        reject(error)
+      }
+
+    })
   }
 
   _addSaveListener () {
     const saveBtn = document.getElementById('saveConfigs')
-    saveBtn.addEventListener('click', this._saveConfig)
+    saveBtn.addEventListener('click', this._handleSaveConfigClick)
   }
 
   render () {
@@ -180,6 +199,10 @@ class Settings {
   init () {
     this._addSaveListener()
     this.render()
+  }
+
+  save(){
+    this._saveConfig()
   }
 }
 

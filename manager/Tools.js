@@ -4,6 +4,7 @@ const { ipcRenderer } = require('electron')
 const CardList = require('./common/CardList')
 const configs = require('../configs')
 const ButtonCard = require('./common/ButtonCard')
+const i18n = require('../i18nInstance')
 const defaultOptions = {
   settingFilePath: configs.TOOL_WINDOW_CONFIG,
   rootDir: path.join(__dirname, '../', configs.TOOLS_DIR),
@@ -35,7 +36,7 @@ class Tools extends CardList {
   _getExportInfo () {
     return {
       extend: 'mspt',
-      typeText: '工具'
+      typeText: i18n.t.manager.fileTypeMSPT()
     }
   }
 

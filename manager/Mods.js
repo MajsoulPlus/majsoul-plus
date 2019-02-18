@@ -3,6 +3,7 @@ const path = require('path')
 const CardList = require('./common/CardList')
 const configs = require('../configs')
 const enabledMods = JSON.parse(fs.readFileSync(configs.MODS_CONFIG_PATH).toString('utf-8'))
+const i18n = require('../i18nInstance')
 const defaultOptions = {
   settingFilePath: configs.MODS_CONFIG_PATH,
   checkedKeys: enabledMods.map(item => `${item.name || '未命名'}|${item.author || '无名氏'}`),
@@ -18,7 +19,7 @@ class Mods extends CardList {
   _getExportInfo () {
     return {
       extend: 'mspm',
-      typeText: '模组'
+      typeText: i18n.t.manager.fileTypeMSPM()
     }
   }
 }

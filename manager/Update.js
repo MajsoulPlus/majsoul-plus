@@ -5,6 +5,9 @@ const {
   remote: { app },
   shell
 } = require('electron')
+
+const i18n = require('../i18nInstance')
+
 const defaultOptions = {
   releaseApi:
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest',
@@ -16,6 +19,8 @@ const defaultOptions = {
 class Update {
   constructor (options) {
     this.options = { ...defaultOptions, ...options }
+    this._getRemoteVersionInfo = this._getRemoteVersionInfo.bind(this)
+    this.checkUpdate = this.checkUpdate.bind(this)
   }
 
   _getLocalVersion () {

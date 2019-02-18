@@ -3,6 +3,7 @@ const path = require('path')
 const CardList = require('./common/CardList')
 const configs = require('../configs')
 const enabledExecutes = JSON.parse(fs.readFileSync(configs.EXECUTES_CONFIG_PATH).toString('utf-8'))
+const i18n = require('../i18nInstance')
 const defaultOptions = {
   settingFilePath: configs.EXECUTES_CONFIG_PATH,
   checkedKeys: enabledExecutes.map(item => `${item.name || '未命名'}|${item.author || '无名氏'}`),
@@ -17,7 +18,7 @@ class Executes extends CardList {
   }
   _getExportInfo () {
     return {
-      extend: 'mspe',
+      extend: i18n.t.manager.fileTypeMSPE(),
       typeText: '插件'
     }
   }

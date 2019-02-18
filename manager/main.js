@@ -17,6 +17,7 @@ const Executes = require('./Executes')
 const Tools = require('./Tools')
 
 const configs = require('../configs')
+const i18n = require('../i18nInstance')
 
 class Manager {
   constructor (options) {
@@ -79,10 +80,10 @@ class Manager {
 
   _import () {
     dialog.showOpenDialog({
-      title: '选区扩展资源包...',
+      title: i18n.t.manager.installFrom(),
       filters: [
         {
-          name: '雀魂Plus扩展',
+          name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
           extensions: ['mspm', 'mspe', 'mspt']
         }
       ]
@@ -94,9 +95,9 @@ class Manager {
         const installDir = this._getInstallDirByExtname(extname)
         unzip.extractAllToAsync(installDir, true, err => {
           if (err) {
-            alert(`安装失败！\n错误信息如下：\n${err.message}`)
+            alert(i18n.t.manager.installExtendResourcesFailed(err))
           } else {
-            alert('安装成功！')
+            alert(i18n.t.manager.installExtendResourcesSuccessd())
             this._loadCards()
           }
         })
@@ -171,6 +172,7 @@ class Manager {
 
   gameStart () {
     this._saveSettings()
+    setting.save()
     ipcRenderer.send('application-message', 'start-game')
   }
 

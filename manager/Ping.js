@@ -74,6 +74,7 @@ class Ping {
   }
 
   _getServiceName (service) {
+    return i18n.t.servers[service]
     const map = {
       mainland: '中国大陆',
       hk: '中国香港',
@@ -120,7 +121,9 @@ class Ping {
     const pingTextDom = document.getElementById('pingText')
     pingInfoDom.className = 'offline'
     pingTextDom.innerText = '--'
-    serverTextDom.innerText = this._getServiceName(this.currentService)
+    i18n.unbindElement(serverTextDom)
+    this._getServiceName(this.currentService)
+    .renderAsText(serverTextDom)
     return Promise.resolve()
   }
 
@@ -129,6 +132,12 @@ class Ping {
     const pingInfoDom = document.getElementById('pingInfo')
     pingTextDom.innerText = time >> 0
     pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
+  }
+
+  _renderPingFail(err){
+    const serverTextDom = document.getElementById('serverText')
+    i18n.unbindElement(serverTextDom)
+    i18n.t.manager.loadFailed.renderAsText(serverTextDom)
   }
 
   _ping (service) {
@@ -158,7 +167,7 @@ class Ping {
       .then(this._renderService)
       .then(this._getChildService)
       .then(this.ping)
-      .catch(console.error)
+      .catch(this._renderPingFail)
   }
 
   _getNextService () {
@@ -174,7 +183,7 @@ class Ping {
       .then(this._renderService)
       .then(this._getChildService)
       .then(this.ping)
-      .catch(console.error)
+      .catch(this._renderPingFail)
   }
 
   addEventListener () {

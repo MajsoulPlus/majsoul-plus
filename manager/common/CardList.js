@@ -4,6 +4,7 @@ const os = require('os')
 const { remote: { dialog } } = require('electron')
 const CheckboxCard = require('./CheckboxCard')
 const Util = require('../../Util')
+const i18n = require('../../i18nInstance')
 
 // eslint-disable-next-line no-unused-vars
 const defaultOptions = {
@@ -87,14 +88,14 @@ class CardList {
     const tempZipPath = path.join(os.tmpdir(), tempZipName)
     Util.zipDir(filesDir, tempZipPath)
     const userChosenPath = dialog.showSaveDialog({
-      title: `导出${typeText}到......`,
+      title: i18n.t.manager.exportTo(),
       filters: [
         {
-          name: `雀魂Plus${typeText}`,
+          name: typeText,
           extensions: [extend]
         },
         {
-          name: '所有文件',
+          name: i18n.t.manager.fileTypeAllfiles(),
           extensions: ['*']
         }
       ],
@@ -103,9 +104,9 @@ class CardList {
     if (userChosenPath) {
       fs.copyFile(tempZipPath, userChosenPath, err => {
         if (err) {
-          alert('导出失败！\n错误信息如下：\n', err)
+          alert(i18n.t.manager.exportExtendResourcesFailed(err))
         } else {
-          alert('导出成功！')
+          alert(i18n.t.manager.exportExtendResourcesSuccessd())
         }
       })
     }

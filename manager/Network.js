@@ -1,3 +1,4 @@
+const i18n = require('../i18nInstance')
 class NetWork {
   getJson (input, params) {
     return new Promise((resolve, reject) => {
@@ -19,7 +20,7 @@ function _checkStatus (response) {
   if (response.ok && response.status >= 200 && response.status < 400) {
     return response
   }
-  throw new Error('network request failed')
+  throw new Error(i18n.t.manager.XMLHttpRequestFailed(response.status))
 }
 
 function _processJson (response) {
