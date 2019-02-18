@@ -97,7 +97,7 @@ class Manager {
           if (err) {
             alert(i18n.t.manager.installExtendResourcesFailed(err))
           } else {
-            alert(i18n.t.manager.installExtendResourcesSuccessd())
+            alert(i18n.t.manager.installExtendResourcesSucceeded())
             this._loadCards()
           }
         })

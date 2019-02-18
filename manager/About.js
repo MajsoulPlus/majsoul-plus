@@ -65,7 +65,7 @@ class About {
       .addEventListener('click', evt => {
         evt.preventDefault()
         Util.removeDirSync(path.join(__dirname, '../', configs.LOCAL_DIR))
-        alert(i18n.t.manager.clearCacheSuccessd())
+        alert(i18n.t.manager.clearCacheSucceeded())
       })
     return info
   }

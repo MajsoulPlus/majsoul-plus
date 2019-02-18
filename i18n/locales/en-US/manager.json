@@ -17,9 +17,9 @@
   "localVersion": "Version",
   "isManagerHide": "Exit back to manager panel",
   "clearCache": "Clear resources cache",
-  "clearCacheSuccessd": "Clear resources cache successed!",
+  "clearCacheSucceeded": "Clear resources cache successed!",
 
-  "saveSuccessd": "Save Successed!",
+  "saveSucceeded": "Save Successed!",
   "saveFailed": "Save Failed!\n$0",
 
   "selectExtendResources": "Select Extend Resources...",
@@ -36,9 +36,9 @@
 
   "missingAuthor": "MissingName",
   "exportExtendResourcesFailed": "Export Failed,\nAt:\n$0",
-  "exportExtendResourcesSuccessd": "Export Successed!",
+  "exportExtendResourcesSucceeded": "Export Successed!",
   "installExtendResourcesFailed": "Install Failed,\nAt:\n$0",
-  "installExtendResourcesSuccessd": "Install Successed!",
+  "installExtendResourcesSucceeded": "Install Successed!",
 
   "loadFailed": "Load Failed",
   "needNotToUpdate": "Need not to update",

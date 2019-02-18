@@ -106,7 +106,7 @@ class CardList {
         if (err) {
           alert(i18n.t.manager.exportExtendResourcesFailed(err))
         } else {
-          alert(i18n.t.manager.exportExtendResourcesSuccessd())
+          alert(i18n.t.manager.exportExtendResourcesSucceeded())
         }
       })
     }

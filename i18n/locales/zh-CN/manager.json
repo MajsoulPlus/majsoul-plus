@@ -17,9 +17,9 @@
   "localVersion": "版本",
   "isManagerHide": "退出游戏后回到管理器界面",
   "clearCache": "清除资源缓存",
-  "clearCacheSuccessd": "清除资源缓存成功！",
+  "clearCacheSucceeded": "清除资源缓存成功！",
 
-  "saveSuccessd": "保存成功！",
+  "saveSucceeded": "保存成功！",
   "saveFailed": "保存失败！\n$0",
 
   "selectExtendResources": "选取扩展资源包……",
@@ -37,9 +37,9 @@
 
   "missingAuthor": "无名氏",
   "exportExtendResourcesFailed": "导出失败！\n错误信息如下:\n$0",
-  "exportExtendResourcesSuccessd": "导出成功！",
+  "exportExtendResourcesSucceeded": "导出成功！",
   "installExtendResourcesFailed": "安装失败！\n错误信息如下:\n$0",
-  "installExtendResourcesSuccessd": "安装成功！",
+  "installExtendResourcesSucceeded": "安装成功！",
 
   "loadFailed": "加载失败",
   "needNotToUpdate": "无需更新",

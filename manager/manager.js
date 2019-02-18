@@ -185,7 +185,7 @@ const reloadDOM = (executes, mods, tools) => {
         if (err) {
           alert(i18n.t.manager.exportExtendResourcesFailed(err))
         } else {
-          alert(i18n.t.manager.exportExtendResourcesSuccessd())
+          alert(i18n.t.manager.exportExtendResourcesSucceeded())
         }
       })
     }
@@ -348,7 +348,7 @@ const installResources = () => {
           if (err) {
             alert(i18n.t.manager.installExtendResourcesFailed(err))
           } else {
-            alert(i18n.t.manager.installExtendResourcesSuccessd())
+            alert(i18n.t.manager.installExtendResourcesSucceeded())
             refreshFunction()
           }
         })
@@ -1108,7 +1108,7 @@ const aboutPageInit = () => {
         .addEventListener('click', event => {
           event.preventDefault()
           Util.removeDirSync(path.join(__dirname, '../', configs.LOCAL_DIR))
-          alert(i18n.t.manager.clearCacheSuccessd())
+          alert(i18n.t.manager.clearCacheSucceeded())
         })
 
       return info
@@ -1124,7 +1124,7 @@ const saveUserConfigs = (alertMsg = true) => {
     fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfig))
     ipcRenderer.send('application-message', 'update-user-config')
     if (!alertMsg === false) {
-      alert(i18n.t.manager.saveSuccessd())
+      alert(i18n.t.manager.saveSucceeded())
     }
   } catch (error) {
     if (!alertMsg === false) {

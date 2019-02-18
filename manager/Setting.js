@@ -163,7 +163,7 @@ class Settings {
   _handleSaveConfigClick () {
     this._saveConfig()
       .then(() => {
-        alert(i18n.t.manager.saveSuccessd())
+        alert(i18n.t.manager.saveSucceeded())
       })
       .catch(err => {
         alert(i18n.t.manager.saveFailed(err))
