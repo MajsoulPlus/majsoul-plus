@@ -7,6 +7,7 @@ const configs = require('./configs')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
+const os = require('os')
 
 const i18n = require('./i18nInstance')
 
@@ -43,7 +44,21 @@ paths
   .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
 
 if (userConfigs.chromium.isInProcessGpuOn) {
-  electronApp.commandLine.appendSwitch('in-process-gpu')
+  const osplatform = os.platform()
+  switch (osplatform) {
+    case 'darwin':
+    case 'win32':
+      electronApp.commandLine.appendSwitch('in-process-gpu')
+      break
+    case 'aix':
+    case 'android':
+    case 'cygwin':
+    case 'freebsd':
+    case 'openbsd':
+    case 'sunos':
+    default:
+      break
+  }
 }
 
 const sererHttps = https.createServer(
