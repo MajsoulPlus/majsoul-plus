@@ -8,6 +8,9 @@ const electron = require('electron')
 const configs = require('./configs')
 const AdmZip = require('adm-zip')
 const childProcess = require('child_process')
+
+const url = require('url')
+
 /**
  * @type {typeof import("https")}
  */
@@ -117,7 +120,7 @@ const Util = {
       const remoteUrl = this.getRemoteUrl(originalUrl)
       https.get(
         {
-          ...new URL(remoteUrl),
+          ...url.parse(remoteUrl),
           headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
@@ -197,7 +200,7 @@ const Util = {
     return new Promise((resolve, reject) => {
       https.get(
         {
-          ...new URL(URI),
+          ...url.parse(URI),
           headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {

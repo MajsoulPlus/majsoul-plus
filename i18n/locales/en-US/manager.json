@@ -8,7 +8,7 @@
   "prerelease": "Get Pre-releases",
   "chromium": "Core (Restart app needed)",
   "isHardwareAccelerationDisable": "Turn hardware acceleration off",
-  "isInProcessGpuOn": "Turn in-process-gpu on",
+  "isInProcessGpuOn": "Turn in-process-gpu on (Windows / macOS)",
   "isNoBorder": "Turn border-less on",
   "userData": "User Data",
   "isUseDefaultPath": "Use default path",

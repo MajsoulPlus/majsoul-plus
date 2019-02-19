@@ -8,7 +8,7 @@
   "prerelease": "获取浏览版更新",
   "chromium": "核心（需重启软件）",
   "isHardwareAccelerationDisable": "关闭 GPU 硬件加速",
-  "isInProcessGpuOn": "启用进程内 GPU 处理",
+  "isInProcessGpuOn": "启用进程内 GPU 处理 （Windows / macOS）",
   "isNoBorder": "使用无边框窗口进入游戏",
   "userData": "用户数据",
   "isUseDefaultPath": "使用默认用户库目录",
