@@ -141,7 +141,6 @@ class CardList {
     const launchedCards = this._cardList
       .filter(item => checkedKeys.includes(item.key))
       .map(item => item.card.options)
-    console.log(launchedCards, settingFilePath)
     fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), { encoding: 'utf-8' })
   }
 

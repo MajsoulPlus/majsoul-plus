@@ -41,6 +41,7 @@ class Manager {
   }
 
   _saveSettings () {
+    this.setting.save()
     this.mods.save()
     this.executes.save()
     this.tools.save()
@@ -159,11 +160,21 @@ class Manager {
     this._extends.forEach(fun => fun.call())
   }
 
+  initRPC () {
+    ipcRenderer.on('changeConfig', (_, data) => {
+      let obj = JSON.parse(data)
+      this.options.userConfig[obj.mainKey][obj.key] = obj.value
+    })
+
+    ipcRenderer.on('saveConfig', () => this._saveSettings())
+  }
+
   init () {
     update.checkUpdate()
     ping.init()
     panel.init()
     setting.init()
+    this.initRPC()
     this._loadCards()
     this._addEventListener()
     this._runExtends()
@@ -185,7 +196,8 @@ class Manager {
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
-const springFestivalExtend = require('./extra/SpringFestival')
+const springFestivalExtend = require('./extra/springFestival')
+const darkMode = require('./extra/darkMode')
 
 const options = {
   userConfig: require(configs.USER_CONFIG_PATH),
@@ -196,4 +208,5 @@ const options = {
 
 const manager = new Manager(options)
 manager.extend(springFestivalExtend)
+manager.extend(darkMode)
 manager.init()

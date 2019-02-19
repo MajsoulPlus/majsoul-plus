@@ -293,6 +293,7 @@ const windowControl = {
     })
 
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
+    managerWindow.on('close', evt => evt.sender.send('saveConfig'))
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
@@ -311,6 +312,7 @@ const windowControl = {
       title: windowControl._getGameWindowTitle(),
       frame: !userConfigs.window.isNoBorder
     }
+    // TODO: wait new setting system
     if (userConfigs['window']['gameWindowSize'] !== '') {
       let windowSize = userConfigs['window']['gameWindowSize'].split(',').map(value => parseInt(value))
       config.width = windowSize[0]
