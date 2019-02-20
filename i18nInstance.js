@@ -1,5 +1,6 @@
 if (!global._i18nInstance) {
-  global._i18nInstance = new (require('./i18n/i18n'))({
+  const I18n = require('./i18n/i18n')
+  global._i18nInstance = new I18n({
     autoReload: process.env.NODE_ENV === 'development'
   })
 }

@@ -59,7 +59,7 @@ class i18n {
   constructor ({
     directory = path.join(__dirname, 'locales'),
     actives = [],
-    defaultLocale = 'zh-CN',
+    defaultLocale = 'en-US',
     autoReload = false
   } = {}) {
     // 如果文件夹参数不是文件夹，报错
