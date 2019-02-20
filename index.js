@@ -12,7 +12,14 @@ const os = require('os')
 const i18n = require('./i18nInstance')
 
 const electron = require('electron')
-const { app: electronApp, BrowserWindow, ipcMain, clipboard, dialog } = electron
+const {
+  app: electronApp,
+  BrowserWindow,
+  ipcMain,
+  clipboard,
+  dialog,
+  globalShortcut
+} = electron
 const { Menu, MenuItem } = electron
 
 let userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
@@ -293,6 +300,7 @@ const windowControl = {
     })
 
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
+    managerWindow.on('close', evt => evt.sender.send('saveConfig'))
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
@@ -311,8 +319,11 @@ const windowControl = {
       title: windowControl._getGameWindowTitle(),
       frame: !userConfigs.window.isNoBorder
     }
+    // TODO: wait new setting system
     if (userConfigs['window']['gameWindowSize'] !== '') {
-      let windowSize = userConfigs['window']['gameWindowSize'].split(',').map(value => parseInt(value))
+      let windowSize = userConfigs['window']['gameWindowSize']
+        .split(',')
+        .map(value => parseInt(value))
       config.width = windowSize[0]
       config.height = windowSize[1]
     }
@@ -325,7 +336,10 @@ const windowControl = {
         key: 'gameWindowSize',
         value: userConfigs['window']['gameWindowSize']
       }
-      windowControl.windowMap['manager'].send('changeConfig', JSON.stringify(obj))
+      windowControl.windowMap['manager'].send(
+        'changeConfig',
+        JSON.stringify(obj)
+      )
       gameWindow.webContents.send('window-resize', gameWindow.getBounds())
     })
     gameWindow.on('move', () => {
@@ -522,11 +536,73 @@ const windowControl = {
     })
   },
 
+  addAccelerator () {
+    const addBossKey = () => {
+      const windowsStatus = {
+        gameWindowVisible: false,
+        gameWindowMuted: false,
+        managerWindowVisible: false,
+        managerWindowMuted: false,
+        bosskeyActive: false
+      }
+      globalShortcut.register('Alt+X', function () {
+        /**
+         * @type {Electron.BrowserWindow}
+         */
+        const gameWindow = windowControl.windowMap['game']
+        /**
+         * @type {Electron.BrowserWindow}
+         */
+        const managerWindow = windowControl.windowMap['manager']
+
+        if (windowsStatus.bosskeyActive) {
+          // 如果老板键已经被按下
+          windowsStatus.bosskeyActive = false
+
+          if (managerWindow) {
+            if (windowsStatus.managerWindowVisible) {
+              managerWindow.show()
+            }
+            managerWindow.webContents.setAudioMuted(
+              windowsStatus.managerWindowMuted
+            )
+          }
+          if (gameWindow) {
+            if (windowsStatus.gameWindowVisible) {
+              gameWindow.show()
+            }
+            gameWindow.webContents.setAudioMuted(windowsStatus.gameWindowMuted)
+          }
+        } else {
+          // 备份窗口信息并隐藏窗口
+          windowsStatus.bosskeyActive = true
+
+          if (managerWindow) {
+            windowsStatus.managerWindowVisible = managerWindow.isVisible()
+            windowsStatus.managerWindowMuted = managerWindow.webContents.isAudioMuted()
+
+            managerWindow.hide()
+            managerWindow.webContents.setAudioMuted(true)
+          }
+          if (gameWindow) {
+            windowsStatus.gameWindowVisible = gameWindow.isVisible()
+            windowsStatus.gameWindowMuted = gameWindow.webContents.isAudioMuted()
+
+            gameWindow.hide()
+            gameWindow.webContents.setAudioMuted(true)
+          }
+        }
+      })
+    }
+    addBossKey()
+  },
+
   start: () => {
     windowControl.electronReady().then(() => {
       Menu.setApplicationMenu(null)
-      windowControl.addAppListener()
 
+      windowControl.addAccelerator()
+      windowControl.addAppListener()
       windowControl.initManagerWindow({ ...configs.MANAGER_WINDOW_CONFIG })
     })
   }
