@@ -1,5 +1,9 @@
 /// <reference types="node" />
 
+interface Locale extends Function<string> {
+
+}
+
 class i18n {
   /**
    * 构造函数
@@ -22,5 +26,28 @@ class i18n {
      */
   autoReload?: boolean = false
   })
+  /**
+   * 解绑指定DOM元素的所有绑定
+   */
+  unbindElement(htmlElement: HTMLElement): void
+  /**
+   * 绑定一条翻译到指定DOM元素的 innerText
+   */
+  bindElementText (
+    /**
+     * 一个Locale函数对象
+     */
+    locale: LocaleObject,
+    /**
+     * HTMLElement
+     */
+    htmlElement: HTMLElement,
+    /**
+     * Locale参数
+     */
+    ...args: string[]
+  ) {
+    return this._bindElement(locale, htmlElement, 'text', ...args)
+  }
 }
 export = i18n
