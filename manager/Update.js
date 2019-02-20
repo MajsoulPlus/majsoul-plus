@@ -151,8 +151,9 @@ class Update {
     const remoteVersionInfo = await this._getRemoteVersionInfo()
     const { remoteVersion, body, time, url } = remoteVersionInfo
     const shouldUpdate = this.compareVersion(remoteVersion, localVersion)
-    shouldUpdate &&
+    if (shouldUpdate) {
       this._renderUpdateHint({ remoteVersion, localVersion, time, body, url })
+    }
   }
 }
 module.exports = Update
