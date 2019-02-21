@@ -43,9 +43,9 @@
 
 ### 社区维护源
 
-| 平台                  | 维护者                      | 安装命令                         |
-| --------------------- | --------------------------- | -------------------------------- |
-| Homebrew Cask / macOS | @CaptainYukinoshitaHachiman | `brew cask install majsoul-plus` |
+| 平台                  | 维护者                                                                       | 安装命令                         |
+| --------------------- | ---------------------------------------------------------------------------- | -------------------------------- |
+| Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew cask install majsoul-plus` |
 
 祝您玩的开心！
 
@@ -145,6 +145,12 @@
 
 - [Join with ParaTranz](https://paratranz.cn/projects/196): 日本語
 - [Join with OneSky](https://osh1flm.oneskyapp.com/admin/project/dashboard/project/329038): English, 正體中文 台灣, 繁體中文 香港, 한국어
+
+### 特别感谢以下译者提供的优秀翻译，谢谢您！
+
+| 语言   | 译者                                       |
+| ------ | ------------------------------------------ |
+| 日本語 | [@rakuchan5](https://github.com/rakuchan5) |
 
 ## 贡献者
 
