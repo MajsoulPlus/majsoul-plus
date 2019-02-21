@@ -24,7 +24,7 @@ declare interface Locale {
     ...params: string[]
   ): string
   /**
-   * 文本的键
+   * 翻译文本的键
    */
   [localeKey: string]: Locale
   /**
@@ -57,6 +57,13 @@ declare interface Locale {
      */
     ...params: string[]
   ): void
+}
+
+declare interface StringPack extends String {
+  /**
+   * 翻译文本的键
+   */
+  [localeKey: string]: StringPack
 }
 
 /**
@@ -153,5 +160,14 @@ declare class i18n {
    * 根级翻译文本对象
    */
   get _(): LocaleMain
+  /**
+   * 已经加载的翻译文本
+   */
+  get locals(): StringPack
+  /**
+   * 活动的语言列表的拷贝
+   */
+  get actives(): string[]
+  set actives(localeTags: string[])
 }
 export = i18n

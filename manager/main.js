@@ -41,7 +41,7 @@ class Manager {
   }
 
   _saveSettings () {
-    this.setting.save()
+    setting.save()
     this.mods.save()
     this.executes.save()
     this.tools.save()
