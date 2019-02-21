@@ -6,7 +6,7 @@
  */
 declare function Locale(
   /**
-   * 格式化参数，会自动替换文本中的 $1、$2
+   * 若干个字符串，依次填充到 $1、$2
    */
   ...params: string[]
 ): string
@@ -19,7 +19,7 @@ declare interface Locale {
    */
   (
     /**
-     * 格式化参数，会自动替换文本中的 $1、$2
+     * 若干个字符串，依次填充到 $1、$2
      */
     ...params: string[]
   ): string
@@ -34,11 +34,11 @@ declare interface Locale {
    */
   renderAsText(
     /**
-     * 要绑定的 HTMLElement 元素
+     * 必须是标准的 HTMLElement DOM 元素
      */
     htmlElement: HTMLElement,
     /**
-     * 格式化参数，会自动替换文本中的 $1、$2
+     * 若干个字符串，依次填充到 $1、$2
      */
     ...params: string[]
   ): void
@@ -49,11 +49,11 @@ declare interface Locale {
    */
   renderAsHTML(
     /**
-     * 要绑定的 HTMLElement 元素
+     * 必须是标准的 HTMLElement DOM 元素
      */
     htmlElement: HTMLElement,
     /**
-     * 格式化参数，会自动替换文本中的 $1、$2
+     * 若干个字符串，依次填充到 $1、$2
      */
     ...params: string[]
   ): void
@@ -97,47 +97,47 @@ declare class i18n {
    */
   unbindElement(
     /**
-     * @param htmlElement 要解绑的 HTMLElement
+     * @param htmlElement 必须是标准的 HTMLElement DOM 元素
      */
     htmlElement: HTMLElement
   ): void
   /**
    * 绑定一条翻译到指定DOM元素的 innerText
    * @param locale 一个要绑定的单条语句翻译对象
-   * @param htmlElement 要绑定要的 HTMLElement
+   * @param htmlElement 要绑定的 HTMLElement
    * @param params 格式化参数，会自动替换文本中的 $1、$2
    */
   bindElementText(
     /**
-     * 一个要绑定的单条语句翻译对象
+     * 这个对象必须是一个 Locale 类型函数对象
      */
     locale: Locale,
     /**
-     * 要绑定要的 HTMLElement
+     * 必须是标准的 HTMLElement DOM 元素
      */
     htmlElement: HTMLElement,
     /**
-     * 格式化参数，会自动替换文本中的 $1、$2
+     * 若干个字符串，依次填充到 $1、$2
      */
     ...params: string[]
   ): void
   /**
    * 绑定一条翻译到指定DOM元素的 innerHTML
    * @param locale 一个要绑定的单条语句翻译对象
-   * @param htmlElement 要绑定要的 HTMLElement
+   * @param htmlElement 要绑定的 HTMLElement
    * @param params 格式化参数，会自动替换文本中的 $1、$2
    */
   bindElementHTML(
     /**
-     * 一个要绑定的单条语句翻译对象
+     * 这个对象必须是一个 Locale 类型函数对象
      */
     locale: Locale,
     /**
-     * HTMLEle要绑定要的 HTMLElementment
+     * 必须是标准的 HTMLElement DOM 元素
      */
     htmlElement: HTMLElement,
     /**
-     * 格式化参数，会自动替换文本中的 $1、$2
+     * 若干个字符串，依次填充到 $1、$2
      */
     ...params: string[]
   ): void

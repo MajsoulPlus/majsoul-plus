@@ -1162,7 +1162,7 @@ setTimeout(() => {
 }, 0)
 /* 春节额外css End */
 
-const changeTheme = function (mode) {
+const changeTheme = function(mode) {
   if (mode === 'dark') {
     extraCss.href = './styles/dark/dark.css'
   } else {
@@ -1173,7 +1173,7 @@ const changeTheme = function (mode) {
 if (process.platform === 'darwin') {
   const { systemPreferences } = electronRemote
 
-  const setOSTheme = function () {
+  const setOSTheme = function() {
     let mode = systemPreferences.isDarkMode() ? 'dark' : 'light'
     changeTheme(mode)
   }
@@ -1194,7 +1194,6 @@ const startGame = () => {
 }
 
 ipcRenderer.on('changeConfig', (event, data) => {
-  
   let obj = JSON.parse(data)
   console.log(obj)
   console.log(userConfig[obj.mainKey])
