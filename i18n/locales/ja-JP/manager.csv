@@ -7,14 +7,14 @@ update,更新,アップデート
 prerelease,获取浏览版更新,ブラウザのアップデート情報を取得する
 chromium,核心（需重启软件）,システム（アプリケーションの再起動が必要です）
 isHardwareAccelerationDisable,关闭 GPU 硬件加速,GPUハードウェアアクセラレーションを無効にする
-isInProcessGpuOn,启用进程内 GPU 处理,プロセス内でGPUによる処理を有効にする(Windows/macOS)
+isInProcessGpuOn,启用进程内 GPU 处理,プロセス内でGPUによる処理を有効にする
 isNoBorder,使用无边框窗口进入游戏,ボーダーレスウインドウモードでゲームを開始する
 userData,用户数据,ユーザーデータ
 isUseDefaultPath,使用默认用户库目录,デフォルトのユーザーライブラリディレクトリを使用する
 useAppdataLibrary,使用 AppData 存储扩展资源,AppDataディレクトリを拡張リソースの保存先として使用する
 userLibPath,用户库目录,ユーザライブラリディレクトリ
 localVersion,版本,バージョン
-isManagerHide,退出游戏后回到管理器界面,ゲームを終了し、管理画面に戻ります
+isManagerHide,退出游戏后回到管理器界面,ゲーム終了後、管理画面に戻る
 clearCache,清除资源缓存,キャッシュクリア
 clearCacheSuccessd,清除资源缓存成功！,キャッシュクリア成功！
 saveSuccessd,保存成功！,保存成功！
