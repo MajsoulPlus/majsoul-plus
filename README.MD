@@ -19,7 +19,7 @@
 [开发版： ![VersionLatestPre](https://img.shields.io/github/release-pre/MajsoulPlus/majsoul-plus-client.svg)
 ![DownloadsLatestPre](https://img.shields.io/github/downloads-pre/MajsoulPlus/majsoul-plus-client/latest/total.svg)](https://github.com/iamapig120/majsoul-plus-client/releases/)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/urk43pwjb60ckvh5?svg=true)](https://ci.appveyor.com/project/iamapig120/majsoul-plus/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/u1ghm2vx6w5d74wb?svg=true)](https://ci.appveyor.com/project/hyunrealshadow/majsoul-plus)
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus)
 ![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
