@@ -1,0 +1,14 @@
+{
+  "newVersionWasFound": "A new version was found",
+  "currentVersion": "Current version",
+  "latestVersion": "Latest version",
+  "publishAt": "Publish at",
+  "tellMeNextTime": "Next time",
+  "gotoPublishPage": "Publish page",
+  "updateNow": "Update Now",
+  "downloading": "Downloading",
+  "downloadingTip": "Downloading new version",
+  "pleaseWait": "Please wait...",
+  "connecting": "Connecting...",
+  "installAndRelaunch": "Install & Restart"
+}

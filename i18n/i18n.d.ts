@@ -149,6 +149,26 @@ declare class i18n {
     ...params: string[]
   ): void
   /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
+   * @param {HTMLElement} htmlElement HTMLElement
+   */
+  parseAllElementsText(
+    /**
+     * 必须是标准的 HTMLElement DOM 元素
+     */
+    htmlElement: HTMLElement
+  ): void
+  /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
+   * @param {HTMLElement} htmlElement HTMLElement
+   */
+  parseAllElementsHTML(
+    /**
+     * 必须是标准的 HTMLElement DOM 元素
+     */
+    htmlElement: HTMLElement
+  ): void
+  /**
    * 根级翻译文本对象
    */
   get text(): LocaleMain

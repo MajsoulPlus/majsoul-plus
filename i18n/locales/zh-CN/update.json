@@ -1,0 +1,14 @@
+{
+  "newVersionWasFound": "发现新版本",
+  "currentVersion": "您的版本",
+  "latestVersion": "最新版本",
+  "publishAt": "发布于",
+  "tellMeNextTime": "下次提醒我",
+  "gotoPublishPage": "前往发布页",
+  "updateNow": "下载更新",
+  "downloading": "正在洗在更新",
+  "downloadingTip": "正在从服务器获取更新中",
+  "pleaseWait": "请稍后……",
+  "connecting": "连接资源中……",
+  "installAndRelaunch": "安装并重启"
+}

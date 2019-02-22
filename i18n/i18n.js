@@ -268,6 +268,47 @@ class i18n {
       }
     )
   }
+  /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树
+   * @param {HTMLElement} htmlElement HTMLElement
+   * @param {"text" | "html"} type 绑定到的类型
+   * @param  {...string} args locale参数
+   */
+  _parseAllElements (htmlElement, type, ...args) {
+    /**
+     * 渲染翻译
+     * @param {HTMLElement} element
+     */
+    const renderElement = element => {
+      const i18nLocaleKeyChain = element.dataset.i18n.split('.')
+      const i18nLocaleElement = (() => {
+        let SelectedElement = this.text
+        i18nLocaleKeyChain.forEach(i18nLocaleKey => {
+          SelectedElement = SelectedElement[i18nLocaleKey]
+        })
+        return SelectedElement
+      })()
+      this._bindElement(i18nLocaleElement, element, type, ...args)
+    }
+    if (htmlElement.getAttribute('data-i18n')) {
+      renderElement(htmlElement)
+    }
+    htmlElement.querySelectorAll('[data-i18n]').forEach(renderElement)
+  }
+  /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
+   * @param {HTMLElement} htmlElement HTMLElement
+   */
+  parseAllElementsText (htmlElement) {
+    return this._parseAllElements(htmlElement, 'text')
+  }
+  /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
+   * @param {HTMLElement} htmlElement HTMLElement
+   */
+  parseAllElementsHTML (htmlElement) {
+    return this._parseAllElements(htmlElement, 'html')
+  }
   get t () {
     return this.text
   }

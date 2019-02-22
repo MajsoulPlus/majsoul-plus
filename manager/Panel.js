@@ -10,7 +10,7 @@ class Panel {
   }
 
   init () {
-    this.panels = Array.from(document.querySelectorAll('.left-panel ul li'))
+    this.panels = Array.from(document.querySelectorAll('#leftPanel ul li'))
     this.panels.forEach((panel, index) => {
       panel.addEventListener('click', () => this._handleClick(index))
     })
@@ -21,7 +21,9 @@ class Panel {
     if (this.panels.length) {
       const currentPanel = this.panels[this.activeIndex]
       const sections = Array.from(document.getElementsByTagName('section'))
-      const activeSection = sections.find(section => section.dataset.name === currentPanel.dataset.target)
+      const activeSection = sections.find(
+        section => section.dataset.name === currentPanel.dataset.target
+      )
       sections.forEach(section => {
         section.className = ''
       })

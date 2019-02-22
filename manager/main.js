@@ -4,7 +4,10 @@ const Update = require('./Update')
 const Setting = require('./Setting')
 const About = require('./About')
 
-const { ipcRenderer, remote: { dialog, app } } = require('electron')
+const {
+  ipcRenderer,
+  remote: { dialog, app }
+} = require('electron')
 const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
@@ -60,7 +63,14 @@ class Manager {
   }
 
   _getRootDirs () {
-    const { userConfig: { userData: { useAppdataLibrary } }, modRootDirs, executeRootDirs, toolRootDirs } = this.options
+    const {
+      userConfig: {
+        userData: { useAppdataLibrary }
+      },
+      modRootDirs,
+      executeRootDirs,
+      toolRootDirs
+    } = this.options
     const index = Number(!!useAppdataLibrary)
     return {
       modRootDir: modRootDirs[index],
@@ -80,30 +90,33 @@ class Manager {
   }
 
   _import () {
-    dialog.showOpenDialog({
-      title: i18n.t.manager.installFrom(),
-      filters: [
-        {
-          name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
-          extensions: ['mspm', 'mspe', 'mspt']
-        }
-      ]
-    }, filenames => {
-      if (filenames && filenames.length) {
-        const filename = filenames[0]
-        const unzip = new AdmZip(filename)
-        const extname = path.extname(filename)
-        const installDir = this._getInstallDirByExtname(extname)
-        unzip.extractAllToAsync(installDir, true, err => {
-          if (err) {
-            alert(i18n.t.manager.installExtendResourcesFailed(err))
-          } else {
-            alert(i18n.t.manager.installExtendResourcesSucceeded())
-            this._loadCards()
+    dialog.showOpenDialog(
+      {
+        title: i18n.t.manager.installFrom(),
+        filters: [
+          {
+            name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
+            extensions: ['mspm', 'mspe', 'mspt']
           }
-        })
+        ]
+      },
+      filenames => {
+        if (filenames && filenames.length) {
+          const filename = filenames[0]
+          const unzip = new AdmZip(filename)
+          const extname = path.extname(filename)
+          const installDir = this._getInstallDirByExtname(extname)
+          unzip.extractAllToAsync(installDir, true, err => {
+            if (err) {
+              alert(i18n.t.manager.installExtendResourcesFailed(err))
+            } else {
+              alert(i18n.t.manager.installExtendResourcesSucceeded())
+              this._loadCards()
+            }
+          })
+        }
       }
-    })
+    )
   }
 
   _addEventListener () {
@@ -122,7 +135,9 @@ class Manager {
     editTool.addEventListener('click', this._changeToolEditable)
 
     window.addEventListener('blur', () => document.body.classList.add('blur'))
-    window.addEventListener('focus', () => document.body.classList.remove('blur'))
+    window.addEventListener('focus', () =>
+      document.body.classList.remove('blur')
+    )
 
     const refreshMod = document.getElementById('refreshMod')
     const refreshExecute = document.getElementById('refreshExecute')
@@ -179,6 +194,7 @@ class Manager {
     this._addEventListener()
     this._runExtends()
     about.render()
+    i18n.parseAllElementsText(document.documentElement)
   }
 
   gameStart () {
@@ -189,7 +205,9 @@ class Manager {
 
   // add a function after init to run
   extend (fun) {
-    if (typeof fun !== 'function') throw new Error('extend accept 1 function as argument')
+    if (typeof fun !== 'function') {
+      throw new Error('extend accept 1 function as argument')
+    }
     this._extends.push(fun)
   }
 }
@@ -202,7 +220,9 @@ const darkMode = require('./extra/darkMode')
 const options = {
   userConfig: require(configs.USER_CONFIG_PATH),
   modRootDirs: userDataPaths.map(root => path.join(root, configs.MODS_DIR)),
-  executeRootDirs: userDataPaths.map(root => path.join(root, configs.EXECUTES_DIR)),
+  executeRootDirs: userDataPaths.map(root =>
+    path.join(root, configs.EXECUTES_DIR)
+  ),
   toolRootDirs: userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
 }
 

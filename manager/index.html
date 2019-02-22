@@ -6,20 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" id="extraCss" href="" />
-    <title>雀魂Plus</title>
+    <title data-i18n="main.programName">雀魂Plus</title>
   </head>
   <body>
-    <h1>雀魂Plus</h1>
+    <h1 data-i18n="main.programName">雀魂Plus</h1>
     <span class="close-btn" id="closeBtn"></span>
     <div class="main-context">
       <!-- 左侧选单 -->
-      <div class="left-panel">
+      <div class="left-panel" id="leftPanel">
         <ul>
-          <li data-target="modPage">模组</li>
-          <li data-target="executePage">插件</li>
-          <li data-target="toolPage">工具箱</li>
-          <li data-target="settingPage">设置</li>
-          <li data-target="aboutPage">关于</li>
+          <li data-target="modPage" data-i18n="main.mod">模组</li>
+          <li data-target="executePage" data-i18n="main.execute">插件</li>
+          <li data-target="toolPage" data-i18n="main.tool">工具箱</li>
+          <li data-target="settingPage" data-i18n="main.setting">设置</li>
+          <li data-target="aboutPage" data-i18n="main.about">关于</li>
         </ul>
       </div>
 
@@ -91,45 +91,77 @@
       <!-- 关于页面 -->
       <section data-name="aboutPage">
         <!-- <button id="saveConfigs" class="big-btn save-btn"></button> -->
-        <div id="aboutInner" class="about-innner">
-        </div>
+        <div id="aboutInner" class="about-innner"></div>
       </section>
 
       <!-- 底部面板 -->
       <div class="bottom-panel">
         <span id="serverInfo" data-server-index="0"
-          >服务器: <span id="serverText">加载中</span></span
+          ><span id="serverInfoTitle" data-i18n="main.server">服务器</span>:
+          <span id="serverText" data-i18n="main.loading">加载中</span></span
         >
         <span id="pingInfo" class="offline"
-          >Ping: <span id="pingText">--</span> ms</span
+          ><span data-i18n="main.delay">Ping</span>:
+          <span id="pingText">--</span>
+          <span data-i18n="main.millisecond">ms</span></span
         >
-        <button id="launch" class="launch-btn">启动游戏</button>
+        <button id="launch" class="launch-btn" data-i18n="main.launch">
+          启动游戏
+        </button>
       </div>
     </div>
 
     <!-- 版本卡标签 -->
     <div id="updateCard" class="update-card">
-      <h3>发现新版本</h3>
+      <h3 data-i18n="update.newVersionWasFound">发现新版本</h3>
       <p>
-        您的版本 <span id="localVersion">v1.0.0</span> <br />最新版本
-        <span id="remoteVersion">v1.0.0</span> <br />发布于
+        <span data-i18n="update.currentVersion">您的版本</span>
+        <span id="localVersion">v1.0.0</span><br />
+        <span data-i18n="update.latestVersion">最新版本</span>
+        <span id="remoteVersion">v1.0.0</span><br />
+        <span data-i18n="update.publishAt">发布于</span>
         <span id="publishTime">2000/2/30 下午11:11:11</span>
       </p>
-      <button id="updateCard_close" class="updateCard_close">下次提醒我</button>
-      <button id="updateCard_view" class="updateCard_view">前往发布页</button>
-      <button id="updateCard_autoupdate" class="updateCard_view hide">
+      <button
+        id="updateCard_close"
+        class="updateCard_close"
+        data-i18n="update.tellMeNextTime"
+      >
+        下次提醒我
+      </button>
+      <button
+        id="updateCard_view"
+        class="updateCard_view"
+        data-i18n="update.gotoPublishPage"
+      >
+        前往发布页
+      </button>
+      <button
+        id="updateCard_autoupdate"
+        class="updateCard_view hide"
+        data-i18n="update.updateNow"
+      >
         下载更新
       </button>
     </div>
     <div id="downloadCard" class="update-card">
-      <h3 id="downloadCardTitle">正在下载更新</h3>
+      <h3 id="downloadCardTitle" data-i18n="update.downloading">
+        正在下载更新
+      </h3>
       <p id="downloadCardText">
-        正在从服务器获取更新中<br />
-        请稍后……<br />
-        <span id="downloadCardSpeed">连接资源……</span>
+        <span data-i18n="update.downloadingTip">正在从服务器获取更新中</span
+        ><br />
+        <span data-i18n="update.pleaseWait">请稍后……</span><br />
+        <span id="downloadCardSpeed" data-i18n="update.connecting"
+          >连接资源……</span
+        >
       </p>
-      <!-- <button id="updateCard_close" class="updateCard_close">下次提醒我</button> -->
-      <button id="downloadCard_install" class="updateCard_view" disabled>
+      <button
+        id="downloadCard_install"
+        class="updateCard_view"
+        disabled
+        data-i18n="update.installAndRelaunch"
+      >
         安装并重启
       </button>
     </div>

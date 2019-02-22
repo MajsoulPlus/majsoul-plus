@@ -5,7 +5,13 @@
   "tool": "Tools",
   "setting": "Settings",
   "about": "About",
-
+  "community": "Community",
+  "server": "Server",
+  "delay": "Delay",
+  "launch": "Launch Game",
+  "loading": "Loading",
+  "millisecond": "ms",
+  
   "nya": "nya nya nya!",
 
   "getRemoteSourceFailed": "Get Remote Source Failed $0 with code $1",

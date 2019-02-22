@@ -423,7 +423,7 @@ h1 {
           font-size: 18px;
           padding-top: 8px;
           line-height: 22px;
-          color: var(--bold-text)
+          color: var(--bold-text);
         }
         & > p {
           height: 20px;
@@ -433,7 +433,7 @@ h1 {
           line-height: 20px;
           font-size: 14px;
           padding-left: 16px;
-          color: var(--light-text)
+          color: var(--light-text);
         }
         & > input {
           outline: none !important;
@@ -463,7 +463,7 @@ h1 {
           cursor: pointer;
           outline: none !important;
           padding-left: 10px;
-          color: var(--light-text)
+          color: var(--light-text);
         }
         & > input[type='checkbox'] + label {
           width: max-content;
@@ -527,7 +527,7 @@ h1 {
           font-size: 18px;
           padding-top: 8px;
           line-height: 22px;
-          color: var(--bold-text)
+          color: var(--bold-text);
         }
         & > p {
           margin-top: 4px;
@@ -536,7 +536,7 @@ h1 {
           line-height: 20px;
           font-size: 14px;
           padding-left: 16px;
-          color: var(--light-text)
+          color: var(--light-text);
         }
       }
     }
@@ -607,7 +607,8 @@ h1 {
       position: absolute;
       right: 0;
       bottom: 0;
-      width: 192px;
+      // width: 192px;
+      padding: 0 48px;
       height: 64px;
       line-height: 64px;
       background-color: var(--main-color);

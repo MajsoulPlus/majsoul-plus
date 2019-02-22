@@ -123,8 +123,7 @@ class Ping {
     pingInfoDom.className = 'offline'
     pingTextDom.innerText = '--'
     i18n.unbindElement(serverTextDom)
-    this._getServiceName(this.currentService)
-      .renderAsText(serverTextDom)
+    this._getServiceName(this.currentService).renderAsText(serverTextDom)
     return Promise.resolve()
   }
 

@@ -225,11 +225,11 @@ const windowControl = {
   _getGameWindowTitle: () => {
     const titles = [
       {
-        text: '雀魂Plus',
+        text: i18n.t.main.programName(),
         weight: 200
       },
       {
-        text: '喵喵喵！ - 喵喵喵？喵！喵喵喵！喵~~',
+        text: i18n.t.main.nya(),
         weight: 1
       }
     ]

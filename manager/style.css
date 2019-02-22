@@ -75,13 +75,9 @@
 * {
   padding: 0;
   margin: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   font-weight: 400;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
   font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   zoom: 1;
 }
@@ -104,7 +100,6 @@
   max-height: 128px;
   height: auto;
   background-color: rgba(0, 0, 0, 0);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
 *:hover::-webkit-scrollbar-thumb {
@@ -112,12 +107,10 @@
 }
 *:hover::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.15);
-  -webkit-transition: background-color 0;
   transition: background-color 0;
 }
 *:hover::-webkit-scrollbar-thumb:active {
   background-color: rgba(0, 0, 0, 0.2);
-  -webkit-transition: background-color 0;
   transition: background-color 0;
 }
 
@@ -155,9 +148,7 @@ h1 {
   color: var(--title-text);
   font-weight: 300;
   background-color: #f000;
-  -webkit-transition: color var(--animation-time) var(--ease-in-out);
   transition: color var(--animation-time) var(--ease-in-out);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
   -webkit-app-region: no-drag;
   text-align: center;
@@ -180,7 +171,6 @@ h1 {
   border-radius: 50%;
   border: 1px solid var(--mac-close-btn-border);
   color: #8110;
-  -webkit-transition: color var(--animation-time) var(--ease-in-out);
   transition: color var(--animation-time) var(--ease-in-out);
   line-height: 12px;
 }
@@ -250,12 +240,8 @@ h1 {
   height: 144px;
   font-size: 14px;
   position: relative;
-  -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-          box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-  -webkit-transition: -webkit-box-shadow var(--animation-time) var(--ease-in-out);
-  transition: -webkit-box-shadow var(--animation-time) var(--ease-in-out);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
   transition: box-shadow var(--animation-time) var(--ease-in-out);
-  transition: box-shadow var(--animation-time) var(--ease-in-out), -webkit-box-shadow var(--animation-time) var(--ease-in-out);
   background-color: var(--info-card-color);
   float: left;
   margin-top: 8px;
@@ -263,8 +249,7 @@ h1 {
   margin-right: 36px;
 }
 .main-context > section > div.info-cards > article:hover {
-  -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 .main-context > section > div.info-cards > article > * {
   float: left;
@@ -329,7 +314,6 @@ h1 {
   right: 32px;
   bottom: 16px;
   background-color: var(--switch-disable-color);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
 .main-context > section > div.info-cards > article > input[type='checkbox'] + label::after {
@@ -342,7 +326,6 @@ h1 {
   left: calc(-32px + 2px);
   bottom: calc(12px + 2px + 16px);
   background-color: var(--switch-ball-color);
-  -webkit-transition: left var(--animation-time) var(--ease-in-out);
   transition: left var(--animation-time) var(--ease-in-out);
 }
 .main-context > section > div.info-cards > article > input[type='checkbox']:checked + label::before {
@@ -425,8 +408,6 @@ h1 {
   height: 20px;
   margin-top: 4px;
   cursor: default;
-  width: -webkit-max-content;
-  width: -moz-max-content;
   width: max-content;
   line-height: 20px;
   font-size: 14px;
@@ -452,8 +433,6 @@ h1 {
   display: none;
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='number'] + label {
-  width: -webkit-max-content;
-  width: -moz-max-content;
   width: max-content;
   height: 20px;
   margin-top: 4px;
@@ -465,8 +444,6 @@ h1 {
   color: var(--light-text);
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox'] + label {
-  width: -webkit-max-content;
-  width: -moz-max-content;
   width: max-content;
   height: 20px;
   margin-top: 4px;
@@ -488,7 +465,6 @@ h1 {
   top: 3px;
   right: 12px;
   background-color: var(--switch-disable-color);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox'] + label::after {
@@ -501,7 +477,6 @@ h1 {
   left: -10px;
   bottom: 16px;
   background-color: var(--switch-ball-color);
-  -webkit-transition: left var(--animation-time) var(--ease-in-out);
   transition: left var(--animation-time) var(--ease-in-out);
 }
 .main-context > section[data-name='settingPage'] > .setting-innner > input[type='checkbox']:checked + label::before {
@@ -552,7 +527,6 @@ h1 {
   font-size: 16px;
   color: var(--bold-text);
   padding-left: 48px;
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
 .main-context > .left-panel > ul > li.active {
@@ -602,7 +576,7 @@ h1 {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 192px;
+  padding: 0 48px;
   height: 64px;
   line-height: 64px;
   background-color: var(--main-color);
@@ -612,7 +586,6 @@ h1 {
   font-weight: 300;
   cursor: pointer;
   border: none;
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
 }
 .main-context > .bottom-panel > .launch-btn:hover {
@@ -673,24 +646,7 @@ h1 {
   width: calc(256px + 2px);
   background-color: var(--info-card-color);
   border: 1px solid var(--border-color);
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-@-webkit-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  1% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
+  user-select: none;
 }
 @keyframes fadeInFromNone {
   0% {
@@ -737,7 +693,6 @@ h1 {
   text-underline-position: under;
   background-color: transparent;
   text-decoration: underline;
-  -webkit-transition: color var(--animation-time) var(--ease-in-out);
   transition: color var(--animation-time) var(--ease-in-out);
 }
 .update-card > button.updateCard_close:hover {
@@ -750,7 +705,6 @@ h1 {
   border: none;
   color: var(--white-text);
   background-color: var(--main-color);
-  -webkit-transition: background-color var(--animation-time) var(--ease-in-out);
   transition: background-color var(--animation-time) var(--ease-in-out);
   padding: 4px 12px;
   float: right;
@@ -764,6 +718,5 @@ h1 {
 }
 .update-card.show {
   display: block;
-  -webkit-animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
-          animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
+  animation: fadeInFromNone var(--animation-time) var(--ease-in-out);
 }
