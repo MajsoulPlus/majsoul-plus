@@ -181,7 +181,10 @@ class Manager {
       this.options.userConfig[obj.mainKey][obj.key] = obj.value
     })
 
-    ipcRenderer.on('saveConfig', () => this._saveSettings())
+    ipcRenderer.on('saveConfig', () => {
+      this._saveSettings()
+      ipcRenderer.send('application-message', 'close-ready')
+    })
   }
 
   init () {

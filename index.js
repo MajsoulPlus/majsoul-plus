@@ -300,7 +300,10 @@ const windowControl = {
     })
 
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
-    managerWindow.on('close', evt => evt.sender.send('saveConfig'))
+    managerWindow.once('close', evt => {
+      evt.preventDefault()
+      evt.sender.send('saveConfig')
+    })
     managerWindow.loadURL(
       'file://' + path.join(__dirname, '/manager/index.html')
     )
@@ -474,6 +477,10 @@ const windowControl = {
               )
             })
             clipboard.writeImage(electron.nativeImage.createFromBuffer(buffer))
+            break
+          }
+          case 'close-ready': {
+            windowControl.windowMap['manager'].close()
             break
           }
           default:
