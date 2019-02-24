@@ -44,8 +44,8 @@ const CONFIGS = {
   EXECUTES_CONFIG_PATH: path.join(appDataDir, 'executesEnabled.json'),
   USER_CONFIG_PATH: path.join(appDataDir, 'configs-user.json'),
   GAME_WINDOW_CONFIG: {
-    width: 1280,
-    height: 720,
+    width: 1280 + 16,
+    height: 720 + 39,
     frame: true,
     resizable: true,
     backgroundColor: '#000000',
@@ -55,7 +55,7 @@ const CONFIGS = {
       // plugins: true
     },
     autoHideMenuBar: true,
-    useContentSize: true,
+    // useContentSize: true,
     icon: getIcon(),
     show: false,
     enableLargerThanScreen: true
