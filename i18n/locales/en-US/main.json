@@ -1,7 +1,9 @@
 {
+  "screenshotSaved": "Screenshot saved",
+  "screenshotsSaved": "$0 screenshots saved",
   "programName": "Majsoul Plus",
   "mod": "Mods",
-  "execute": "Executes",
+  "execute": "Plugins",
   "tool": "Tools",
   "setting": "Settings",
   "about": "About",
@@ -11,17 +13,11 @@
   "launch": "Launch Game",
   "loading": "Loading",
   "millisecond": "ms",
-
   "nya": "nya nya nya!",
-
-  "getRemoteSourceFailed": "Get Remote Source Failed $0 with code $1",
-  "httpsGetFileFailed": "Get $0 Failed with code $1",
-  "httpsGetFileRedirect": "Get $0 Redirect with code $1",
-
+  "getRemoteSourceFailed": "Get $0 from remote failed, Code: $1",
+  "httpsGetFileFailed": "Get $0 failed, Code: $1",
+  "httpsGetFileRedirect": "$0 is redirected, Code: $1",
   "portInUse": "Port in use, Retrying...",
   "consoleMessage": "ConsoleMsg",
-  "webContentsCrashed": "Web Contents Crashed",
-
-  "screenshotSaved": "Screenshot saved",
-  "screenshotsSaved": "$0 screenshots saved"
+  "webContentsCrashed": "Web Contents Crashed"
 }

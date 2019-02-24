@@ -1,13 +1,11 @@
 {
   "gameGroup": "Game",
-  "printScreen": "Print Screen",
-  "exitGame": "Exit Game",
-
+  "printScreen": "Screenshot",
+  "exitGame": "Quit Game",
   "windowGroup": "Window",
   "alwaysOnTop": "Always On Top",
   "fullScreen": "Full Screen",
-  "exitFullScreen": "Exie Full Screen",
-
+  "exitFullScreen": "Exit Full Screen",
   "moreGroup": "More",
   "devTools": "Developer Tools"
 }
