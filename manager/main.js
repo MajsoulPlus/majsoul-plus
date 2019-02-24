@@ -217,7 +217,7 @@ class Manager {
 
 const userDataPaths = [path.join(__dirname, '../'), app.getPath('userData')]
 
-const springFestivalExtend = require('./extra/springFestival')
+const springFestivalExtend = require('./extra/springFestivalTheme')
 const darkMode = require('./extra/darkMode')
 
 const options = {
