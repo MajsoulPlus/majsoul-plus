@@ -17,5 +17,5 @@ delay,网络延迟,ネットワーク遅延
 launch,启动游戏,ゲームスタート
 loading,加载中,ロード中
 millisecond,毫秒,ミリ秒
-screenshotSaved,截图已保存,
-screenshotsSaved,已保存 $0 张截图,
+screenshotSaved,截图已保存,スクリーンショットを保存しました
+screenshotsSaved,已保存 $0 张截图,$0 枚のスクリーンショットを保存しました
