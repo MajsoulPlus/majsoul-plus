@@ -8,6 +8,7 @@ const configs = require('../../configs')
 const userConfigs = require(configs.USER_CONFIG_PATH)
 
 const electronScreen = electron.screen
+const i18n = require('../../i18nInstance')
 
 /**
  * @type {Electron.WebviewTag}
@@ -86,8 +87,8 @@ const showScreenshotLabel = src => {
   const screenshotLabel = document.getElementById('screenshotLabel')
   screenshotImage.src = src
   screenshotText.innerText = screenshotCounter++
-    ? `已保存${screenshotCounter}张截图`
-    : '截图已保存'
+    ? i18n.t.main.screenshotsSaved(screenshotCounter)
+    : i18n.t.main.screenshotSaved()
   screenshotLabel.classList.remove('hide')
   screenshotLabel.classList.add('show')
   clearTimeout(screenshotTimer)

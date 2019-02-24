@@ -20,5 +20,8 @@
 
   "portInUse": "端口被占用，重试中……",
   "consoleMessage": "控制台消息",
-  "webContentsCrashed": "游戏宿主窗口崩溃"
+  "webContentsCrashed": "游戏宿主窗口崩溃",
+
+  "screenshotSaved": "截图已保存",
+  "screenshotsSaved": "已保存 $0 张截图"
 }

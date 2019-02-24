@@ -11,7 +11,7 @@
   "launch": "Launch Game",
   "loading": "Loading",
   "millisecond": "ms",
-  
+
   "nya": "nya nya nya!",
 
   "getRemoteSourceFailed": "Get Remote Source Failed $0 with code $1",
@@ -20,5 +20,8 @@
 
   "portInUse": "Port in use, Retrying...",
   "consoleMessage": "ConsoleMsg",
-  "webContentsCrashed": "Web Contents Crashed"
+  "webContentsCrashed": "Web Contents Crashed",
+
+  "screenshotSaved": "Screenshot saved",
+  "screenshotsSaved": "$0 screenshots saved"
 }
