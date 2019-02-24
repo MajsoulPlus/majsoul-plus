@@ -302,6 +302,7 @@ const windowControl = {
     managerWindow.on('page-title-updated', evt => evt.preventDefault())
     managerWindow.once('close', evt => {
       evt.preventDefault()
+      managerWindow.hide()
       evt.sender.send('saveConfig')
     })
     managerWindow.loadURL(
