@@ -234,7 +234,7 @@ const windowControl = {
       }
     ]
     let sumWeight = titles.reduce((last, value) => last + value.weight, 0)
-    let randomResult = (Math.random() * sumWeight) >> 0
+    let randomResult = Math.random() * sumWeight
     const index = titles.reduce((last, value, index) => {
       if (Number.isInteger(last)) {
         return last

@@ -10,9 +10,6 @@ declare function Locale(
    */
   ...params: string[]
 ): string
-/**
- * 本地化，单条语句翻译对象
- */
 declare interface Locale {
   /**
    * 格式化该键对应的翻译文本并返回
