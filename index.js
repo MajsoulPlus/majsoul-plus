@@ -260,7 +260,7 @@ const windowControl = {
       const data = fs.readFileSync(configs.MODS_CONFIG_PATH)
       const mods = JSON.parse(data.toString('utf-8'))
       mods.forEach(mod => {
-        if (mod.execute) {
+        if (mod.execute && mod.execute.path) {
           executeScripts.push(mod.execute)
         }
       })
