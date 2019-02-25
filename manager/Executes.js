@@ -18,8 +18,8 @@ class Executes extends CardList {
   }
   _getExportInfo () {
     return {
-      extend: i18n.t.manager.fileTypeMSPE(),
-      typeText: '插件'
+      extend: 'mspe',
+      typeText: i18n.t.manager.fileTypeMSPE()
     }
   }
 }
