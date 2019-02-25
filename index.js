@@ -256,6 +256,17 @@ const windowControl = {
       console.error(error)
       executeScripts = []
     }
+    try {
+      const data = fs.readFileSync(configs.MODS_CONFIG_PATH)
+      const mods = JSON.parse(data.toString('utf-8'))
+      mods.forEach(mod => {
+        if (mod.execute) {
+          executeScripts.push(mod.execute)
+        }
+      })
+    } catch (error) {
+      console.error(error)
+    }
     return executeScripts
   },
 
