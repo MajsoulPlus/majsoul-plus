@@ -23,7 +23,7 @@
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus)
 ![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
-**警告：**在您使用雀魂 Plus 时进行的<font color=red>**不当行为会导致账号被封禁**</font>，例如使用了影响游戏平衡的第三方插件或功能扩展，因此产生的一切后果，雀魂 Plus 不对此承担任何责任！
+**警告：** 在您使用雀魂 Plus 时进行的 **「 不当行为可能会导致账号被封禁」** ，例如使用了影响游戏平衡的第三方插件或功能扩展，因此产生的一切后果，雀魂 Plus 不对此承担任何责任！
 
 ## 致用户
 
