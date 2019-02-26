@@ -23,6 +23,8 @@
 [![Build Status](https://travis-ci.com/MajsoulPlus/majsoul-plus.svg?branch=master)](https://travis-ci.com/MajsoulPlus/majsoul-plus)
 ![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
+**警告：**在您使用雀魂 Plus 时进行的<font color=red>**不当行为会导致账号被封禁**</font>，例如使用了影响游戏平衡的第三方插件或功能扩展，因此产生的一切后果，雀魂 Plus 不对此承担任何责任！
+
 ## 致用户
 
 &emsp;&emsp;感谢您正在阅读这段文字，我是《雀魂 Plus》开发者之一：Handle。首先，感谢您信赖并使用《雀魂 Plus》，这是我第一个破 10 Star 的项目，同时也是我倾注了大量心血的作品，对于其意外登上一些论坛的置顶，我感到兴奋，但同时更多的是震惊。
