@@ -22,7 +22,12 @@ const {
 } = electron
 const { Menu, MenuItem } = electron
 
-let userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
+let userConfigs
+try {
+  userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
+} catch (error) {
+  userConfigs = {}
+}
 
 // 同步 configs-user.json
 function jsonKeyUpdate (ja, jb) {
@@ -235,6 +240,9 @@ const windowControl = {
     ]
     let sumWeight = titles.reduce((last, value) => last + value.weight, 0)
     let randomResult = Math.random() * sumWeight
+    /**
+     * @type {number}
+     */
     const index = titles.reduce((last, value, index) => {
       if (Number.isInteger(last)) {
         return last

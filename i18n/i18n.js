@@ -247,6 +247,7 @@ class i18n {
           f.renderAsHTML = (htmlElement, ...args) => {
             this.bindElementHTML(f, htmlElement, ...args)
           }
+          f.toString = () => f.call(this)
           return f
         })(),
         {

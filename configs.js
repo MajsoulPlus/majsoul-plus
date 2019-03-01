@@ -113,12 +113,4 @@ try {
     CONFIGS.MODS_CONFIG_PATH
   )
 }
-try {
-  fs.statSync(CONFIGS.USER_CONFIG_PATH)
-} catch (error) {
-  fs.copyFileSync(
-    path.join(__dirname, 'configs-user.json'),
-    CONFIGS.USER_CONFIG_PATH
-  )
-}
 module.exports = CONFIGS
