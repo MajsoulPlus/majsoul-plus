@@ -142,9 +142,16 @@ gameWindowMenu.append(
         label: '截图',
         accelerator: 'CmdOrCtrl+P',
         enabled: true,
-        // visible: false,
+        visible: false,
         click: (menuItem, browserWindow) => {
           Util.takeScreenshot(browserWindow.webContents)
+        }
+      }),
+      new MenuItem({
+        label: '重新载入',
+        accelerator: 'CmdOrCtrl+R',
+        click: (menuItem, browserWindow) => {
+          browserWindow.reload()
         }
       }),
       new MenuItem({
