@@ -1,19 +1,20 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.10.9-alpha.3",
+  "version": "2.0.0-alpha.1",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
   "main": "index.js",
   "scripts": {
-    "start": "gulp & cross-env NODE_ENV=development electron . --enable_logging",
+    "start": "gulp sass && cross-env NODE_ENV=development electron . --enable_logging",
     "pack": "npm run lint && npm run build",
     "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
     "build-win32": "gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
     "build-linux": "gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
     "build-darwin": "gulp sass && electron-builder --mac",
-    "test": "echo \"Error: no test specified\""
+    "test": "echo \"Error: no test specified\"",
+    "rebuild-win32": "cd node_modules/ewc && npm run clean && npm run conf && node-gyp build --runtime=electron --arch=x64 --dist-url=https://atom.io/download/atom-shell"
   },
   "build": {
     "productName": "Majsoul Plus",
@@ -60,6 +61,7 @@
   "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
   "dependencies": {
     "adm-zip": "^0.4.13",
+    "ewc": "0.0.1",
     "express": "^4.16.4",
     "gulp": "^4.0.0",
     "gulp-sass": "^4.0.2",
@@ -68,7 +70,7 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "electron": "^3.0.15",
+    "electron": "^4.0.0",
     "electron-builder": "^20.38.5",
     "electron-packager": "^13.0.1",
     "eslint": "^5.13.0",

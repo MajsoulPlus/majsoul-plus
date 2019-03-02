@@ -314,12 +314,22 @@ const windowControl = {
     if (process.platform === 'darwin') {
       config.frame = false
       config.titleBarStyle = 'hidden'
+      config.backgroundColor = '#00000000'
+      config.vibrancy = 'medium-light'
     }
+    config.backgroundColor = '#00000000'
 
     config.width *= userConfigs.window.zoomFactor
     config.height *= userConfigs.window.zoomFactor
 
-    const managerWindow = new BrowserWindow({...config, ...{vibrancy: 'medium-light',backgroundColor:'rgba(0,0,0,0)'}})
+    const managerWindow = new BrowserWindow(config)
+
+    // Windows 10 1809+
+    if (process.platform === 'win32' && os.release()) {
+      console.log(os.release())
+      const ewc = require('ewc')
+      ewc.setAcrylic(managerWindow, 0xCCffffff)
+    }
 
     managerWindow.once('ready-to-show', () => {
       managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor)
