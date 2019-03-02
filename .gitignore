@@ -64,3 +64,4 @@ typings/
 package-lock.json
 static/
 build/
+manager/**/*.css
