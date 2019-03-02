@@ -1,18 +1,18 @@
 {
   "name": "majsoul-plus-client",
-  "version": "1.10.9-alpha.2",
+  "version": "1.10.9-alpha.3",
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron . --enable_logging",
+    "start": "gulp & cross-env NODE_ENV=development electron . --enable_logging",
     "pack": "npm run lint && npm run build",
     "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
-    "build-win32": "electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
-    "build-linux": "electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
-    "build-darwin": "electron-builder --mac",
+    "build-win32": "gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
+    "build-linux": "gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
+    "build-darwin": "gulp sass && electron-builder --mac",
     "test": "echo \"Error: no test specified\""
   },
   "build": {
@@ -61,13 +61,16 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "express": "^4.16.4",
+    "gulp": "^4.0.0",
+    "gulp-sass": "^4.0.2",
+    "node-sass": "^4.11.0",
     "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
     "electron": "^2.0.12",
     "electron-builder": "^20.38.5",
-    "electron-packager": "^13.1.0",
+    "electron-packager": "^13.0.1",
     "eslint": "^5.13.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
