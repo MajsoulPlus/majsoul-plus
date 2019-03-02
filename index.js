@@ -312,14 +312,14 @@ const windowControl = {
     }
     // hack macOS config
     if (process.platform === 'darwin') {
-      config.frame = true
+      config.frame = false
       config.titleBarStyle = 'hidden'
     }
 
     config.width *= userConfigs.window.zoomFactor
     config.height *= userConfigs.window.zoomFactor
 
-    const managerWindow = new BrowserWindow(config)
+    const managerWindow = new BrowserWindow({...config, ...{vibrancy: 'medium-light',backgroundColor:'rgba(0,0,0,0)'}})
 
     managerWindow.once('ready-to-show', () => {
       managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor)

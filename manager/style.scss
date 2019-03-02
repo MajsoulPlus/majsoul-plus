@@ -44,6 +44,10 @@
 .darwin {
   --main-height: 634px;
 
+  --left-panel-color: transparent;
+  --left-panel-active-color: #00000011;
+  --left-panel-hover-color: #FFFFFF30;
+
   & h1 {
     height: 22px;
     line-height: 22px;

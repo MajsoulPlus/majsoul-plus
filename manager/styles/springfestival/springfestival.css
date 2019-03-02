@@ -2,14 +2,11 @@
   --title-color: #f10000;
   --main-color: #f10000;
   --main-dark-color: #a51a1a;
-  --switch-able-color: #f10000;
-}
+  --switch-able-color: #f10000; }
 
 .blur {
-  --title-color: #fddada;
-}
+  --title-color: #fddada; }
 
 .main-context > section {
   background-image: url(./background.jpg);
-  background-size: 100% 100%;
-}
+  background-size: 100% 100%; }
