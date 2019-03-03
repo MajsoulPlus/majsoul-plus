@@ -314,12 +314,14 @@ const windowControl = {
     if (process.platform === 'darwin') {
       config.frame = false
       config.titleBarStyle = 'hidden'
+      config.vibrancy = 'light'
+      config.backgroundColor = 'rgba(0,0,0,0)'
     }
 
     config.width *= userConfigs.window.zoomFactor
     config.height *= userConfigs.window.zoomFactor
 
-    const managerWindow = new BrowserWindow({...config, ...{vibrancy: 'medium-light',backgroundColor:'rgba(0,0,0,0)'}})
+    const managerWindow = new BrowserWindow(config)
 
     managerWindow.once('ready-to-show', () => {
       managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor)
