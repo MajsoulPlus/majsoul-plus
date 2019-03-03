@@ -99,7 +99,7 @@ class Manager {
             extensions: ['mspm', 'mspe', 'mspt']
           }
         ],
-        properties: 'multiSelections'
+        properties: ['openFile', 'multiSelections']
       },
       filenames => {
         if (filenames && filenames.length) {
