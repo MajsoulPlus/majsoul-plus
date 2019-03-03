@@ -98,21 +98,23 @@ class Manager {
             name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
             extensions: ['mspm', 'mspe', 'mspt']
           }
-        ]
+        ],
+        properties: 'multiSelections'
       },
       filenames => {
         if (filenames && filenames.length) {
-          const filename = filenames[0]
-          const unzip = new AdmZip(filename)
-          const extname = path.extname(filename)
-          const installDir = this._getInstallDirByExtname(extname)
-          unzip.extractAllToAsync(installDir, true, err => {
-            if (err) {
-              alert(i18n.t.manager.installExtendResourcesFailed(err))
-            } else {
-              alert(i18n.t.manager.installExtendResourcesSucceeded())
-              this._loadCards()
-            }
+          filenames.forEach(filename => {
+            const unzip = new AdmZip(filename)
+            const extname = path.extname(filename)
+            const installDir = this._getInstallDirByExtname(extname)
+            unzip.extractAllToAsync(installDir, true, err => {
+              if (err) {
+                alert(i18n.t.manager.installExtendResourcesFailed(err))
+              } else {
+                alert(i18n.t.manager.installExtendResourcesSucceeded())
+                this._loadCards()
+              }
+            })
           })
         }
       }
