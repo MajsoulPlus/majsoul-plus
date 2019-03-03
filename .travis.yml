@@ -15,10 +15,11 @@ addons:
     packages: zip
   homebrew:
     packages: zip
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm i --save-dev node@8.15.0; fi
 install:
   - npm install
   - npm update
-before_script: npm rebuild node-sass;
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build-linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run build-darwin; fi
