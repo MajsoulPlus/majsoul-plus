@@ -223,7 +223,13 @@ const springFestivalExtend = require('./extra/springFestivalTheme')
 const darkMode = require('./extra/darkMode')
 
 const options = {
-  userConfig: require(configs.USER_CONFIG_PATH),
+  userConfig: (() => {
+    try {
+      return require(configs.USER_CONFIG_PATH)
+    } catch (error) {
+      return require('../configs-user.json')
+    }
+  })(),
   modRootDirs: userDataPaths.map(root => path.join(root, configs.MODS_DIR)),
   executeRootDirs: userDataPaths.map(root =>
     path.join(root, configs.EXECUTES_DIR)

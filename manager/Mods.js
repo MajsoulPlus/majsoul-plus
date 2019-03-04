@@ -2,7 +2,15 @@ const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
 const configs = require('../configs')
-const enabledMods = JSON.parse(fs.readFileSync(configs.MODS_CONFIG_PATH).toString('utf-8'))
+const enabledMods = (() => {
+  try {
+    return JSON.parse(
+      fs.readFileSync(configs.MODS_CONFIG_PATH).toString('utf-8')
+    )
+  } catch (error) {
+    return []
+  }
+})()
 const i18n = require('../i18nInstance')
 const defaultOptions = {
   settingFilePath: configs.MODS_CONFIG_PATH,
