@@ -6,7 +6,7 @@
   "description": "Majsoul Plus",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently --kill-others \"gulp\" \"cross-env NODE_ENV=development electron . --enable_logging\"",
+    "start": "concurrently --success \"first\" --kill-others \"gulp\" \"cross-env NODE_ENV=development electron . --enable_logging\"",
     "pack": "npm run lint && npm run build",
     "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
