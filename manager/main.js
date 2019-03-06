@@ -12,7 +12,6 @@ const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
 
-const update = new Update()
 const setting = new Setting()
 const about = new About()
 const Mods = require('./Mods')
@@ -30,6 +29,7 @@ class Manager {
     this.tools = null
     this._extends = []
 
+    this._update = new Update(this.options.update)
     this._addEventListener = this._addEventListener.bind(this)
     this._import = this._import.bind(this)
     this._changeModEditable = this._changeModEditable.bind(this)
@@ -190,7 +190,7 @@ class Manager {
   }
 
   init () {
-    update.checkUpdate()
+    this._update.checkUpdate()
     ping.init()
     panel.init()
     setting.init()

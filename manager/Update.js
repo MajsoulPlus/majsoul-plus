@@ -1,6 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const NetworkUtil = require('./Network')
+const Util = require('../Util')
 const {
   remote: { app },
   shell
@@ -11,7 +12,7 @@ const defaultOptions = {
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest',
   preReleaseApi:
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases',
-  usePreRelease: false
+  prerelease: false
 }
 
 class Update {
@@ -26,12 +27,12 @@ class Update {
   }
 
   _getRemoteVersionInfo () {
-    const checkApi = this.options.usePreRelease
+    const checkApi = this.options.prerelease
       ? this.options.preReleaseApi
       : this.options.releaseApi
     return NetworkUtil.getJson(checkApi)
       .then(res => {
-        const result = this.options.usePreRelease ? res[0] : res
+        const result = this.options.prerelease ? res[0] : res
         return {
           remoteVersion: result.tag_name,
           body: result.body,
@@ -43,80 +44,6 @@ class Update {
         console.error(err)
         return {}
       })
-  }
-
-  compareVersion (taga, tagb) {
-    if (taga && tagb) {
-      let tagaArr = taga.substring(1).split('-')
-      let tagbArr = tagb.substring(1).split('-')
-      let tagaDev = false
-      let tagbDev = false
-      if (tagaArr.length > 1) {
-        tagaDev = true
-      }
-      if (tagbArr.length > 1) {
-        tagbDev = true
-      }
-      let tagaMain = tagaArr[0].split('.')
-      let tagbMain = tagbArr[0].split('.')
-
-      let laterFlag
-      for (let i = 0; i < 3; i++) {
-        if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
-          laterFlag = true
-          break
-        } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
-          laterFlag = false
-          break
-        }
-      }
-
-      if (typeof laterFlag === 'boolean') {
-        return laterFlag
-      }
-      if (laterFlag === undefined) {
-        if (tagbDev && !tagaDev) {
-          return true
-        } else if (tagaDev && !tagbDev) {
-          return false
-        } else if (tagaDev && tagbDev) {
-          const tagaDevArr = tagaArr[1].split('.')
-          const tagbDevArr = tagbArr[1].split('.')
-          const devStrToNum = devStr => {
-            switch (devStr) {
-              case 'alpha':
-                return 1
-              case 'beta':
-                return 2
-              case 'rc':
-                return 3
-              default:
-                return 0
-            }
-          }
-          tagaDevArr[0] = devStrToNum(tagaDevArr[0])
-          tagbDevArr[0] = devStrToNum(tagbDevArr[0])
-          for (let i = 0; i < 2; i++) {
-            if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
-              laterFlag = true
-              break
-            } else if (
-              parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)
-            ) {
-              laterFlag = false
-              break
-            }
-          }
-          if (laterFlag === undefined) {
-            return false
-          }
-          return laterFlag
-        } else {
-          return false
-        }
-      }
-    }
-    return false
   }
 
   _openDownloadPage () {}
@@ -150,10 +77,13 @@ class Update {
     const localVersion = await this._getLocalVersion()
     const remoteVersionInfo = await this._getRemoteVersionInfo()
     const { remoteVersion, body, time, url } = remoteVersionInfo
-    const shouldUpdate = this.compareVersion(remoteVersion, localVersion)
+    const shouldUpdate = Util.compareVersion(remoteVersion, localVersion)
     if (shouldUpdate) {
       this._renderUpdateHint({ remoteVersion, localVersion, time, body, url })
     }
+    // TODO
+    // https://github.com/MajsoulPlus/majsoul-plus/blob/abe443fd809f1941b2ddcd2765f6b30bc1e21d12/manager/manager.js#L829
+    // 重写 自动更新 内容
   }
 }
 module.exports = Update
