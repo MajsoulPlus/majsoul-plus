@@ -314,8 +314,10 @@ const windowControl = {
     if (process.platform === 'darwin') {
       config.frame = false
       config.titleBarStyle = 'hidden'
-      config.vibrancy = 'light'
-      config.backgroundColor = 'rgba(0,0,0,0)'
+      if (parseInt(process.versions.electron.split('.')[0], 10) > 2) {
+        config.vibrancy = 'light'
+        config.backgroundColor = 'rgba(0,0,0,0)'
+      }
     }
 
     config.width *= userConfigs.window.zoomFactor
