@@ -218,6 +218,12 @@ gameWindowMenu.append(
 )
 gameWindowMenu.append(
   new MenuItem({
+    label: '编辑',
+    role: 'editMenu'
+  })
+)
+gameWindowMenu.append(
+  new MenuItem({
     label: '更多',
     submenu: [
       new MenuItem({
