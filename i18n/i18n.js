@@ -83,6 +83,80 @@ class i18n {
     this.defaultLocale = defaultLocale
     // 设置活动的语言列表
     this.actives = actives
+    // 设置 text 的 Proxy 对象
+    ;(() => {
+      /**
+       * 格式化模板字符串
+       * @param {string} string
+       * @param  {...string} args
+       */
+      const formatString = (string, ...args) => {
+        for (let index in args) {
+          string = string.replace(`$${index}`, args[index])
+        }
+        return string
+      }
+      /**
+       * 创建一个被包装过的Object
+       * @param {string[]} chainsArray 调用链
+       */
+      const createProxy = chainsArray => {
+        return new Proxy(
+          (() => {
+            const f = (...args) => {
+              for (let i = 0; i < this._actives.length; i++) {
+                let localeObj = this.locals[this._actives[i]]
+                if (!localeObj) {
+                  continue
+                }
+                for (let j = 0; j < f._chains.length; j++) {
+                  localeObj = localeObj[f._chains[j]]
+                  if (!localeObj) {
+                    break
+                  } else if (j === f._chains.length - 1) {
+                    return formatString(localeObj, ...args)
+                  }
+                }
+              }
+              return 'MissingText'
+            }
+            f._chains = chainsArray
+            /**
+             * @param {HTMLElement} htmlElement
+             * @param {...string} args
+             */
+            f.renderAsText = (htmlElement, ...args) => {
+              this.bindElementText(f, htmlElement, ...args)
+            }
+            /**
+             * @param {HTMLElement} htmlElement
+             * @param {...string} args
+             */
+            f.renderAsHTML = (htmlElement, ...args) => {
+              this.bindElementHTML(f, htmlElement, ...args)
+            }
+            f.toString = () => f.call(this)
+            return f
+          })(),
+          {
+            get: (target, key) => {
+              if (!target[key]) {
+                target[key] = createProxy(target._chains.concat(key))
+              }
+              return target[key]
+            }
+          }
+        )
+      }
+      this._text = new Proxy(
+        {},
+        {
+          get: (target, key) => {
+            return createProxy([].concat(key))
+          }
+        }
+      )
+    })()
     // 如果设置了自动更新翻译
     if (autoReload) {
       /**
@@ -197,77 +271,7 @@ class i18n {
    * @returns {(...params?:string)=>{[key:string]:function}}
    */
   get text () {
-    /**
-     * 格式化模板字符串
-     * @param {string} string
-     * @param  {...string} args
-     */
-    const formatString = (string, ...args) => {
-      for (let index in args) {
-        string = string.replace(`$${index}`, args[index])
-      }
-      return string
-    }
-    /**
-     * 创建一个被包装过的Object
-     * @param {string[]} chainsArray 调用链
-     */
-    const createProxy = chainsArray => {
-      return new Proxy(
-        (() => {
-          const f = (...args) => {
-            for (let i = 0; i < this._actives.length; i++) {
-              let localeObj = this.locals[this._actives[i]]
-              if (!localeObj) {
-                continue
-              }
-              for (let j = 0; j < f._chains.length; j++) {
-                localeObj = localeObj[f._chains[j]]
-                if (!localeObj) {
-                  break
-                } else if (j === f._chains.length - 1) {
-                  return formatString(localeObj, ...args)
-                }
-              }
-            }
-            return 'MissingText'
-          }
-          f._chains = chainsArray
-          /**
-           * @param {HTMLElement} htmlElement
-           * @param {...string} args
-           */
-          f.renderAsText = (htmlElement, ...args) => {
-            this.bindElementText(f, htmlElement, ...args)
-          }
-          /**
-           * @param {HTMLElement} htmlElement
-           * @param {...string} args
-           */
-          f.renderAsHTML = (htmlElement, ...args) => {
-            this.bindElementHTML(f, htmlElement, ...args)
-          }
-          f.toString = () => f.call(this)
-          return f
-        })(),
-        {
-          get: (target, key) => {
-            if (!target[key]) {
-              target[key] = createProxy(target._chains.concat(key))
-            }
-            return target[key]
-          }
-        }
-      )
-    }
-    return new Proxy(
-      {},
-      {
-        get: (target, key) => {
-          return createProxy([].concat(key))
-        }
-      }
-    )
+    return this._text
   }
   /**
    * 根据 dataset.i18n 绑定翻译到DOM元素树
