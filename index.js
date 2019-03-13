@@ -9,8 +9,6 @@ const path = require('path')
 const https = require('https')
 const os = require('os')
 
-const i18n = require('./i18nInstance')
-
 const electron = require('electron')
 const {
   app: electronApp,
@@ -21,6 +19,13 @@ const {
   globalShortcut
 } = electron
 const { Menu, MenuItem } = electron
+
+// const i18n = require('./i18nInstance')
+const I18n = require('./i18n/i18n')
+const i18n = new I18n({
+  autoReload: process.env.NODE_ENV === 'development',
+  actives: [electronApp.getLocale()]
+})
 
 let userConfigs
 try {
