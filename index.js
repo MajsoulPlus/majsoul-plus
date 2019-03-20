@@ -105,6 +105,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 server.get('*', Util.processRequest)
 
+electronApp.commandLine.appendSwitch('ignore-gpu-blacklist')
 electronApp.commandLine.appendSwitch('ignore-certificate-errors')
 electronApp.commandLine.appendSwitch(
   'autoplay-policy',
