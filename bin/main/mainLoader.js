@@ -42,7 +42,7 @@ let serverPort
  */
 let clientRect
 
-const proBuildExecuteCode = executeScriptInfo => {
+const prebuildExecuteCode = executeScriptInfo => {
   let codeEntry = executeScriptInfo.entry
   if (!codeEntry) {
     codeEntry = 'script.js'
@@ -62,16 +62,13 @@ const proBuildExecuteCode = executeScriptInfo => {
       .toString('utf-8')
   }
   if (!executeScriptInfo.sync) {
-    code = `(()=>{
-            let __raf
-            let require = undefined
-            const __rafFun = ()=>{if(window.game){(()=>{${code}})()}else{__raf=requestAnimationFrame(__rafFun)}}
-            __raf = requestAnimationFrame(__rafFun)})()`
+    code = `(()=>{let __raf;const __rafFun = ()=>{if(window.game){(()=>{
+      ${code}
+    })()}else{__raf=requestAnimationFrame(__rafFun)}}__raf = requestAnimationFrame(__rafFun)})()`
   } else {
     code = `(()=>{
-            let require = undefined;
-            (()=>{${code}})()
-            })()`
+      ${code}
+    })()`
   }
   return code
 }
@@ -180,7 +177,7 @@ ipcRenderer.on('executes-load', (event, ...args) => {
   const executeScripts = args[0]
   executeScriptsCodes = []
   executeScripts.forEach(executeScript => {
-    const code = proBuildExecuteCode(executeScript)
+    const code = prebuildExecuteCode(executeScript)
     executeScriptsCodes.push(code)
   })
   ipcRenderer.send('main-loader-message', 'executes-loaded')
