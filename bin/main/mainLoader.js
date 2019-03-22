@@ -62,12 +62,12 @@ const prebuildExecuteCode = executeScriptInfo => {
       .toString('utf-8')
   }
   if (!executeScriptInfo.sync) {
-    code = `(()=>{let __raf;const __rafFun = ()=>{if(window.game){(()=>{
-      ${code}
-    })()}else{__raf=requestAnimationFrame(__rafFun)}}__raf = requestAnimationFrame(__rafFun)})()`
+    code = `(()=>{let __raf;const __rafFun=()=>{if(window.game){(()=>{
+      with(window){${code}}
+    })()}else{__raf=requestAnimationFrame(__rafFun)}}__raf=requestAnimationFrame(__rafFun)})()`
   } else {
     code = `(()=>{
-      ${code}
+      with(window){${code}}
     })()`
   }
   return code
