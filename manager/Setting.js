@@ -22,26 +22,6 @@ class Settings {
     this.save = this.save.bind(this)
   }
 
-  // static _keyToTitle (key) {
-  //   const map = {
-  //     window: '窗口',
-  //     zoomFactor: '资源管理器缩放(Zoom Factor)',
-  //     gameSSAA: '超采样抗锯齿(SSAA)',
-  //     renderingMultiple: '% 渲染比率(Rendering Multiple)',
-  //     isKioskModeOn:
-  //       '使用原生模式代替默认全屏幕模式(Use Kiosk Fullscreen Mode)',
-  //     update: '更新',
-  //     prerelease: '获取浏览版(Get Pre-releases)',
-  //     chromium: '核心（需重启软件）',
-  //     isHardwareAccelerationDisable:
-  //       '关闭硬件加速(Turn Hardware Acceleration Off)',
-  //     isInProcessGpuOn: '启用进程内GPU处理(Turn in-process-gpu On)',
-  //     isNoBorder: '使用无边框窗口进入游戏(Turn BorderLess On)',
-  //     localVersion: '雀魂Plus 当前版本'
-  //   }
-  //   return map[key] || key
-  // }
-
   _getUserLocalConfig () {
     const defaultConfigPath = path.join(__dirname, '../configs-user.json')
     const defaultConfigJson = fs.readFileSync(defaultConfigPath)
@@ -149,16 +129,6 @@ class Settings {
       this._renderSection({ settingInner, section, data })
     })
   }
-
-  // _renderVersionInfo () {
-  //   const settingInner = document.getElementById('settingInner')
-  //   const h3 = document.createElement('h3')
-  //   h3.innerText = Settings._keyToTitle('localVersion')
-  //   const p = document.createElement('p')
-  //   p.innerText = app.getVersion()
-  //   settingInner.append(h3)
-  //   settingInner.append(p)
-  // }
 
   _handleSaveConfigClick () {
     this._saveConfig()

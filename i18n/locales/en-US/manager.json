@@ -9,6 +9,7 @@
   "chromium": "Core (Application restarting is required)",
   "isHardwareAccelerationDisable": "Disable GPU acceleration",
   "isInProcessGpuOn": "Enable GPU in-process ( Windows / macOS )",
+  "isIgnoreGpuBlacklist":"Ignore WebGL GPU Blacklist",
   "isNoBorder": "Launch game with borderless window",
   "userData": "User Data",
   "isUseDefaultPath": "Use 'User Library'",
