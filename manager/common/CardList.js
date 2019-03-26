@@ -1,17 +1,26 @@
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
-const { remote: { dialog } } = require('electron')
+const {
+  remote: { dialog }
+} = require('electron')
 const CheckboxCard = require('./CheckboxCard')
 const Util = require('../../Util')
 const i18n = require('../../i18nInstance')
 
-// eslint-disable-next-line no-unused-vars
 const defaultOptions = {
   rootDir: '',
   config: '',
   checkedKeys: [],
-  renderTarget: ''
+  renderTarget: '',
+  executePreferences: {
+    document: false, // 允许访问 document 对象
+    nodeRequire: false, // 启用 node 的 require 支持,
+    XMLHTTPRequest: false, // 启用 XMLHTTPRequest
+    WebSocket: false, // 启用 WebSocket,
+    localStorage: false, // 允许访问 localStorage
+    writeableWindowObject: false // 允许对 window 对象进行写入（如果为 false 则修改仅在作用域内有效）
+  }
 }
 class CardList {
   constructor (options) {
@@ -32,6 +41,10 @@ class CardList {
         const data = fs.readFileSync(path.join(dirPath, config))
         const info = JSON.parse(data.toString('utf-8'))
         info.filesDir = dirPath
+        info.executePreferences = {
+          ...defaultOptions.executePreferences,
+          ...info.executePreferences
+        }
         return info
       } catch (error) {
         return null
@@ -44,8 +57,9 @@ class CardList {
   _getCardInfos () {
     const { rootDir } = this.options
     const dirs = fs.readdirSync(rootDir)
-    return Promise.all(dirs.map(this._getCardInfo))
-      .then(list => list.filter(item => !!item))
+    return Promise.all(dirs.map(this._getCardInfo)).then(list =>
+      list.filter(item => !!item)
+    )
   }
 
   _getCards (cardInfos = []) {
@@ -77,12 +91,14 @@ class CardList {
     }
   }
 
-  _getExportInfo () {
-
-  }
+  _getExportInfo () {}
 
   _handleExport (key) {
-    const { card: { options: { name, author, filesDir } } } = this._cardList.find(item => item.key === key)
+    const {
+      card: {
+        options: { name, author, filesDir }
+      }
+    } = this._cardList.find(item => item.key === key)
     const { extend, typeText } = this._getExportInfo()
     const tempZipName = `${name}-${author}.${extend}`
     const tempZipPath = path.join(os.tmpdir(), tempZipName)
@@ -131,7 +147,7 @@ class CardList {
   }
 
   load () {
-    this._getCardInfos()
+    return this._getCardInfos()
       .then(this._getCards)
       .then(this._renderCards)
   }
@@ -141,7 +157,9 @@ class CardList {
     const launchedCards = this._cardList
       .filter(item => checkedKeys.includes(item.key))
       .map(item => item.card.options)
-    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), { encoding: 'utf-8' })
+    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), {
+      encoding: 'utf-8'
+    })
   }
 
   get cardList () {
