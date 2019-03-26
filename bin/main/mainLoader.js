@@ -66,6 +66,7 @@ const prebuildExecuteCode = executeScriptInfo => {
   }
   const sanboxCode = `const sandbox = new Proxy({}, {
     get(target, prop) {
+      const eventHandlers = []
       if (target.hasOwnProperty(prop)) {
         return target[prop]
       }
@@ -75,8 +76,51 @@ const prebuildExecuteCode = executeScriptInfo => {
       if (prop === "global") {
         return sandbox
       }
+      if (prop === "open") {
+        return window.open.bind(window)
+      }
+      if (prop === "setTimeout") {
+        return (fun, ...props)=>{return setTimeout(fun.bind(sandbox), ...props)}
+      }
+      if (prop === "clearTimeout") {
+        return (...props)=>{return clearTimeout(...props).bind(window)}
+      }
+      if (prop === "setInterval") {
+        return (fun, ...props)=>{return setInterval(fun.bind(sandbox), ...props)}
+      }
+      if (prop === "clearInterval") {
+        return (...props)=>{return clearInterval(...props).bind(window)}
+      }
       if (prop === "requestAnimationFrame") {
-        return (fun)=>{return requestAnimationFrame(fun.bind(sandbox))}
+        return (fun, ...props)=>{return requestAnimationFrame(fun.bind(sandbox), ...props)}
+      }
+      if (prop === "cancelAnimationFrame") {
+        return (...props)=>{return cancelAnimationFrame(...props).bind(window)}
+      }
+      if (prop === "addEventListener") {
+        return (evt, fun, ...props)=>{
+          const bindFun = fun.bind(sandbox)
+          eventHandlers.push({
+            unbind: fun,
+            bind: bindFun
+          })
+          window.addEventListener(evt, bindFun, ...props)
+        }
+      }
+      if (prop === "removeEventListener") {
+        return (evt, fun, ...props)=>{
+          let flag = false
+          eventHandlers.some((element,index,arr)=>{
+            const found = element.unbind === fun
+            if(found){
+              flag = window.removeEventListener(evt, bindFun, ...props)
+              arr.splice(index,1)
+              return true
+            }else{
+              return false
+            }
+          })
+        }
       }
       if (prop === "require" && ${!!executePreferences.nodeRequire} === false) {
         return undefined
@@ -104,6 +148,7 @@ const prebuildExecuteCode = executeScriptInfo => {
       if (${!!executePreferences.writeableWindowObject} === true) {
         window[prop] = target[prop]
       }
+      return target[prop]
     }
   })`
   if (!executeScriptInfo.sync) {
