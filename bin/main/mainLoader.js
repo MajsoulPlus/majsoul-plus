@@ -43,6 +43,9 @@ let serverPort
 let clientRect
 
 const prebuildExecuteCode = executeScriptInfo => {
+  executePreferences = executeScriptInfo.executePreferences
+    ? executeScriptInfo.executePreferences
+    : {}
   let codeEntry = executeScriptInfo.entry
   if (!codeEntry) {
     codeEntry = 'script.js'
@@ -61,16 +64,118 @@ const prebuildExecuteCode = executeScriptInfo => {
       .readFileSync(path.join(executeScriptInfo.filesDir, codeEntry))
       .toString('utf-8')
   }
+  const sanboxCode = `const sandbox = new Proxy({}, {
+    get(target, prop) {
+      if (target.hasOwnProperty(prop)) {
+        return target[prop]
+      }
+      if (prop === "window") {
+        return sandbox
+      }
+      if (prop === "global") {
+        return sandbox
+      }
+      if (prop === "requestAnimationFrame") {
+        return (fun)=>{return requestAnimationFrame(fun.bind(sandbox))}
+      }
+      if (prop === "require" && ${!!executePreferences.nodeRequire} === false) {
+        return undefined
+      }
+      if (prop === "document" && ${!!executePreferences.document} === false) {
+        return undefined
+      }
+      if (prop === "localStorage" && ${!!executePreferences.localStorage} === false) {
+        return undefined
+      }
+      if (prop === "XMLHttpRequest" && ${!!executePreferences.XMLHTTPRequest} === false) {
+        return undefined
+      }
+      if (prop === "WebSocket" && ${!!executePreferences.WebSocket} === false) {
+        return undefined
+      }
+      if (prop === Symbol.unscopables) {
+        return undefined
+      }
+      return window[prop]
+    },
+    has() { return true },
+    set(target, prop, value) {
+      target[prop] = value
+      if (${!!executePreferences.writeableWindowObject} === true) {
+        window[prop] = target[prop]
+      }
+    }
+  })`
   if (!executeScriptInfo.sync) {
-    code = `(()=>{let __raf;const __rafFun=()=>{if(window.game){(()=>{
-      with(window){${code}}
-    })()}else{__raf=requestAnimationFrame(__rafFun)}}__raf=requestAnimationFrame(__rafFun)})()`
+    code = `(()=>{
+      let __raf;
+      ${sanboxCode}
+      const __rafFun=()=>{
+        if(window.game) {
+              with (sandbox) {
+              ${code}
+            }
+          } else 
+          {__raf=requestAnimationFrame(__rafFun)
+          }
+        }
+      __raf=requestAnimationFrame(__rafFun)
+      })()`
   } else {
     code = `(()=>{
-      with(window){${code}}
+      ${sanboxCode}
+      with (sandbox) {${code}}
     })()`
   }
   return code
+}
+
+// Sanbox from https://zhuanlan.zhihu.com/p/58602800
+const sandbox = new Proxy(
+  {},
+  {
+    get(target, prop) {
+      if (target.hasOwnProperty(prop)) {
+        return target[prop]
+      }
+      if (prop === 'window') {
+        return sandbox
+      }
+      if (prop === 'global') {
+        return sandbox
+      }
+      if (prop === 'require' && false === false) {
+        return undefined
+      }
+      if (prop === 'document' && false === false) {
+        return undefined
+      }
+      if (prop === 'localStorage' && false === false) {
+        return undefined
+      }
+      if (prop === 'XMLHttpRequest' && false === false) {
+        return undefined
+      }
+      if (prop === 'WebSocket' && false === false) {
+        return undefined
+      }
+      if (prop === Symbol.unscopables) {
+        return undefined
+      }
+      return window[prop]
+    },
+    has() {
+      return true
+    },
+    set(target, prop, value) {
+      target[prop] = value
+      if (true === true) {
+        window[prop] = target[prop]
+      }
+    }
+  }
+)
+with (sandbox) {
 }
 
 let screenshotCounter = 0
