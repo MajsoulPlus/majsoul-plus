@@ -70,7 +70,7 @@ class Executes extends CardList {
             case 'document':
               return i18n.text.manager.executeSafeAlertDocument()
             case 'nodeRequire':
-              return i18n.text.manager.executeSafeAlertWriteableNodeRequire()
+              return i18n.text.manager.executeSafeAlertNodeRequire()
             case 'XMLHTTPRequest':
               return i18n.text.manager.executeSafeAlertXMLHttpRequest()
             case 'WebSocket':
