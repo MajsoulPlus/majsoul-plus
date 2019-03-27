@@ -556,12 +556,25 @@ const windowControl = {
             const clipboardText = clipboard.readText()
             if (
               clipboardText &&
-              (clipboardText.startsWith(configs.REMOTE_DOMAIN) ||
-                clipboardText.startsWith(configs.HTTP_REMOTE_DOMAIN))
+              clipboardText.includes(configs.REMOTE_DOMAIN)
             ) {
               windowControl.windowMap['game'].webContents.send(
                 'load-url',
-                clipboardText
+                new RegExp(
+                  configs.REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+                ).exec(clipboardText)[0]
+              )
+            } else if (
+              clipboardText &&
+              clipboardText.includes(configs.HTTP_REMOTE_DOMAIN)
+            ) {
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
+                new RegExp(
+                  configs.HTTP_REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+                ).exec(clipboardText)[0]
               )
             } else {
               windowControl.windowMap['game'].webContents.send(
