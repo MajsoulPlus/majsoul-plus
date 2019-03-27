@@ -39,8 +39,8 @@ class Executes extends CardList {
     })
   }
   _getCardInfo (dir) {
-    const info = super._getCardInfo.call(this, dir)
-    if (typeof info === 'object') {
+    const info = CardList.prototype._getCardInfo.call(this, dir)
+    if (typeof info === 'object' && info !== null) {
       info.executePreferences = {
         ...defaultOptions.executePreferences,
         ...info.executePreferences
