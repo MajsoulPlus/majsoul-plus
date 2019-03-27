@@ -12,15 +12,7 @@ const defaultOptions = {
   rootDir: '',
   config: '',
   checkedKeys: [],
-  renderTarget: '',
-  executePreferences: {
-    document: false, // 允许访问 document 对象
-    nodeRequire: false, // 启用 node 的 require 支持,
-    XMLHTTPRequest: false, // 启用 XMLHTTPRequest
-    WebSocket: false, // 启用 WebSocket,
-    localStorage: false, // 允许访问 localStorage
-    writeableWindowObject: false // 允许对 window 对象进行写入（如果为 false 则修改仅在作用域内有效）
-  }
+  renderTarget: ''
 }
 class CardList {
   constructor (options) {
@@ -41,10 +33,6 @@ class CardList {
         const data = fs.readFileSync(path.join(dirPath, config))
         const info = JSON.parse(data.toString('utf-8'))
         info.filesDir = dirPath
-        info.executePreferences = {
-          ...defaultOptions.executePreferences,
-          ...info.executePreferences
-        }
         return info
       } catch (error) {
         return null
