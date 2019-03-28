@@ -38,12 +38,11 @@ class Mods extends CardList {
       if (!card.options.execute.executePreferences) {
         card.options.execute.executePreferences = {}
       }
-      const isAleatNeeded = Object.keys(card.options.executePreferences).filter(
-        key => {
-          return !!card.options.executePreferences[key]
-        },
-        true
-      )
+      const isAleatNeeded = Object.keys(
+        card.options.execute.executePreferences
+      ).filter(key => {
+        return !!card.options.execute.executePreferences[key]
+      }, true)
       if (card.checked && isAleatNeeded && isAleatNeeded.length > 0) {
         let confirmText = `${i18n.text.manager.executeSafeAlert()}`
         isAleatNeeded
