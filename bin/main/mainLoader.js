@@ -131,7 +131,7 @@ const prebuildExecuteCode = executeScriptInfo => {
       if (prop === "localStorage" && ${!!executePreferences.localStorage} === false) {
         return undefined
       }
-      if (prop === "XMLHttpRequest" && ${!!executePreferences.XMLHTTPRequest} === false) {
+      if (prop === "XMLHttpRequest" && ${!!executePreferences.XMLHttpRequest} === false) {
         return undefined
       }
       if (prop === "WebSocket" && ${!!executePreferences.WebSocket} === false) {

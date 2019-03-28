@@ -63,7 +63,7 @@ class Ping {
 
   _getService () {
     if (!this.services) return Promise.reject(new Error('services is null'))
-    const choseService = localStorage.getItem('choseService')
+    const choseService = window.localStorage.getItem('choseService')
     if (choseService) {
       this.currentService =
         this.serviceList.find(service => service === choseService) ||
@@ -110,6 +110,7 @@ class Ping {
     })
   }
 
+  // 这个函数没有被使用
   _renderError (err) {
     console.error(err)
     const serverTextDom = document.getElementById('serverText')
