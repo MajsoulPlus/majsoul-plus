@@ -71,7 +71,7 @@ class Executes extends CardList {
               return i18n.text.manager.executeSafeAlertDocument()
             case 'nodeRequire':
               return i18n.text.manager.executeSafeAlertNodeRequire()
-            case 'XMLHTTPRequest':
+            case 'XMLHttpRequest':
               return i18n.text.manager.executeSafeAlertXMLHttpRequest()
             case 'WebSocket':
               return i18n.text.manager.executeSafeAlertWebSocket()
@@ -79,6 +79,8 @@ class Executes extends CardList {
               return i18n.text.manager.executeSafeAlertLocalStorage()
             case 'writeableWindowObject':
               return i18n.text.manager.executeSafeAlertWriteableWindowObject()
+            default:
+              return key
           }
         })
         .forEach(text => {
