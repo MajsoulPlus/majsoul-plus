@@ -39,7 +39,7 @@ class Executes extends CardList {
     })
   }
   _getCardInfo (dir) {
-    const info = CardList.prototype._getCardInfo.call(this, dir)
+    const info = super._getCardInfo.call(this, dir)
     if (typeof info === 'object' && info !== null) {
       info.executePreferences = {
         ...defaultOptions.executePreferences,
@@ -84,12 +84,12 @@ class Executes extends CardList {
         .forEach(text => {
           confirmText += `\n${text}`
         })
-      const confirmed = confirm(confirmText)
+      const confirmed = window.confirm(confirmText)
       if (!confirmed) {
         card.checked = false
       }
     }
-    super._handleCheckedChange.call(this, key)
+    return super._handleCheckedChange.call(this, key)
   }
 }
 module.exports = Executes
