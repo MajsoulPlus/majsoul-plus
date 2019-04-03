@@ -8,18 +8,21 @@
   "scripts": {
     "pre-build": "tsc && node build.js",
     "start": "yarn pre-build && concurrently --success \"first\" --kill-others \"gulp\" \"cross-env NODE_ENV=development electron ./dist --enable_logging\"",
-    "pack": "npm run lint && npm run build",
+    "pack": "npm run lint && gulp sass && npm run build",
     "lint": "",
-    "build": "yarn pre-build && gulp sass && electron-builder ./dist",
-    "build-win32": "yarn pre-build && gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
-    "build-linux": "yarn pre-build && gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
-    "build-darwin": "yarn pre-build && gulp sass && electron-builder --mac"
+    "build": "yarn pre-build && electron-builder --x64 --ia32",
+    "build-win32": "yarn pre-build && electron-builder --win --x64 --ia32",
+    "build-linux": "yarn pre-build && electron-builder --linux --x64 --ia32",
+    "build-darwin": "yarn pre-build  && electron-builder --mac --x64 --ia32"
   },
   "build": {
     "productName": "Majsoul Plus",
     "directories": {
-      "output": "build/packed"
+      "output": "build/"
     },
+    "files": [
+      "dist/**/*"
+    ],
     "dmg": {
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     },
@@ -30,7 +33,7 @@
       "darkModeSupport": true
     },
     "win": {
-      "icon": "bin/icons/icon.png",
+      "icon": "bin/icons/icon.ico",
       "target": [
         "nsis",
         "portable",
@@ -39,7 +42,7 @@
     },
     "linux": {
       "icon": "bin/icons",
-      "category": "Utility",
+      "category": "Game",
       "target": [
         "deb",
         "tar.gz",
@@ -88,7 +91,6 @@
     "cross-env": "^5.2.0",
     "electron": "^2.0.0",
     "electron-builder": "^20.39.0",
-    "electron-packager": "^13.0.1",
     "gulp": "^4.0.0",
     "gulp-sass": "^4.0.2",
     "node-sass": "^4.11.0",
