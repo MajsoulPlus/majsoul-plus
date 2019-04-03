@@ -2,7 +2,7 @@
 
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 
 class Ping {
   constructor () {

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const { Configs } = require('../dist/config')
+const { Configs } = require('..//config')
 const enabledMods = (() => {
   try {
     return JSON.parse(
@@ -11,7 +11,7 @@ const enabledMods = (() => {
     return []
   }
 })()
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 const defaultOptions = {
   settingFilePath: Configs.MODS_CONFIG_PATH,
   checkedKeys: enabledMods.map(

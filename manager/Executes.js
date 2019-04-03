@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const { Configs } = require('../dist/config')
-const { i18n } = require('../dist/i18nInstance')
+const { Configs } = require('..//config')
+const { i18n } = require('..//i18nInstance')
 
 const enabledExecutes = (() => {
   try {

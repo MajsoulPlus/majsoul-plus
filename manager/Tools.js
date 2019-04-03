@@ -2,9 +2,9 @@ const path = require('path')
 const { ipcRenderer } = require('electron')
 
 const CardList = require('./common/CardList')
-const { Configs } = require('../dist/config')
+const { Configs } = require('..//config')
 const ButtonCard = require('./common/ButtonCard')
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 const defaultOptions = {
   settingFilePath: Configs.TOOL_WINDOW_CONFIG,
   rootDir: path.join(__dirname, '../', Configs.TOOLS_DIR),

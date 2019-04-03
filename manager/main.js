@@ -18,8 +18,8 @@ const Mods = require('./Mods')
 const Executes = require('./Executes')
 const Tools = require('./Tools')
 
-const { Configs } = require('../dist/config')
-const { i18n } = require('../dist/i18nInstance')
+const { Configs } = require('..//config')
+const { i18n } = require('..//i18nInstance')
 
 class Manager {
   constructor (options) {

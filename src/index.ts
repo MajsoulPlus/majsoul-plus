@@ -1,5 +1,3 @@
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-
 import * as express from "express";
 import { Util } from "./utils";
 import {
@@ -55,7 +53,7 @@ function jsonKeyUpdate(ja, jb) {
   });
 }
 
-jsonKeyUpdate(userConfigs, require(path.join(__dirname, "../configs-user.json")));
+jsonKeyUpdate(userConfigs, require(path.join(__dirname, "configs-user.json")));
 fs.writeFileSync(Configs.USER_CONFIG_PATH, JSON.stringify(userConfigs));
 
 const userDataDir = electronApp.getPath("userData");
@@ -87,8 +85,8 @@ if (userConfigs.chromium.isIgnoreGpuBlacklist) {
 
 const sererHttps = https.createServer(
   {
-    key: fs.readFileSync(path.join(__dirname, "../certificate/key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "../certificate/cert.crt"))
+    key: fs.readFileSync(path.join(__dirname, "certificate/key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "certificate/cert.crt"))
   },
   server
 );
@@ -354,7 +352,7 @@ const windowControl = {
       evt.sender.send("saveConfig");
     });
     managerWindow.loadURL(
-      "file://" + path.join(__dirname, "../manager/index.html")
+      "file://" + path.join(__dirname, "manager/index.html")
     );
 
     // Add environment config to open developer tools
@@ -429,7 +427,7 @@ const windowControl = {
       }
     });
     // 载入本地启动器
-    gameWindow.loadURL("file://" + path.join(__dirname, "../bin/main/index.html"));
+    gameWindow.loadURL("file://" + path.join(__dirname, "bin/main/index.html"));
 
     // Add environment config to open developer tools
     if (process.env.NODE_ENV === "development") {

@@ -5,8 +5,8 @@ const {
   remote: { dialog }
 } = require('electron')
 const CheckboxCard = require('./CheckboxCard')
-const Util = require('../../dist/utils')
-const { i18n } = require('../../dist/i18nInstance')
+const Util = require('../..//utils')
+const { i18n } = require('../..//i18nInstance')
 
 const defaultOptions = {
   rootDir: '',

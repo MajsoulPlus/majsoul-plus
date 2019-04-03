@@ -2,9 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 // const { app } = remote
-const { Configs } = require('../dist/config')
+const { Configs } = require('..//config')
 const defaultUserConfig = require(Configs.USER_CONFIG_PATH)
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 
 class Settings {
   constructor (options = {}) {

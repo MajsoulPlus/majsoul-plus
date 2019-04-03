@@ -92,7 +92,7 @@ selectImg.addEventListener('change', drawView)
 
 saveAndInstall.addEventListener('click', event => {
   const fs = require('fs')
-  const { Configs } = require('../../dist/config')
+  const { Configs } = require('../../config')
   const path = require('path')
   const dirName = document.getElementById('dirName').value
   const name = document.getElementById('name').value

@@ -1,4 +1,4 @@
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 class NetWork {
   getJson (input, params) {
     return new Promise((resolve, reject) => {

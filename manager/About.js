@@ -1,8 +1,8 @@
 
-const { i18n } = require('../dist/i18nInstance')
+const { i18n } = require('..//i18nInstance')
 const { shell, remote: { app } } = require('electron')
-const { Util } = require('../dist/utils')
-const { Configs } = require('../dist/config')
+const { Util } = require('..//utils')
+const { Configs } = require('..//config')
 const path = require('path')
 
 class About {
