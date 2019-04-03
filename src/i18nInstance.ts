@@ -8,7 +8,7 @@ if (app) {
   myApp = remote.app;
 }
 
-export const i18nInstance = new I18n({
+export const i18n = new I18n({
   autoReload: process.env.NODE_ENV === "development",
-  actives: [app.getLocale()]
+  actives: [myApp.getLocale()]
 });

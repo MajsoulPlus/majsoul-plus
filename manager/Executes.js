@@ -1,24 +1,24 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const configs = require('../configs')
-const i18n = require('../i18nInstance')
+const { Configs } = require('../dist/config')
+const { i18n } = require('../dist/i18nInstance')
 
 const enabledExecutes = (() => {
   try {
     return JSON.parse(
-      fs.readFileSync(configs.EXECUTES_CONFIG_PATH).toString('utf-8')
+      fs.readFileSync(Configs.EXECUTES_CONFIG_PATH).toString('utf-8')
     )
   } catch (error) {
     return []
   }
 })()
 const defaultOptions = {
-  settingFilePath: configs.EXECUTES_CONFIG_PATH,
+  settingFilePath: Configs.EXECUTES_CONFIG_PATH,
   checkedKeys: enabledExecutes.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', configs.EXECUTES_DIR),
+  rootDir: path.join(__dirname, '../', Configs.EXECUTES_DIR),
   config: 'execute.json',
   renderTarget: 'executeInfos',
   executePreferences: {
@@ -51,7 +51,7 @@ class Executes extends CardList {
   _getExportInfo () {
     return {
       extend: 'mspe',
-      typeText: i18n.t.manager.fileTypeMSPE()
+      typeText: i18n.text.manager.fileTypeMSPE()
     }
   }
   _handleCheckedChange (key) {

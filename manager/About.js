@@ -1,9 +1,10 @@
 
-const i18n = require('../i18nInstance')
+const { i18n } = require('../dist/i18nInstance')
 const { shell, remote: { app } } = require('electron')
-const Util = require('../Util')
-const configs = require('../configs')
+const { Util } = require('../dist/utils')
+const { Configs } = require('../dist/config')
 const path = require('path')
+
 class About {
   constructor () {
     this.render = this.render.bind(this)
@@ -44,7 +45,7 @@ class About {
   }
 
   _addGitHubLink () {
-    const title = i18n.t.main.programName()
+    const title = i18n.text.main.programName()
     const value = this._getGitHubHTML()
     this._addBlock({ title, value })
   }
@@ -56,16 +57,16 @@ class About {
       <a href="https://github.com/MajsoulPlus/majsoul-plus-client">
         <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social"></a>
       <br>
-      <input type="button" value="${i18n.t.manager.clearCache()}">
+      <input type="button" value="${i18n.text.manager.clearCache()}">
       <br>
-      ${i18n.t.manager.localVersion()} ${app.getVersion()}`
+      ${i18n.text.manager.localVersion()} ${app.getVersion()}`
     const alinks = info.getElementsByTagName('a')
     this._bindAlink(alinks)
     info.querySelector('input[type="button"]')
       .addEventListener('click', evt => {
         evt.preventDefault()
-        Util.removeDirSync(path.join(__dirname, '../', configs.LOCAL_DIR))
-        alert(i18n.t.manager.clearCacheSucceeded())
+        Util.removeDirSync(path.join(__dirname, '../', Configs.LOCAL_DIR))
+        alert(i18n.text.manager.clearCacheSucceeded())
       })
     return info
   }

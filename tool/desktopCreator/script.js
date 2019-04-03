@@ -13,7 +13,7 @@ const contextPreview = canvasPreview.getContext('2d')
 
 const drawView = event => {
   const file = selectImg.files[0]
-  if (typeof file == 'undefined' || file.size <= 0) {
+  if (typeof file === 'undefined' || file.size <= 0) {
     return
   }
   const fileReader = new FileReader()
@@ -92,13 +92,13 @@ selectImg.addEventListener('change', drawView)
 
 saveAndInstall.addEventListener('click', event => {
   const fs = require('fs')
-  const config = require('../../configs')
+  const { Configs } = require('../../dist/config')
   const path = require('path')
   const dirName = document.getElementById('dirName').value
   const name = document.getElementById('name').value
   const author = document.getElementById('author').value
   const description = document.getElementById('description').value
-  const dirPath = path.join(__dirname, '../../', config.MODS_DIR, dirName)
+  const dirPath = path.join(__dirname, '../../', Configs.MODS_DIR, dirName)
   if (dirName.length < 4) {
     alert('文件夹名长度过短')
     return

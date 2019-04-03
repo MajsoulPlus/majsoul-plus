@@ -2,7 +2,7 @@
 
 const NetworkUtil = require('./Network')
 const tcpPing = require('tcp-ping')
-const i18n = require('../i18nInstance')
+const { i18n } = require('../dist/i18nInstance')
 
 class Ping {
   constructor () {
@@ -75,7 +75,7 @@ class Ping {
   }
 
   _getServiceName (service) {
-    return i18n.t.servers[service]
+    return i18n.text.servers[service]
     // const map = {
     //   mainland: '中国大陆',
     //   hk: '中国香港',
@@ -138,7 +138,7 @@ class Ping {
   _renderPingFail () {
     const serverTextDom = document.getElementById('serverText')
     i18n.unbindElement(serverTextDom)
-    i18n.t.manager.loadFailed.renderAsText(serverTextDom)
+    i18n.text.manager.loadFailed.renderAsText(serverTextDom)
   }
 
   _ping (service) {

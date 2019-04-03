@@ -2,9 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 // const { app } = remote
-const configs = require('../configs')
-const defaultUserConfig = require(configs.USER_CONFIG_PATH)
-const i18n = require('../i18nInstance')
+const { Configs } = require('../dist/config')
+const defaultUserConfig = require(Configs.USER_CONFIG_PATH)
+const { i18n } = require('../dist/i18nInstance')
 
 class Settings {
   constructor (options = {}) {
@@ -33,7 +33,7 @@ class Settings {
       this.userConfig[section] = data
     }
     const h3 = document.createElement('h3')
-    i18n.t.manager[section].renderAsText(h3)
+    i18n.text.manager[section].renderAsText(h3)
     // const sectionName = Settings._keyToTitle(section)
     // h3.innerText = sectionName
     settingInner.append(h3)
@@ -49,7 +49,7 @@ class Settings {
     checkBox.id = `config${section}${item}${index}`
     const label = document.createElement('label')
     label.setAttribute('for', checkBox.id)
-    i18n.t.manager[item].renderAsText(label)
+    i18n.text.manager[item].renderAsText(label)
     // label.innerText = itemName
     checkBox.checked = data
     checkBox.addEventListener('change', () => {
@@ -68,7 +68,7 @@ class Settings {
     const label = document.createElement('label')
     label.setAttribute('for', input.id)
     // label.innerText = itemName
-    i18n.t.manager[item].renderAsText(label)
+    i18n.text.manager[item].renderAsText(label)
     input.addEventListener('change', () => {
       this.userConfig[section][item] = Number(input.value)
     })
@@ -133,10 +133,10 @@ class Settings {
   _handleSaveConfigClick () {
     this._saveConfig()
       .then(() => {
-        alert(i18n.t.manager.saveSucceeded())
+        alert(i18n.text.manager.saveSucceeded())
       })
       .catch(err => {
-        alert(i18n.t.manager.saveFailed(err))
+        alert(i18n.text.manager.saveFailed(err))
       })
   }
 
@@ -144,7 +144,7 @@ class Settings {
     return new Promise((resolve, reject) => {
       try {
         fs.writeFileSync(
-          configs.USER_CONFIG_PATH,
+          Configs.USER_CONFIG_PATH,
           JSON.stringify(this.userConfig)
         )
         ipcRenderer.send('application-message', 'update-user-config')

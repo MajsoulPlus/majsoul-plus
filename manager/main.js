@@ -18,8 +18,8 @@ const Mods = require('./Mods')
 const Executes = require('./Executes')
 const Tools = require('./Tools')
 
-const configs = require('../configs')
-const i18n = require('../i18nInstance')
+const { Configs } = require('../dist/config')
+const { i18n } = require('../dist/i18nInstance')
 
 class Manager {
   constructor (options) {
@@ -92,10 +92,10 @@ class Manager {
   _import () {
     dialog.showOpenDialog(
       {
-        title: i18n.t.manager.installFrom(),
+        title: i18n.text.manager.installFrom(),
         filters: [
           {
-            name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
+            name: i18n.text.manager.fileTypeMajsoulPlusExtendResourcesPack(),
             extensions: ['mspm', 'mspe', 'mspt']
           }
         ],
@@ -109,9 +109,9 @@ class Manager {
             const installDir = this._getInstallDirByExtname(extname)
             unzip.extractAllToAsync(installDir, true, err => {
               if (err) {
-                alert(i18n.t.manager.installExtendResourcesFailed(err))
+                alert(i18n.text.manager.installExtendResourcesFailed(err))
               } else {
-                alert(i18n.t.manager.installExtendResourcesSucceeded())
+                alert(i18n.text.manager.installExtendResourcesSucceeded())
                 this._loadCards()
               }
             })
@@ -225,16 +225,16 @@ const darkMode = require('./extra/darkMode')
 const options = {
   userConfig: (() => {
     try {
-      return require(configs.USER_CONFIG_PATH)
+      return require(Configs.USER_CONFIG_PATH)
     } catch (error) {
-      return require('../configs-user.json')
+      return require('../Configs-user.json')
     }
   })(),
-  modRootDirs: userDataPaths.map(root => path.join(root, configs.MODS_DIR)),
+  modRootDirs: userDataPaths.map(root => path.join(root, Configs.MODS_DIR)),
   executeRootDirs: userDataPaths.map(root =>
-    path.join(root, configs.EXECUTES_DIR)
+    path.join(root, Configs.EXECUTES_DIR)
   ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
+  toolRootDirs: userDataPaths.map(root => path.join(root, Configs.TOOLS_DIR))
 }
 
 const manager = new Manager(options)

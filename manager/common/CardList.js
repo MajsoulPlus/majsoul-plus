@@ -5,8 +5,8 @@ const {
   remote: { dialog }
 } = require('electron')
 const CheckboxCard = require('./CheckboxCard')
-const Util = require('../../Util')
-const i18n = require('../../i18nInstance')
+const Util = require('../../dist/utils')
+const { i18n } = require('../../dist/i18nInstance')
 
 const defaultOptions = {
   rootDir: '',
@@ -92,14 +92,14 @@ class CardList {
     const tempZipPath = path.join(os.tmpdir(), tempZipName)
     Util.zipDir(filesDir, tempZipPath)
     const userChosenPath = dialog.showSaveDialog({
-      title: i18n.t.manager.exportTo(),
+      title: i18n.text.manager.exportTo(),
       filters: [
         {
           name: typeText,
           extensions: [extend]
         },
         {
-          name: i18n.t.manager.fileTypeAllfiles(),
+          name: i18n.text.manager.fileTypeAllfiles(),
           extensions: ['*']
         }
       ],
@@ -108,9 +108,9 @@ class CardList {
     if (userChosenPath) {
       fs.copyFile(tempZipPath, userChosenPath, err => {
         if (err) {
-          alert(i18n.t.manager.exportExtendResourcesFailed(err))
+          alert(i18n.text.manager.exportExtendResourcesFailed(err))
         } else {
-          alert(i18n.t.manager.exportExtendResourcesSucceeded())
+          alert(i18n.text.manager.exportExtendResourcesSucceeded())
         }
       })
     }

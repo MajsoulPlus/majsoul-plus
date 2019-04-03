@@ -4,7 +4,7 @@
 import * as path from "path";
 import * as fs from "fs";
 
-import { CONFIGS as configs } from "./config";
+import { Configs } from "./config";
 import * as AdmZip from "adm-zip";
 import * as childProcess from "child_process";
 
@@ -30,7 +30,7 @@ export const Util = {
     let array = [];
     for (let index = 0; index < buffer.length; index++) {
       const byte = buffer.readUInt8(index);
-      array.push(configs.XOR_KEY ^ byte);
+      array.push(Configs.XOR_KEY ^ byte);
     }
     return Buffer.from(array);
   },
@@ -41,7 +41,7 @@ export const Util = {
    * @returns {boolean}
    */
   isEncryptRes(originalUrl: string): boolean {
-    return originalUrl.includes(configs.EXTEND_RES_KEYWORD);
+    return originalUrl.includes(Configs.EXTEND_RES_KEYWORD);
   },
 
   /**
@@ -100,7 +100,7 @@ export const Util = {
    * @returns {string}
    */
   getRemoteUrl(originalUrl: string): string {
-    return configs.REMOTE_DOMAIN + originalUrl;
+    return Configs.REMOTE_DOMAIN + originalUrl;
   },
 
   /**
@@ -124,7 +124,7 @@ export const Util = {
       https.get(
         {
           ...url.parse(remoteUrl),
-          headers: { "User-Agent": configs.HTTP_GET_USER_AGENT }
+          headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
           const { statusCode } = httpRes;
@@ -208,7 +208,7 @@ export const Util = {
       https.get(
         {
           ...url.parse(URI),
-          headers: { "User-Agent": configs.HTTP_GET_USER_AGENT }
+          headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
           const { statusCode } = httpRes;
@@ -288,7 +288,7 @@ export const Util = {
   getLocalURI(
     originalUrl: string,
     isPath: boolean,
-    dirBase = path.join(__dirname, configs.LOCAL_DIR)
+    dirBase = path.join(__dirname, Configs.LOCAL_DIR)
   ): string {
     const indexOfProps = originalUrl.indexOf("?");
     originalUrl = originalUrl.substring(
@@ -446,11 +446,11 @@ export const Util = {
    */
   loadMods() {
     // Mod文件根目录
-    // const modRootDir = path.join(__dirname, configs.MODS_DIR)
+    // const modRootDir = path.join(__dirname, Configs.MODS_DIR)
     // 所有已在目录中的Mod目录
     // const modDirs = fs.readdirSync(modRootDir)
     try {
-      const data = fs.readFileSync(configs.MODS_CONFIG_PATH);
+      const data = fs.readFileSync(Configs.MODS_CONFIG_PATH);
       mods = JSON.parse(data.toString("utf-8"));
     } catch (error) {
       console.error(error);

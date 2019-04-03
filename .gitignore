@@ -68,3 +68,6 @@ manager/**/*.css
 
 # dist
 dist/
+
+# vscode
+.vscode/

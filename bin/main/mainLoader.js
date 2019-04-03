@@ -4,8 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const electron = require('electron')
 const { ipcRenderer } = electron
-const configs = require('../../configs')
-const userConfigs = require(configs.USER_CONFIG_PATH)
+const { Configs } = require('../../dist/config')
+const userConfigs = require(Configs.USER_CONFIG_PATH)
 
 const electronScreen = electron.screen
 const { i18n } = require('../../dist/i18nInstance')
@@ -234,8 +234,8 @@ const showScreenshotLabel = src => {
   const screenshotLabel = document.getElementById('screenshotLabel')
   screenshotImage.src = src
   screenshotText.innerText = screenshotCounter++
-    ? i18n.t.main.screenshotsSaved(screenshotCounter)
-    : i18n.t.main.screenshotSaved()
+    ? i18n.text.main.screenshotsSaved(screenshotCounter)
+    : i18n.text.main.screenshotSaved()
   screenshotLabel.classList.remove('hide')
   screenshotLabel.classList.add('show')
   clearTimeout(screenshotTimer)
@@ -294,8 +294,8 @@ ipcRenderer.on('open-devtools', () => {
 
 const testRedirectGameWindow = url => {
   return (
-    url.startsWith(configs.REMOTE_DOMAIN) ||
-    url.startsWith(configs.HTTP_REMOTE_DOMAIN)
+    url.startsWith(Configs.REMOTE_DOMAIN) ||
+    url.startsWith(Configs.HTTP_REMOTE_DOMAIN)
   )
 }
 

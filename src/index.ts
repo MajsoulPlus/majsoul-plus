@@ -13,7 +13,7 @@ import {
   app as electronApp,
   nativeImage
 } from "electron";
-import { CONFIGS as configs } from "./config";
+import { Configs } from "./config";
 import * as fs from "fs";
 import * as path from "path";
 import * as https from "https";
@@ -32,7 +32,7 @@ const i18n = new I18n({
 let userConfigs;
 try {
   userConfigs = JSON.parse(
-    fs.readFileSync(configs.USER_CONFIG_PATH, { encoding: "utf-8" })
+    fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: "utf-8" })
   );
 } catch (error) {
   userConfigs = {};
@@ -56,10 +56,10 @@ function jsonKeyUpdate(ja, jb) {
 }
 
 jsonKeyUpdate(userConfigs, require(path.join(__dirname, "../configs-user.json")));
-fs.writeFileSync(configs.USER_CONFIG_PATH, JSON.stringify(userConfigs));
+fs.writeFileSync(Configs.USER_CONFIG_PATH, JSON.stringify(userConfigs));
 
 const userDataDir = electronApp.getPath("userData");
-const paths = [configs.EXECUTES_DIR, configs.MODS_DIR, configs.TOOLS_DIR];
+const paths = [Configs.EXECUTES_DIR, Configs.MODS_DIR, Configs.TOOLS_DIR];
 paths
   .map(dir => path.join(userDataDir, dir))
   .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir));
@@ -282,14 +282,14 @@ const windowControl = {
   _getExecuteScripts: () => {
     let executeScripts;
     try {
-      const data = fs.readFileSync(configs.EXECUTES_CONFIG_PATH);
+      const data = fs.readFileSync(Configs.EXECUTES_CONFIG_PATH);
       executeScripts = JSON.parse(data.toString("utf-8"));
     } catch (error) {
       console.error(error);
       executeScripts = [];
     }
     try {
-      const data = fs.readFileSync(configs.MODS_CONFIG_PATH);
+      const data = fs.readFileSync(Configs.MODS_CONFIG_PATH);
       const mods = JSON.parse(data.toString("utf-8"));
       mods.forEach(mod => {
         if (mod.execute) {
@@ -460,9 +460,9 @@ const windowControl = {
         switch (args[0]) {
           case "start-game": {
             windowControl
-              .initLocalMirrorServer(sererHttps, configs.SERVER_PORT)
+              .initLocalMirrorServer(sererHttps, Configs.SERVER_PORT)
               .then(() => {
-                windowControl.initGameWindow(configs.GAME_WINDOW_CONFIG);
+                windowControl.initGameWindow(Configs.GAME_WINDOW_CONFIG);
                 if (userConfigs.window.isManagerHide) {
                   windowControl.hideManagerWindow();
                 } else {
@@ -477,7 +477,7 @@ const windowControl = {
               toolInfo.windowOption = {};
             }
             const toolConfig = {
-              ...configs.TOOL_WINDOW_CONFIG,
+              ...Configs.TOOL_WINDOW_CONFIG,
               ...toolInfo.windowOptions
             };
             const indexPage = toolInfo.index ? toolInfo.index : "index.html";
@@ -500,12 +500,12 @@ const windowControl = {
           }
           case "update-user-config": {
             userConfigs = JSON.parse(
-              fs.readFileSync(configs.USER_CONFIG_PATH, { encoding: "utf-8" })
+              fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: "utf-8" })
             );
             windowControl.windowMap["manager"].setContentSize(
-              configs.MANAGER_WINDOW_CONFIG.width *
+              Configs.MANAGER_WINDOW_CONFIG.width *
                 userConfigs.window.zoomFactor,
-              configs.MANAGER_WINDOW_CONFIG.height *
+              Configs.MANAGER_WINDOW_CONFIG.height *
                 userConfigs.window.zoomFactor
             );
             windowControl.windowMap["manager"].webContents.setZoomFactor(
@@ -563,23 +563,23 @@ const windowControl = {
             const clipboardText = clipboard.readText();
             if (
               clipboardText &&
-              clipboardText.includes(configs.REMOTE_DOMAIN)
+              clipboardText.includes(Configs.REMOTE_DOMAIN)
             ) {
               windowControl.windowMap["game"].webContents.send(
                 "load-url",
                 new RegExp(
-                  configs.REMOTE_DOMAIN.replace(/\./g, "\\.") +
+                  Configs.REMOTE_DOMAIN.replace(/\./g, "\\.") +
                     "[-A-Za-z0-9+&@#/%?=~_|!:,.;]*"
                 ).exec(clipboardText)[0]
               );
             } else if (
               clipboardText &&
-              clipboardText.includes(configs.HTTP_REMOTE_DOMAIN)
+              clipboardText.includes(Configs.HTTP_REMOTE_DOMAIN)
             ) {
               windowControl.windowMap["game"].webContents.send(
                 "load-url",
                 new RegExp(
-                  configs.HTTP_REMOTE_DOMAIN.replace(/\./g, "\\.") +
+                  Configs.HTTP_REMOTE_DOMAIN.replace(/\./g, "\\.") +
                     "[-A-Za-z0-9+&@#/%?=~_|!:,.;]*"
                 ).exec(clipboardText)[0]
               );
@@ -678,7 +678,7 @@ const windowControl = {
 
       windowControl.addAccelerator();
       windowControl.addAppListener();
-      windowControl.initManagerWindow({ ...configs.MANAGER_WINDOW_CONFIG });
+      windowControl.initManagerWindow({ ...Configs.MANAGER_WINDOW_CONFIG });
     });
   }
 };

@@ -1,23 +1,23 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const configs = require('../configs')
+const { Configs } = require('../dist/config')
 const enabledMods = (() => {
   try {
     return JSON.parse(
-      fs.readFileSync(configs.MODS_CONFIG_PATH).toString('utf-8')
+      fs.readFileSync(Configs.MODS_CONFIG_PATH).toString('utf-8')
     )
   } catch (error) {
     return []
   }
 })()
-const i18n = require('../i18nInstance')
+const { i18n } = require('../dist/i18nInstance')
 const defaultOptions = {
-  settingFilePath: configs.MODS_CONFIG_PATH,
+  settingFilePath: Configs.MODS_CONFIG_PATH,
   checkedKeys: enabledMods.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', configs.MODS_DIR),
+  rootDir: path.join(__dirname, '../', Configs.MODS_DIR),
   config: 'mod.json',
   renderTarget: 'modInfos'
 }
@@ -29,7 +29,7 @@ class Mods extends CardList {
   _getExportInfo () {
     return {
       extend: 'mspm',
-      typeText: i18n.t.manager.fileTypeMSPM()
+      typeText: i18n.text.manager.fileTypeMSPM()
     }
   }
   _handleCheckedChange (key) {

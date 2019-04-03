@@ -1,4 +1,4 @@
-const i18n = require('../i18nInstance')
+const { i18n } = require('../dist/i18nInstance')
 class NetWork {
   getJson (input, params) {
     return new Promise((resolve, reject) => {
@@ -20,7 +20,7 @@ function _checkStatus (response) {
   if (response.ok && response.status >= 200 && response.status < 400) {
     return response
   }
-  throw new Error(i18n.t.manager.XMLHttpRequestFailed(response.status))
+  throw new Error(i18n.text.manager.XMLHttpRequestFailed(response.status))
 }
 
 function _processJson (response) {

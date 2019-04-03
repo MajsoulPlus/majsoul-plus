@@ -29,7 +29,7 @@ const getIcon = () => {
   }
 };
 
-export const CONFIGS = {
+export const Configs = {
   SERVER_PORT: 8887,
   // PIPE_PORT: 8888,
   XOR_KEY: 73,
@@ -43,7 +43,7 @@ export const CONFIGS = {
   TOOLS_DIR: "/tool",
   EXECUTES_DIR: "/execute",
   EXECUTES_CONFIG_PATH: path.join(appDataDir, "executesEnabled.json"),
-  USER_CONFIG_PATH: path.join(appDataDir, "configs-user.json"),
+  USER_CONFIG_PATH: path.join(appDataDir, "Configs-user.json"),
   GAME_WINDOW_CONFIG: {
     width: 1280 + 16,
     height: 720 + 39,
@@ -100,18 +100,18 @@ export const CONFIGS = {
 };
 
 try {
-  fs.statSync(CONFIGS.EXECUTES_CONFIG_PATH);
+  fs.statSync(Configs.EXECUTES_CONFIG_PATH);
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, "../", CONFIGS.EXECUTES_DIR, "active.json"),
-    CONFIGS.EXECUTES_CONFIG_PATH
+    path.join(__dirname, "../", Configs.EXECUTES_DIR, "active.json"),
+    Configs.EXECUTES_CONFIG_PATH
   );
 }
 try {
-  fs.statSync(CONFIGS.MODS_CONFIG_PATH);
+  fs.statSync(Configs.MODS_CONFIG_PATH);
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, "../", CONFIGS.MODS_DIR, "active.json"),
-    CONFIGS.MODS_CONFIG_PATH
+    path.join(__dirname, "../", Configs.MODS_DIR, "active.json"),
+    Configs.MODS_CONFIG_PATH
   );
 }

@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const NetworkUtil = require('./Network')
-const Util = require('../Util')
+const { Util } = require('../dist/utils')
 const {
   remote: { app },
   shell
