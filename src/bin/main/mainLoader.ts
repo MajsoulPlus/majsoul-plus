@@ -1,6 +1,6 @@
+import { ipcRenderer, screen as electronScreen } from "electron";
 import * as fs from "fs";
 import * as path from "path";
-import { ipcRenderer, screen as electronScreen } from "electron";
 import { Configs } from "../../config";
 import { i18n } from "../../i18nInstance";
 
@@ -9,18 +9,18 @@ const userConfigs = require(Configs.USER_CONFIG_PATH);
 const mainWindow: Electron.WebviewTag = document.querySelector("#mainWindow");
 const mainWindowBox: HTMLDivElement = document.querySelector("#mainWindowBox");
 
-let scalePercent = userConfigs.window.renderingMultiple;
+const scalePercent = userConfigs.window.renderingMultiple;
 
 let webContents: Electron.webContents;
 
-let executeScriptsCodes: Array<string> = [];
+let executeScriptsCodes: string[] = [];
 
 let serverPort: number;
 
 let clientRect: DOMRect;
 
-const prebuildExecuteCode = executeScriptInfo => {
-  var executePreferences = executeScriptInfo.executePreferences
+const prebuildExecuteCode = (executeScriptInfo) => {
+  const executePreferences = executeScriptInfo.executePreferences
     ? executeScriptInfo.executePreferences
     : {};
   let codeEntry = executeScriptInfo.entry;
@@ -29,11 +29,11 @@ const prebuildExecuteCode = executeScriptInfo => {
   }
   let code = "";
   if (Array.isArray(codeEntry)) {
-    codeEntry.forEach(codeEntry => {
+    codeEntry.forEach((entry) => {
       code +=
         "\n" +
         fs
-          .readFileSync(path.join(executeScriptInfo.filesDir, codeEntry))
+          .readFileSync(path.join(executeScriptInfo.filesDir, entry))
           .toString("utf-8");
     });
   } else {
@@ -137,7 +137,7 @@ const prebuildExecuteCode = executeScriptInfo => {
               with (sandbox) {
               ${code}
             }
-          } else 
+          } else
           {__raf=requestAnimationFrame(__rafFun)
           }
         }
@@ -203,7 +203,7 @@ const sandbox = new Proxy(
 
 let screenshotCounter = 0;
 let screenshotTimer;
-const showScreenshotLabel = src => {
+const showScreenshotLabel = (src) => {
   const screenshotImage: HTMLImageElement = document.querySelector(
     "#screenshotImage"
   );
@@ -267,17 +267,17 @@ ipcRenderer.on("open-devtools", () => {
   }
 });
 
-const testRedirectGameWindow = url => {
+const testRedirectGameWindow = (url) => {
   return (
     url.startsWith(Configs.REMOTE_DOMAIN) ||
     url.startsWith(Configs.HTTP_REMOTE_DOMAIN)
   );
 };
 
-const testIsLocalGameWindow = url => {
+const testIsLocalGameWindow = (url) => {
   return url.startsWith("https://localhost:");
 };
-const getLocalUrlWithParams = url => {
+const getLocalUrlWithParams = (url) => {
   if (url.includes("?")) {
     return `https://localhost:${serverPort}/0/${url.substring(
       url.indexOf("?")
@@ -301,7 +301,7 @@ ipcRenderer.on("executes-load", (event, ...args) => {
   console.warn("executes-load");
   const executeScripts = args[0];
   executeScriptsCodes = [];
-  executeScripts.forEach(executeScript => {
+  executeScripts.forEach((executeScript) => {
     const code = prebuildExecuteCode(executeScript);
     executeScriptsCodes.push(code);
   });
@@ -323,7 +323,7 @@ mainWindow.addEventListener("dom-ready", () => {
     ipcRenderer.send("main-loader-message", "main-loader-ready");
 
     webContents.on("dom-ready", () => {
-      executeScriptsCodes.forEach(executeScriptCode => {
+      executeScriptsCodes.forEach((executeScriptCode) => {
         webContents.executeJavaScript(executeScriptCode);
       });
     });

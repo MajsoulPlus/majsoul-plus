@@ -1,5 +1,5 @@
-import { extname, join, basename } from "path";
-import { readFileSync, statSync, readdirSync, stat, readdir, watch } from "fs";
+import * as fs from "fs";
+import * as path from "path";
 const CSV = require("comma-separated-values");
 
 /**
@@ -93,14 +93,14 @@ interface I18nInitConfig {
  * @param filePath Path
  */
 function readLangFile(filePath: string): StringPack {
-  switch (extname(filePath)) {
+  switch (path.extname(filePath)) {
     case ".js":
       delete require.cache[filePath];
       return require(filePath);
     case ".json":
-      return JSON.parse(readFileSync(filePath, { encoding: "utf-8" }));
+      return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
     case ".csv":
-      const csv: string[][] = CSV.parse(readFileSync(filePath).toString(), {
+      const csv: string[][] = CSV.parse(fs.readFileSync(filePath).toString(), {
         cast: false
       });
       const localeObj: StringPack = {};
@@ -125,43 +125,77 @@ function readLangFile(filePath: string): StringPack {
  */
 function readLangDir(dirPath: string): StringPack {
   const lang = {};
-  const files = readdirSync(dirPath);
-  const filesPath = files.map(fileName => {
-    return join(dirPath, fileName);
+  const files = fs.readdirSync(dirPath);
+  const filesPath = files.map((fileName) => {
+    return path.join(dirPath, fileName);
   });
   filesPath.forEach((filePath, index) => {
-    const stat = statSync(filePath);
+    const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
       lang[files[index]] = readLangDir(filePath);
     } else {
       const fileName = files[index];
-      lang[basename(fileName, extname(fileName))] = readLangFile(filePath);
+      lang[path.basename(fileName, path.extname(fileName))] = readLangFile(
+        filePath
+      );
     }
   });
   return lang;
 }
 
 export class I18n {
+  /**
+   * 获取翻译文本
+   */
+  get text() {
+    return this._text;
+  }
+  get t() {
+    return this.text;
+  }
+  get _() {
+    return this.text;
+  }
+
+  /**
+   * 已经加载的翻译文本
+   */
+  get locals() {
+    return this._locals;
+  }
+
+  /**
+   * 活动的语言列表的拷贝
+   */
+  get actives(): string[] {
+    const copy = this._actives.concat();
+    copy.pop();
+    return copy;
+  }
+  set actives(localTags: string[]) {
+    this._actives = localTags.concat(this.defaultLocale);
+    this._updateLocales();
+  }
+
+  public defaultLocale;
   private _actives;
   private _locals: StringPack;
   private _bindElementList: BindElement[];
   private _text;
 
-  public defaultLocale;
-
   constructor({
-    directory = join(__dirname, "../", "i18n"),
+    directory = path.join(__dirname, "i18n"),
     actives = [],
     defaultLocale = "en-US",
     autoReload = false
   } = {}) {
     // 如果文件夹参数不是文件夹，报错
-    if (!statSync(directory).isDirectory) {
+    if (!fs.statSync(directory).isDirectory) {
       throw new Error("param directory is not a directory");
     }
 
     // 如果文件夹为空，报错
-    if (!readdirSync(directory)) {
+    if (!fs.readdirSync(directory)) {
       throw new Error(
         "directory is empty, please make sure there is any files"
       );
@@ -183,7 +217,7 @@ export class I18n {
        * @param args
        */
       const formatString = (str: string, ...args: string[]) => {
-        for (let index in args) {
+        for (const index in args) {
           str = str.replace(`$${index}`, args[index]);
         }
         return str;
@@ -196,6 +230,7 @@ export class I18n {
         return new Proxy(
           (() => {
             const f = (...args: string[]) => {
+              // TODO: Replace it with for ... of
               for (let i = 0; i < this._actives.length; i++) {
                 let localeObj = this.locals[this._actives[i]];
                 if (!localeObj) {
@@ -206,7 +241,7 @@ export class I18n {
                   if (!localeObj) {
                     break;
                   } else if (j === f._chains.length - 1) {
-                    return formatString(<string>localeObj, ...args);
+                    return formatString(localeObj as string, ...args);
                   }
                 }
               }
@@ -256,7 +291,7 @@ export class I18n {
     if (autoReload) {
       const calledList: string[] = [];
       const recursiveDir = (filePath, callback) => {
-        stat(filePath, (error, stat) => {
+        fs.stat(filePath, (error, stat) => {
           if (error) {
             throw error;
           }
@@ -265,19 +300,19 @@ export class I18n {
               callback.call(this, filePath);
               calledList.push(filePath);
             }
-            readdir(filePath, (error, files) => {
-              if (error) {
-                throw error;
+            fs.readdir(filePath, (err, files) => {
+              if (err) {
+                throw err;
               }
-              files.forEach(file => {
-                recursiveDir(join(filePath, file), callback);
+              files.forEach((file) => {
+                recursiveDir(path.join(filePath, file), callback);
               });
             });
           }
         });
       };
       const dirWatcher = (dirPath: string) => {
-        watch(dirPath, eventType => {
+        fs.watch(dirPath, (eventType) => {
           if (eventType === "change") {
             // 重新载入所有翻译文本
             this._locals = readLangDir(directory);
@@ -290,46 +325,6 @@ export class I18n {
       };
       recursiveDir(directory, dirWatcher);
     }
-  }
-
-  /**
-   * 更新所有绑定翻译的内容
-   */
-  private _updateLocales() {
-    this._bindElementList.forEach(({ locale, htmlElement, type, args }) => {
-      const text = locale(...args);
-      switch (type) {
-        case "text": {
-          htmlElement.innerText = text;
-          break;
-        }
-        case "html": {
-          htmlElement.innerHTML = text;
-        }
-      }
-    });
-  }
-
-  /**
-   * 绑定一条翻译到指定DOM元素
-   * @param locale 一个locale函数对象
-   * @param htmlElement HTMLElement
-   * @param type 绑定到的类型
-   * @param args locale参数
-   */
-  private _bindElement(
-    locale: Locale,
-    htmlElement: HTMLElement,
-    type: "text" | "html",
-    ...args: string[]
-  ) {
-    this._bindElementList.push({
-      locale: locale,
-      htmlElement: htmlElement,
-      type: type,
-      args: args
-    });
-    this._updateLocales();
   }
 
   /**
@@ -375,16 +370,59 @@ export class I18n {
   }
 
   /**
-   * 获取翻译文本
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
+   * @param htmlElement HTMLElement
    */
-  get text() {
-    return this._text;
+  public parseAllElementsText(htmlElement: HTMLElement) {
+    return this._parseAllElements(htmlElement, "text");
   }
-  get t() {
-    return this.text;
+
+  /**
+   * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
+   * @param htmlElement HTMLElement
+   */
+  public parseAllElementsHTML(htmlElement: HTMLElement) {
+    return this._parseAllElements(htmlElement, "html");
   }
-  get _() {
-    return this.text;
+
+  /**
+   * 更新所有绑定翻译的内容
+   */
+  private _updateLocales() {
+    this._bindElementList.forEach(({ locale, htmlElement, type, args }) => {
+      const text = locale(...args);
+      switch (type) {
+        case "text": {
+          htmlElement.innerText = text;
+          break;
+        }
+        case "html": {
+          htmlElement.innerHTML = text;
+        }
+      }
+    });
+  }
+
+  /**
+   * 绑定一条翻译到指定DOM元素
+   * @param locale 一个locale函数对象
+   * @param htmlElement HTMLElement
+   * @param type 绑定到的类型
+   * @param args locale参数
+   */
+  private _bindElement(
+    locale: Locale,
+    htmlElement: HTMLElement,
+    type: "text" | "html",
+    ...args: string[]
+  ) {
+    this._bindElementList.push({
+      locale,
+      htmlElement,
+      type,
+      args
+    });
+    this._updateLocales();
   }
 
   /**
@@ -406,7 +444,7 @@ export class I18n {
       const i18nLocaleKeyChain = element.dataset.i18n.split(".");
       const i18nLocaleElement = (() => {
         let SelectedElement = this.text;
-        i18nLocaleKeyChain.forEach(i18nLocaleKey => {
+        i18nLocaleKeyChain.forEach((i18nLocaleKey) => {
           SelectedElement = SelectedElement[i18nLocaleKey];
         });
         return SelectedElement;
@@ -417,41 +455,5 @@ export class I18n {
       renderElement(htmlElement);
     }
     htmlElement.querySelectorAll("[data-i18n]").forEach(renderElement);
-  }
-
-  /**
-   * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
-   * @param htmlElement HTMLElement
-   */
-  public parseAllElementsText(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, "text");
-  }
-
-  /**
-   * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
-   * @param htmlElement HTMLElement
-   */
-  public parseAllElementsHTML(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, "html");
-  }
-
-  /**
-   * 已经加载的翻译文本
-   */
-  get locals() {
-    return this._locals;
-  }
-
-  /**
-   * 活动的语言列表的拷贝
-   */
-  get actives(): string[] {
-    const copy = this._actives.concat();
-    copy.pop();
-    return copy;
-  }
-  set actives(localTags: string[]) {
-    this._actives = localTags.concat(this.defaultLocale);
-    this._updateLocales();
   }
 }

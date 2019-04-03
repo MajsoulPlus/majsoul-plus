@@ -1,27 +1,27 @@
-import * as express from "express";
-import { Util } from "./utils";
 import {
-  Menu,
-  MenuItem,
+  app as electronApp,
   BrowserWindow,
-  ipcMain,
+  clipboard,
   dialog,
   globalShortcut,
-  clipboard,
-  app as electronApp,
+  ipcMain,
+  Menu,
+  MenuItem,
   nativeImage
 } from "electron";
-import { Configs } from "./config";
+import * as express from "express";
 import * as fs from "fs";
-import * as path from "path";
 import * as https from "https";
 import * as os from "os";
+import * as path from "path";
+import { Configs } from "./config";
+import { Util } from "./utils";
 
 const server = express();
 
 // const i18n = require('./i18nInstance')
-import { I18n } from "./i18n";
 import { AddressInfo } from "net";
+import { I18n } from "./i18n";
 const i18n = new I18n({
   autoReload: process.env.NODE_ENV === "development",
   actives: [electronApp.getLocale()]
@@ -38,7 +38,7 @@ try {
 
 // 同步 configs-user.json
 function jsonKeyUpdate(ja, jb) {
-  Object.keys(ja).forEach(key => {
+  Object.keys(ja).forEach((key) => {
     if (typeof ja[key] === "object" && typeof jb[key] === "object") {
       jsonKeyUpdate(ja[key], jb[key]);
     }
@@ -46,7 +46,7 @@ function jsonKeyUpdate(ja, jb) {
       delete ja[key];
     }
   });
-  Object.keys(jb).forEach(key => {
+  Object.keys(jb).forEach((key) => {
     if (ja[key] === undefined) {
       ja[key] = jb[key];
     }
@@ -59,8 +59,8 @@ fs.writeFileSync(Configs.USER_CONFIG_PATH, JSON.stringify(userConfigs));
 const userDataDir = electronApp.getPath("userData");
 const paths = [Configs.EXECUTES_DIR, Configs.MODS_DIR, Configs.TOOLS_DIR];
 paths
-  .map(dir => path.join(userDataDir, dir))
-  .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir));
+  .map((dir) => path.join(userDataDir, dir))
+  .forEach((dir) => !fs.existsSync(dir) && fs.mkdirSync(dir));
 
 if (userConfigs.chromium.isInProcessGpuOn) {
   const osplatform = os.platform();
@@ -262,15 +262,15 @@ const windowControl = {
         weight: 1
       }
     ];
-    let sumWeight = titles.reduce((last, value) => last + value.weight, 0);
+    const sumWeight = titles.reduce((last, value) => last + value.weight, 0);
     let randomResult = Math.random() * sumWeight;
 
-    const index = titles.reduce(function(last: number | null, value, index) {
+    const index = titles.reduce((last: number | null, value, i) => {
       if (Number.isInteger(last)) {
         return last;
       }
       if ((randomResult -= value.weight) <= 0) {
-        return index;
+        return i;
       }
       return null;
     }, null);
@@ -289,7 +289,7 @@ const windowControl = {
     try {
       const data = fs.readFileSync(Configs.MODS_CONFIG_PATH);
       const mods = JSON.parse(data.toString("utf-8"));
-      mods.forEach(mod => {
+      mods.forEach((mod) => {
         if (mod.execute) {
           mod.execute.filesDir = mod.filesDir;
           executeScripts.push(mod.execute);
@@ -302,26 +302,23 @@ const windowControl = {
   },
 
   electronReady: () => {
-    return new Promise(resolve => electronApp.once("ready", resolve));
+    return new Promise((resolve) => electronApp.once("ready", resolve));
   },
 
-  /**
-   * @param {https.Server} sererHttps
-   */
-  initLocalMirrorServer: (sererHttps, port) => {
-    return new Promise(resolve => {
-      sererHttps.listen(port);
-      sererHttps.on("listening", resolve);
-      sererHttps.on("error", err => {
+  initLocalMirrorServer: (serverHttps: https.Server, port: number) => {
+    return new Promise((resolve) => {
+      serverHttps.listen(port);
+      serverHttps.on("listening", resolve);
+      serverHttps.on("error", (err) => {
         if (err.code === "EADDRINUSE") {
           console.warn(i18n.text.main.portInUse());
-          sererHttps.close();
-          sererHttps.listen(0);
+          serverHttps.close();
+          serverHttps.listen(0);
         }
       });
     });
   },
-  initManagerWindow: managerWindowConfig => {
+  initManagerWindow: (managerWindowConfig) => {
     const config = {
       ...managerWindowConfig
     };
@@ -345,8 +342,8 @@ const windowControl = {
       managerWindow.show();
     });
 
-    managerWindow.on("page-title-updated", evt => evt.preventDefault());
-    managerWindow.once("close", evt => {
+    managerWindow.on("page-title-updated", (evt) => evt.preventDefault());
+    managerWindow.once("close", (evt) => {
       evt.preventDefault();
       managerWindow.hide();
       evt.sender.send("saveConfig");
@@ -363,7 +360,7 @@ const windowControl = {
     windowControl.windowMap["manager"] = managerWindow;
   },
 
-  initGameWindow: gameWindowConfig => {
+  initGameWindow: (gameWindowConfig) => {
     const config = {
       ...gameWindowConfig,
       title: windowControl._getGameWindowTitle(),
@@ -371,17 +368,17 @@ const windowControl = {
     };
     // TODO: wait new setting system
     if (userConfigs["window"]["gameWindowSize"] !== "") {
-      let windowSize = userConfigs["window"]["gameWindowSize"]
+      const windowSize = userConfigs["window"]["gameWindowSize"]
         .split(",")
-        .map(value => parseInt(value));
+        .map((value) => parseInt(value));
       config.width = windowSize[0];
       config.height = windowSize[1];
     }
     const gameWindow = new BrowserWindow(config);
-    gameWindow.on("page-title-updated", event => event.preventDefault());
+    gameWindow.on("page-title-updated", (event) => event.preventDefault());
     gameWindow.on("resize", () => {
       userConfigs["window"]["gameWindowSize"] = gameWindow.getSize().toString();
-      let obj = {
+      const obj = {
         mainKey: "window",
         key: "gameWindowSize",
         value: userConfigs["window"]["gameWindowSize"]
@@ -403,7 +400,9 @@ const windowControl = {
       sererHttps.close();
       if (userConfigs.window.isManagerHide) {
         const managerWindow = windowControl.windowMap["manager"];
-        managerWindow && managerWindow.show();
+        if (managerWindow) {
+          managerWindow.show();
+        }
       }
     });
     Util.initPlayer();
@@ -441,15 +440,17 @@ const windowControl = {
 
   closeManagerWindow: () => {
     const managerWindow = windowControl.windowMap["manager"];
-    managerWindow && managerWindow.close();
+    if (managerWindow) {
+      managerWindow.close();
+    }
   },
 
   hideManagerWindow: () => {
-    /**
-     * @type {Electron.BrowserWindow}
-     */
-    const managerWindow = windowControl.windowMap["manager"];
-    managerWindow && managerWindow.hide();
+    const managerWindow: Electron.BrowserWindow =
+      windowControl.windowMap["manager"];
+    if (managerWindow) {
+      managerWindow.hide();
+    }
   },
 
   addAppListener: () => {
@@ -512,10 +513,7 @@ const windowControl = {
             break;
           }
           case "take-screenshot": {
-            /**
-             * @type {Buffer}
-             */
-            const buffer = args[1];
+            const buffer: Buffer = args[1];
             const filePath = path.join(
               electronApp.getPath("pictures"),
               electronApp.getName(),
@@ -545,7 +543,7 @@ const windowControl = {
           case "main-loader-ready": {
             windowControl.windowMap["game"].webContents.send(
               "server-port-load",
-              (<AddressInfo>sererHttps.address()).port
+              (sererHttps.address() as AddressInfo).port
             );
             break;
           }
@@ -585,7 +583,7 @@ const windowControl = {
               windowControl.windowMap["game"].webContents.send(
                 "load-url",
                 `https://localhost:${
-                  (<AddressInfo>sererHttps.address()).port
+                  (sererHttps.address() as AddressInfo).port
                 }/0/`
               );
             }
@@ -596,8 +594,10 @@ const windowControl = {
               {
                 properties: ["openFile", "openDirectory"]
               },
-              function(files) {
-                if (files) evt.sender.send("selected-directory", files);
+              (files) => {
+                if (files) {
+                  evt.sender.send("selected-directory", files);
+                }
               }
             );
             break;
@@ -618,15 +618,11 @@ const windowControl = {
         managerWindowMuted: false,
         bosskeyActive: false
       };
-      globalShortcut.register("Alt+X", function() {
-        /**
-         * @type {Electron.BrowserWindow}
-         */
-        const gameWindow = windowControl.windowMap["game"];
-        /**
-         * @type {Electron.BrowserWindow}
-         */
-        const managerWindow = windowControl.windowMap["manager"];
+      globalShortcut.register("Alt+X", () => {
+        const gameWindow: Electron.BrowserWindow =
+          windowControl.windowMap["game"];
+        const managerWindow: Electron.BrowserWindow =
+          windowControl.windowMap["manager"];
 
         if (windowsStatus.bosskeyActive) {
           // 如果老板键已经被按下
@@ -682,6 +678,6 @@ const windowControl = {
 };
 windowControl.start();
 
-process.on("uncaughtException", err => {
+process.on("uncaughtException", (err) => {
   console.error(err);
 });

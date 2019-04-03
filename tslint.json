@@ -1,0 +1,22 @@
+{
+  "defaultSeverity": "warning",
+  "extends": ["tslint:recommended"],
+  "jsRules": {
+    "trailing-comma": false
+  },
+  "rules": {
+    "trailing-comma": false,
+    "object-literal-sort-keys": false,
+    "no-console": false,
+    "no-var-requires": false,
+    "max-line-length": false,
+    "interface-name": false,
+    "variable-name": false,
+    "forin": false,
+    "no-string-literal": false,
+    "radix": false,
+    "no-bitwise": false,
+    "ban-types": false
+  },
+  "rulesDirectory": []
+}

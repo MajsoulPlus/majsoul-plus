@@ -1,7 +1,7 @@
-import * as os from "os";
-import * as fs from "fs";
-import * as path from "path";
 import * as electron from "electron";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 
 // 提供app模块
 let app = electron.app;
@@ -51,7 +51,7 @@ export const Configs = {
     resizable: true,
     backgroundColor: "#000000",
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
       // nodeIntegration: false
       // plugins: true
     },
@@ -59,7 +59,7 @@ export const Configs = {
     // useContentSize: true,
     icon: getIcon(),
     show: false,
-    enableLargerThanScreen: true
+    enableLargerThanScreen: true,
   },
   MANAGER_WINDOW_CONFIG: {
     width: 1280, // + 16,
@@ -69,14 +69,14 @@ export const Configs = {
     backgroundColor: "#FFFFFF",
     webPreferences: {
       webSecurity: false,
-      allowRunningInsecureContent: true
+      allowRunningInsecureContent: true,
     },
     title: "雀魂Plus",
     autoHideMenuBar: true,
     icon: getIcon(),
     maximizable: false,
     fullscreenable: false,
-    show: false
+    show: false,
   },
   TOOL_WINDOW_CONFIG: {
     width: 960, // + 16,
@@ -86,17 +86,17 @@ export const Configs = {
     backgroundColor: "#FFFFFF",
     webPreferences: {
       webSecurity: false,
-      allowRunningInsecureContent: true
+      allowRunningInsecureContent: true,
     },
     autoHideMenuBar: true,
     icon: getIcon(),
     maximizable: false,
     fullscreenable: false,
-    useContentSize: true
+    useContentSize: true,
   },
   HTTP_GET_USER_AGENT: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
     process.versions.chrome
-  }`
+  }`,
 };
 
 try {
@@ -104,7 +104,7 @@ try {
 } catch (error) {
   fs.copyFileSync(
     path.join(__dirname, "../", Configs.EXECUTES_DIR, "active.json"),
-    Configs.EXECUTES_CONFIG_PATH
+    Configs.EXECUTES_CONFIG_PATH,
   );
 }
 try {
@@ -112,6 +112,6 @@ try {
 } catch (error) {
   fs.copyFileSync(
     path.join(__dirname, "../", Configs.MODS_DIR, "active.json"),
-    Configs.MODS_CONFIG_PATH
+    Configs.MODS_CONFIG_PATH,
   );
 }

@@ -1,18 +1,18 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint-disable prefer-promise-reject-errors */
 
-import * as path from "path";
 import * as fs from "fs";
+import * as path from "path";
 
-import { Configs } from "./config";
 import * as AdmZip from "adm-zip";
 import * as childProcess from "child_process";
+import { Configs } from "./config";
 
-import * as url from "url";
-import * as https from "https";
 import { BrowserWindow, WebContents } from "electron";
 import * as express from "express";
 import { IncomingMessage } from "http";
+import * as https from "https";
+import * as url from "url";
 
 // 用于存储Mod对象
 let mods: any[];
@@ -27,7 +27,7 @@ export const Util = {
    * @returns {Buffer}
    */
   XOR(buffer: Buffer): Buffer {
-    let array = [];
+    const array = [];
     for (let index = 0; index < buffer.length; index++) {
       const byte = buffer.readUInt8(index);
       array.push(Configs.XOR_KEY ^ byte);
@@ -65,14 +65,14 @@ export const Util = {
    * @returns {Promise<void>}
    */
   mkdirs(dirname: string): Promise<void> {
-    return new Promise(resolve => {
-      fs.stat(dirname, err => {
+    return new Promise((resolve) => {
+      fs.stat(dirname, (err) => {
         if (!err) {
           resolve();
         } else {
           resolve(
             this.mkdirs(path.dirname(dirname)).then(() => {
-              return new Promise(resolve => fs.mkdir(dirname, resolve));
+              return new Promise((res) => fs.mkdir(dirname, res));
             })
           );
         }
@@ -126,12 +126,12 @@ export const Util = {
           ...url.parse(remoteUrl),
           headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
         },
-        httpRes => {
+        (httpRes) => {
           const { statusCode } = httpRes;
           httpRes.setEncoding(encoding);
           const chunks = [];
           let chunksSize = 0;
-          httpRes.on("data", chunk => {
+          httpRes.on("data", (chunk) => {
             chunks.push(chunk);
             chunksSize += chunk.length;
           });
@@ -210,12 +210,12 @@ export const Util = {
           ...url.parse(URI),
           headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
         },
-        httpRes => {
+        (httpRes) => {
           const { statusCode } = httpRes;
           httpRes.setEncoding(encoding);
           const chunks = [];
           let chunksSize = 0;
-          httpRes.on("data", chunk => {
+          httpRes.on("data", (chunk) => {
             chunks.push(chunk);
             chunksSize += chunk.length;
             if (dataCallback) {
@@ -295,7 +295,7 @@ export const Util = {
       0,
       indexOfProps === -1 ? undefined : indexOfProps
     );
-    let localURI = path.join(dirBase, originalUrl);
+    const localURI = path.join(dirBase, originalUrl);
     return isPath ? localURI : localURI; //  `${localURI}localfile.dirindexfile` : localURI
   },
 
@@ -313,7 +313,7 @@ export const Util = {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       this.mkdirs(path.dirname(pathToWrite)).then(() => {
-        fs.writeFile(pathToWrite, data, encoding, err => {
+        fs.writeFile(pathToWrite, data, encoding, (err) => {
           if (err) {
             reject(err);
           }
@@ -364,9 +364,9 @@ export const Util = {
     const localURI = this.getLocalURI(originalUrl, isPath);
 
     let promise: Promise<any> = Promise.reject();
-    mods.forEach(mod => {
+    mods.forEach((mod) => {
       promise = promise.then(
-        data => data,
+        (data) => data,
         () => {
           const modDir = mod.dir;
           let promiseMod: Promise<any> = Promise.reject();
@@ -374,7 +374,7 @@ export const Util = {
           //   return this.readFile(localURI)
           // }
           if (mod.replace && mod.replace.length > 0) {
-            mod.replace.forEach(replaceInfo => {
+            mod.replace.forEach((replaceInfo) => {
               const regExp = new RegExp(replaceInfo.from);
               if (!regExp.test(originalUrl)) {
                 return;
@@ -385,7 +385,7 @@ export const Util = {
                 path.join(mod.filesDir, modDir || "/files")
               );
               promiseMod = promiseMod.then(
-                data => data,
+                (data) => data,
                 () => this.readFile(localURI)
               );
             });
@@ -396,7 +396,7 @@ export const Util = {
             path.join(mod.filesDir, modDir || "/files")
           );
           promiseMod = promiseMod.then(
-            data => data,
+            (data) => data,
             () => this.readFile(localURI)
           );
           return promiseMod;
@@ -404,9 +404,9 @@ export const Util = {
       );
     });
     promise
-      .then(data => data, () => this.readFile(localURI))
+      .then((data) => data, () => this.readFile(localURI))
       .then(
-        data => data,
+        (data) => data,
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
             ({ data, res: result }) => {
@@ -424,7 +424,7 @@ export const Util = {
         }
       )
       .then(
-        data => {
+        (data) => {
           let sendData = isPath
             ? this.encodeData(data).toString("utf-8")
             : this.encodeData(data);
@@ -433,12 +433,12 @@ export const Util = {
           }
           res.end(sendData);
         },
-        data => {
-          let sendData = this.encodeData(data).toString("utf-8");
+        (data) => {
+          const sendData = this.encodeData(data).toString("utf-8");
           res.send(sendData);
         }
       )
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   },
 
   /**
@@ -518,8 +518,8 @@ export const Util = {
    * @return {number} 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
    */
   compareVersion(taga: string, tagb: string): number {
-    let tagaArr = taga.substring(1).split("-");
-    let tagbArr = tagb.substring(1).split("-");
+    const tagaArr = taga.substring(1).split("-");
+    const tagbArr = tagb.substring(1).split("-");
     let tagaDev = false;
     let tagbDev = false;
     if (tagaArr.length > 1) {
@@ -528,8 +528,8 @@ export const Util = {
     if (tagbArr.length > 1) {
       tagbDev = true;
     }
-    let tagaMain = tagaArr[0].split(".");
-    let tagbMain = tagbArr[0].split(".");
+    const tagaMain = tagaArr[0].split(".");
+    const tagbMain = tagbArr[0].split(".");
 
     let laterFlag;
     for (let i = 0; i < 3; i++) {
@@ -589,7 +589,7 @@ export const Util = {
   }
 };
 
-Object.keys(Util).forEach(key => {
+Object.keys(Util).forEach((key) => {
   if (typeof Util[key] === "function") {
     Util[key] = Util[key].bind(Util);
   }
