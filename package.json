@@ -4,16 +4,15 @@
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "tsc && concurrently --success \"first\" --kill-others \"gulp\" \"cross-env NODE_ENV=development electron ./dist --enable_logging\"",
-    "test": "cross-env NODE_ENV=development && tsc && electron ./dist --enable_logging",
     "pack": "npm run lint && npm run build",
     "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
-    "build-win32": "gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
-    "build-linux": "gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
-    "build-darwin": "gulp sass && electron-builder --mac"
+    "build-win32": "tsc && gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
+    "build-linux": "tsc && gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
+    "build-darwin": "tsc && gulp sass && electron-builder --mac"
   },
   "build": {
     "productName": "Majsoul Plus",
