@@ -1,54 +1,55 @@
-const os = require('os')
-const fs = require('fs')
-const electron = require('electron')
-const path = require('path')
+import * as os from "os";
+import * as fs from "fs";
+import * as path from "path";
+import * as electron from "electron";
 
 // 提供app模块
-let app = electron.app
+let app = electron.app;
 if (!app) {
-  app = electron.remote.app
+  app = electron.remote.app;
 }
 
 // 防止首次运行时扑街
-const appDataDir = app.getPath('userData')
+const appDataDir = app.getPath("userData");
 try {
-  fs.statSync(appDataDir)
+  fs.statSync(appDataDir);
 } catch (error) {
-  fs.mkdirSync(appDataDir)
+  fs.mkdirSync(appDataDir);
 }
 
 const getIcon = () => {
   switch (os.platform()) {
-    case 'win32':
-      return path.join(__dirname, '/bin/icons/icon.ico')
-    case 'darwin':
-      return path.join(__dirname, '/bin/icons/icon.icns')
-    case 'linux':
+    case "win32":
+      return path.join(__dirname, "/bin/icons/icon.ico");
+    case "darwin":
+      return path.join(__dirname, "/bin/icons/icon.icns");
+    case "linux":
     default:
-      return path.join(__dirname, '/bin/icons/icon.png')
+      return path.join(__dirname, "/bin/icons/icon.png");
   }
-}
-const CONFIGS = {
+};
+
+export const CONFIGS = {
   SERVER_PORT: 8887,
   // PIPE_PORT: 8888,
   XOR_KEY: 73,
-  EXTEND_RES_KEYWORD: 'extendRes',
-  REMOTE_DOMAIN: 'https://majsoul.union-game.com/',
-  HTTP_REMOTE_DOMAIN: 'http://majsoul.union-game.com/',
-  LOCAL_DIR: '/static',
-  MODS_DIR: '/mod',
-  MODS_CONFIG_PATH: path.join(appDataDir, 'modsEnabled.json'),
-  PLUGINS_DIR: '/plugin',
-  TOOLS_DIR: '/tool',
-  EXECUTES_DIR: '/execute',
-  EXECUTES_CONFIG_PATH: path.join(appDataDir, 'executesEnabled.json'),
-  USER_CONFIG_PATH: path.join(appDataDir, 'configs-user.json'),
+  EXTEND_RES_KEYWORD: "extendRes",
+  REMOTE_DOMAIN: "https://majsoul.union-game.com/",
+  HTTP_REMOTE_DOMAIN: "http://majsoul.union-game.com/",
+  LOCAL_DIR: "/static",
+  MODS_DIR: "/mod",
+  MODS_CONFIG_PATH: path.join(appDataDir, "modsEnabled.json"),
+  PLUGINS_DIR: "/plugin",
+  TOOLS_DIR: "/tool",
+  EXECUTES_DIR: "/execute",
+  EXECUTES_CONFIG_PATH: path.join(appDataDir, "executesEnabled.json"),
+  USER_CONFIG_PATH: path.join(appDataDir, "configs-user.json"),
   GAME_WINDOW_CONFIG: {
     width: 1280 + 16,
     height: 720 + 39,
     frame: true,
     resizable: true,
-    backgroundColor: '#000000',
+    backgroundColor: "#000000",
     webPreferences: {
       webSecurity: false
       // nodeIntegration: false
@@ -65,12 +66,12 @@ const CONFIGS = {
     height: 720, // + 39,
     frame: false,
     resizable: false,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
     },
-    title: '雀魂Plus',
+    title: "雀魂Plus",
     autoHideMenuBar: true,
     icon: getIcon(),
     maximizable: false,
@@ -82,7 +83,7 @@ const CONFIGS = {
     height: 540, // + 39,
     frame: true,
     resizable: false,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
@@ -96,21 +97,21 @@ const CONFIGS = {
   HTTP_GET_USER_AGENT: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
     process.versions.chrome
   }`
-}
+};
+
 try {
-  fs.statSync(CONFIGS.EXECUTES_CONFIG_PATH)
+  fs.statSync(CONFIGS.EXECUTES_CONFIG_PATH);
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.EXECUTES_DIR, 'active.json'),
+    path.join(__dirname, "../", CONFIGS.EXECUTES_DIR, "active.json"),
     CONFIGS.EXECUTES_CONFIG_PATH
-  )
+  );
 }
 try {
-  fs.statSync(CONFIGS.MODS_CONFIG_PATH)
+  fs.statSync(CONFIGS.MODS_CONFIG_PATH);
 } catch (error) {
   fs.copyFileSync(
-    path.join(__dirname, CONFIGS.MODS_DIR, 'active.json'),
+    path.join(__dirname, "../", CONFIGS.MODS_DIR, "active.json"),
     CONFIGS.MODS_CONFIG_PATH
-  )
+  );
 }
-module.exports = CONFIGS

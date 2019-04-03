@@ -8,7 +8,7 @@ const configs = require('../../configs')
 const userConfigs = require(configs.USER_CONFIG_PATH)
 
 const electronScreen = electron.screen
-const i18n = require('../../i18nInstance')
+const { i18n } = require('../../dist/i18nInstance')
 
 /**
  * @type {Electron.WebviewTag}

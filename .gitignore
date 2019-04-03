@@ -65,3 +65,6 @@ package-lock.json
 static/
 build/
 manager/**/*.css
+
+# dist
+dist/

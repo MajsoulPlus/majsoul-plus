@@ -6,14 +6,14 @@
   "description": "Majsoul Plus",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently --success \"first\" --kill-others \"gulp\" \"cross-env NODE_ENV=development electron . --enable_logging\"",
+    "start": "tsc && concurrently --success \"first\" --kill-others \"gulp\" \"cross-env NODE_ENV=development electron ./dist --enable_logging\"",
+    "test": "cross-env NODE_ENV=development && tsc && electron ./dist --enable_logging",
     "pack": "npm run lint && npm run build",
     "lint": "standard --fix | snazzy",
     "build": "npm run build-win32 && npm run build-linux && npm run build-darwin",
     "build-win32": "gulp sass && electron-packager . Majsoul_Plus  --platform=win32 --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.ico",
     "build-linux": "gulp sass && electron-packager . Majsoul_Plus  --platform=linux --arch=all --out ./build/unpacked --ignore=build --overwrite --icon=bin/icons/icon.png",
-    "build-darwin": "gulp sass && electron-builder --mac",
-    "test": "echo \"Error: no test specified\""
+    "build-darwin": "gulp sass && electron-builder --mac"
   },
   "build": {
     "productName": "Majsoul Plus",
@@ -60,10 +60,13 @@
   "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
   "dependencies": {
     "adm-zip": "^0.4.13",
+    "comma-separated-values": "^3.6.4",
     "express": "^4.16.4",
     "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.4.13",
+    "@types/express": "^4.16.1",
     "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
     "electron": "^2.0.0",
@@ -79,6 +82,8 @@
     "gulp-sass": "^4.0.2",
     "node-sass": "^4.11.0",
     "snazzy": "^8.0.0",
-    "standard": "^12.0.1"
+    "standard": "^12.0.1",
+    "tslint": "^5.15.0",
+    "typescript": "^3.4.1"
   }
 }

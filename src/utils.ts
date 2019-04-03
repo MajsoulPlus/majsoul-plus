@@ -1,43 +1,38 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint-disable prefer-promise-reject-errors */
 
-const path = require('path')
-const fs = require('fs')
-const electron = require('electron')
+import * as path from "path";
+import * as fs from "fs";
 
-const configs = require('./configs')
-const AdmZip = require('adm-zip')
-const childProcess = require('child_process')
+import { CONFIGS as configs } from "./config";
+import * as AdmZip from "adm-zip";
+import * as childProcess from "child_process";
 
-const url = require('url')
-
-/**
- * @type {typeof import("https")}
- */
-const https = require('https')
+import * as url from "url";
+import * as https from "https";
+import { BrowserWindow, WebContents } from "electron";
+import * as express from "express";
+import { IncomingMessage } from "http";
 
 // 用于存储Mod对象
-let mods
+let mods: any[];
 
-/**
- * 播放器
- * @type {Electron.BrowserWindow}
- */
-let audioPlayer
+// 播放器
+let audioPlayer: BrowserWindow;
 
-const Util = {
+export const Util = {
   /**
    * 加密或者解密文件
    * @param {Buffer} buffer
    * @returns {Buffer}
    */
-  XOR (buffer) {
-    let array = []
+  XOR(buffer: Buffer): Buffer {
+    let array = [];
     for (let index = 0; index < buffer.length; index++) {
-      const byte = buffer.readUInt8(index)
-      array.push(configs.XOR_KEY ^ byte)
+      const byte = buffer.readUInt8(index);
+      array.push(configs.XOR_KEY ^ byte);
     }
-    return Buffer.from(array)
+    return Buffer.from(array);
   },
 
   /**
@@ -45,8 +40,8 @@ const Util = {
    * @param {string} originalUrl 原始请求的相对路径
    * @returns {boolean}
    */
-  isEncryptRes (originalUrl) {
-    return originalUrl.includes(configs.EXTEND_RES_KEYWORD)
+  isEncryptRes(originalUrl: string): boolean {
+    return originalUrl.includes(configs.EXTEND_RES_KEYWORD);
   },
 
   /**
@@ -54,12 +49,12 @@ const Util = {
    * @param {string} originalUrl
    * @return {boolean}
    */
-  isPath (originalUrl) {
+  isPath(originalUrl: string): boolean {
     return (
-      originalUrl.endsWith('\\') ||
-      originalUrl.endsWith('/') ||
-      originalUrl.includes('?')
-    )
+      originalUrl.endsWith("\\") ||
+      originalUrl.endsWith("/") ||
+      originalUrl.includes("?")
+    );
   },
 
   /**
@@ -69,20 +64,20 @@ const Util = {
    * @param {string} dirname 文件夹路径
    * @returns {Promise<void>}
    */
-  mkdirs (dirname) {
+  mkdirs(dirname: string): Promise<void> {
     return new Promise(resolve => {
       fs.stat(dirname, err => {
         if (!err) {
-          resolve()
+          resolve();
         } else {
           resolve(
             this.mkdirs(path.dirname(dirname)).then(() => {
-              return new Promise(resolve => fs.mkdir(dirname, resolve))
+              return new Promise(resolve => fs.mkdir(dirname, resolve));
             })
-          )
+          );
         }
-      })
-    })
+      });
+    });
   },
 
   /**
@@ -90,12 +85,12 @@ const Util = {
    * @param {string} dirname 文件夹路径
    * @returns {void}
    */
-  mkdirsSync (dirname) {
+  mkdirsSync(dirname: string): void {
     try {
-      fs.statSync(dirname)
+      fs.statSync(dirname);
     } catch (error) {
-      this.mkdirsSync(path.dirname(dirname))
-      fs.mkdirSync(dirname)
+      this.mkdirsSync(path.dirname(dirname));
+      fs.mkdirSync(dirname);
     }
   },
 
@@ -104,8 +99,8 @@ const Util = {
    * @param {string} originalUrl
    * @returns {string}
    */
-  getRemoteUrl (originalUrl) {
-    return configs.REMOTE_DOMAIN + originalUrl
+  getRemoteUrl(originalUrl: string): string {
+    return configs.REMOTE_DOMAIN + originalUrl;
   },
 
   /**
@@ -115,58 +110,66 @@ const Util = {
    * @param {string} encoding 请求的数据格式，默认是binary
    * @returns {Promise<{statusCode: number,data:Buffer | string}>}
    */
-  getRemoteSource (originalUrl, encrypt, encoding = 'binary') {
+  getRemoteSource(
+    originalUrl: string,
+    encrypt: boolean,
+    encoding: string = "binary"
+  ): Promise<{
+    res: IncomingMessage;
+    statusCode?: number;
+    data: Buffer | string;
+  }> {
     return new Promise((resolve, reject) => {
-      const remoteUrl = this.getRemoteUrl(originalUrl)
+      const remoteUrl = this.getRemoteUrl(originalUrl);
       https.get(
         {
           ...url.parse(remoteUrl),
-          headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
+          headers: { "User-Agent": configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
-          const { statusCode } = httpRes
-          httpRes.setEncoding(encoding)
-          const chunks = []
-          let chunksSize = 0
-          httpRes.on('data', chunk => {
-            chunks.push(chunk)
-            chunksSize += chunk.length
-          })
-          httpRes.on('end', () => {
-            let fileData = null
+          const { statusCode } = httpRes;
+          httpRes.setEncoding(encoding);
+          const chunks = [];
+          let chunksSize = 0;
+          httpRes.on("data", chunk => {
+            chunks.push(chunk);
+            chunksSize += chunk.length;
+          });
+          httpRes.on("end", () => {
+            let fileData = null;
             switch (chunks.length) {
               case 0:
-                fileData = Buffer.alloc(0)
-                break
+                fileData = Buffer.alloc(0);
+                break;
               case 1:
-                fileData = Buffer.from(chunks[0], encoding)
-                break
+                fileData = Buffer.from(chunks[0], encoding);
+                break;
               default:
-                fileData = Buffer.alloc(chunksSize)
+                fileData = Buffer.alloc(chunksSize);
                 for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
                   /**
                    * @type {string | Buffer}
                    */
-                  const chunk = chunks[i]
+                  const chunk: string | Buffer = chunks[i];
                   if (Buffer.isBuffer(chunk)) {
-                    chunk.copy(fileData, position)
+                    chunk.copy(fileData, position);
                   } else {
-                    Buffer.from(chunk, encoding).copy(fileData, position)
+                    Buffer.from(chunk, encoding).copy(fileData, position);
                   }
-                  position += chunk.length
+                  position += chunk.length;
                 }
-                break
+                break;
             }
             if (statusCode < 200 || statusCode >= 400) {
               console.warn(
                 `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-              )
+              );
               reject({
                 res: httpRes,
                 data: (encrypt ? this.XOR(fileData) : fileData).toString(
                   encoding
                 )
-              })
+              });
             } else {
               if (statusCode === 302 || statusCode === 301) {
                 return resolve(
@@ -175,19 +178,19 @@ const Util = {
                     encrypt,
                     encoding
                   )
-                )
+                );
               }
               resolve({
                 res: httpRes,
                 data: (encrypt ? this.XOR(fileData) : fileData).toString(
                   encoding
                 )
-              })
+              });
             }
-          })
+          });
         }
-      )
-    })
+      );
+    });
   },
 
   /**
@@ -196,78 +199,84 @@ const Util = {
    * @param {string} encoding 编码格式
    * @param {Function} dataCallback 当获取到数据时候的callback
    */
-  httpsGetFile (URI, encoding = 'binary', dataCallback) {
+  httpsGetFile(
+    URI: string,
+    encoding: string = "binary",
+    dataCallback: Function
+  ) {
     return new Promise((resolve, reject) => {
       https.get(
         {
           ...url.parse(URI),
-          headers: { 'User-Agent': configs.HTTP_GET_USER_AGENT }
+          headers: { "User-Agent": configs.HTTP_GET_USER_AGENT }
         },
         httpRes => {
-          const { statusCode } = httpRes
-          httpRes.setEncoding(encoding)
-          const chunks = []
-          let chunksSize = 0
-          httpRes.on('data', chunk => {
-            chunks.push(chunk)
-            chunksSize += chunk.length
+          const { statusCode } = httpRes;
+          httpRes.setEncoding(encoding);
+          const chunks = [];
+          let chunksSize = 0;
+          httpRes.on("data", chunk => {
+            chunks.push(chunk);
+            chunksSize += chunk.length;
             if (dataCallback) {
-              dataCallback(chunk)
+              dataCallback(chunk);
             }
-          })
-          httpRes.on('end', () => {
-            let fileData = null
+          });
+          httpRes.on("end", () => {
+            let fileData = null;
             switch (chunks.length) {
               case 0:
-                fileData = Buffer.alloc(0)
-                break
+                fileData = Buffer.alloc(0);
+                break;
               case 1:
-                fileData = chunks[0]
-                break
+                fileData = chunks[0];
+                break;
               default:
-                fileData = Buffer.alloc(chunksSize)
+                fileData = Buffer.alloc(chunksSize);
                 for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
                   /**
                    * @type {string | Buffer}
                    */
-                  const chunk = chunks[i]
+                  const chunk: string | Buffer = chunks[i];
                   if (Buffer.isBuffer(chunk)) {
-                    chunk.copy(fileData, position)
+                    chunk.copy(fileData, position);
                   } else {
-                    Buffer.from(chunk, encoding).copy(fileData, position)
+                    Buffer.from(chunk, encoding).copy(fileData, position);
                   }
-                  position += chunk.length
+                  position += chunk.length;
                 }
-                break
+                break;
             }
             if (statusCode < 200 || statusCode >= 400) {
               console.warn(
                 `尝试下载资源 ${URI} 失败, statusCode = ${statusCode}`
-              )
+              );
               reject({
                 res: httpRes,
                 data: fileData
-              })
+              });
             } else {
               if (statusCode === 302 || statusCode === 301) {
-                console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
+                console.warn(
+                  `访问 ${URI} 被重定向, statusCode = ${statusCode}`
+                );
                 return resolve(
                   this.httpsGetFile(
                     httpRes.headers.location,
                     encoding,
                     dataCallback
                   )
-                )
+                );
               }
               resolve({
                 res: httpRes,
                 data: fileData
-              })
+              });
             }
-          })
+          });
         }
-      )
-    })
+      );
+    });
   },
 
   /**
@@ -276,18 +285,18 @@ const Util = {
    * @param {boolean} isPath
    * @return {string}
    */
-  getLocalURI (
-    originalUrl,
-    isPath,
+  getLocalURI(
+    originalUrl: string,
+    isPath: boolean,
     dirBase = path.join(__dirname, configs.LOCAL_DIR)
-  ) {
-    const indexOfProps = originalUrl.indexOf('?')
+  ): string {
+    const indexOfProps = originalUrl.indexOf("?");
     originalUrl = originalUrl.substring(
       0,
       indexOfProps === -1 ? undefined : indexOfProps
-    )
-    let localURI = path.join(dirBase, originalUrl)
-    return isPath ? localURI : localURI //  `${localURI}localfile.dirindexfile` : localURI
+    );
+    let localURI = path.join(dirBase, originalUrl);
+    return isPath ? localURI : localURI; //  `${localURI}localfile.dirindexfile` : localURI
   },
 
   /**
@@ -297,17 +306,21 @@ const Util = {
    * @param {string} encoding 默认是'binary'
    * @return {Promise<void>}
    */
-  writeFile (pathToWrite, data, encoding = 'binary') {
+  writeFile(
+    pathToWrite: string,
+    data: Buffer | string,
+    encoding: string = "binary"
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       this.mkdirs(path.dirname(pathToWrite)).then(() => {
         fs.writeFile(pathToWrite, data, encoding, err => {
           if (err) {
-            reject(err)
+            reject(err);
           }
-          resolve()
-        })
-      })
-    })
+          resolve();
+        });
+      });
+    });
   },
 
   /**
@@ -315,23 +328,23 @@ const Util = {
    * @param {string} filepath
    * @return {Promise<Buffer | string>}
    */
-  readFile (filepath) {
+  readFile(filepath: string): Promise<Buffer | string> {
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
         if (err) {
-          reject(err)
+          reject(err);
         }
-        resolve(data)
-      })
-    })
+        resolve(data);
+      });
+    });
   },
 
   /**
    * @param {Buffer | string} data
    * @param {string} encoding
    */
-  encodeData (data, encoding = 'binary') {
-    return Buffer.from(data, encoding)
+  encodeData(data: any, encoding: string = "binary") {
+    return Buffer.from(data, encoding);
   },
 
   /**
@@ -340,56 +353,56 @@ const Util = {
    * @param {express.Response} res Response对象
    * @param {express.NextFunction} next NextFunction对象
    */
-  processRequest (req, res) {
+  processRequest(req: express.Request, res: express.Response) {
     if (!mods) {
-      this.loadMods()
+      this.loadMods();
     }
 
-    const originalUrl = req.originalUrl
-    const encrypt = this.isEncryptRes(originalUrl)
-    const isPath = this.isPath(originalUrl)
-    const localURI = this.getLocalURI(originalUrl, isPath)
+    const originalUrl = req.originalUrl;
+    const encrypt = this.isEncryptRes(originalUrl);
+    const isPath = this.isPath(originalUrl);
+    const localURI = this.getLocalURI(originalUrl, isPath);
 
-    let promise = Promise.reject()
+    let promise: Promise<any> = Promise.reject();
     mods.forEach(mod => {
       promise = promise.then(
         data => data,
         () => {
-          const modDir = mod.dir
-          let promiseMod = Promise.reject()
+          const modDir = mod.dir;
+          let promiseMod: Promise<any> = Promise.reject();
           // const readModFile = path => {
           //   return this.readFile(localURI)
           // }
           if (mod.replace && mod.replace.length > 0) {
             mod.replace.forEach(replaceInfo => {
-              const regExp = new RegExp(replaceInfo.from)
+              const regExp = new RegExp(replaceInfo.from);
               if (!regExp.test(originalUrl)) {
-                return
+                return;
               }
               const localURI = this.getLocalURI(
                 originalUrl.replace(regExp, replaceInfo.to),
                 isPath,
-                path.join(mod.filesDir, modDir || '/files')
-              )
+                path.join(mod.filesDir, modDir || "/files")
+              );
               promiseMod = promiseMod.then(
                 data => data,
                 () => this.readFile(localURI)
-              )
-            })
+              );
+            });
           }
           const localURI = this.getLocalURI(
             originalUrl,
             isPath,
-            path.join(mod.filesDir, modDir || '/files')
-          )
+            path.join(mod.filesDir, modDir || "/files")
+          );
           promiseMod = promiseMod.then(
             data => data,
             () => this.readFile(localURI)
-          )
-          return promiseMod
+          );
+          return promiseMod;
         }
-      )
-    })
+      );
+    });
     promise
       .then(data => data, () => this.readFile(localURI))
       .then(
@@ -397,51 +410,51 @@ const Util = {
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
             ({ data, res: result }) => {
-              res.statusCode = result.statusCode
+              res.statusCode = result.statusCode;
               if (!isPath) {
-                this.writeFile(localURI, data)
+                this.writeFile(localURI, data);
               }
-              return data
+              return data;
             },
             ({ data, res: result }) => {
-              res.statusCode = result.statusCode
-              return Promise.reject(data)
+              res.statusCode = result.statusCode;
+              return Promise.reject(data);
             }
-          )
+          );
         }
       )
       .then(
         data => {
           let sendData = isPath
-            ? this.encodeData(data).toString('utf-8')
-            : this.encodeData(data)
+            ? this.encodeData(data).toString("utf-8")
+            : this.encodeData(data);
           if (encrypt) {
-            sendData = this.XOR(sendData)
+            sendData = this.XOR(sendData);
           }
-          res.end(sendData)
+          res.end(sendData);
         },
         data => {
-          let sendData = this.encodeData(data).toString('utf-8')
-          res.send(sendData)
+          let sendData = this.encodeData(data).toString("utf-8");
+          res.send(sendData);
         }
       )
-      .catch(err => console.error(err))
+      .catch(err => console.error(err));
   },
 
   /**
    * 加载Mod
    */
-  loadMods () {
+  loadMods() {
     // Mod文件根目录
     // const modRootDir = path.join(__dirname, configs.MODS_DIR)
     // 所有已在目录中的Mod目录
     // const modDirs = fs.readdirSync(modRootDir)
     try {
-      const data = fs.readFileSync(configs.MODS_CONFIG_PATH)
-      mods = JSON.parse(data.toString('utf-8'))
+      const data = fs.readFileSync(configs.MODS_CONFIG_PATH);
+      mods = JSON.parse(data.toString("utf-8"));
     } catch (error) {
-      console.error(error)
-      mods = []
+      console.error(error);
+      mods = [];
     }
   },
 
@@ -449,54 +462,54 @@ const Util = {
    * 同步删除文件夹
    * @param {string} dir 要删除的目录
    */
-  removeDirSync (dir) {
-    let command = ''
-    if (process.platform === 'win32') {
-      command = `rmdir /s/q "${dir}"`
+  removeDirSync(dir: string) {
+    let command = "";
+    if (process.platform === "win32") {
+      command = `rmdir /s/q "${dir}"`;
     } else {
-      command = `rm -rf "${dir}"`
+      command = `rm -rf "${dir}"`;
     }
-    childProcess.execSync(command)
+    childProcess.execSync(command);
   },
 
   /**
    * 截取屏幕画面
-   * @param {Electron.WebContents} webContents
+   * @param {WebContents} webContents
    */
-  takeScreenshot (webContents) {
+  takeScreenshot(webContents: WebContents) {
     audioPlayer.webContents.send(
-      'audio-play',
-      path.join(__dirname, 'bin/audio/screenshot.mp3')
-    )
-    webContents.send('take-screenshot')
+      "audio-play",
+      path.join(__dirname, "bin/audio/screenshot.mp3")
+    );
+    webContents.send("take-screenshot");
   },
   /**
    * 初始化音频播放器
    */
-  initPlayer () {
-    audioPlayer = new electron.BrowserWindow({
+  initPlayer() {
+    audioPlayer = new BrowserWindow({
       show: false
-    })
+    });
     audioPlayer.loadURL(
-      'file://' + path.join(__dirname, 'bin/audio/player.html')
-    )
+      "file://" + path.join(__dirname, "bin/audio/player.html")
+    );
   },
   /**
    * 退出播放器窗口
    */
-  shutoffPlayer () {
-    audioPlayer.close()
+  shutoffPlayer() {
+    audioPlayer.close();
   },
   /**
    * 选取一个路径和目标，生成一个压缩文件，返回生成的压缩文件路径
    * @param {string} from 要被打包的文件夹
    * @param {string} to 打包到的路径
    */
-  zipDir (from, to) {
-    const zip = new AdmZip()
-    zip.addLocalFolder(from, path.basename(from))
-    zip.writeZip(to, true)
-    return to
+  zipDir(from: string, to: string) {
+    const zip = new AdmZip();
+    zip.addLocalFolder(from, path.basename(from));
+    zip.writeZip(to);
+    return to;
   },
   /**
    * 判断A标签是否比B标签较新
@@ -504,82 +517,80 @@ const Util = {
    * @param {string} tagb B标签，类似 v1.2.3
    * @return {number} 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
    */
-  compareVersion (taga, tagb) {
-    let tagaArr = taga.substring(1).split('-')
-    let tagbArr = tagb.substring(1).split('-')
-    let tagaDev = false
-    let tagbDev = false
+  compareVersion(taga: string, tagb: string): number {
+    let tagaArr = taga.substring(1).split("-");
+    let tagbArr = tagb.substring(1).split("-");
+    let tagaDev = false;
+    let tagbDev = false;
     if (tagaArr.length > 1) {
-      tagaDev = true
+      tagaDev = true;
     }
     if (tagbArr.length > 1) {
-      tagbDev = true
+      tagbDev = true;
     }
-    let tagaMain = tagaArr[0].split('.')
-    let tagbMain = tagbArr[0].split('.')
+    let tagaMain = tagaArr[0].split(".");
+    let tagbMain = tagbArr[0].split(".");
 
-    let laterFlag
+    let laterFlag;
     for (let i = 0; i < 3; i++) {
       if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
-        laterFlag = i + 1
-        break
+        laterFlag = i + 1;
+        break;
       } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
-        laterFlag = 0
-        break
+        laterFlag = 0;
+        break;
       }
     }
 
-    if (typeof laterFlag === 'number') {
-      return laterFlag
+    if (typeof laterFlag === "number") {
+      return laterFlag;
     }
     if (laterFlag === undefined) {
       if (tagbDev && !tagaDev) {
-        return true
+        return 1;
       } else if (tagaDev && !tagbDev) {
-        return false
+        return 0;
       } else if (tagaDev && tagbDev) {
-        const tagaDevArr = tagaArr[1].split('.')
-        const tagbDevArr = tagbArr[1].split('.')
-        const devStrToNum = devStr => {
+        const tagaDevArr: any[] = tagaArr[1].split(".");
+        const tagbDevArr: any[] = tagbArr[1].split(".");
+        const devStrToNum = (devStr: string): number => {
           switch (devStr) {
-            case 'alpha':
-              return 1
-            case 'beta':
-              return 2
-            case 'rc':
-              return 3
+            case "alpha":
+              return 1;
+            case "beta":
+              return 2;
+            case "rc":
+              return 3;
             default:
-              return 0
+              return 0;
           }
-        }
-        tagaDevArr[0] = devStrToNum(tagaDevArr[0])
-        tagbDevArr[0] = devStrToNum(tagbDevArr[0])
+        };
+        tagaDevArr[0] = devStrToNum(tagaDevArr[0]);
+        tagbDevArr[0] = devStrToNum(tagbDevArr[0]);
         for (let i = 0; i < 2; i++) {
           if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
-            laterFlag = 4
-            break
+            laterFlag = 4;
+            break;
           } else if (
             parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)
           ) {
-            laterFlag = 0
-            break
+            laterFlag = 0;
+            break;
           }
         }
         if (laterFlag === undefined) {
-          return 0
+          return 0;
         }
-        return laterFlag
+        return laterFlag;
       } else {
-        return 0
+        return 0;
       }
     }
   }
-}
+};
 
 Object.keys(Util).forEach(key => {
-  if (typeof Util[key] === 'function') {
-    Util[key] = Util[key].bind(Util)
+  if (typeof Util[key] === "function") {
+    Util[key] = Util[key].bind(Util);
   }
-})
-
-module.exports = Util
+});
