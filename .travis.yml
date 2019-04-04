@@ -7,6 +7,7 @@ language: node_js
   - 10
 cache:
   - apt: true
+  - yarn: true
   - directories:
       - node_modules
       - $HOME/.electron
@@ -16,9 +17,9 @@ addons:
   homebrew:
     packages: zip
 before_install:
-  - npm install -g yarn --cache-min 999999999
+  - nvm install 10
+  - npm install -g yarn
 install:
-  - yarn add --dev node@8.15.0
   - yarn
 script:
   - yarn dist
