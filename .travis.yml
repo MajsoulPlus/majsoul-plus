@@ -7,7 +7,6 @@ language: node_js
   - 10
 cache:
   - apt: true
-  - yarn: true
   - directories:
       - node_modules
       - $HOME/.electron
@@ -16,8 +15,8 @@ addons:
     packages: zip
   homebrew:
     packages: zip
-# before_install:
-#   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn add --dev node@8.15.0; fi
+before_install:
+  - npm install -g yarn
 install:
   - yarn
 script:
