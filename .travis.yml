@@ -16,20 +16,9 @@ addons:
   homebrew:
     packages: zip
 before_install:
-  - npm install -g yarn
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn add --dev node@8.15.0; fi
+  - npm install -g yarn --cache-min 999999999
 install:
+  - yarn add --dev node@8.15.0
   - yarn
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn build-linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn build-darwin; fi
-deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file: "./build/*.{zip,dmg,AppImage,dmg,deb,tar.gz}"
-  file_glob: true
-  skip_cleanup: true
-  on:
-    branch: master
-    tags: true
-    all_branches: true
+  - yarn dist

@@ -11,6 +11,7 @@
     "debug": "cross-env NODE_ENV=development electron ./dist --enable_logging",
     "start": "yarn pre-build && yarn debug",
     "pack": "npm run lint && npm run build",
+    "dist": "yarn pre-build && electron-builder --x64 --ia32 --publish onTagOrDraft",
     "build": "yarn pre-build && electron-builder --x64 --ia32",
     "build-win32": "yarn pre-build && electron-builder --win --x64 --ia32",
     "build-linux": "yarn pre-build && electron-builder --linux --x64 --ia32",
