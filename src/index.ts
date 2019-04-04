@@ -657,6 +657,10 @@ const windowControl = {
           if (managerWindow) {
             windowsStatus.managerWindowVisible = managerWindow.isVisible();
             windowsStatus.managerWindowMuted = managerWindow.webContents.isAudioMuted();
+            managerWindow.webContents.on('crashed', e => {
+              electronApp.relaunch();
+              electronApp.quit();
+            });
 
             managerWindow.hide();
             managerWindow.webContents.setAudioMuted(true);
@@ -664,6 +668,10 @@ const windowControl = {
           if (gameWindow) {
             windowsStatus.gameWindowVisible = gameWindow.isVisible();
             windowsStatus.gameWindowMuted = gameWindow.webContents.isAudioMuted();
+            gameWindow.webContents.on('crashed', e => {
+              electronApp.relaunch();
+              electronApp.quit();
+            });
 
             gameWindow.hide();
             gameWindow.webContents.setAudioMuted(true);

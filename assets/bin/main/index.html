@@ -7,13 +7,13 @@
     <title>雀魂Plus</title>
     <style>
       @font-face {
-        font-family: '思源黑体 CN';
-        src: url('../../manager/SourceHanSansCN-Light.otf') format('opentype');
+        font-family: "思源黑体 CN";
+        src: url("../../manager/SourceHanSansCN-Light.otf") format("opentype");
         font-weight: 300;
       }
       @font-face {
-        font-family: '思源黑体 CN';
-        src: url('../../manager/SourceHanSansCN-Normal.otf') format('opentype');
+        font-family: "思源黑体 CN";
+        src: url("../../manager/SourceHanSansCN-Normal.otf") format("opentype");
         font-weight: 400;
       }
 
@@ -22,7 +22,7 @@
         margin: 0;
         padding: 0;
         user-select: none;
-        font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana,
+        font-family: "思源黑体 CN", "Segoe UI", Tahoma, Geneva, Verdana,
           sans-serif;
       }
       body {
@@ -79,12 +79,20 @@
   </head>
   <body>
     <div id="mainWindowBox">
-      <webview id="mainWindow" src="./loading.html" webpreferences="nativeWindowOpen=yes" allowpopups nodeintegration></webview>
+      <webview
+        id="mainWindow"
+        src="./loading.html"
+        webpreferences="nativeWindowOpen=yes"
+        allowpopups
+        nodeintegration
+      ></webview>
     </div>
     <div id="screenshotLabel" class="hide">
       <img id="screenshotImage" src="#" alt="screenshot" />
       <p id="screenshotText">screenshotText</p>
     </div>
-    <script src="./mainLoader.js"></script>
+    <script>
+      require("./mainLoader.js");
+    </script>
   </body>
 </html>
