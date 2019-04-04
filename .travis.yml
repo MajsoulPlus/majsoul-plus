@@ -16,18 +16,17 @@ addons:
     packages: zip
   homebrew:
     packages: zip
-before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn add --dev node@8.15.0; fi
+# before_install:
+#   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn add --dev node@8.15.0; fi
 install:
   - yarn
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn build-linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn build-darwin; fi
-after_success: if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash pack.sh; fi
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: "./build/packed/*.{zip,dmg}"
+  file: "./build/*.{zip,dmg,AppImage,dmg,deb,tar.gz}"
   file_glob: true
   skip_cleanup: true
   on:

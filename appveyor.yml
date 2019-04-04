@@ -1,20 +1,19 @@
 install:
   - ps: Install-Product node 10
-  - choco install 7zip
   - npm install
   - npm update
 build_script:
   - npm run build-win32
-after_build:
-  - ps: .\pack.ps1
 artifacts:
   - name: releases
-    path: build\packed\*.zip
+    path:
+      - build\*.zip
+      - build\*.exe
 deploy:
   - provider: GitHub
     auth_token: $(GITHUB_TOKEN)
     artifacts: releases
-    description: ''
+    description: ""
     on:
       branch: master
       APPVEYOR_REPO_TAG: true
