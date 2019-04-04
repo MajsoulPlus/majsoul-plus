@@ -6,7 +6,7 @@
   "description": "Majsoul Plus",
   "main": "./dist/index.js",
   "scripts": {
-    "sass": "node-sass manager/ -o manager/",
+    "sass": "node-sass assets/manager/ -o assets/manager/",
     "pre-build": "tsc && yarn sass && node build.js",
     "debug": "cross-env NODE_ENV=development electron ./dist --enable_logging",
     "start": "yarn pre-build && yarn debug",
@@ -53,7 +53,6 @@
       "icon": "bin/icons",
       "category": "Game",
       "target": [
-        "deb",
         "tar.gz",
         "AppImage"
       ]
