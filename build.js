@@ -4,7 +4,6 @@ const dest = "./dist/";
 
 // Copy files
 ncp("./assets", dest, err => (err ? console.error(err) : null));
-ncp("./certificate", dest, err => (err ? console.error(err) : null));
 ncp("./execute", dest + "execute", err => (err ? console.error(err) : null));
 ncp("./i18n", dest + "i18n", err => (err ? console.error(err) : null));
 ncp("./manager", dest + "manager", err => (err ? console.error(err) : null));

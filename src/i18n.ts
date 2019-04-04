@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
-const CSV = require("comma-separated-values");
+import * as fs from 'fs';
+import * as path from 'path';
+import * as CSV from 'comma-separated-values';
 
 /**
  * 本地化，单条语句翻译对象
@@ -65,7 +65,7 @@ interface StringPack {
 interface BindElement {
   locale: Locale;
   htmlElement: HTMLElement;
-  type: "text" | "html";
+  type: 'text' | 'html';
   args: string[];
 }
 
@@ -94,12 +94,12 @@ interface I18nInitConfig {
  */
 function readLangFile(filePath: string): StringPack {
   switch (path.extname(filePath)) {
-    case ".js":
+    case '.js':
       delete require.cache[filePath];
       return require(filePath);
-    case ".json":
-      return JSON.parse(fs.readFileSync(filePath, { encoding: "utf-8" }));
-    case ".csv":
+    case '.json':
+      return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
+    case '.csv':
       const csv: string[][] = CSV.parse(fs.readFileSync(filePath).toString(), {
         cast: false
       });
@@ -126,7 +126,7 @@ function readLangFile(filePath: string): StringPack {
 function readLangDir(dirPath: string): StringPack {
   const lang = {};
   const files = fs.readdirSync(dirPath);
-  const filesPath = files.map((fileName) => {
+  const filesPath = files.map(fileName => {
     return path.join(dirPath, fileName);
   });
   filesPath.forEach((filePath, index) => {
@@ -141,6 +141,13 @@ function readLangDir(dirPath: string): StringPack {
     }
   });
   return lang;
+}
+
+export interface I18nConstructor {
+  directory?: string;
+  actives?: string[];
+  defaultLocale?: string;
+  autoReload?: boolean;
 }
 
 export class I18n {
@@ -177,27 +184,28 @@ export class I18n {
     this._updateLocales();
   }
 
-  public defaultLocale;
+  defaultLocale;
   private _actives;
   private _locals: StringPack;
   private _bindElementList: BindElement[];
   private _text;
 
-  constructor({
-    directory = path.join(__dirname, "i18n"),
-    actives = [],
-    defaultLocale = "en-US",
-    autoReload = false
-  } = {}) {
+  constructor(arg: I18nConstructor) {
+    const {
+      directory = path.join(__dirname, 'i18n'),
+      actives = [],
+      defaultLocale = 'en-US',
+      autoReload = false
+    } = arg;
     // 如果文件夹参数不是文件夹，报错
     if (!fs.statSync(directory).isDirectory) {
-      throw new Error("param directory is not a directory");
+      throw new Error('param directory is not a directory');
     }
 
     // 如果文件夹为空，报错
     if (!fs.readdirSync(directory)) {
       throw new Error(
-        "directory is empty, please make sure there is any files"
+        'directory is empty, please make sure there is any files'
       );
     }
 
@@ -218,7 +226,9 @@ export class I18n {
        */
       const formatString = (str: string, ...args: string[]) => {
         for (const index in args) {
-          str = str.replace(`$${index}`, args[index]);
+          if (args[index]) {
+            str = str.replace(`$${index}`, args[index]);
+          }
         }
         return str;
       };
@@ -245,7 +255,7 @@ export class I18n {
                   }
                 }
               }
-              return "MissingText";
+              return 'MissingText';
             };
             f._chains = chainsArray;
             /**
@@ -281,7 +291,8 @@ export class I18n {
         {},
         {
           get: (target, key) => {
-            return createProxy([].concat(key));
+            const arr: string[] = [];
+            return createProxy(arr.concat(key as string));
           }
         }
       );
@@ -304,7 +315,7 @@ export class I18n {
               if (err) {
                 throw err;
               }
-              files.forEach((file) => {
+              files.forEach(file => {
                 recursiveDir(path.join(filePath, file), callback);
               });
             });
@@ -312,8 +323,8 @@ export class I18n {
         });
       };
       const dirWatcher = (dirPath: string) => {
-        fs.watch(dirPath, (eventType) => {
-          if (eventType === "change") {
+        fs.watch(dirPath, eventType => {
+          if (eventType === 'change') {
             // 重新载入所有翻译文本
             this._locals = readLangDir(directory);
             // 如果出现新文件夹，自动监听
@@ -331,7 +342,7 @@ export class I18n {
    * 解绑指定DOM元素的所有绑定
    * @param htmlElement HTMLElement
    */
-  public unbindElement(htmlElement: HTMLElement) {
+  unbindElement(htmlElement: HTMLElement) {
     // FIXME: 完成该函数
     // htmlElementTest 是假的
     // this._bindElementList = this._bindElementList.filter(
@@ -347,12 +358,8 @@ export class I18n {
    * @param htmlElement HTMLElement
    * @param args locale参数
    */
-  public bindElementText(
-    locale: Locale,
-    htmlElement: HTMLElement,
-    ...args: string[]
-  ) {
-    return this._bindElement(locale, htmlElement, "text", ...args);
+  bindElementText(locale: Locale, htmlElement: HTMLElement, ...args: string[]) {
+    return this._bindElement(locale, htmlElement, 'text', ...args);
   }
 
   /**
@@ -361,28 +368,24 @@ export class I18n {
    * @param htmlElement HTMLElement
    * @param args locale参数
    */
-  public bindElementHTML(
-    locale: Locale,
-    htmlElement: HTMLElement,
-    ...args: string[]
-  ) {
-    return this._bindElement(locale, htmlElement, "html", ...args);
+  bindElementHTML(locale: Locale, htmlElement: HTMLElement, ...args: string[]) {
+    return this._bindElement(locale, htmlElement, 'html', ...args);
   }
 
   /**
    * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
    * @param htmlElement HTMLElement
    */
-  public parseAllElementsText(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, "text");
+  parseAllElementsText(htmlElement: HTMLElement) {
+    return this._parseAllElements(htmlElement, 'text');
   }
 
   /**
    * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
    * @param htmlElement HTMLElement
    */
-  public parseAllElementsHTML(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, "html");
+  parseAllElementsHTML(htmlElement: HTMLElement) {
+    return this._parseAllElements(htmlElement, 'html');
   }
 
   /**
@@ -391,14 +394,11 @@ export class I18n {
   private _updateLocales() {
     this._bindElementList.forEach(({ locale, htmlElement, type, args }) => {
       const text = locale(...args);
-      switch (type) {
-        case "text": {
-          htmlElement.innerText = text;
-          break;
-        }
-        case "html": {
-          htmlElement.innerHTML = text;
-        }
+      if (type === 'text') {
+        htmlElement.innerText = text;
+      } else {
+        // 'html'
+        htmlElement.innerHTML = text;
       }
     });
   }
@@ -413,7 +413,7 @@ export class I18n {
   private _bindElement(
     locale: Locale,
     htmlElement: HTMLElement,
-    type: "text" | "html",
+    type: 'text' | 'html',
     ...args: string[]
   ) {
     this._bindElementList.push({
@@ -433,7 +433,7 @@ export class I18n {
    */
   private _parseAllElements(
     htmlElement: HTMLElement,
-    type: "text" | "html",
+    type: 'text' | 'html',
     ...args: string[]
   ) {
     /**
@@ -441,19 +441,19 @@ export class I18n {
      * @param element
      */
     const renderElement = (element: HTMLElement) => {
-      const i18nLocaleKeyChain = element.dataset.i18n.split(".");
+      const i18nLocaleKeyChain = element.dataset.i18n.split('.');
       const i18nLocaleElement = (() => {
-        let SelectedElement = this.text;
-        i18nLocaleKeyChain.forEach((i18nLocaleKey) => {
-          SelectedElement = SelectedElement[i18nLocaleKey];
+        let selectedElement = this.text;
+        i18nLocaleKeyChain.forEach(i18nLocaleKey => {
+          selectedElement = selectedElement[i18nLocaleKey];
         });
-        return SelectedElement;
+        return selectedElement;
       })();
       this._bindElement(i18nLocaleElement, element, type, ...args);
     };
-    if (htmlElement.getAttribute("data-i18n")) {
+    if (htmlElement.getAttribute('data-i18n')) {
       renderElement(htmlElement);
     }
-    htmlElement.querySelectorAll("[data-i18n]").forEach(renderElement);
+    htmlElement.querySelectorAll('[data-i18n]').forEach(renderElement);
   }
 }

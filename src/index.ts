@@ -8,29 +8,29 @@ import {
   Menu,
   MenuItem,
   nativeImage
-} from "electron";
-import * as express from "express";
-import * as fs from "fs";
-import * as https from "https";
-import * as os from "os";
-import * as path from "path";
-import { Configs } from "./config";
-import { Util } from "./utils";
+} from 'electron';
+import * as express from 'express';
+import * as fs from 'fs';
+import * as https from 'https';
+import * as os from 'os';
+import * as path from 'path';
+import { Configs } from './config';
+import { Util } from './utils';
 
 const server = express();
 
 // const i18n = require('./i18nInstance')
-import { AddressInfo } from "net";
-import { I18n } from "./i18n";
+import { AddressInfo } from 'net';
+import { I18n } from './i18n';
 const i18n = new I18n({
-  autoReload: process.env.NODE_ENV === "development",
+  autoReload: process.env.NODE_ENV === 'development',
   actives: [electronApp.getLocale()]
 });
 
 let userConfigs;
 try {
   userConfigs = JSON.parse(
-    fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: "utf-8" })
+    fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: 'utf-8' })
   );
 } catch (error) {
   userConfigs = {};
@@ -38,55 +38,55 @@ try {
 
 // 同步 configs-user.json
 function jsonKeyUpdate(ja, jb) {
-  Object.keys(ja).forEach((key) => {
-    if (typeof ja[key] === "object" && typeof jb[key] === "object") {
+  Object.keys(ja).forEach(key => {
+    if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
       jsonKeyUpdate(ja[key], jb[key]);
     }
     if (jb[key] === undefined) {
       delete ja[key];
     }
   });
-  Object.keys(jb).forEach((key) => {
+  Object.keys(jb).forEach(key => {
     if (ja[key] === undefined) {
       ja[key] = jb[key];
     }
   });
 }
 
-jsonKeyUpdate(userConfigs, require(path.join(__dirname, "configs-user.json")));
+jsonKeyUpdate(userConfigs, require(path.join(__dirname, 'configs-user.json')));
 fs.writeFileSync(Configs.USER_CONFIG_PATH, JSON.stringify(userConfigs));
 
-const userDataDir = electronApp.getPath("userData");
+const userDataDir = electronApp.getPath('userData');
 const paths = [Configs.EXECUTES_DIR, Configs.MODS_DIR, Configs.TOOLS_DIR];
 paths
-  .map((dir) => path.join(userDataDir, dir))
-  .forEach((dir) => !fs.existsSync(dir) && fs.mkdirSync(dir));
+  .map(dir => path.join(userDataDir, dir))
+  .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir));
 
 if (userConfigs.chromium.isInProcessGpuOn) {
   const osplatform = os.platform();
   switch (osplatform) {
-    case "darwin":
-    case "win32":
-      electronApp.commandLine.appendSwitch("in-process-gpu");
+    case 'darwin':
+    case 'win32':
+      electronApp.commandLine.appendSwitch('in-process-gpu');
       break;
-    case "aix":
-    case "android":
-    case "cygwin":
-    case "freebsd":
-    case "openbsd":
-    case "sunos":
+    case 'aix':
+    case 'android':
+    case 'cygwin':
+    case 'freebsd':
+    case 'openbsd':
+    case 'sunos':
     default:
       break;
   }
 }
 if (userConfigs.chromium.isIgnoreGpuBlacklist) {
-  electronApp.commandLine.appendSwitch("ignore-gpu-blacklist");
+  electronApp.commandLine.appendSwitch('ignore-gpu-blacklist');
 }
 
 const sererHttps = https.createServer(
   {
-    key: fs.readFileSync(path.join(__dirname, "certificate/key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "certificate/cert.crt"))
+    key: fs.readFileSync(path.join(__dirname, 'certificate/key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'certificate/cert.crt'))
   },
   server
 );
@@ -94,7 +94,7 @@ const sererHttps = https.createServer(
 if (
   (() => {
     try {
-      if (userConfigs.chromium["isHardwareAccelerationDisable"] === true) {
+      if (userConfigs.chromium['isHardwareAccelerationDisable'] === true) {
         return true;
       }
     } catch (err) {
@@ -106,18 +106,18 @@ if (
   electronApp.disableHardwareAcceleration();
 }
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-server.get("*", Util.processRequest);
+server.get('*', Util.processRequest);
 
-electronApp.commandLine.appendSwitch("ignore-certificate-errors");
+electronApp.commandLine.appendSwitch('ignore-certificate-errors');
 electronApp.commandLine.appendSwitch(
-  "autoplay-policy",
-  "no-user-gesture-required"
+  'autoplay-policy',
+  'no-user-gesture-required'
 );
 
 // 当所有窗口被关闭了，退出。
-electronApp.on("window-all-closed", () => {
+electronApp.on('window-all-closed', () => {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
   // if (process.platform !== 'darwin') {
@@ -127,7 +127,7 @@ electronApp.on("window-all-closed", () => {
 
 // 阻止证书验证
 electronApp.on(
-  "certificate-error",
+  'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
     event.preventDefault();
     callback(true); // eslint-disable-line standard/no-callback-literal
@@ -138,19 +138,19 @@ electronApp.on(
 const gameWindowMenu: Menu = new Menu();
 gameWindowMenu.append(
   new MenuItem({
-    label: "游戏",
-    role: "services",
+    label: '游戏',
+    role: 'services',
     submenu: [
       {
-        label: "截图",
-        accelerator: "F12",
+        label: '截图',
+        accelerator: 'F12',
         click: (menuItem, browserWindow) => {
           Util.takeScreenshot(browserWindow.webContents);
         }
       },
       {
-        label: "截图",
-        accelerator: "CmdOrCtrl+P",
+        label: '截图',
+        accelerator: 'CmdOrCtrl+P',
         enabled: true,
         visible: false,
         click: (menuItem, browserWindow) => {
@@ -158,15 +158,15 @@ gameWindowMenu.append(
         }
       },
       {
-        label: "重新载入",
-        accelerator: "CmdOrCtrl+R",
+        label: '重新载入',
+        accelerator: 'CmdOrCtrl+R',
         click: (menuItem, browserWindow) => {
           browserWindow.reload();
         }
       },
       {
-        label: "退出游戏",
-        accelerator: "Alt+F4",
+        label: '退出游戏',
+        accelerator: 'Alt+F4',
         click: (menuItem, browserWindow) => {
           browserWindow.close();
         }
@@ -176,19 +176,19 @@ gameWindowMenu.append(
 );
 gameWindowMenu.append(
   new MenuItem({
-    label: "窗口",
-    role: "window",
+    label: '窗口',
+    role: 'window',
     submenu: [
       {
-        label: "置顶",
-        accelerator: "CmdOrCtrl+T",
+        label: '置顶',
+        accelerator: 'CmdOrCtrl+T',
         click: (menuItem, browserWindow) => {
           browserWindow.setAlwaysOnTop(!browserWindow.isAlwaysOnTop());
         }
       },
       {
-        label: "全屏",
-        accelerator: "F11",
+        label: '全屏',
+        accelerator: 'F11',
         click: (menuItem, browserWindow) => {
           if (!userConfigs.window.isKioskModeOn) {
             browserWindow.setFullScreen(!browserWindow.isFullScreen());
@@ -198,8 +198,8 @@ gameWindowMenu.append(
         }
       },
       {
-        label: "全屏",
-        accelerator: "F5",
+        label: '全屏',
+        accelerator: 'F5',
         enabled: true,
         visible: false,
         click: (menuItem, browserWindow) => {
@@ -211,8 +211,8 @@ gameWindowMenu.append(
         }
       },
       {
-        label: "退出全屏",
-        accelerator: "Esc",
+        label: '退出全屏',
+        accelerator: 'Esc',
         click: (menuItem, browserWindow) => {
           if (browserWindow.isFullScreen()) {
             browserWindow.setFullScreen(false);
@@ -228,20 +228,20 @@ gameWindowMenu.append(
 );
 gameWindowMenu.append(
   new MenuItem({
-    label: "编辑",
-    role: "editMenu"
+    label: '编辑',
+    role: 'editMenu'
   })
 );
 gameWindowMenu.append(
   new MenuItem({
-    label: "更多",
+    label: '更多',
     submenu: [
       {
-        label: "开发者工具",
-        accelerator: "CmdOrCtrl+I",
+        label: '开发者工具',
+        accelerator: 'CmdOrCtrl+I',
         click: (menuItem, browserWindow) => {
-          browserWindow.webContents.openDevTools({ mode: "detach" });
-          browserWindow.webContents.send("open-devtools");
+          browserWindow.webContents.openDevTools({ mode: 'detach' });
+          browserWindow.webContents.send('open-devtools');
         }
       }
     ]
@@ -266,30 +266,34 @@ const windowControl = {
     let randomResult = Math.random() * sumWeight;
 
     const index = titles.reduce((last: number | null, value, i) => {
-      if (Number.isInteger(last)) {
+      if (typeof last === 'number' && Number.isInteger(last)) {
         return last;
       }
-      if ((randomResult -= value.weight) <= 0) {
+
+      randomResult -= value.weight;
+      if (randomResult <= 0) {
         return i;
       }
+
       return null;
     }, null);
-    return titles[index].text;
+    // FIXME: remove type assertion
+    return titles[index as number].text;
   },
 
   _getExecuteScripts: () => {
     let executeScripts;
     try {
       const data = fs.readFileSync(Configs.EXECUTES_CONFIG_PATH);
-      executeScripts = JSON.parse(data.toString("utf-8"));
+      executeScripts = JSON.parse(data.toString('utf-8'));
     } catch (error) {
       console.error(error);
       executeScripts = [];
     }
     try {
       const data = fs.readFileSync(Configs.MODS_CONFIG_PATH);
-      const mods = JSON.parse(data.toString("utf-8"));
-      mods.forEach((mod) => {
+      const mods = JSON.parse(data.toString('utf-8'));
+      mods.forEach(mod => {
         if (mod.execute) {
           mod.execute.filesDir = mod.filesDir;
           executeScripts.push(mod.execute);
@@ -302,15 +306,15 @@ const windowControl = {
   },
 
   electronReady: () => {
-    return new Promise((resolve) => electronApp.once("ready", resolve));
+    return new Promise(resolve => electronApp.once('ready', resolve));
   },
 
   initLocalMirrorServer: (serverHttps: https.Server, port: number) => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       serverHttps.listen(port);
-      serverHttps.on("listening", resolve);
-      serverHttps.on("error", (err) => {
-        if (err.code === "EADDRINUSE") {
+      serverHttps.on('listening', resolve);
+      serverHttps.on('error', err => {
+        if (err.code === 'EADDRINUSE') {
           console.warn(i18n.text.main.portInUse());
           serverHttps.close();
           serverHttps.listen(0);
@@ -318,17 +322,17 @@ const windowControl = {
       });
     });
   },
-  initManagerWindow: (managerWindowConfig) => {
+  initManagerWindow: managerWindowConfig => {
     const config = {
       ...managerWindowConfig
     };
     // hack macOS config
-    if (process.platform === "darwin") {
+    if (process.platform === 'darwin') {
       config.frame = false;
-      config.titleBarStyle = "hidden";
-      if (parseInt(process.versions.electron.split(".")[0], 10) > 2) {
-        config.vibrancy = "light";
-        config.backgroundColor = "rgba(0,0,0,0)";
+      config.titleBarStyle = 'hidden';
+      if (Number(process.versions.electron.split('.')[0]) > 2) {
+        config.vibrancy = 'light';
+        config.backgroundColor = 'rgba(0,0,0,0)';
       }
     }
 
@@ -337,69 +341,69 @@ const windowControl = {
 
     const managerWindow = new BrowserWindow(config);
 
-    managerWindow.once("ready-to-show", () => {
+    managerWindow.once('ready-to-show', () => {
       managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor);
       managerWindow.show();
     });
 
-    managerWindow.on("page-title-updated", (evt) => evt.preventDefault());
-    managerWindow.once("close", (evt) => {
+    managerWindow.on('page-title-updated', evt => evt.preventDefault());
+    managerWindow.once('close', evt => {
       evt.preventDefault();
       managerWindow.hide();
-      evt.sender.send("saveConfig");
+      evt.sender.send('saveConfig');
     });
     managerWindow.loadURL(
-      "file://" + path.join(__dirname, "manager/index.html")
+      'file://' + path.join(__dirname, 'manager/index.html')
     );
 
     // Add environment config to open developer tools
-    if (process.env.NODE_ENV === "development") {
-      managerWindow.webContents.openDevTools({ mode: "detach" });
+    if (process.env.NODE_ENV === 'development') {
+      managerWindow.webContents.openDevTools({ mode: 'detach' });
     }
 
-    windowControl.windowMap["manager"] = managerWindow;
+    windowControl.windowMap['manager'] = managerWindow;
   },
 
-  initGameWindow: (gameWindowConfig) => {
+  initGameWindow: gameWindowConfig => {
     const config = {
       ...gameWindowConfig,
       title: windowControl._getGameWindowTitle(),
       frame: !userConfigs.window.isNoBorder
     };
     // TODO: wait new setting system
-    if (userConfigs["window"]["gameWindowSize"] !== "") {
-      const windowSize = userConfigs["window"]["gameWindowSize"]
-        .split(",")
-        .map((value) => parseInt(value));
+    if (userConfigs['window']['gameWindowSize'] !== '') {
+      const windowSize: number[] = userConfigs['window']['gameWindowSize']
+        .split(',')
+        .map((value: string) => Number(value));
       config.width = windowSize[0];
       config.height = windowSize[1];
     }
     const gameWindow = new BrowserWindow(config);
-    gameWindow.on("page-title-updated", (event) => event.preventDefault());
-    gameWindow.on("resize", () => {
-      userConfigs["window"]["gameWindowSize"] = gameWindow.getSize().toString();
+    gameWindow.on('page-title-updated', event => event.preventDefault());
+    gameWindow.on('resize', () => {
+      userConfigs['window']['gameWindowSize'] = gameWindow.getSize().toString();
       const obj = {
-        mainKey: "window",
-        key: "gameWindowSize",
-        value: userConfigs["window"]["gameWindowSize"]
+        mainKey: 'window',
+        key: 'gameWindowSize',
+        value: userConfigs['window']['gameWindowSize']
       };
-      windowControl.windowMap["manager"].send(
-        "changeConfig",
+      windowControl.windowMap['manager'].send(
+        'changeConfig',
         JSON.stringify(obj)
       );
-      gameWindow.webContents.send("window-resize", gameWindow.getBounds());
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds());
     });
-    gameWindow.on("move", () => {
-      gameWindow.webContents.send("window-resize", gameWindow.getBounds());
+    gameWindow.on('move', () => {
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds());
     });
-    gameWindow.on("moved", () => {
-      gameWindow.webContents.send("window-resize", gameWindow.getBounds());
+    gameWindow.on('moved', () => {
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds());
     });
-    gameWindow.on("closed", () => {
+    gameWindow.on('closed', () => {
       Util.shutoffPlayer();
       sererHttps.close();
       if (userConfigs.window.isManagerHide) {
-        const managerWindow = windowControl.windowMap["manager"];
+        const managerWindow = windowControl.windowMap['manager'];
         if (managerWindow) {
           managerWindow.show();
         }
@@ -408,15 +412,15 @@ const windowControl = {
     Util.initPlayer();
     // 如果重复启动游戏，则重新加载模组
     Util.loadMods();
-    gameWindow.webContents.on("crashed", () =>
+    gameWindow.webContents.on('crashed', () =>
       console.warn(i18n.text.main.webContentsCrashed())
     );
-    gameWindow.once("ready-to-show", () => {
+    gameWindow.once('ready-to-show', () => {
       gameWindow.webContents.setZoomFactor(1);
       gameWindow.show();
-      gameWindow.webContents.send("window-resize", gameWindow.getBounds());
+      gameWindow.webContents.send('window-resize', gameWindow.getBounds());
     });
-    gameWindow.webContents.on("console-message", (
+    gameWindow.webContents.on('console-message', (
       evt,
       level,
       msg /*, line, sourceId  */
@@ -429,20 +433,20 @@ const windowControl = {
       }
     });
     // 载入本地启动器
-    gameWindow.loadURL("file://" + path.join(__dirname, "bin/main/index.html"));
+    gameWindow.loadURL('file://' + path.join(__dirname, 'bin/main/index.html'));
 
     // Add environment config to open developer tools
-    if (process.env.NODE_ENV === "development") {
-      gameWindow.webContents.openDevTools({ mode: "detach" });
+    if (process.env.NODE_ENV === 'development') {
+      gameWindow.webContents.openDevTools({ mode: 'detach' });
     }
 
     Menu.setApplicationMenu(gameWindowMenu);
 
-    windowControl.windowMap["game"] = gameWindow;
+    windowControl.windowMap['game'] = gameWindow;
   },
 
   closeManagerWindow: () => {
-    const managerWindow = windowControl.windowMap["manager"];
+    const managerWindow = windowControl.windowMap['manager'];
     if (managerWindow) {
       managerWindow.close();
     }
@@ -450,17 +454,17 @@ const windowControl = {
 
   hideManagerWindow: () => {
     const managerWindow: Electron.BrowserWindow =
-      windowControl.windowMap["manager"];
+      windowControl.windowMap['manager'];
     if (managerWindow) {
       managerWindow.hide();
     }
   },
 
   addAppListener: () => {
-    ipcMain.on("application-message", (evt, ...args) => {
+    ipcMain.on('application-message', (evt, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
-          case "start-game": {
+          case 'start-game': {
             windowControl
               .initLocalMirrorServer(sererHttps, Configs.SERVER_PORT)
               .then(() => {
@@ -473,7 +477,7 @@ const windowControl = {
               });
             break;
           }
-          case "start-tool": {
+          case 'start-tool': {
             const toolInfo = args[1];
             if (!toolInfo.windowOptions) {
               toolInfo.windowOption = {};
@@ -482,57 +486,57 @@ const windowControl = {
               ...Configs.TOOL_WINDOW_CONFIG,
               ...toolInfo.windowOptions
             };
-            const indexPage = toolInfo.index ? toolInfo.index : "index.html";
-            toolConfig.parent = windowControl.windowMap["manager"];
+            const indexPage = toolInfo.index ? toolInfo.index : 'index.html';
+            toolConfig.parent = windowControl.windowMap['manager'];
 
             const toolWindow = new BrowserWindow(toolConfig);
 
             windowControl.windowMap.toolsMap[toolInfo.filesDir] = toolWindow;
 
-            if (process.env.NODE_ENV === "development") {
+            if (process.env.NODE_ENV === 'development') {
               toolWindow.webContents.openDevTools({
-                mode: "detach"
+                mode: 'detach'
               });
             }
 
             toolWindow.loadURL(
-              "file://" + path.join(toolInfo.filesDir, indexPage)
+              'file://' + path.join(toolInfo.filesDir, indexPage)
             );
             break;
           }
-          case "update-user-config": {
+          case 'update-user-config': {
             userConfigs = JSON.parse(
-              fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: "utf-8" })
+              fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: 'utf-8' })
             );
-            windowControl.windowMap["manager"].setContentSize(
+            windowControl.windowMap['manager'].setContentSize(
               Configs.MANAGER_WINDOW_CONFIG.width *
                 userConfigs.window.zoomFactor,
               Configs.MANAGER_WINDOW_CONFIG.height *
                 userConfigs.window.zoomFactor
             );
-            windowControl.windowMap["manager"].webContents.setZoomFactor(
+            windowControl.windowMap['manager'].webContents.setZoomFactor(
               userConfigs.window.zoomFactor
             );
             break;
           }
-          case "take-screenshot": {
+          case 'take-screenshot': {
             const buffer: Buffer = args[1];
             const filePath = path.join(
-              electronApp.getPath("pictures"),
+              electronApp.getPath('pictures'),
               electronApp.getName(),
-              Date.now() + ".png"
+              Date.now() + '.png'
             );
             Util.writeFile(filePath, buffer).then(() => {
-              windowControl.windowMap["game"].webContents.send(
-                "screenshot-saved",
+              windowControl.windowMap['game'].webContents.send(
+                'screenshot-saved',
                 filePath
               );
             });
             clipboard.writeImage(nativeImage.createFromBuffer(buffer));
             break;
           }
-          case "close-ready": {
-            windowControl.windowMap["manager"].close();
+          case 'close-ready': {
+            windowControl.windowMap['manager'].close();
             break;
           }
           default:
@@ -540,51 +544,52 @@ const windowControl = {
         }
       }
     });
-    ipcMain.on("main-loader-message", (evt, ...args) => {
+    ipcMain.on('main-loader-message', (evt, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
-          case "main-loader-ready": {
-            windowControl.windowMap["game"].webContents.send(
-              "server-port-load",
+          case 'main-loader-ready': {
+            windowControl.windowMap['game'].webContents.send(
+              'server-port-load',
               (sererHttps.address() as AddressInfo).port
             );
             break;
           }
-          case "server-port-loaded": {
+          case 'server-port-loaded': {
             const executeScripts = windowControl._getExecuteScripts();
-            windowControl.windowMap["game"].webContents.send(
-              "executes-load",
+            windowControl.windowMap['game'].webContents.send(
+              'executes-load',
               executeScripts
             );
             break;
           }
-          case "executes-loaded": {
+          case 'executes-loaded': {
             const clipboardText = clipboard.readText();
             if (
               clipboardText &&
               clipboardText.includes(Configs.REMOTE_DOMAIN)
             ) {
-              windowControl.windowMap["game"].webContents.send(
-                "load-url",
-                new RegExp(
-                  Configs.REMOTE_DOMAIN.replace(/\./g, "\\.") +
-                    "[-A-Za-z0-9+&@#/%?=~_|!:,.;]*"
-                ).exec(clipboardText)[0]
+              // FIXME: remove type assertion
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
+                (new RegExp(
+                  Configs.REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+                ).exec(clipboardText) as string[])[0]
               );
             } else if (
               clipboardText &&
               clipboardText.includes(Configs.HTTP_REMOTE_DOMAIN)
             ) {
-              windowControl.windowMap["game"].webContents.send(
-                "load-url",
-                new RegExp(
-                  Configs.HTTP_REMOTE_DOMAIN.replace(/\./g, "\\.") +
-                    "[-A-Za-z0-9+&@#/%?=~_|!:,.;]*"
-                ).exec(clipboardText)[0]
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
+                (new RegExp(
+                  Configs.HTTP_REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+                ).exec(clipboardText) as string[])[0]
               );
             } else {
-              windowControl.windowMap["game"].webContents.send(
-                "load-url",
+              windowControl.windowMap['game'].webContents.send(
+                'load-url',
                 `https://localhost:${
                   (sererHttps.address() as AddressInfo).port
                 }/0/`
@@ -592,14 +597,14 @@ const windowControl = {
             }
             break;
           }
-          case "open-file-dialog": {
+          case 'open-file-dialog': {
             dialog.showOpenDialog(
               {
-                properties: ["openFile", "openDirectory"]
+                properties: ['openFile', 'openDirectory']
               },
-              (files) => {
+              files => {
                 if (files) {
-                  evt.sender.send("selected-directory", files);
+                  evt.sender.send('selected-directory', files);
                 }
               }
             );
@@ -621,11 +626,11 @@ const windowControl = {
         managerWindowMuted: false,
         bosskeyActive: false
       };
-      globalShortcut.register("Alt+X", () => {
+      globalShortcut.register('Alt+X', () => {
         const gameWindow: Electron.BrowserWindow =
-          windowControl.windowMap["game"];
+          windowControl.windowMap['game'];
         const managerWindow: Electron.BrowserWindow =
-          windowControl.windowMap["manager"];
+          windowControl.windowMap['manager'];
 
         if (windowsStatus.bosskeyActive) {
           // 如果老板键已经被按下
@@ -681,6 +686,6 @@ const windowControl = {
 };
 windowControl.start();
 
-process.on("uncaughtException", (err) => {
+process.on('uncaughtException', err => {
   console.error(err);
 });

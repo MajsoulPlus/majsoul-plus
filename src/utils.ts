@@ -1,21 +1,21 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint-disable prefer-promise-reject-errors */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
 
-import * as AdmZip from "adm-zip";
-import * as childProcess from "child_process";
-import { Configs } from "./config";
+import * as AdmZip from 'adm-zip';
+import * as childProcess from 'child_process';
+import { Configs } from './config';
 
-import { BrowserWindow, WebContents } from "electron";
-import * as express from "express";
-import { IncomingMessage } from "http";
-import * as https from "https";
-import * as url from "url";
+import { BrowserWindow, WebContents } from 'electron';
+import * as express from 'express';
+import { IncomingMessage } from 'http';
+import * as https from 'https';
+import * as url from 'url';
 
 // 用于存储Mod对象
-let mods: any[];
+let mods: MajsoulPlus.Mod[];
 
 // 播放器
 let audioPlayer: BrowserWindow;
@@ -51,9 +51,9 @@ export const Util = {
    */
   isPath(originalUrl: string): boolean {
     return (
-      originalUrl.endsWith("\\") ||
-      originalUrl.endsWith("/") ||
-      originalUrl.includes("?")
+      originalUrl.endsWith('\\') ||
+      originalUrl.endsWith('/') ||
+      originalUrl.includes('?')
     );
   },
 
@@ -65,14 +65,14 @@ export const Util = {
    * @returns {Promise<void>}
    */
   mkdirs(dirname: string): Promise<void> {
-    return new Promise((resolve) => {
-      fs.stat(dirname, (err) => {
+    return new Promise(resolve => {
+      fs.stat(dirname, err => {
         if (!err) {
           resolve();
         } else {
           resolve(
             this.mkdirs(path.dirname(dirname)).then(() => {
-              return new Promise((res) => fs.mkdir(dirname, res));
+              return new Promise(res => fs.mkdir(dirname, res));
             })
           );
         }
@@ -113,7 +113,7 @@ export const Util = {
   getRemoteSource(
     originalUrl: string,
     encrypt: boolean,
-    encoding: string = "binary"
+    encoding = 'binary'
   ): Promise<{
     res: IncomingMessage;
     statusCode?: number;
@@ -124,18 +124,18 @@ export const Util = {
       https.get(
         {
           ...url.parse(remoteUrl),
-          headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
+          headers: { 'User-Agent': Configs.HTTP_GET_USER_AGENT }
         },
-        (httpRes) => {
+        httpRes => {
           const { statusCode } = httpRes;
           httpRes.setEncoding(encoding);
           const chunks = [];
           let chunksSize = 0;
-          httpRes.on("data", (chunk) => {
+          httpRes.on('data', chunk => {
             chunks.push(chunk);
             chunksSize += chunk.length;
           });
-          httpRes.on("end", () => {
+          httpRes.on('end', () => {
             let fileData = null;
             switch (chunks.length) {
               case 0:
@@ -199,30 +199,26 @@ export const Util = {
    * @param {string} encoding 编码格式
    * @param {Function} dataCallback 当获取到数据时候的callback
    */
-  httpsGetFile(
-    URI: string,
-    encoding: string = "binary",
-    dataCallback: Function
-  ) {
+  httpsGetFile(URI: string, encoding = 'binary', dataCallback: Function) {
     return new Promise((resolve, reject) => {
       https.get(
         {
           ...url.parse(URI),
-          headers: { "User-Agent": Configs.HTTP_GET_USER_AGENT }
+          headers: { 'User-Agent': Configs.HTTP_GET_USER_AGENT }
         },
-        (httpRes) => {
+        httpRes => {
           const { statusCode } = httpRes;
           httpRes.setEncoding(encoding);
           const chunks = [];
           let chunksSize = 0;
-          httpRes.on("data", (chunk) => {
+          httpRes.on('data', chunk => {
             chunks.push(chunk);
             chunksSize += chunk.length;
             if (dataCallback) {
               dataCallback(chunk);
             }
           });
-          httpRes.on("end", () => {
+          httpRes.on('end', () => {
             let fileData = null;
             switch (chunks.length) {
               case 0:
@@ -290,7 +286,7 @@ export const Util = {
     isPath: boolean,
     dirBase = path.join(__dirname, Configs.LOCAL_DIR)
   ): string {
-    const indexOfProps = originalUrl.indexOf("?");
+    const indexOfProps = originalUrl.indexOf('?');
     originalUrl = originalUrl.substring(
       0,
       indexOfProps === -1 ? undefined : indexOfProps
@@ -309,11 +305,11 @@ export const Util = {
   writeFile(
     pathToWrite: string,
     data: Buffer | string,
-    encoding: string = "binary"
+    encoding = 'binary'
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       this.mkdirs(path.dirname(pathToWrite)).then(() => {
-        fs.writeFile(pathToWrite, data, encoding, (err) => {
+        fs.writeFile(pathToWrite, data, encoding, err => {
           if (err) {
             reject(err);
           }
@@ -339,19 +335,19 @@ export const Util = {
     });
   },
 
-  /**
-   * @param {Buffer | string} data
-   * @param {string} encoding
-   */
-  encodeData(data: any, encoding: string = "binary") {
-    return Buffer.from(data, encoding);
+  encodeData(data: Buffer | string, encoding = 'binary') {
+    if (typeof data === 'string') {
+      return Buffer.from(data as string, encoding);
+    } else {
+      return Buffer.from(data as Buffer);
+    }
   },
 
   /**
    * 获取文件的路由函数
-   * @param {express.Request} req Request对象
-   * @param {express.Response} res Response对象
-   * @param {express.NextFunction} next NextFunction对象
+   * @param req Request对象
+   * @param res Response对象
+   * @param next NextFunction对象
    */
   processRequest(req: express.Request, res: express.Response) {
     if (!mods) {
@@ -363,18 +359,25 @@ export const Util = {
     const isPath = this.isPath(originalUrl);
     const localURI = this.getLocalURI(originalUrl, isPath);
 
-    let promise: Promise<any> = Promise.reject();
-    mods.forEach((mod) => {
+    let promise: Promise<express.NextFunction> = Promise.reject();
+    mods.forEach(mod => {
       promise = promise.then(
-        (data) => data,
+        data => data,
         () => {
           const modDir = mod.dir;
-          let promiseMod: Promise<any> = Promise.reject();
+          let promiseMod: Promise<express.NextFunction> = Promise.reject();
           // const readModFile = path => {
           //   return this.readFile(localURI)
           // }
+
+          // 平滑升级至 mod.dir
+          if (mod.dir === undefined && mod.filesDir) {
+            mod.dir = mod.filesDir;
+            mod.filesDir = undefined;
+          }
+
           if (mod.replace && mod.replace.length > 0) {
-            mod.replace.forEach((replaceInfo) => {
+            mod.replace.forEach(replaceInfo => {
               const regExp = new RegExp(replaceInfo.from);
               if (!regExp.test(originalUrl)) {
                 return;
@@ -382,10 +385,10 @@ export const Util = {
               const localURI = this.getLocalURI(
                 originalUrl.replace(regExp, replaceInfo.to),
                 isPath,
-                path.join(mod.filesDir, modDir || "/files")
+                path.join(mod.dir, modDir || '/files')
               );
               promiseMod = promiseMod.then(
-                (data) => data,
+                data => data,
                 () => this.readFile(localURI)
               );
             });
@@ -393,10 +396,10 @@ export const Util = {
           const localURI = this.getLocalURI(
             originalUrl,
             isPath,
-            path.join(mod.filesDir, modDir || "/files")
+            path.join(mod.dir, modDir || '/files')
           );
           promiseMod = promiseMod.then(
-            (data) => data,
+            data => data,
             () => this.readFile(localURI)
           );
           return promiseMod;
@@ -404,9 +407,9 @@ export const Util = {
       );
     });
     promise
-      .then((data) => data, () => this.readFile(localURI))
+      .then(data => data, () => this.readFile(localURI))
       .then(
-        (data) => data,
+        data => data,
         () => {
           return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
             ({ data, res: result }) => {
@@ -424,21 +427,21 @@ export const Util = {
         }
       )
       .then(
-        (data) => {
+        data => {
           let sendData = isPath
-            ? this.encodeData(data).toString("utf-8")
+            ? this.encodeData(data).toString('utf-8')
             : this.encodeData(data);
           if (encrypt) {
             sendData = this.XOR(sendData);
           }
           res.end(sendData);
         },
-        (data) => {
-          const sendData = this.encodeData(data).toString("utf-8");
+        data => {
+          const sendData = this.encodeData(data).toString('utf-8');
           res.send(sendData);
         }
       )
-      .catch((err) => console.error(err));
+      .catch(err => console.error(err));
   },
 
   /**
@@ -451,7 +454,7 @@ export const Util = {
     // const modDirs = fs.readdirSync(modRootDir)
     try {
       const data = fs.readFileSync(Configs.MODS_CONFIG_PATH);
-      mods = JSON.parse(data.toString("utf-8"));
+      mods = JSON.parse(data.toString('utf-8'));
     } catch (error) {
       console.error(error);
       mods = [];
@@ -463,8 +466,8 @@ export const Util = {
    * @param {string} dir 要删除的目录
    */
   removeDirSync(dir: string) {
-    let command = "";
-    if (process.platform === "win32") {
+    let command = '';
+    if (process.platform === 'win32') {
       command = `rmdir /s/q "${dir}"`;
     } else {
       command = `rm -rf "${dir}"`;
@@ -478,10 +481,10 @@ export const Util = {
    */
   takeScreenshot(webContents: WebContents) {
     audioPlayer.webContents.send(
-      "audio-play",
-      path.join(__dirname, "bin/audio/screenshot.mp3")
+      'audio-play',
+      path.join(__dirname, 'bin/audio/screenshot.mp3')
     );
-    webContents.send("take-screenshot");
+    webContents.send('take-screenshot');
   },
   /**
    * 初始化音频播放器
@@ -491,7 +494,7 @@ export const Util = {
       show: false
     });
     audioPlayer.loadURL(
-      "file://" + path.join(__dirname, "bin/audio/player.html")
+      'file://' + path.join(__dirname, 'bin/audio/player.html')
     );
   },
   /**
@@ -518,8 +521,8 @@ export const Util = {
    * @return {number} 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
    */
   compareVersion(taga: string, tagb: string): number {
-    const tagaArr = taga.substring(1).split("-");
-    const tagbArr = tagb.substring(1).split("-");
+    const tagaArr = taga.substring(1).split('-');
+    const tagbArr = tagb.substring(1).split('-');
     let tagaDev = false;
     let tagbDev = false;
     if (tagaArr.length > 1) {
@@ -528,52 +531,49 @@ export const Util = {
     if (tagbArr.length > 1) {
       tagbDev = true;
     }
-    const tagaMain = tagaArr[0].split(".");
-    const tagbMain = tagbArr[0].split(".");
+    const tagaMain = tagaArr[0].split('.');
+    const tagbMain = tagbArr[0].split('.');
 
-    let laterFlag;
+    let laterFlag: number | undefined = undefined;
     for (let i = 0; i < 3; i++) {
-      if (parseInt(tagaMain[i], 10) > parseInt(tagbMain[i], 10)) {
+      if (Number(tagaMain[i]) > Number(tagbMain[i])) {
         laterFlag = i + 1;
         break;
-      } else if (parseInt(tagaMain[i], 10) < parseInt(tagbMain[i], 10)) {
+      } else if (Number(tagaMain[i]) < Number(tagbMain[i])) {
         laterFlag = 0;
         break;
       }
     }
 
-    if (typeof laterFlag === "number") {
+    if (typeof laterFlag === 'number') {
       return laterFlag;
-    }
-    if (laterFlag === undefined) {
+    } else {
       if (tagbDev && !tagaDev) {
         return 1;
       } else if (tagaDev && !tagbDev) {
         return 0;
       } else if (tagaDev && tagbDev) {
-        const tagaDevArr: any[] = tagaArr[1].split(".");
-        const tagbDevArr: any[] = tagbArr[1].split(".");
+        const tagaDevArr: Array<string | number> = tagaArr[1].split('.');
+        const tagbDevArr: Array<string | number> = tagbArr[1].split('.');
         const devStrToNum = (devStr: string): number => {
           switch (devStr) {
-            case "alpha":
+            case 'alpha':
               return 1;
-            case "beta":
+            case 'beta':
               return 2;
-            case "rc":
+            case 'rc':
               return 3;
             default:
               return 0;
           }
         };
-        tagaDevArr[0] = devStrToNum(tagaDevArr[0]);
-        tagbDevArr[0] = devStrToNum(tagbDevArr[0]);
+        tagaDevArr[0] = devStrToNum(tagaDevArr[0] as string);
+        tagbDevArr[0] = devStrToNum(tagbDevArr[0] as string);
         for (let i = 0; i < 2; i++) {
-          if (parseInt(tagaDevArr[i], 10) > parseInt(tagbDevArr[i], 10)) {
+          if (Number(tagaDevArr[i]) > Number(tagbDevArr[i])) {
             laterFlag = 4;
             break;
-          } else if (
-            parseInt(tagaDevArr[i], 10) < parseInt(tagbDevArr[i], 10)
-          ) {
+          } else if (Number(tagaDevArr[i]) < Number(tagbDevArr[i])) {
             laterFlag = 0;
             break;
           }
@@ -589,8 +589,8 @@ export const Util = {
   }
 };
 
-Object.keys(Util).forEach((key) => {
-  if (typeof Util[key] === "function") {
+Object.keys(Util).forEach(key => {
+  if (typeof Util[key] === 'function') {
     Util[key] = Util[key].bind(Util);
   }
 });

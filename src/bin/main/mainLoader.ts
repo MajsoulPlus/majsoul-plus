@@ -1,13 +1,17 @@
-import { ipcRenderer, screen as electronScreen } from "electron";
-import * as fs from "fs";
-import * as path from "path";
-import { Configs } from "../../config";
-import { i18n } from "../../i18nInstance";
+import { ipcRenderer, screen as electronScreen } from 'electron';
+import * as fs from 'fs';
+import * as path from 'path';
+import { Configs } from '../../config';
+import { i18n } from '../../i18nInstance';
 
 const userConfigs = require(Configs.USER_CONFIG_PATH);
 
-const mainWindow: Electron.WebviewTag = document.querySelector("#mainWindow");
-const mainWindowBox: HTMLDivElement = document.querySelector("#mainWindowBox");
+const mainWindow: Electron.WebviewTag = document.querySelector(
+  '#mainWindow'
+) as Electron.WebviewTag;
+const mainWindowBox: HTMLDivElement = document.querySelector(
+  '#mainWindowBox'
+) as HTMLDivElement;
 
 const scalePercent = userConfigs.window.renderingMultiple;
 
@@ -19,27 +23,27 @@ let serverPort: number;
 
 let clientRect: DOMRect;
 
-const prebuildExecuteCode = (executeScriptInfo) => {
+const prebuildExecuteCode = executeScriptInfo => {
   const executePreferences = executeScriptInfo.executePreferences
     ? executeScriptInfo.executePreferences
     : {};
   let codeEntry = executeScriptInfo.entry;
   if (!codeEntry) {
-    codeEntry = "script.js";
+    codeEntry = 'script.js';
   }
-  let code = "";
+  let code = '';
   if (Array.isArray(codeEntry)) {
-    codeEntry.forEach((entry) => {
+    codeEntry.forEach(entry => {
       code +=
-        "\n" +
+        '\n' +
         fs
           .readFileSync(path.join(executeScriptInfo.filesDir, entry))
-          .toString("utf-8");
+          .toString('utf-8');
     });
   } else {
     code = fs
       .readFileSync(path.join(executeScriptInfo.filesDir, codeEntry))
-      .toString("utf-8");
+      .toString('utf-8');
   }
   const sanboxCode = `const sandbox = new Proxy({}, {
     get(target, prop) {
@@ -160,25 +164,25 @@ const sandbox = new Proxy(
       if (target.hasOwnProperty(prop)) {
         return target[prop];
       }
-      if (prop === "window") {
+      if (prop === 'window') {
         return sandbox;
       }
-      if (prop === "global") {
+      if (prop === 'global') {
         return sandbox;
       }
-      if (prop === "require" && false === false) {
+      if (prop === 'require' && false === false) {
         return undefined;
       }
-      if (prop === "document" && false === false) {
+      if (prop === 'document' && false === false) {
         return undefined;
       }
-      if (prop === "localStorage" && false === false) {
+      if (prop === 'localStorage' && false === false) {
         return undefined;
       }
-      if (prop === "XMLHttpRequest" && false === false) {
+      if (prop === 'XMLHttpRequest' && false === false) {
         return undefined;
       }
-      if (prop === "WebSocket" && false === false) {
+      if (prop === 'WebSocket' && false === false) {
         return undefined;
       }
       if (prop === Symbol.unscopables) {
@@ -203,38 +207,42 @@ const sandbox = new Proxy(
 
 let screenshotCounter = 0;
 let screenshotTimer;
-const showScreenshotLabel = (src) => {
+const showScreenshotLabel = src => {
   const screenshotImage: HTMLImageElement = document.querySelector(
-    "#screenshotImage"
-  );
-  const screenshotText = document.getElementById("screenshotText");
-  const screenshotLabel = document.getElementById("screenshotLabel");
+    '#screenshotImage'
+  ) as HTMLImageElement;
+  const screenshotText: HTMLParagraphElement = document.getElementById(
+    'screenshotText'
+  ) as HTMLParagraphElement;
+  const screenshotLabel: HTMLDivElement = document.getElementById(
+    'screenshotLabel'
+  ) as HTMLDivElement;
   screenshotImage.src = src;
   screenshotText.innerText = screenshotCounter++
     ? i18n.text.main.screenshotsSaved(screenshotCounter)
     : i18n.text.main.screenshotSaved();
-  screenshotLabel.classList.remove("hide");
-  screenshotLabel.classList.add("show");
+  screenshotLabel.classList.remove('hide');
+  screenshotLabel.classList.add('show');
   clearTimeout(screenshotTimer);
   screenshotTimer = setTimeout(() => {
-    screenshotLabel.classList.remove("show");
+    screenshotLabel.classList.remove('show');
     clearTimeout(screenshotTimer);
     screenshotTimer = setTimeout(() => {
-      screenshotLabel.classList.add("hide");
+      screenshotLabel.classList.add('hide');
       screenshotCounter = 0;
     }, 300);
   }, 8000);
 };
 
-ipcRenderer.on("window-resize", (event, ...args) => {
+ipcRenderer.on('window-resize', (event, ...args) => {
   clientRect = args[0];
 });
 
-ipcRenderer.on("take-screenshot", () => {
+ipcRenderer.on('take-screenshot', () => {
   if (webContents) {
     // 回调函数
     const callbackFunction = (image: Electron.NativeImage) => {
-      ipcRenderer.send("application-message", "take-screenshot", image.toPNG());
+      ipcRenderer.send('application-message', 'take-screenshot', image.toPNG());
     };
     const rect = clientRect;
     const display = electronScreen.getDisplayMatching({
@@ -255,57 +263,57 @@ ipcRenderer.on("take-screenshot", () => {
   }
 });
 
-ipcRenderer.on("screenshot-saved", (event, ...args) => {
+ipcRenderer.on('screenshot-saved', (event, ...args) => {
   const src = args[0];
-  showScreenshotLabel("file://" + src);
+  showScreenshotLabel('file://' + src);
 });
 
-ipcRenderer.on("open-devtools", () => {
+ipcRenderer.on('open-devtools', () => {
   if (webContents) {
     // webContents.openDevTools({ mode: "detach" })
     mainWindow.openDevTools();
   }
 });
 
-const testRedirectGameWindow = (url) => {
+const testRedirectGameWindow = url => {
   return (
     url.startsWith(Configs.REMOTE_DOMAIN) ||
     url.startsWith(Configs.HTTP_REMOTE_DOMAIN)
   );
 };
 
-const testIsLocalGameWindow = (url) => {
-  return url.startsWith("https://localhost:");
+const testIsLocalGameWindow = url => {
+  return url.startsWith('https://localhost:');
 };
-const getLocalUrlWithParams = (url) => {
-  if (url.includes("?")) {
+const getLocalUrlWithParams = url => {
+  if (url.includes('?')) {
     return `https://localhost:${serverPort}/0/${url.substring(
-      url.indexOf("?")
+      url.indexOf('?')
     )}`;
   }
   return `https://localhost:${serverPort}/0/`;
 };
 const redirectGameWindow = (url, gameWindow) => {
   const localUrl = getLocalUrlWithParams(url);
-  console.warn("Redirect Target:" + localUrl);
+  console.warn('Redirect Target:' + localUrl);
   gameWindow.loadURL(localUrl);
 };
 
-ipcRenderer.on("server-port-load", (event, ...args) => {
-  console.warn("server-port-load");
+ipcRenderer.on('server-port-load', (event, ...args) => {
+  console.warn('server-port-load');
   serverPort = args[0];
-  ipcRenderer.send("main-loader-message", "server-port-loaded");
+  ipcRenderer.send('main-loader-message', 'server-port-loaded');
 });
 
-ipcRenderer.on("executes-load", (event, ...args) => {
-  console.warn("executes-load");
+ipcRenderer.on('executes-load', (event, ...args) => {
+  console.warn('executes-load');
   const executeScripts = args[0];
   executeScriptsCodes = [];
-  executeScripts.forEach((executeScript) => {
+  executeScripts.forEach(executeScript => {
     const code = prebuildExecuteCode(executeScript);
     executeScriptsCodes.push(code);
   });
-  ipcRenderer.send("main-loader-message", "executes-loaded");
+  ipcRenderer.send('main-loader-message', 'executes-loaded');
 });
 
 const scaleWindow = (percent = scalePercent) => {
@@ -316,26 +324,26 @@ const scaleWindow = (percent = scalePercent) => {
     2}%, ${(100 - percent) / 2}%)`;
 };
 
-mainWindow.addEventListener("dom-ready", () => {
+mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
     webContents = mainWindow.getWebContents();
     webContents.setZoomFactor(1);
-    ipcRenderer.send("main-loader-message", "main-loader-ready");
+    ipcRenderer.send('main-loader-message', 'main-loader-ready');
 
-    webContents.on("dom-ready", () => {
-      executeScriptsCodes.forEach((executeScriptCode) => {
+    webContents.on('dom-ready', () => {
+      executeScriptsCodes.forEach(executeScriptCode => {
         webContents.executeJavaScript(executeScriptCode);
       });
     });
 
-    webContents.on("will-navigate", (evt, url) => {
+    webContents.on('will-navigate', (evt, url) => {
       if (testRedirectGameWindow(url)) {
         evt.preventDefault();
         redirectGameWindow(url, mainWindow);
       }
     });
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       // webContents.openDevTools({ mode: "detach" })
       mainWindow.openDevTools();
     }
@@ -343,21 +351,21 @@ mainWindow.addEventListener("dom-ready", () => {
 
   if (testIsLocalGameWindow(mainWindow.src)) {
     scaleWindow(scalePercent);
-    mainWindow.insertCSS("body{overflow:hidden;}");
+    mainWindow.insertCSS('body{overflow:hidden;}');
   } else {
     scaleWindow(100);
   }
 });
 
-ipcRenderer.on("load-url", (event, ...args) => {
+ipcRenderer.on('load-url', (event, ...args) => {
   const url = args[0];
-  console.warn("LoadURL", url);
+  console.warn('LoadURL', url);
   if (testRedirectGameWindow(url)) {
     redirectGameWindow(url, mainWindow);
   } else {
     mainWindow.loadURL(url);
   }
-  mainWindowBox.style.width = "100vw";
-  mainWindowBox.style.height = "100vh";
-  mainWindowBox.style.transform = "none";
+  mainWindowBox.style.width = '100vw';
+  mainWindowBox.style.height = '100vh';
+  mainWindowBox.style.transform = 'none';
 });

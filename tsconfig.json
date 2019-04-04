@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2016",
     "module": "commonjs",
     "noImplicitAny": false,
+    "noImplicitReturns": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "pretty": true
+    // "strict": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["src/*.ts", "src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

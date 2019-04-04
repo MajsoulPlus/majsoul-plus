@@ -1,22 +1,16 @@
 {
-  "defaultSeverity": "warning",
-  "extends": ["tslint:recommended"],
-  "jsRules": {
-    "trailing-comma": false
-  },
+  "extends": "gts/tslint.json",
   "rules": {
-    "trailing-comma": false,
-    "object-literal-sort-keys": false,
-    "no-console": false,
-    "no-var-requires": false,
-    "max-line-length": false,
-    "interface-name": false,
-    "variable-name": false,
-    "forin": false,
-    "no-string-literal": false,
-    "radix": false,
-    "no-bitwise": false,
-    "ban-types": false
-  },
-  "rulesDirectory": []
+    "quotemark": {
+      "options": "single",
+      "severity": "error"
+    },
+    "semicolon": {
+      "options": "always",
+      "severity": "error"
+    },
+    "variable-name": {
+      "severity": "warn"
+    }
+  }
 }
