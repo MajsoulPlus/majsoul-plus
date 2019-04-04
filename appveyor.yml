@@ -6,9 +6,7 @@ build_script:
   - npm run build-win32
 artifacts:
   - name: releases
-    path:
-      - build\*.zip
-      - build\*.exe
+    path: build\*.zip
 deploy:
   - provider: GitHub
     auth_token: $(GITHUB_TOKEN)

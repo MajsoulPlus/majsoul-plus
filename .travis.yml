@@ -17,6 +17,7 @@ addons:
     packages: zip
 before_install:
   - npm install -g yarn
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn add --dev node@8.15.0; fi
 install:
   - yarn
 script:
