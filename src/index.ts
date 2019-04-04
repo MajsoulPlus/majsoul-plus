@@ -421,7 +421,8 @@ const windowControl = {
       level,
       msg /*, line, sourceId  */
     ) => {
-      if (level !== "log") {
+      // FIXME: log
+      if (level !== 1) {
         console.warn(i18n.text.main.consoleMessage() + msg);
       }
     });
