@@ -6,7 +6,7 @@ import { majsoulPlusGlobal } from './global';
 /**
  * 默认配置
  */
-const defaultWindowConfig: MajsoulPlus.WindowConfig = {
+const defaultWindowConfig: MajsoulPlus.UserWindowConfig = {
   OSTheme: 'light',
   gameWindowSize: '',
   zoomFactor: 1,
@@ -16,11 +16,11 @@ const defaultWindowConfig: MajsoulPlus.WindowConfig = {
   isManagerHide: false
 };
 
-const defaultUpdateConfig: MajsoulPlus.UpdateConfig = {
+const defaultUpdateConfig: MajsoulPlus.UserUpdateConfig = {
   prerelease: false
 };
 
-const defaultChromiumConfig: MajsoulPlus.ChromiumConfig = {
+const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
   isHardwareAccelerationDisable: false,
   isInProcessGpuOn: true,
   isIgnoreGpuBlacklist: false
@@ -30,7 +30,7 @@ const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   useAppdataLibrary: false
 };
 
-export const defaultConfig: MajsoulPlus.Config = {
+export const defaultConfig: MajsoulPlus.UserConfig = {
   window: defaultWindowConfig,
   update: defaultUpdateConfig,
   chromium: defaultChromiumConfig,
@@ -49,16 +49,16 @@ Object.freeze(defaultConfig);
 /**
  * 加载配置文件 json
  */
-export function LoadConfigJson(): MajsoulPlus.Config {
-  let config: MajsoulPlus.Config;
+export function LoadConfigJson(): MajsoulPlus.UserConfig {
+  let config: MajsoulPlus.UserConfig;
   try {
     config = JSON.parse(
-      fs.readFileSync(majsoulPlusGlobal.USER_CONFIG_PATH, {
+      fs.readFileSync(majsoulPlusGlobal.UserConfigPath, {
         encoding: 'utf-8'
       })
     );
   } catch (e) {
-    config = fillObject({}, defaultConfig) as MajsoulPlus.Config;
+    config = fillObject({}, defaultConfig) as MajsoulPlus.UserConfig;
   }
   return config;
 }

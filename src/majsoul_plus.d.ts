@@ -2,7 +2,7 @@ declare namespace MajsoulPlus {
   /**
    * Config
    */
-  export interface WindowConfig {
+  export interface UserWindowConfig {
     OSTheme: 'light' | 'dark';
     gameWindowSize: string;
     zoomFactor: number;
@@ -12,11 +12,11 @@ declare namespace MajsoulPlus {
     isManagerHide: boolean;
   }
 
-  export interface UpdateConfig {
+  export interface UserUpdateConfig {
     prerelease: boolean;
   }
 
-  export interface ChromiumConfig {
+  export interface UserChromiumConfig {
     isHardwareAccelerationDisable: boolean;
     isInProcessGpuOn: boolean;
     isIgnoreGpuBlacklist: boolean;
@@ -26,10 +26,10 @@ declare namespace MajsoulPlus {
     useAppdataLibrary: boolean;
   }
 
-  export interface Config {
-    window: WindowConfig;
-    update: UpdateConfig;
-    chromium: ChromiumConfig;
+  export interface UserConfig {
+    window: UserWindowConfig;
+    update: UserUpdateConfig;
+    chromium: UserChromiumConfig;
     userData: UserDataConfig;
   }
 
@@ -37,19 +37,48 @@ declare namespace MajsoulPlus {
    * Global
    */
   export interface Global {
-    SERVER_PORT: number;
+    ServerPort: number;
     XOR_KEY: number;
     EXTEND_RES_KEYWORD: string;
-    REMOTE_DOMAIN: string;
-    HTTP_REMOTE_DOMAIN: string;
-    LOCAL_DIR: string;
-    MODS_DIR: string;
-    MODS_CONFIG_PATH: string;
-    PLUGINS_DIR: string;
-    TOOLS_DIR: string;
-    EXECUTES_DIR: string;
-    EXECUTES_CONFIG_PATH: string;
-    USER_CONFIG_PATH: string;
+    RemoteDomain: string;
+    HttpRemoteDomain: string;
+    LocalDir: string;
+    ModsDir: string;
+    ModsConfigPath: string;
+    PluginsDir: string;
+    ToolsDir: string;
+    ExecutesDir: string;
+    ExecutesConfigPath: string;
+    UserConfigPath: string;
+
+    GameWindowConfig: WindowConfig;
+    ManagerWindowConfig: WindowConfig;
+    ToolWindowConfig: WindowConfig;
+    HttpGetUserAgent: string;
+  }
+
+  export interface WindowConfig {
+    title?: string;
+    icon: string;
+    width: number;
+    height: number;
+    frame: boolean;
+    resizable: boolean;
+    maximizable?: boolean;
+    fullscreenable?: boolean;
+    backgroundColor: string;
+    webPreferences: WindowWebPreferenceConfig;
+    autoHideMenuBar: boolean;
+    show?: boolean;
+    enableLargerThanScreen?: boolean;
+    useContentSize?: boolean;
+  }
+
+  export interface WindowWebPreferenceConfig {
+    webSecurity: boolean;
+    allowRunningInsecureContent?: boolean;
+    nodeIntegration?: boolean;
+    plugins?: boolean;
   }
 
   /**
