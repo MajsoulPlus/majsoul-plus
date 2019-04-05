@@ -106,6 +106,10 @@ if (
   electronApp.disableHardwareAcceleration();
 }
 
+if (!electronApp.requestSingleInstanceLock()) {
+  console.error('Failed to make Majsoul Plus a single instance!');
+}
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 server.get('*', Util.processRequest);
@@ -130,9 +134,13 @@ electronApp.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
     event.preventDefault();
-    callback(true); // eslint-disable-line standard/no-callback-literal
+    callback(true);
   }
 );
+
+electronApp.on('gpu-process-crashed', (event, killed) => {
+  console.error(`gpu-process-crashed: ${killed}`);
+});
 
 // 设置一个菜单
 const gameWindowMenu: Menu = new Menu();
@@ -425,11 +433,9 @@ const windowControl = {
       level,
       msg /*, line, sourceId  */
     ) => {
-      // FIXME: log
-      console.log(level);
-      console.log(msg);
+      // 1 == log
       if (level !== 1) {
-        console.warn(i18n.text.main.consoleMessage() + msg);
+        console.warn(`${i18n.text.main.consoleMessage()}: ${msg}`);
       }
     });
     // 载入本地启动器

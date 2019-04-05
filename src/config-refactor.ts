@@ -1,7 +1,9 @@
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { fillObject } from './utils-refactor';
 import { majsoulPlusGlobal } from './global';
+import { ServerOptions } from 'https';
 
 /**
  * 默认配置
@@ -37,6 +39,11 @@ export const defaultConfig: MajsoulPlus.UserConfig = {
   userData: defaultUserDataConfig
 };
 
+export const serverOptions: ServerOptions = {
+  key: fs.readFileSync(path.join(__dirname, 'certificate/key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'certificate/cert.crt'))
+};
+
 /**
  * 冻结对象使其不可更改
  */
@@ -45,6 +52,7 @@ Object.freeze(defaultUpdateConfig);
 Object.freeze(defaultChromiumConfig);
 Object.freeze(defaultUserDataConfig);
 Object.freeze(defaultConfig);
+Object.freeze(serverOptions);
 
 /**
  * 加载配置文件 json

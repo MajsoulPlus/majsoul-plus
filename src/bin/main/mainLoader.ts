@@ -293,7 +293,7 @@ const getLocalUrlWithParams = url => {
   }
   return `https://localhost:${serverPort}/0/`;
 };
-const redirectGameWindow = (url, gameWindow) => {
+const redirectGameWindow = (url: string, gameWindow) => {
   const localUrl = getLocalUrlWithParams(url);
   console.warn('Redirect Target:' + localUrl);
   gameWindow.loadURL(localUrl);
@@ -357,7 +357,7 @@ mainWindow.addEventListener('dom-ready', () => {
   }
 });
 
-ipcRenderer.on('load-url', (event, ...args) => {
+ipcRenderer.on('load-url', (event, ...args: string[]) => {
   const url = args[0];
   console.warn('LoadURL', url);
   if (testRedirectGameWindow(url)) {
