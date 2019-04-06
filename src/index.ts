@@ -106,9 +106,9 @@ if (
   electronApp.disableHardwareAcceleration();
 }
 
-if (!electronApp.requestSingleInstanceLock()) {
-  console.error('Failed to make Majsoul Plus a single instance!');
-}
+// if (!electronApp.requestSingleInstanceLock()) {
+//   console.error('Failed to make Majsoul Plus a single instance!');
+// }
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -434,7 +434,7 @@ const windowControl = {
       msg /*, line, sourceId  */
     ) => {
       // 1 == log
-      if (level !== 1) {
+      if (level !== 'log') {
         console.warn(`${i18n.text.main.consoleMessage()}: ${msg}`);
       }
     });
