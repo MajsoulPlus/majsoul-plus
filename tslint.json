@@ -1,0 +1,16 @@
+{
+  "extends": "gts/tslint.json",
+  "rules": {
+    "quotemark": {
+      "options": "single",
+      "severity": "error"
+    },
+    "semicolon": {
+      "options": "always",
+      "severity": "error"
+    },
+    "variable-name": {
+      "severity": "warn"
+    }
+  }
+}

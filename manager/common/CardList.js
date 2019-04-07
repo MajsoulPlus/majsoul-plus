@@ -1,12 +1,13 @@
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
-const { remote: { dialog } } = require('electron')
+const {
+  remote: { dialog }
+} = require('electron')
 const CheckboxCard = require('./CheckboxCard')
-const Util = require('../../Util')
-const i18n = require('../../i18nInstance')
+const Util = require('../..//utils')
+const { i18n } = require('../..//i18nInstance')
 
-// eslint-disable-next-line no-unused-vars
 const defaultOptions = {
   rootDir: '',
   config: '',
@@ -44,8 +45,9 @@ class CardList {
   _getCardInfos () {
     const { rootDir } = this.options
     const dirs = fs.readdirSync(rootDir)
-    return Promise.all(dirs.map(this._getCardInfo))
-      .then(list => list.filter(item => !!item))
+    return Promise.all(dirs.map(this._getCardInfo)).then(list =>
+      list.filter(item => !!item)
+    )
   }
 
   _getCards (cardInfos = []) {
@@ -77,25 +79,27 @@ class CardList {
     }
   }
 
-  _getExportInfo () {
-
-  }
+  _getExportInfo () {}
 
   _handleExport (key) {
-    const { card: { options: { name, author, filesDir } } } = this._cardList.find(item => item.key === key)
+    const {
+      card: {
+        options: { name, author, filesDir }
+      }
+    } = this._cardList.find(item => item.key === key)
     const { extend, typeText } = this._getExportInfo()
     const tempZipName = `${name}-${author}.${extend}`
     const tempZipPath = path.join(os.tmpdir(), tempZipName)
     Util.zipDir(filesDir, tempZipPath)
     const userChosenPath = dialog.showSaveDialog({
-      title: i18n.t.manager.exportTo(),
+      title: i18n.text.manager.exportTo(),
       filters: [
         {
           name: typeText,
           extensions: [extend]
         },
         {
-          name: i18n.t.manager.fileTypeAllfiles(),
+          name: i18n.text.manager.fileTypeAllfiles(),
           extensions: ['*']
         }
       ],
@@ -104,9 +108,9 @@ class CardList {
     if (userChosenPath) {
       fs.copyFile(tempZipPath, userChosenPath, err => {
         if (err) {
-          alert(i18n.t.manager.exportExtendResourcesFailed(err))
+          alert(i18n.text.manager.exportExtendResourcesFailed(err))
         } else {
-          alert(i18n.t.manager.exportExtendResourcesSucceeded())
+          alert(i18n.text.manager.exportExtendResourcesSucceeded())
         }
       })
     }
@@ -131,7 +135,7 @@ class CardList {
   }
 
   load () {
-    this._getCardInfos()
+    return this._getCardInfos()
       .then(this._getCards)
       .then(this._renderCards)
   }
@@ -141,7 +145,9 @@ class CardList {
     const launchedCards = this._cardList
       .filter(item => checkedKeys.includes(item.key))
       .map(item => item.card.options)
-    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), { encoding: 'utf-8' })
+    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), {
+      encoding: 'utf-8'
+    })
   }
 
   get cardList () {

@@ -1,0 +1,50 @@
+window,窗口,ウインドウ
+zoomFactor,资源管理器缩放,リソースマネージャーのスケーリング
+gameSSAA,超采样抗锯齿,スーパーサンプリングアンチエイリアシング
+renderingMultiple,% 渲染比率,% レンダリング率
+isKioskModeOn,使用 Kiosk 模式代替默认全屏幕模式,デフォルトの全画面モードの代わりにKioskモードを使用する
+update,更新,アップデート
+prerelease,获取浏览版更新,ブラウザのアップデート情報を取得する
+chromium,核心（需重启软件）,システム（アプリケーションの再起動が必要です）
+isHardwareAccelerationDisable,关闭 GPU 硬件加速,GPUハードウェアアクセラレーションを無効にする
+isInProcessGpuOn,启用进程内 GPU 处理,プロセス内でGPUによる処理を有効にする
+isIgnoreGpuBlacklist,忽略 WebGL GPU 黑名单,
+isNoBorder,使用无边框窗口进入游戏,ボーダーレスウインドウモードでゲームを開始する
+userData,用户数据,ユーザーデータ
+isUseDefaultPath,使用默认用户库目录,デフォルトのユーザーライブラリディレクトリを使用する
+useAppdataLibrary,使用 AppData 存储扩展资源,AppDataディレクトリを拡張リソースの保存先として使用する
+userLibPath,用户库目录,ユーザライブラリディレクトリ
+localVersion,版本,バージョン
+isManagerHide,退出游戏后回到管理器界面,ゲーム終了後、管理画面に戻る
+clearCache,清除资源缓存,キャッシュクリア
+clearCacheSuccessd,清除资源缓存成功！,キャッシュクリア成功！
+saveSuccessd,保存成功！,保存成功！
+saveFailed,保存失败！\n$0,保存失敗！\n$0
+selectExtendResources,选取扩展资源包……,拡張リソースバンドルを選択してください......
+majsoulPlusExtendResources,雀魂Plus扩展,雀魂Plus拡張
+fileTypeAllfiles,所有文件,全ファイル
+fileTypeMSPM,雀魂Plus模组,雀魂Plusモジュール
+fileTypeMSPE,雀魂Plus插件,雀魂Plusプラグイン
+fileTypeMSPT,雀魂Plus工具,雀魂Plusツール
+fileTypeMajsoulPlusExtendResourcesPack,雀魂Plus扩展,雀魂Plus拡張
+exportTo,导出到……,エクスポート先......
+installFrom,选取扩展资源包……,拡張リソースバンドルを選択してください......
+missingAuthor,无名氏,無名
+exportExtendResourcesFailed,导出失败！\n错误信息如下:\n$0,エクスポート失敗！\nエラーメッセージは以下の通りです:\n$0
+exportExtendResourcesSuccessd,导出成功！,エクスポート成功！
+installExtendResourcesFailed,安装失败！\n错误信息如下:\n$0,インストール失敗！\nエラーメッセージは以下の通りです:\n$0
+installExtendResourcesSuccessd,安装成功！,インストール成功！
+loadFailed,加载失败,読み込み失敗
+needNotToUpdate,无需更新,必要なアップデート情報はありません
+XMLHttpRequestFailed,AJAX 请求失败，状态码: $0,"AJAX通信に失敗しました, ステータスコード：$0"
+downloadFinished,下载完毕,ダウンロード完了
+downloadFinishedInfo,更新已下载完毕，是否安装并重启？,更新プログラムのダウンロードが完了しました、インストールをするため再起動を行いますか？
+executeSafeAlert,这个插件需要以下权限，您确定要启用么？,
+executeSafeAlertScript,- 完全的脚本权限，可以获取和操作您页面的所有数据,
+executeSafeAlertDocument,- 访问根文档和对象，可以获取和操作您的整个显示页面,
+executeSafeAlertLocalStorage,- 访问页面本地存储内容，通常会包含敏感内容,
+executeSafeAlertWriteableWindowObject,- 修改页面的全局对象，可能会导致页面更容易遭受攻击,
+executeSafeAlertXMLHttpRequest,- 进行网络访问，与其它网站进行通信,
+executeSafeAlertWebSocket,- 进行网络连接，与其它网站建立长时间通信,
+executeSafeAlertNodeRequire,- 使用标准Node模块，访问和修改您的操作系统,
+executeSafeAlertWebSecurity,- 访问跨域资源，从其它网站或您的计算机的任意位置加载文件,

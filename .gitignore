@@ -64,3 +64,8 @@ typings/
 package-lock.json
 static/
 build/
+dist/
+assets/manager/**/*.css
+
+# vscode
+.vscode/

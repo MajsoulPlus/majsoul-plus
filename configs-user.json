@@ -1,7 +1,7 @@
 {
   "window": {
     "OSTheme": "light",
-    "gameWindowSize":"",
+    "gameWindowSize": "",
     "zoomFactor": 1,
     "renderingMultiple": 100,
     "isKioskModeOn": false,
@@ -13,7 +13,8 @@
   },
   "chromium": {
     "isHardwareAccelerationDisable": false,
-    "isInProcessGpuOn": true
+    "isInProcessGpuOn": true,
+    "isIgnoreGpuBlacklist": false
   },
   "userData": {
     "useAppdataLibrary": false

@@ -1,9 +1,9 @@
 const Listener = require('./Listener')
 const path = require('path')
-const i18n = require('../../i18nInstance')
+const { i18n } = require('../..//i18nInstance')
 const defaultOptions = {
   name: '未知',
-  author: i18n.t.manager.missingAuthor(),
+  author: i18n.text.manager.missingAuthor(),
   description: '无描述',
   preview: 'preview.jpg'
 }

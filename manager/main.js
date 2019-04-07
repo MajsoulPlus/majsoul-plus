@@ -12,15 +12,14 @@ const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
 
-const update = new Update()
 const setting = new Setting()
 const about = new About()
 const Mods = require('./Mods')
 const Executes = require('./Executes')
 const Tools = require('./Tools')
 
-const configs = require('../configs')
-const i18n = require('../i18nInstance')
+const { Configs } = require('..//config')
+const { i18n } = require('..//i18nInstance')
 
 class Manager {
   constructor (options) {
@@ -30,6 +29,7 @@ class Manager {
     this.tools = null
     this._extends = []
 
+    this._update = new Update(this.options.update)
     this._addEventListener = this._addEventListener.bind(this)
     this._import = this._import.bind(this)
     this._changeModEditable = this._changeModEditable.bind(this)
@@ -92,27 +92,29 @@ class Manager {
   _import () {
     dialog.showOpenDialog(
       {
-        title: i18n.t.manager.installFrom(),
+        title: i18n.text.manager.installFrom(),
         filters: [
           {
-            name: i18n.t.manager.fileTypeMajsoulPlusExtendResourcesPack(),
+            name: i18n.text.manager.fileTypeMajsoulPlusExtendResourcesPack(),
             extensions: ['mspm', 'mspe', 'mspt']
           }
-        ]
+        ],
+        properties: ['openFile', 'multiSelections']
       },
       filenames => {
         if (filenames && filenames.length) {
-          const filename = filenames[0]
-          const unzip = new AdmZip(filename)
-          const extname = path.extname(filename)
-          const installDir = this._getInstallDirByExtname(extname)
-          unzip.extractAllToAsync(installDir, true, err => {
-            if (err) {
-              alert(i18n.t.manager.installExtendResourcesFailed(err))
-            } else {
-              alert(i18n.t.manager.installExtendResourcesSucceeded())
-              this._loadCards()
-            }
+          filenames.forEach(filename => {
+            const unzip = new AdmZip(filename)
+            const extname = path.extname(filename)
+            const installDir = this._getInstallDirByExtname(extname)
+            unzip.extractAllToAsync(installDir, true, err => {
+              if (err) {
+                alert(i18n.text.manager.installExtendResourcesFailed(err))
+              } else {
+                alert(i18n.text.manager.installExtendResourcesSucceeded())
+                this._loadCards()
+              }
+            })
           })
         }
       }
@@ -188,7 +190,7 @@ class Manager {
   }
 
   init () {
-    update.checkUpdate()
+    this._update.checkUpdate()
     ping.init()
     panel.init()
     setting.init()
@@ -221,12 +223,18 @@ const springFestivalExtend = require('./extra/springFestivalTheme')
 const darkMode = require('./extra/darkMode')
 
 const options = {
-  userConfig: require(configs.USER_CONFIG_PATH),
-  modRootDirs: userDataPaths.map(root => path.join(root, configs.MODS_DIR)),
+  userConfig: (() => {
+    try {
+      return require(Configs.USER_CONFIG_PATH)
+    } catch (error) {
+      return require('../Configs-user.json')
+    }
+  })(),
+  modRootDirs: userDataPaths.map(root => path.join(root, Configs.MODS_DIR)),
   executeRootDirs: userDataPaths.map(root =>
-    path.join(root, configs.EXECUTES_DIR)
+    path.join(root, Configs.EXECUTES_DIR)
   ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, configs.TOOLS_DIR))
+  toolRootDirs: userDataPaths.map(root => path.join(root, Configs.TOOLS_DIR))
 }
 
 const manager = new Manager(options)

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "pretty": true
+    // "strict": true
+  },
+  "include": ["src/*.ts", "src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

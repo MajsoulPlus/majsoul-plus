@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>雀魂Plus</title>
+    <style>
+      @font-face {
+        font-family: "思源黑体 CN";
+        src: url("../../manager/SourceHanSansCN-Light.otf") format("opentype");
+        font-weight: 300;
+      }
+      @font-face {
+        font-family: "思源黑体 CN";
+        src: url("../../manager/SourceHanSansCN-Normal.otf") format("opentype");
+        font-weight: 400;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        font-family: "思源黑体 CN", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif;
+      }
+      body {
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+      }
+      #mainWindow {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+      #mainWindowBox {
+        overflow: hidden;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      #screenshotLabel {
+        display: block;
+        position: fixed;
+        height: 64px;
+        width: 256px;
+        background-color: #222222;
+        top: 100vh;
+        right: 0;
+        transition: top 300ms linear;
+        pointer-events: none;
+      }
+      #screenshotLabel.show {
+        top: calc(100vh - 64px);
+      }
+      #screenshotLabel.hide {
+        display: none;
+      }
+      #screenshotText {
+        font-weight: 300;
+        color: #cccccc;
+        position: absolute;
+        line-height: 64px;
+        font-size: 14px;
+        top: 0;
+        left: 112px;
+        cursor: default;
+      }
+      #screenshotImage {
+        width: 96px;
+        height: 54px;
+        position: absolute;
+        top: 5px;
+        left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mainWindowBox">
+      <webview
+        id="mainWindow"
+        src="./loading.html"
+        webpreferences="nativeWindowOpen=yes"
+        allowpopups
+        nodeintegration
+      ></webview>
+    </div>
+    <div id="screenshotLabel" class="hide">
+      <img id="screenshotImage" src="#" alt="screenshot" />
+      <p id="screenshotText">screenshotText</p>
+    </div>
+    <script>
+      require("./mainLoader.js");
+    </script>
+  </body>
+</html>
