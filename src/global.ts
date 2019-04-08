@@ -37,7 +37,8 @@ export const appIcon: string = (() => {
   }
 })();
 
-export const majsoulPlusGlobal: MajsoulPlus.Global = {
+// tslint:disable-next-line
+export const Global: MajsoulPlus.Global = {
   ServerPort: 8887,
   // PIPE_PORT: 8888,
   XOR_KEY: 73,
@@ -50,7 +51,7 @@ export const majsoulPlusGlobal: MajsoulPlus.Global = {
     const p = path.join(appDataDir, 'modsEnabled.json');
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', majsoulPlusGlobal.ModsDir, 'active.json'),
+        path.join(__dirname, '../', Global.ModsDir, 'active.json'),
         p
       );
     }
@@ -63,12 +64,7 @@ export const majsoulPlusGlobal: MajsoulPlus.Global = {
     const p = path.join(appDataDir, 'executesEnabled.json');
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(
-          __dirname,
-          '../',
-          majsoulPlusGlobal.ExecutesDir,
-          'active.json'
-        ),
+        path.join(__dirname, '../', Global.ExecutesDir, 'active.json'),
         p
       );
     }

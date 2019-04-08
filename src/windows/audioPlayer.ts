@@ -1,16 +1,17 @@
 import { BrowserWindow } from 'electron';
 import * as path from 'path';
 
-export let audioPlayer: BrowserWindow;
+// tslint:disable-next-line
+export let AudioPlayer: BrowserWindow;
 
 /**
  * 初始化音频播放器
  */
 export function initPlayer() {
-  audioPlayer = new BrowserWindow({
+  AudioPlayer = new BrowserWindow({
     show: false
   });
-  audioPlayer.loadURL(
+  AudioPlayer.loadURL(
     'file://' + path.join(__dirname, 'bin/audio/player.html')
   );
 }
@@ -18,5 +19,5 @@ export function initPlayer() {
  * 退出播放器窗口
  */
 export function shutoffPlayer() {
-  audioPlayer.close();
+  AudioPlayer.close();
 }

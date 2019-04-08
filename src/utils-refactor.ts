@@ -4,12 +4,12 @@ import * as https from 'https';
 import * as url from 'url';
 import * as childProcess from 'child_process';
 
-import { majsoulPlusGlobal } from './global';
+import { Global } from './global';
 import { IncomingMessage } from 'http';
 import { Context } from 'koa';
 import { WebContents } from 'electron';
 import * as AdmZip from 'adm-zip';
-import { audioPlayer } from './windows/audioPlayer';
+import { AudioPlayer } from './windows/audioPlayer';
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -85,7 +85,7 @@ export function XOR(buffer: Buffer): Buffer {
   const array = [];
   for (let index = 0; index < buffer.length; index++) {
     const byte = buffer.readUInt8(index);
-    array.push(majsoulPlusGlobal.XOR_KEY ^ byte);
+    array.push(Global.XOR_KEY ^ byte);
   }
   return Buffer.from(array);
 }
@@ -95,7 +95,7 @@ export function XOR(buffer: Buffer): Buffer {
  * @param originalUrl 原始请求的相对路径
  */
 export function isEncryptRes(originalUrl: string): boolean {
-  return originalUrl.includes(majsoulPlusGlobal.EXTEND_RES_KEYWORD);
+  return originalUrl.includes(Global.EXTEND_RES_KEYWORD);
 }
 
 /**
@@ -150,7 +150,7 @@ export function mkdirsSync(dirname: string) {
  * @param originalUrl
  */
 export function getRemoteUrl(originalUrl: string): string {
-  return majsoulPlusGlobal.RemoteDomain + originalUrl;
+  return Global.RemoteDomain + originalUrl;
 }
 
 /**
@@ -173,7 +173,7 @@ export function getRemoteSource(
     https.get(
       {
         ...url.parse(remoteUrl),
-        headers: { 'User-Agent': majsoulPlusGlobal.HttpGetUserAgent }
+        headers: { 'User-Agent': Global.HttpGetUserAgent }
       },
       httpRes => {
         const { statusCode } = httpRes;
@@ -247,7 +247,7 @@ export function getRemoteSource(
 export function getLocalURI(
   originalUrl: string,
   isPath: boolean,
-  dirBase = path.join(__dirname, majsoulPlusGlobal.LocalDir)
+  dirBase = path.join(__dirname, Global.LocalDir)
 ): string {
   const indexOfProps = originalUrl.indexOf('?');
   originalUrl = originalUrl.substring(
@@ -376,7 +376,7 @@ export function loadMods(mods: MajsoulPlus.Mod[]) {
   // 所有已在目录中的Mod目录
   // const modDirs = fs.readdirSync(modRootDir)
   try {
-    const data = fs.readFileSync(majsoulPlusGlobal.ModsConfigPath, {
+    const data = fs.readFileSync(Global.ModsConfigPath, {
       encoding: 'utf-8'
     });
     Array.prototype.push.apply(mods, JSON.parse(data));
@@ -404,7 +404,7 @@ export function removeDirSync(dir: string) {
  * @param webContents
  */
 export function takeScreenshot(webContents: WebContents) {
-  audioPlayer.webContents.send(
+  AudioPlayer.webContents.send(
     'audio-play',
     path.join(__dirname, 'bin/audio/screenshot.mp3')
   );

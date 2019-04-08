@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { fillObject } from './utils-refactor';
-import { majsoulPlusGlobal } from './global';
+import { Global } from './global';
 import { ServerOptions } from 'https';
 
 /**
@@ -32,7 +32,8 @@ const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   useAppdataLibrary: false
 };
 
-export const defaultConfig: MajsoulPlus.UserConfig = {
+// tslint:disable-next-line
+export const DefaultConfig: MajsoulPlus.UserConfig = {
   window: defaultWindowConfig,
   update: defaultUpdateConfig,
   chromium: defaultChromiumConfig,
@@ -51,7 +52,7 @@ Object.freeze(defaultWindowConfig);
 Object.freeze(defaultUpdateConfig);
 Object.freeze(defaultChromiumConfig);
 Object.freeze(defaultUserDataConfig);
-Object.freeze(defaultConfig);
+Object.freeze(DefaultConfig);
 Object.freeze(serverOptions);
 
 /**
@@ -61,12 +62,12 @@ export function LoadConfigJson(): MajsoulPlus.UserConfig {
   let config: MajsoulPlus.UserConfig;
   try {
     config = JSON.parse(
-      fs.readFileSync(majsoulPlusGlobal.UserConfigPath, {
+      fs.readFileSync(Global.UserConfigPath, {
         encoding: 'utf-8'
       })
     );
   } catch (e) {
-    config = fillObject({}, defaultConfig) as MajsoulPlus.UserConfig;
+    config = fillObject({}, DefaultConfig) as MajsoulPlus.UserConfig;
   }
   return config;
 }
