@@ -101,6 +101,31 @@ declare namespace MajsoulPlus {
   }
 
   export interface Extension {
-    //TODO:
+    name: string;
+    author?: string;
+    description?: string;
+    preview?: string;
+    entry?: string | string[];
+    sync?: boolean;
+    executePreferences?: ExtensionPreferences;
   }
+
+  export interface ExtensionPreferences {
+    nodeRequire?: boolean;
+    document?: boolean;
+    localStorage?: boolean;
+    XMLHttpRequest?: boolean;
+    WebSocket?: boolean;
+    writeableWindowObject?: boolean;
+  }
+
+  export type ExtensionMiddleware = (
+    context: Extension,
+    next: () => Promise<any>
+  ) => any;
+
+  export type ComposedExtensionMiddleware = (
+    context: Extension,
+    next?: () => Promise<any>
+  ) => Promise<void>;
 }
