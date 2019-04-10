@@ -1,14 +1,12 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as https from 'https';
-import * as url from 'url';
-import * as childProcess from 'child_process';
-
-import { Global } from './global';
-import { IncomingMessage } from 'http';
-import { Context } from 'koa';
-import { WebContents } from 'electron';
 import * as AdmZip from 'adm-zip';
+import * as childProcess from 'child_process';
+import { WebContents } from 'electron';
+import * as fs from 'fs';
+import { IncomingMessage } from 'http';
+import * as https from 'https';
+import * as path from 'path';
+import * as url from 'url';
+import { Global } from './global';
 import { AudioPlayer } from './windows/audioPlayer';
 
 /**
@@ -302,86 +300,6 @@ export function encodeData(data: Buffer | string, encoding = 'binary') {
     return Buffer.from(data as string, encoding);
   } else {
     return Buffer.from(data as Buffer);
-  }
-}
-
-/**
- * 获取文件的路由函数
- */
-export function processRequest(mods: MajsoulPlus.Mod[]) {
-  return (ctx: Context, next: Function) => {
-    if (mods.length === 0) {
-      loadMods(mods);
-    }
-    const originalUrl = ctx.request.originalUrl;
-    const encrypt = isEncryptRes(originalUrl);
-    const isRoutePath = isPath(originalUrl);
-    const localURI = getLocalURI(originalUrl, isRoutePath);
-
-    let promise: Promise<Function> = Promise.reject();
-
-    for (const mod of mods) {
-      promise = promise.then(
-        data => data,
-        () => {
-          const modDir = mod.dir;
-          let promiseMod: Promise<Function> = Promise.reject();
-
-          // 平滑升级至 mod.dir
-          if (mod.dir === undefined && mod.filesDir) {
-            mod.dir = mod.filesDir;
-            mod.filesDir = undefined;
-          }
-
-          if (mod.replace && mod.replace.length > 0) {
-            mod.replace.forEach(replaceInfo => {
-              const regExp = new RegExp(replaceInfo.from);
-              if (!regExp.test(originalUrl)) {
-                return;
-              }
-              const localURI = this.getLocalURI(
-                originalUrl.replace(regExp, replaceInfo.to),
-                isRoutePath,
-                path.join(mod.dir, modDir || '/files')
-              );
-              promiseMod = promiseMod.then(
-                data => data,
-                () => this.readFile(localURI)
-              );
-            });
-          }
-          const localURI = this.getLocalURI(
-            originalUrl,
-            isRoutePath,
-            path.join(mod.dir, modDir || '/files')
-          );
-          promiseMod = promiseMod.then(
-            data => data,
-            () => this.readFile(localURI)
-          );
-          return promiseMod;
-        }
-      );
-    }
-  };
-}
-
-/**
- * 加载 Mod
- * @param mods 保存 Mod 的数组
- */
-export function loadMods(mods: MajsoulPlus.Mod[]) {
-  // Mod文件根目录
-  // const modRootDir = path.join(__dirname, Configs.MODS_DIR)
-  // 所有已在目录中的Mod目录
-  // const modDirs = fs.readdirSync(modRootDir)
-  try {
-    const data = fs.readFileSync(Global.ModsConfigPath, {
-      encoding: 'utf-8'
-    });
-    Array.prototype.push.apply(mods, JSON.parse(data));
-  } catch (error) {
-    console.error(error);
   }
 }
 

@@ -1,3 +1,5 @@
+import { BrowserWindowConstructorOptions } from 'electron';
+
 declare namespace MajsoulPlus {
   /**
    * Config
@@ -45,33 +47,16 @@ declare namespace MajsoulPlus {
     LocalDir: string;
     ModsDir: string;
     ModsConfigPath: string;
-    PluginsDir: string;
+    ExtensionDir: string;
     ToolsDir: string;
     ExecutesDir: string;
     ExecutesConfigPath: string;
     UserConfigPath: string;
 
-    GameWindowConfig: WindowConfig;
-    ManagerWindowConfig: WindowConfig;
-    ToolWindowConfig: WindowConfig;
+    GameWindowConfig: BrowserWindowConstructorOptions;
+    ManagerWindowConfig: BrowserWindowConstructorOptions;
+    ToolWindowConfig: BrowserWindowConstructorOptions;
     HttpGetUserAgent: string;
-  }
-
-  export interface WindowConfig {
-    title?: string;
-    icon: string;
-    width: number;
-    height: number;
-    frame: boolean;
-    resizable: boolean;
-    maximizable?: boolean;
-    fullscreenable?: boolean;
-    backgroundColor: string;
-    webPreferences: WindowWebPreferenceConfig;
-    autoHideMenuBar: boolean;
-    show?: boolean;
-    enableLargerThanScreen?: boolean;
-    useContentSize?: boolean;
   }
 
   export interface WindowWebPreferenceConfig {

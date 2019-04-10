@@ -1,9 +1,7 @@
 import * as fs from 'fs';
-import * as path from 'path';
-
-import { fillObject } from './utils-refactor';
 import { Global } from './global';
-import { ServerOptions } from 'https';
+import { MajsoulPlus } from './majsoul_plus';
+import { fillObject } from './utils-refactor';
 
 /**
  * 默认配置
@@ -40,11 +38,6 @@ export const DefaultConfig: MajsoulPlus.UserConfig = {
   userData: defaultUserDataConfig
 };
 
-export const serverOptions: ServerOptions = {
-  key: fs.readFileSync(path.join(__dirname, 'certificate/key.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'certificate/cert.crt'))
-};
-
 /**
  * 冻结对象使其不可更改
  */
@@ -53,7 +46,6 @@ Object.freeze(defaultUpdateConfig);
 Object.freeze(defaultChromiumConfig);
 Object.freeze(defaultUserDataConfig);
 Object.freeze(DefaultConfig);
-Object.freeze(serverOptions);
 
 /**
  * 加载配置文件 json
@@ -69,5 +61,15 @@ export function LoadConfigJson(): MajsoulPlus.UserConfig {
   } catch (e) {
     config = fillObject({}, DefaultConfig) as MajsoulPlus.UserConfig;
   }
+  SaveConfigJson(config);
   return config;
 }
+
+export function SaveConfigJson(config: MajsoulPlus.UserConfig) {
+  fs.writeFileSync(Global.UserConfigPath, JSON.stringify(config, null, 2), {
+    encoding: 'utf-8'
+  });
+}
+
+// tslint:disable-next-line
+export const UserConfigs: MajsoulPlus.UserConfig = LoadConfigJson();

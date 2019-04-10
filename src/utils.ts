@@ -1,18 +1,17 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint-disable prefer-promise-reject-errors */
 
-import * as fs from 'fs';
-import * as path from 'path';
-
 import * as AdmZip from 'adm-zip';
 import * as childProcess from 'child_process';
-import { Configs } from './config';
-
 import { BrowserWindow, WebContents } from 'electron';
 import * as express from 'express';
+import * as fs from 'fs';
 import { IncomingMessage } from 'http';
 import * as https from 'https';
+import * as path from 'path';
 import * as url from 'url';
+import { Configs } from './config';
+import { MajsoulPlus } from './majsoul_plus';
 
 // 用于存储Mod对象
 let mods: MajsoulPlus.Mod[];

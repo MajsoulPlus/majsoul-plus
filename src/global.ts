@@ -1,7 +1,8 @@
 import * as electron from 'electron';
-import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
+import * as path from 'path';
+import { MajsoulPlus } from './majsoul_plus';
 
 // 提供 app模块
 const app = electron.app ? electron.app : electron.remote.app;
@@ -57,7 +58,7 @@ export const Global: MajsoulPlus.Global = {
     }
     return p;
   })(),
-  PluginsDir: '/plugin',
+  ExtensionDir: '/extension',
   ToolsDir: '/tool',
   ExecutesDir: '/execute',
   ExecutesConfigPath: ((): string => {

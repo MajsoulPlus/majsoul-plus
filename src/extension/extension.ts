@@ -1,6 +1,7 @@
-import { ExtensionManager } from './manager';
 import * as fs from 'fs';
 import { Global } from '../global';
+import { MajsoulPlus } from '../majsoul_plus';
+import { ExtensionManager } from './manager';
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,

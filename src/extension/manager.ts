@@ -3,6 +3,7 @@ import * as compose from 'koa-compose';
 import * as path from 'path';
 import { Configs } from '../config';
 import { appDataDir } from '../global';
+import { MajsoulPlus } from '../majsoul_plus';
 import { GameWindow } from '../windows/game';
 
 class MajsoulPlusExtensionManager {
