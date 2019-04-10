@@ -90,10 +90,11 @@ declare namespace MajsoulPlus {
    */
   export interface Extension {
     id: string;
+    version: string;
     name?: string;
     author?: string | string[];
     description?: string;
-    dependencies?: string[];
+    dependencies?: { [key: string]: string };
     preview?: string;
     entry?: string | string[];
     sync?: boolean;

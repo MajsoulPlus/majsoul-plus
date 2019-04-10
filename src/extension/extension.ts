@@ -14,10 +14,11 @@ export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
 
 export const defaultExtension: MajsoulPlus.Extension = {
   id: 'test',
+  version: '1.0.0',
   name: 'Test Extension',
   author: 'undefined',
   description: 'No description provided.',
-  dependencies: [],
+  dependencies: {},
   preview: 'preview.png',
   entry: 'script.js',
   sync: false,

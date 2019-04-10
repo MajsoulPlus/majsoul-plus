@@ -414,3 +414,39 @@ export function compareVersion(taga: string, tagb: string): number {
     }
   }
 }
+
+/**
+ * Check whether version B can be used by verA
+ * TODO: test this function
+ * @param verA
+ * @param verB
+ */
+export function versionMatch(verA: string, verB: string): boolean {
+  const aPatch = verA.startsWith('~');
+  const aMinor = verA.startsWith('^');
+  const aMajor = verA.startsWith('*') || verA.startsWith('x');
+
+  const bTags = verB.split('.').map(str => Number(str));
+
+  if (aMajor) return true;
+  if (aMinor) {
+    verA = verA.substr(1);
+    if (!verA.match(/\d+(?:\.(?:[0-9]+|[*x])+/)) return false;
+
+    const aTags = verA.split('.');
+    if (aTags[1].match(/[*x]/)) return true;
+    else return Number(aTags[1]) <= bTags[1];
+  }
+  if (aPatch) {
+    if (!verA.match(/\d+\.\d+(?:\.(?:[0-9]+|[*x])+/)) return false;
+    const aTags = verA.split('.');
+    if (aTags[2].match(/[*x]/)) return true;
+    else return Number(aTags[2]) <= bTags[2];
+  }
+
+  const aTags = verA.split('.').map(str => Number(str));
+  for (const i in bTags) {
+    if (aTags[i] !== bTags[i]) return false;
+  }
+  return true;
+}
