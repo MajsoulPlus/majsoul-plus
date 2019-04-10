@@ -100,10 +100,15 @@ declare namespace MajsoulPlus {
     to: string;
   }
 
+  /**
+   * Extension
+   */
   export interface Extension {
-    name: string;
-    author?: string;
+    id: string;
+    name?: string;
+    author?: string | string[];
     description?: string;
+    dependencies?: string[];
     preview?: string;
     entry?: string | string[];
     sync?: boolean;
@@ -119,13 +124,24 @@ declare namespace MajsoulPlus {
     writeableWindowObject?: boolean;
   }
 
+  export interface ExtensionLibraries {
+    path: Object | undefined;
+    fs: Object | undefined;
+  }
+
+  export interface ExtensionContext {
+    instance: Extension;
+    libraries: ExtensionLibraries;
+    require: (toRequire: string) => Object | undefined;
+  }
+
   export type ExtensionMiddleware = (
-    context: Extension,
+    context: ExtensionContext,
     next: () => Promise<any>
   ) => any;
 
   export type ComposedExtensionMiddleware = (
-    context: Extension,
+    context: ExtensionContext,
     next?: () => Promise<any>
   ) => Promise<void>;
 }
