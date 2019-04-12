@@ -39,33 +39,48 @@ export const appIcon: string = (() => {
 })();
 
 // tslint:disable-next-line
+export const GlobalPath: MajsoulPlus.GlobalPath = {
+  LocalDir: '/static',
+  ModsDir: 'mod',
+  ExtensionDir: 'extension',
+  ToolsDir: 'tool',
+  ExecutesDir: 'execute'
+};
+
+// tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
+  version: '1.12.0-beta.3',
   ServerPort: 8887,
   // PIPE_PORT: 8888,
   XOR_KEY: 73,
   EXTEND_RES_KEYWORD: 'extendRes',
   RemoteDomain: 'https://majsoul.union-game.com/',
   HttpRemoteDomain: 'http://majsoul.union-game.com/',
-  LocalDir: '/static',
-  ModsDir: '/mod',
   ModsConfigPath: ((): string => {
     const p = path.join(appDataDir, 'modsEnabled.json');
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', Global.ModsDir, 'active.json'),
+        path.join(__dirname, '../', GlobalPath.ModsDir, 'active.json'),
         p
       );
     }
     return p;
   })(),
-  ExtensionDir: '/extension',
-  ToolsDir: '/tool',
-  ExecutesDir: '/execute',
+  ExtensionConfigPath: ((): string => {
+    const p = path.join(appDataDir, 'extensions.json');
+    if (!fs.existsSync(p)) {
+      fs.copyFileSync(
+        path.join(__dirname, '../', GlobalPath.ExtensionDir, 'extensions.json'),
+        p
+      );
+    }
+    return p;
+  })(),
   ExecutesConfigPath: ((): string => {
     const p = path.join(appDataDir, 'executesEnabled.json');
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', Global.ExecutesDir, 'active.json'),
+        path.join(__dirname, '../', GlobalPath.ExecutesDir, 'active.json'),
         p
       );
     }

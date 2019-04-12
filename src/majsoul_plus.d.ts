@@ -39,17 +39,14 @@ declare namespace MajsoulPlus {
    * Global
    */
   export interface Global {
+    version: string;
     ServerPort: number;
     XOR_KEY: number;
     EXTEND_RES_KEYWORD: string;
     RemoteDomain: string;
     HttpRemoteDomain: string;
-    LocalDir: string;
-    ModsDir: string;
     ModsConfigPath: string;
-    ExtensionDir: string;
-    ToolsDir: string;
-    ExecutesDir: string;
+    ExtensionConfigPath: string;
     ExecutesConfigPath: string;
     UserConfigPath: string;
 
@@ -64,6 +61,14 @@ declare namespace MajsoulPlus {
     allowRunningInsecureContent?: boolean;
     nodeIntegration?: boolean;
     plugins?: boolean;
+  }
+
+  export interface GlobalPath {
+    LocalDir: string;
+    ModsDir: string;
+    ExtensionDir: string;
+    ToolsDir: string;
+    ExecutesDir: string;
   }
 
   /**

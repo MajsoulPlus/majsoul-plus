@@ -37,7 +37,7 @@ export function LoadExtension() {
 
   // TODO: FileExist Check
   const enabled: string[] = JSON.parse(
-    fs.readFileSync(Global.ExecutesConfigPath, {
+    fs.readFileSync(Global.ExtensionConfigPath, {
       encoding: 'utf-8'
     })
   );

@@ -8,7 +8,8 @@
   "scripts": {
     "sass": "node-sass assets/manager/ -o assets/manager/",
     "pre-build": "tsc && yarn sass && node build.js",
-    "debug": "cross-env NODE_ENV=development electron ./dist/index-refactor.js --enable-logging --v=1",
+    "debug": "cross-env NODE_ENV=development electron ./dist/index-refactor.js --enable-logging --v=0",
+    "debug:detailed": "cross-env NODE_ENV=development electron ./dist/index-refactor.js --enable-logging --v=1",
     "start": "yarn pre-build && yarn debug",
     "pack": "npm run lint && npm run build",
     "dist": "yarn pre-build && electron-builder --x64 --ia32 --publish onTagOrDraft",

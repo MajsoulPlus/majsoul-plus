@@ -6,7 +6,7 @@ import { IncomingMessage } from 'http';
 import * as https from 'https';
 import * as path from 'path';
 import * as url from 'url';
-import { Global } from './global';
+import { Global, GlobalPath } from './global';
 import { AudioPlayer } from './windows/audioPlayer';
 
 /**
@@ -24,10 +24,12 @@ export function updateObject(toUpdate: {}, latest: {}): {} {
     }
   }
   for (const key in latest) {
-    if (toUpdate[key] === undefined) {
+    if (toUpdate[key] === undefined && typeof latest[key] === 'object') {
       // 此处对对象作深拷贝
       toUpdate[key] = {};
       fillObject(toUpdate[key], latest[key]);
+    } else {
+      toUpdate[key] = latest[key];
     }
   }
   return toUpdate;
@@ -245,7 +247,7 @@ export function getRemoteSource(
 export function getLocalURI(
   originalUrl: string,
   isPath: boolean,
-  dirBase = path.join(__dirname, Global.LocalDir)
+  dirBase = path.join(__dirname, GlobalPath.LocalDir)
 ): string {
   const indexOfProps = originalUrl.indexOf('?');
   originalUrl = originalUrl.substring(
@@ -413,40 +415,4 @@ export function compareVersion(taga: string, tagb: string): number {
       return 0;
     }
   }
-}
-
-/**
- * Check whether version B can be used by verA
- * TODO: test this function
- * @param verA
- * @param verB
- */
-export function versionMatch(verA: string, verB: string): boolean {
-  const aPatch = verA.startsWith('~');
-  const aMinor = verA.startsWith('^');
-  const aMajor = verA.startsWith('*') || verA.startsWith('x');
-
-  const bTags = verB.split('.').map(str => Number(str));
-
-  if (aMajor) return true;
-  if (aMinor) {
-    verA = verA.substr(1);
-    if (!verA.match(/\d+(?:\.(?:[0-9]+|[*x])+/)) return false;
-
-    const aTags = verA.split('.');
-    if (aTags[1].match(/[*x]/)) return true;
-    else return Number(aTags[1]) <= bTags[1];
-  }
-  if (aPatch) {
-    if (!verA.match(/\d+\.\d+(?:\.(?:[0-9]+|[*x])+/)) return false;
-    const aTags = verA.split('.');
-    if (aTags[2].match(/[*x]/)) return true;
-    else return Number(aTags[2]) <= bTags[2];
-  }
-
-  const aTags = verA.split('.').map(str => Number(str));
-  for (const i in bTags) {
-    if (aTags[i] !== bTags[i]) return false;
-  }
-  return true;
 }

@@ -5,7 +5,9 @@ import { UserConfigs } from './config-refactor';
 import { Server, serverOptions } from './server';
 import { GameWindow } from './windows/game';
 import { initManagerWindow, ManagerWindow } from './windows/manager';
+import { LoadExtension } from './extension/extension';
 
+LoadExtension();
 export const httpsServer = https.createServer(serverOptions, Server.callback());
 
 // in-process GPU
@@ -63,7 +65,7 @@ app.on(
 );
 
 app.on('ready', info => {
-  console.log(info);
+  // console.log(info);
 
   // remove application menu
   Menu.setApplicationMenu(null);
