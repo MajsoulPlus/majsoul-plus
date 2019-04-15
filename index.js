@@ -108,7 +108,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 server.get('*', Util.processRequest)
 
-electronApp.commandLine.appendSwitch('ignore-certificate-errors')
+// electronApp.commandLine.appendSwitch('ignore-certificate-errors')
+
 electronApp.commandLine.appendSwitch(
   'autoplay-policy',
   'no-user-gesture-required'
@@ -127,8 +128,14 @@ electronApp.on('window-all-closed', () => {
 electronApp.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
-    event.preventDefault()
-    callback(true) // eslint-disable-line standard/no-callback-literal
+    if (
+      certificate.fingerprint === '8f27c5f7a0a209da7948db0d2fcd42bac89a1005'
+    ) {
+      event.preventDefault()
+      callback(true) // eslint-disable-line standard/no-callback-literal
+    } else {
+      callback(false)
+    }
   }
 )
 
