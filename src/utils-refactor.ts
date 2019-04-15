@@ -1,13 +1,13 @@
-import * as AdmZip from 'adm-zip';
-import * as childProcess from 'child_process';
-import { WebContents } from 'electron';
-import * as fs from 'fs';
-import { IncomingMessage } from 'http';
-import * as https from 'https';
-import * as path from 'path';
-import * as url from 'url';
-import { Global, GlobalPath } from './global';
-import { AudioPlayer } from './windows/audioPlayer';
+import * as AdmZip from 'adm-zip'
+import * as childProcess from 'child_process'
+import { WebContents } from 'electron'
+import * as fs from 'fs'
+import { IncomingMessage } from 'http'
+import * as https from 'https'
+import * as path from 'path'
+import * as url from 'url'
+import { Global, GlobalPath } from './global'
+import { AudioPlayer } from './windows/audioPlayer'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -18,21 +18,21 @@ import { AudioPlayer } from './windows/audioPlayer';
 export function updateObject(toUpdate: {}, latest: {}): {} {
   for (const key in toUpdate) {
     if (typeof toUpdate[key] === 'object' && typeof latest[key] === 'object') {
-      updateObject(toUpdate[key], latest[key]);
+      updateObject(toUpdate[key], latest[key])
     } else if (latest[key] === undefined) {
-      delete toUpdate[key];
+      delete toUpdate[key]
     }
   }
   for (const key in latest) {
     if (toUpdate[key] === undefined && typeof latest[key] === 'object') {
       // 此处对对象作深拷贝
-      toUpdate[key] = {};
-      fillObject(toUpdate[key], latest[key]);
+      toUpdate[key] = {}
+      fillObject(toUpdate[key], latest[key])
     } else {
-      toUpdate[key] = latest[key];
+      toUpdate[key] = latest[key]
     }
   }
-  return toUpdate;
+  return toUpdate
 }
 
 /**
@@ -44,17 +44,17 @@ export function updateObject(toUpdate: {}, latest: {}): {} {
 export function fillObject(toFill: {}, latest: {}): {} {
   for (const key in latest) {
     if (typeof toFill[key] === 'object' && typeof latest[key] === 'object') {
-      updateObject(toFill[key], latest[key]);
+      updateObject(toFill[key], latest[key])
     } else if (toFill[key] === undefined) {
       if (typeof latest[key] === 'object') {
-        toFill[key] = {};
-        updateObject(toFill[key], latest[key]);
+        toFill[key] = {}
+        updateObject(toFill[key], latest[key])
       } else {
-        toFill[key] = latest[key];
+        toFill[key] = latest[key]
       }
     }
   }
-  return toFill;
+  return toFill
 }
 
 /**
@@ -66,15 +66,15 @@ export function fillObject(toFill: {}, latest: {}): {} {
 export function cleanObject(toClean: {}, sample: {}): {} {
   for (const key in toClean) {
     if (sample[key] === undefined) {
-      delete toClean[key];
+      delete toClean[key]
     } else if (
       typeof sample[key] === 'object' &&
       typeof toClean[key] === 'object'
     ) {
-      cleanObject(toClean[key], sample[key]);
+      cleanObject(toClean[key], sample[key])
     }
   }
-  return toClean;
+  return toClean
 }
 
 /**
@@ -82,12 +82,12 @@ export function cleanObject(toClean: {}, sample: {}): {} {
  * @param buffer
  */
 export function XOR(buffer: Buffer): Buffer {
-  const array = [];
+  const array = []
   for (let index = 0; index < buffer.length; index++) {
-    const byte = buffer.readUInt8(index);
-    array.push(Global.XOR_KEY ^ byte);
+    const byte = buffer.readUInt8(index)
+    array.push(Global.XOR_KEY ^ byte)
   }
-  return Buffer.from(array);
+  return Buffer.from(array)
 }
 
 /**
@@ -95,7 +95,7 @@ export function XOR(buffer: Buffer): Buffer {
  * @param originalUrl 原始请求的相对路径
  */
 export function isEncryptRes(originalUrl: string): boolean {
-  return originalUrl.includes(Global.EXTEND_RES_KEYWORD);
+  return originalUrl.includes(Global.EXTEND_RES_KEYWORD)
 }
 
 /**
@@ -107,7 +107,7 @@ export function isPath(originalUrl: string): boolean {
     originalUrl.endsWith('\\') ||
     originalUrl.endsWith('/') ||
     originalUrl.includes('?')
-  );
+  )
 }
 
 /**
@@ -120,16 +120,16 @@ export function mkdirs(dirname: string): Promise<void> {
   return new Promise(resolve => {
     fs.stat(dirname, err => {
       if (!err) {
-        resolve();
+        resolve()
       } else {
         resolve(
           this.mkdirs(path.dirname(dirname)).then(() => {
-            return new Promise(res => fs.mkdir(dirname, res));
+            return new Promise(res => fs.mkdir(dirname, res))
           })
-        );
+        )
       }
-    });
-  });
+    })
+  })
 }
 
 /**
@@ -138,10 +138,10 @@ export function mkdirs(dirname: string): Promise<void> {
  */
 export function mkdirsSync(dirname: string) {
   try {
-    fs.statSync(dirname);
+    fs.statSync(dirname)
   } catch (error) {
-    this.mkdirsSync(path.dirname(dirname));
-    fs.mkdirSync(dirname);
+    this.mkdirsSync(path.dirname(dirname))
+    fs.mkdirSync(dirname)
   }
 }
 
@@ -150,7 +150,7 @@ export function mkdirsSync(dirname: string) {
  * @param originalUrl
  */
 export function getRemoteUrl(originalUrl: string): string {
-  return Global.RemoteDomain + originalUrl;
+  return Global.RemoteDomain + originalUrl
 }
 
 /**
@@ -162,61 +162,61 @@ export function getRemoteUrl(originalUrl: string): string {
 export function getRemoteSource(
   originalUrl: string,
   encrypt: boolean,
-  encoding = 'binary'
+  encoding: BufferEncoding = 'binary'
 ): Promise<{
-  res: IncomingMessage;
-  statusCode?: number;
-  data: Buffer | string;
+  res: IncomingMessage
+  statusCode?: number
+  data: Buffer | string
 }> {
   return new Promise((resolve, reject) => {
-    const remoteUrl = this.getRemoteUrl(originalUrl);
+    const remoteUrl = this.getRemoteUrl(originalUrl)
     https.get(
       {
         ...url.parse(remoteUrl),
         headers: { 'User-Agent': Global.HttpGetUserAgent }
       },
       httpRes => {
-        const { statusCode } = httpRes;
-        httpRes.setEncoding(encoding);
+        const { statusCode } = httpRes
+        httpRes.setEncoding(encoding)
 
-        const chunks = [];
-        let chunksSize = 0;
+        const chunks = []
+        let chunksSize = 0
 
         httpRes.on('data', chunk => {
-          chunks.push(chunk);
-          chunksSize += chunk.length;
-        });
+          chunks.push(chunk)
+          chunksSize += chunk.length
+        })
 
         httpRes.on('end', () => {
-          let fileData = null;
+          let fileData = null
           switch (chunks.length) {
             case 0:
-              fileData = Buffer.alloc(0);
-              break;
+              fileData = Buffer.alloc(0)
+              break
             case 1:
-              fileData = Buffer.from(chunks[0], encoding);
-              break;
+              fileData = Buffer.from(chunks[0], encoding)
+              break
             default:
-              fileData = Buffer.alloc(chunksSize);
+              fileData = Buffer.alloc(chunksSize)
               for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
-                const chunk: string | Buffer = chunks[i];
+                const chunk: string | Buffer = chunks[i]
                 if (Buffer.isBuffer(chunk)) {
-                  chunk.copy(fileData, position);
+                  chunk.copy(fileData, position)
                 } else {
-                  Buffer.from(chunk, encoding).copy(fileData, position);
+                  Buffer.from(chunk, encoding).copy(fileData, position)
                 }
-                position += chunk.length;
+                position += chunk.length
               }
-              break;
+              break
           }
           if (statusCode < 200 || statusCode >= 400) {
             console.warn(
               `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-            );
+            )
             reject({
               res: httpRes,
               data: (encrypt ? this.XOR(fileData) : fileData).toString(encoding)
-            });
+            })
           } else {
             if (statusCode === 302 || statusCode === 301) {
               return resolve(
@@ -225,17 +225,17 @@ export function getRemoteSource(
                   encrypt,
                   encoding
                 )
-              );
+              )
             }
             resolve({
               res: httpRes,
               data: (encrypt ? this.XOR(fileData) : fileData).toString(encoding)
-            });
+            })
           }
-        });
+        })
       }
-    );
-  });
+    )
+  })
 }
 
 /**
@@ -249,13 +249,13 @@ export function getLocalURI(
   isPath: boolean,
   dirBase = path.join(__dirname, GlobalPath.LocalDir)
 ): string {
-  const indexOfProps = originalUrl.indexOf('?');
+  const indexOfProps = originalUrl.indexOf('?')
   originalUrl = originalUrl.substring(
     0,
     indexOfProps === -1 ? undefined : indexOfProps
-  );
-  const localURI = path.join(dirBase, originalUrl);
-  return isPath ? localURI : localURI;
+  )
+  const localURI = path.join(dirBase, originalUrl)
+  return isPath ? localURI : localURI
   // `${localURI}localfile.dirindexfile` : localURI
 }
 
@@ -274,12 +274,12 @@ export function writeFile(
     this.mkdirs(path.dirname(pathToWrite)).then(() => {
       fs.writeFile(pathToWrite, data, encoding, err => {
         if (err) {
-          reject(err);
+          reject(err)
         }
-        resolve();
-      });
-    });
-  });
+        resolve()
+      })
+    })
+  })
 }
 
 /**
@@ -290,18 +290,18 @@ export function readFile(filepath: string): Promise<Buffer | string> {
   return new Promise((resolve, reject) => {
     fs.readFile(filepath, (err, data) => {
       if (err) {
-        reject(err);
+        reject(err)
       }
-      resolve(data);
-    });
-  });
+      resolve(data)
+    })
+  })
 }
 
 export function encodeData(data: Buffer | string, encoding = 'binary') {
   if (typeof data === 'string') {
-    return Buffer.from(data as string, encoding);
+    return Buffer.from(data as string, encoding)
   } else {
-    return Buffer.from(data as Buffer);
+    return Buffer.from(data as Buffer)
   }
 }
 
@@ -310,13 +310,13 @@ export function encodeData(data: Buffer | string, encoding = 'binary') {
  * @param dir 要删除的目录
  */
 export function removeDirSync(dir: string) {
-  let command = '';
+  let command = ''
   if (process.platform === 'win32') {
-    command = `rmdir /s/q "${dir}"`;
+    command = `rmdir /s/q "${dir}"`
   } else {
-    command = `rm -rf "${dir}"`;
+    command = `rm -rf "${dir}"`
   }
-  childProcess.execSync(command);
+  childProcess.execSync(command)
 }
 
 /**
@@ -327,8 +327,8 @@ export function takeScreenshot(webContents: WebContents) {
   AudioPlayer.webContents.send(
     'audio-play',
     path.join(__dirname, 'bin/audio/screenshot.mp3')
-  );
-  webContents.send('take-screenshot');
+  )
+  webContents.send('take-screenshot')
 }
 
 /**
@@ -337,10 +337,10 @@ export function takeScreenshot(webContents: WebContents) {
  * @param to 打包到的路径
  */
 export function zipDir(from: string, to: string) {
-  const zip = new AdmZip();
-  zip.addLocalFolder(from, path.basename(from));
-  zip.writeZip(to);
-  return to;
+  const zip = new AdmZip()
+  zip.addLocalFolder(from, path.basename(from))
+  zip.writeZip(to)
+  return to
 }
 
 /**
@@ -350,69 +350,69 @@ export function zipDir(from: string, to: string) {
  * @return 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
  */
 export function compareVersion(taga: string, tagb: string): number {
-  const tagaArr = taga.substring(1).split('-');
-  const tagbArr = tagb.substring(1).split('-');
-  let tagaDev = false;
-  let tagbDev = false;
+  const tagaArr = taga.substring(1).split('-')
+  const tagbArr = tagb.substring(1).split('-')
+  let tagaDev = false
+  let tagbDev = false
   if (tagaArr.length > 1) {
-    tagaDev = true;
+    tagaDev = true
   }
   if (tagbArr.length > 1) {
-    tagbDev = true;
+    tagbDev = true
   }
-  const tagaMain = tagaArr[0].split('.');
-  const tagbMain = tagbArr[0].split('.');
+  const tagaMain = tagaArr[0].split('.')
+  const tagbMain = tagbArr[0].split('.')
 
-  let laterFlag: number | undefined = undefined;
+  let laterFlag: number | undefined = undefined
   for (let i = 0; i < 3; i++) {
     if (Number(tagaMain[i]) > Number(tagbMain[i])) {
-      laterFlag = i + 1;
-      break;
+      laterFlag = i + 1
+      break
     } else if (Number(tagaMain[i]) < Number(tagbMain[i])) {
-      laterFlag = 0;
-      break;
+      laterFlag = 0
+      break
     }
   }
 
   if (typeof laterFlag === 'number') {
-    return laterFlag;
+    return laterFlag
   } else {
     if (tagbDev && !tagaDev) {
-      return 1;
+      return 1
     } else if (tagaDev && !tagbDev) {
-      return 0;
+      return 0
     } else if (tagaDev && tagbDev) {
-      const tagaDevArr: Array<string | number> = tagaArr[1].split('.');
-      const tagbDevArr: Array<string | number> = tagbArr[1].split('.');
+      const tagaDevArr: Array<string | number> = tagaArr[1].split('.')
+      const tagbDevArr: Array<string | number> = tagbArr[1].split('.')
       const devStrToNum = (devStr: string): number => {
         switch (devStr) {
           case 'alpha':
-            return 1;
+            return 1
           case 'beta':
-            return 2;
+            return 2
           case 'rc':
-            return 3;
+            return 3
           default:
-            return 0;
+            return 0
         }
-      };
-      tagaDevArr[0] = devStrToNum(tagaDevArr[0] as string);
-      tagbDevArr[0] = devStrToNum(tagbDevArr[0] as string);
+      }
+      tagaDevArr[0] = devStrToNum(tagaDevArr[0] as string)
+      tagbDevArr[0] = devStrToNum(tagbDevArr[0] as string)
       for (let i = 0; i < 2; i++) {
         if (Number(tagaDevArr[i]) > Number(tagbDevArr[i])) {
-          laterFlag = 4;
-          break;
+          laterFlag = 4
+          break
         } else if (Number(tagaDevArr[i]) < Number(tagbDevArr[i])) {
-          laterFlag = 0;
-          break;
+          laterFlag = 0
+          break
         }
       }
       if (laterFlag === undefined) {
-        return 0;
+        return 0
       }
-      return laterFlag;
+      return laterFlag
     } else {
-      return 0;
+      return 0
     }
   }
 }
