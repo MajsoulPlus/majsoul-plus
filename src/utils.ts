@@ -198,7 +198,11 @@ export const Util = {
    * @param {string} encoding 编码格式
    * @param {Function} dataCallback 当获取到数据时候的callback
    */
-  httpsGetFile(URI: string, encoding = 'binary', dataCallback: Function) {
+  httpsGetFile(
+    URI: string,
+    encoding: BufferEncoding = 'binary',
+    dataCallback: Function
+  ) {
     return new Promise((resolve, reject) => {
       https.get(
         {
