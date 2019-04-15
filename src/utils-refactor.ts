@@ -297,7 +297,10 @@ export function readFile(filepath: string): Promise<Buffer | string> {
   })
 }
 
-export function encodeData(data: Buffer | string, encoding = 'binary') {
+export function encodeData(
+  data: Buffer | string,
+  encoding: BufferEncoding = 'binary'
+) {
   if (typeof data === 'string') {
     return Buffer.from(data as string, encoding)
   } else {
