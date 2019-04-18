@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import { Global } from '../global';
-import { MajsoulPlus } from '../majsoul_plus';
+import * as fs from 'fs'
+import { Global } from '../global'
+import { MajsoulPlus } from '../majsoul_plus'
 
 /**
  * 加载 Mod
@@ -14,10 +14,10 @@ export function loadMods(mods: MajsoulPlus.Mod[]) {
   try {
     const data = fs.readFileSync(Global.ModsConfigPath, {
       encoding: 'utf-8'
-    });
-    Array.prototype.push.apply(mods, JSON.parse(data));
+    })
+    Array.prototype.push.apply(mods, JSON.parse(data))
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 }
 

@@ -1,7 +1,7 @@
-import * as fs from 'fs';
-import { Global } from '../global';
-import { MajsoulPlus } from '../majsoul_plus';
-import { ExtensionManager } from './manager';
+import * as fs from 'fs'
+import { Global } from '../global'
+import { MajsoulPlus } from '../majsoul_plus'
+import { ExtensionManager } from './manager'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
@@ -10,7 +10,7 @@ export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   XMLHttpRequest: false,
   WebSocket: false,
   writeableWindowObject: false
-};
+}
 
 export const defaultExtension: MajsoulPlus.Extension = {
   id: 'test',
@@ -23,10 +23,10 @@ export const defaultExtension: MajsoulPlus.Extension = {
   entry: 'script.js',
   sync: false,
   executePreferences: defaultExtensionPermission
-};
+}
 
-Object.freeze(defaultExtension);
-Object.freeze(defaultExtensionPermission);
+Object.freeze(defaultExtension)
+Object.freeze(defaultExtensionPermission)
 
 export function LoadExtension() {
   // TODO: Load from config file
@@ -40,6 +40,6 @@ export function LoadExtension() {
     fs.readFileSync(Global.ExtensionConfigPath, {
       encoding: 'utf-8'
     })
-  );
-  enabled.forEach(extension => ExtensionManager.use(extension));
+  )
+  enabled.forEach(extension => ExtensionManager.use(extension))
 }

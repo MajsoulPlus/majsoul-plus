@@ -1,33 +1,33 @@
-import * as electron from 'electron';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import * as electron from 'electron'
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 
 // 提供app模块
-let app = electron.app;
+let app = electron.app
 if (!app) {
-  app = electron.remote.app;
+  app = electron.remote.app
 }
 
 // 防止首次运行时扑街
-const appDataDir = app.getPath('userData');
+const appDataDir = app.getPath('userData')
 try {
-  fs.statSync(appDataDir);
+  fs.statSync(appDataDir)
 } catch (error) {
-  fs.mkdirSync(appDataDir);
+  fs.mkdirSync(appDataDir)
 }
 
 const getIcon = () => {
   switch (os.platform()) {
     case 'win32':
-      return path.join(__dirname, '/bin/icons/icon.ico');
+      return path.join(__dirname, '/bin/icons/icon.ico')
     case 'darwin':
-      return path.join(__dirname, '/bin/icons/icon.icns');
+      return path.join(__dirname, '/bin/icons/icon.icns')
     case 'linux':
     default:
-      return path.join(__dirname, '/bin/icons/icon.png');
+      return path.join(__dirname, '/bin/icons/icon.png')
   }
-};
+}
 
 export const Configs = {
   SERVER_PORT: 8887,
@@ -97,21 +97,21 @@ export const Configs = {
   HTTP_GET_USER_AGENT: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
     process.versions.chrome
   }`
-};
+}
 
 try {
-  fs.statSync(Configs.EXECUTES_CONFIG_PATH);
+  fs.statSync(Configs.EXECUTES_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
     path.join(__dirname, '../', Configs.EXECUTES_DIR, 'active.json'),
     Configs.EXECUTES_CONFIG_PATH
-  );
+  )
 }
 try {
-  fs.statSync(Configs.MODS_CONFIG_PATH);
+  fs.statSync(Configs.MODS_CONFIG_PATH)
 } catch (error) {
   fs.copyFileSync(
     path.join(__dirname, '../', Configs.MODS_DIR, 'active.json'),
     Configs.MODS_CONFIG_PATH
-  );
+  )
 }

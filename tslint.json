@@ -6,7 +6,7 @@
       "severity": "error"
     },
     "semicolon": {
-      "options": "always",
+      "options": "never",
       "severity": "error"
     },
     "variable-name": {

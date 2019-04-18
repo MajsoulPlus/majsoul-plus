@@ -1,27 +1,27 @@
-import * as electron from 'electron';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-import { MajsoulPlus } from './majsoul_plus';
+import * as electron from 'electron'
+import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
+import { MajsoulPlus } from './majsoul_plus'
 
 // 提供 app模块
-const app = electron.app ? electron.app : electron.remote.app;
+const app = electron.app ? electron.app : electron.remote.app
 
 /**
  * 应用保存数据的路径
  */
 export const appDataDir: string = ((): string => {
-  const localData = path.join(app.getAppPath(), 'data');
-  const appData = app.getPath('userData');
+  const localData = path.join(app.getAppPath(), 'data')
+  const appData = app.getPath('userData')
   if (fs.existsSync(localData) && fs.statSync(localData).isDirectory()) {
-    return localData;
+    return localData
   } else {
     if (!fs.existsSync(appData)) {
-      fs.mkdirSync(appData);
+      fs.mkdirSync(appData)
     }
-    return appData;
+    return appData
   }
-})();
+})()
 
 /**
  * 应用图标
@@ -30,13 +30,13 @@ export const appDataDir: string = ((): string => {
 export const appIcon: string = (() => {
   switch (os.platform()) {
     case 'win32':
-      return path.join(__dirname, '/bin/icons/icon.ico');
+      return path.join(__dirname, '/bin/icons/icon.ico')
     case 'darwin':
-      return path.join(__dirname, '/bin/icons/icon.icns');
+      return path.join(__dirname, '/bin/icons/icon.icns')
     default:
-      return path.join(__dirname, '/bin/icons/icon.png');
+      return path.join(__dirname, '/bin/icons/icon.png')
   }
-})();
+})()
 
 // tslint:disable-next-line
 export const GlobalPath: MajsoulPlus.GlobalPath = {
@@ -45,7 +45,7 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
   ExtensionDir: 'extension',
   ToolsDir: 'tool',
   ExecutesDir: 'execute'
-};
+}
 
 // tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
@@ -57,34 +57,34 @@ export const Global: MajsoulPlus.Global = {
   RemoteDomain: 'https://majsoul.union-game.com/',
   HttpRemoteDomain: 'http://majsoul.union-game.com/',
   ModsConfigPath: ((): string => {
-    const p = path.join(appDataDir, 'modsEnabled.json');
+    const p = path.join(appDataDir, 'modsEnabled.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
         path.join(__dirname, '../', GlobalPath.ModsDir, 'active.json'),
         p
-      );
+      )
     }
-    return p;
+    return p
   })(),
   ExtensionConfigPath: ((): string => {
-    const p = path.join(appDataDir, 'extensions.json');
+    const p = path.join(appDataDir, 'extensions.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
         path.join(__dirname, '../', GlobalPath.ExtensionDir, 'extensions.json'),
         p
-      );
+      )
     }
-    return p;
+    return p
   })(),
   ExecutesConfigPath: ((): string => {
-    const p = path.join(appDataDir, 'executesEnabled.json');
+    const p = path.join(appDataDir, 'executesEnabled.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
         path.join(__dirname, '../', GlobalPath.ExecutesDir, 'active.json'),
         p
-      );
+      )
     }
-    return p;
+    return p
   })(),
   UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
 
@@ -141,4 +141,4 @@ export const Global: MajsoulPlus.Global = {
   HttpGetUserAgent: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
     process.versions.chrome
   }`
-};
+}

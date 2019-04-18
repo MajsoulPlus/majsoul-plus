@@ -114,9 +114,9 @@ export const Util = {
     encrypt: boolean,
     encoding: BufferEncoding = 'binary'
   ): Promise<{
-    res: IncomingMessage
-    statusCode?: number
-    data: Buffer | string
+    res: IncomingMessage;
+    statusCode?: number;
+    data: Buffer | string;
   }> {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
@@ -256,7 +256,9 @@ export const Util = {
               })
             } else {
               if (statusCode === 302 || statusCode === 301) {
-                console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
+                console.warn(
+                  `访问 ${URI} 被重定向, statusCode = ${statusCode}`
+                )
                 return resolve(
                   this.httpsGetFile(
                     httpRes.headers.location,

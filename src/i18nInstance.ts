@@ -1,14 +1,14 @@
-import { App, app, remote } from 'electron';
-import { I18n } from './i18n';
+import { App, app, remote } from 'electron'
+import { I18n } from './i18n'
 
-let myApp: App;
+let myApp: App
 if (app) {
-  myApp = app;
+  myApp = app
 } else {
-  myApp = remote.app;
+  myApp = remote.app
 }
 
 export const i18n = new I18n({
   autoReload: process.env.NODE_ENV === 'development',
   actives: [myApp.getLocale()]
-});
+})

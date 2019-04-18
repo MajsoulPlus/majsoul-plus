@@ -1,13 +1,13 @@
-import { BrowserWindow, Menu, MenuItem } from 'electron';
-import { Configs } from '../config';
-import { takeScreenshot } from '../utils-refactor';
-import { UserConfigs } from '../config-refactor';
+import { BrowserWindow, Menu, MenuItem } from 'electron'
+import { Configs } from '../config'
+import { takeScreenshot } from '../utils-refactor'
+import { UserConfigs } from '../config-refactor'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow;
 
 export function initGameWindow() {
-  GameWindow = new BrowserWindow(Configs.GAME_WINDOW_CONFIG);
+  GameWindow = new BrowserWindow(Configs.GAME_WINDOW_CONFIG)
 }
 
 // tslint:disable-next-line
@@ -22,7 +22,7 @@ GameWindowMenu.append(
         label: '截图',
         accelerator: 'F12',
         click: (menuItem, browserWindow) => {
-          takeScreenshot(browserWindow.webContents);
+          takeScreenshot(browserWindow.webContents)
         }
       },
       {
@@ -31,26 +31,26 @@ GameWindowMenu.append(
         enabled: true,
         visible: false,
         click: (menuItem, browserWindow) => {
-          takeScreenshot(browserWindow.webContents);
+          takeScreenshot(browserWindow.webContents)
         }
       },
       {
         label: '重新载入',
         accelerator: 'CmdOrCtrl+R',
         click: (menuItem, browserWindow) => {
-          browserWindow.reload();
+          browserWindow.reload()
         }
       },
       {
         label: '退出游戏',
         accelerator: 'Alt+F4',
         click: (menuItem, browserWindow) => {
-          browserWindow.close();
+          browserWindow.close()
         }
       }
     ]
   })
-);
+)
 
 GameWindowMenu.append(
   new MenuItem({
@@ -61,7 +61,7 @@ GameWindowMenu.append(
         label: '置顶',
         accelerator: 'CmdOrCtrl+T',
         click: (menuItem, browserWindow) => {
-          browserWindow.setAlwaysOnTop(!browserWindow.isAlwaysOnTop());
+          browserWindow.setAlwaysOnTop(!browserWindow.isAlwaysOnTop())
         }
       },
       {
@@ -69,9 +69,9 @@ GameWindowMenu.append(
         accelerator: 'F11',
         click: (menuItem, browserWindow) => {
           if (!UserConfigs.window.isKioskModeOn) {
-            browserWindow.setFullScreen(!browserWindow.isFullScreen());
+            browserWindow.setFullScreen(!browserWindow.isFullScreen())
           } else {
-            browserWindow.setKiosk(!browserWindow.isKiosk());
+            browserWindow.setKiosk(!browserWindow.isKiosk())
           }
         }
       },
@@ -82,9 +82,9 @@ GameWindowMenu.append(
         visible: false,
         click: (menuItem, browserWindow) => {
           if (!UserConfigs.window.isKioskModeOn) {
-            browserWindow.setFullScreen(!browserWindow.isFullScreen());
+            browserWindow.setFullScreen(!browserWindow.isFullScreen())
           } else {
-            browserWindow.setKiosk(!browserWindow.isKiosk());
+            browserWindow.setKiosk(!browserWindow.isKiosk())
           }
         }
       },
@@ -93,24 +93,24 @@ GameWindowMenu.append(
         accelerator: 'Esc',
         click: (menuItem, browserWindow) => {
           if (browserWindow.isFullScreen()) {
-            browserWindow.setFullScreen(false);
-            return;
+            browserWindow.setFullScreen(false)
+            return
           }
           if (browserWindow.isKiosk()) {
-            browserWindow.setKiosk(false);
+            browserWindow.setKiosk(false)
           }
         }
       }
     ]
   })
-);
+)
 
 GameWindowMenu.append(
   new MenuItem({
     label: '编辑',
     role: 'editMenu'
   })
-);
+)
 
 GameWindowMenu.append(
   new MenuItem({
@@ -120,10 +120,10 @@ GameWindowMenu.append(
         label: '开发者工具',
         accelerator: 'CmdOrCtrl+I',
         click: (menuItem, browserWindow) => {
-          browserWindow.webContents.openDevTools({ mode: 'detach' });
-          browserWindow.webContents.send('open-devtools');
+          browserWindow.webContents.openDevTools({ mode: 'detach' })
+          browserWindow.webContents.send('open-devtools')
         }
       }
     ]
   })
-);
+)
