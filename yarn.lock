@@ -112,6 +112,11 @@
   resolved "http://registry.npm.taobao.org/@types/range-parser/download/@types/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha1-fuMwunyq+5gJC+zoal7kQRWQTCw=
 
+"@types/semver@^6.0.0":
+  version "6.0.0"
+  resolved "http://registry.npm.taobao.org/@types/semver/download/@types/semver-6.0.0.tgz#86ba89f02a414e39c68d02b351872e4ed31bd773"
+  integrity sha1-hrqJ8CpBTjnGjQKzUYcuTtMb13M=
+
 "@types/serve-static@*":
   version "1.13.2"
   resolved "http://registry.npm.taobao.org/@types/serve-static/download/@types/serve-static-1.13.2.tgz#f5ac4d7a6420a99a6a45af4719f4dcd8cd907a48"
@@ -2806,6 +2811,11 @@ semver-diff@^2.0.0:
   version "5.7.0"
   resolved "http://registry.npm.taobao.org/semver/download/semver-5.7.0.tgz#790a7cf6fea5459bac96110b29b60412dc8ff96b"
   integrity sha1-eQp89v6lRZuslhELKbYEEtyP+Ws=
+
+semver@^6.0.0:
+  version "6.0.0"
+  resolved "http://registry.npm.taobao.org/semver/download/semver-6.0.0.tgz#05e359ee571e5ad7ed641a6eec1e547ba52dea65"
+  integrity sha1-BeNZ7lceWtftZBpu7B5Ue6Ut6mU=
 
 semver@~5.3.0:
   version "5.3.0"

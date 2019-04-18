@@ -1,22 +1,22 @@
 import * as fs from 'fs';
 import * as compose from 'koa-compose';
 import * as path from 'path';
+import * as semver from 'semver';
 import { Configs } from '../config';
 import { appDataDir, Global, GlobalPath } from '../global';
 import { MajsoulPlus } from '../majsoul_plus';
 import { GameWindow } from '../windows/game';
-import { Version } from '../utils/version';
 import { fillObject } from '../utils-refactor';
 import { defaultExtension } from './extension';
 
 class MajsoulPlusExtensionManager {
-  private loadedExtensions: { [extension: string]: Version } = {};
+  private loadedExtensions: { [extension: string]: semver.SemVer } = {};
   private extensionConfigs: MajsoulPlus.Extension[];
   private extensionMiddlewares: MajsoulPlus.ExtensionMiddleware[] = [];
   readonly version: string = '1.0.0';
 
   constructor() {
-    this.loadedExtensions['majsoul_plus'] = Version.parse(Global.version);
+    this.loadedExtensions['majsoul_plus'] = semver.parse(Global.version);
   }
 
   use(ext: string) {
@@ -61,25 +61,39 @@ class MajsoulPlusExtensionManager {
       return this;
     }
 
+    // version validate
+    if (!semver.valid(extension.version)) {
+      console.error(
+        `failed to load extension ${ext}: broken version ${extension.version}`
+      );
+      return this;
+    }
+
+    // check dependencies
     if (extension.dependencies) {
-      let version: Version;
       for (const dep in extension.dependencies) {
         // dependency not found
-        if (this.loadedExtensions[dep] === undefined) {
+        if (!this.loadedExtensions[dep]) {
           console.error(
             `failed to load extension ${ext}: dependency ${dep} not found`
           );
           return this;
         } else {
-          // parse version
-          try {
-            version = Version.parse(extension.dependencies[dep]);
-          } catch (e) {
-            console.error(`failed to load extension ${ext}: ${e}`);
+          // invalid range
+          if (semver.validRange(extension.dependencies[dep]) === null) {
+            console.error(
+              `failed to load extension ${ext}: broken dependency version ${
+                extension.dependencies[dep]
+              }`
+            );
             return this;
           }
-          // dependency version mismatch
-          if (!version.match(this.loadedExtensions[dep])) {
+
+          // parse version range
+          const range = new semver.Range(extension.dependencies[dep]);
+
+          // check dependency version range
+          if (!semver.satisfies(this.loadedExtensions[dep], range)) {
             console.error(
               `failed to load extension ${ext}: the version of ${dep} loaded is ${
                 this.loadedExtensions[dep]
@@ -102,15 +116,13 @@ class MajsoulPlusExtensionManager {
     }
 
     // preview image not found
-    if (extension.preview) {
-      if (
-        !fs.existsSync(extension.preview) ||
-        !fs.statSync(extension.preview).isFile()
-      ) {
-        console.warn(
-          `warning on loading extension ${ext}: preview image not found`
-        );
-      }
+    if (
+      !fs.existsSync(extension.preview) ||
+      !fs.statSync(extension.preview).isFile()
+    ) {
+      console.warn(
+        `warning on loading extension ${ext}: preview image not found`
+      );
     }
 
     // all error checks are ok
@@ -152,11 +164,7 @@ class MajsoulPlusExtensionManager {
 
     extension.entry.forEach(useScript);
     if (!err) {
-      try {
-        this.loadedExtensions[extension.id] = Version.parse(extension.version);
-      } catch (e) {
-        console.error(`failed to load extension ${extension.name}: ${e}`);
-      }
+      this.loadedExtensions[extension.id] = semver.parse(extension.version);
     }
     return this;
   }
