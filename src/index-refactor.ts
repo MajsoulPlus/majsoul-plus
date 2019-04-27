@@ -11,6 +11,7 @@ LoadExtension()
 export const httpsServer = https.createServer(serverOptions, Server.callback())
 
 // in-process GPU
+// 禁用/启用进程内 GPU 处理
 if (UserConfigs.chromium.isInProcessGpuOn) {
   const osplatform = os.platform()
   switch (osplatform) {
@@ -30,6 +31,7 @@ if (UserConfigs.chromium.isInProcessGpuOn) {
 }
 
 // Ignore GPU Blacklist
+// 忽略 GPU 黑名单
 if (UserConfigs.chromium.isIgnoreGpuBlacklist) {
   app.commandLine.appendArgument('ignore-gpu-blacklist')
 }
@@ -43,10 +45,14 @@ if (UserConfigs.chromium.isHardwareAccelerationDisable) {
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 // ignore certificate error
-app.commandLine.appendSwitch('ignore-certificate-errors')
+// 忽略证书错误
+// app.commandLine.appendSwitch('ignore-certificate-errors')
+
+// 允许自动播放音视频
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
 // Exit when all the windows are closed
+// 当全部窗口退出后，结束进程
 app.on('window-all-closed', () => {
   // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
   // 应用会保持活动状态
@@ -59,8 +65,16 @@ app.on('window-all-closed', () => {
 app.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
-    event.preventDefault()
-    callback(true)
+    if (
+      certificate.fingerprint ===
+      // 祖传本地证书
+      'sha256/UMNIGcBbbIcru/0L2e1idl+aQS7PUHqsZDcrETqdMsc='
+    ) {
+      event.preventDefault()
+      callback(true) // eslint-disable-line standard/no-callback-literal
+    } else {
+      callback(false)
+    }
   }
 )
 
@@ -135,6 +149,7 @@ app.on('ready', info => {
   })()
 
   // initialize manager window
+  // 初始化扩展资源管理器窗口
   initManagerWindow()
 })
 
