@@ -95,3 +95,9 @@
 ![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 注：软件图标、图像、SVG 矢量图形均不遵循以上协议，您不可以将这些内容用于雀魂 Plus 以外的内容
+
+## 参与讨论
+
+使用答疑，资源分享，约战交流 QQ群 [660996459](https://jq.qq.com/?_wv=1027&k=5PMNS8D)
+
+开发问题，技术疑问，批判一番 QQ群 [106475557](https://jq.qq.com/?_wv=1027&k=5iayYP5)
