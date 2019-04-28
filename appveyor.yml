@@ -8,5 +8,12 @@ install:
   - ps: Install-Product node 10
   - yarn
   - node --version
+
+artifacts:
+  - name: zips
+    path: build\*.zip
+  - name: releases
+    path: build\*.exe
+
 build_script:
   - yarn dist
