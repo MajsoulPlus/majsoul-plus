@@ -1,14 +1,15 @@
-import { app, BrowserWindow, globalShortcut, Menu, ipcMain } from 'electron'
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
 import * as https from 'https'
 import * as os from 'os'
+import * as path from 'path'
 import { UserConfigs } from './config-refactor'
+import { LoadExtension } from './extension/extension'
+import { appDataDir } from './global'
+import { MajsoulPlus } from './majsoul_plus'
 import { Server, serverOptions } from './server'
 import { GameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
-import { LoadExtension } from './extension/extension'
 import { ToolManager } from './windows/tool'
-import { MajsoulPlus } from './majsoul_plus'
-import { appDataDir } from './global'
 
 LoadExtension()
 export const httpsServer = https.createServer(serverOptions, Server.callback())
@@ -145,7 +146,7 @@ app.on('ready', info => {
   })
 
   // ipc listeners
-  ipcMain.on('application-message', (event, ...args) => {
+  ipcMain.on('application-message', (event: Electron.Event, ...args) => {
     if (args && args.length > 0) {
       switch (args[0]) {
         case 'start-tool':
@@ -158,10 +159,10 @@ app.on('ready', info => {
   })
 
   // sandbox
-  ipcMain.on('sandbox-dirname-request', event => {
-    event.returnValue = __dirname
+  ipcMain.on('sandbox-dirname-request', (event: Electron.Event) => {
+    event.returnValue = path.resolve(__dirname, '..')
   })
-  ipcMain.on('sandbox-appdata-request', event => {
+  ipcMain.on('sandbox-appdata-request', (event: Electron.Event) => {
     event.returnValue = appDataDir
   })
 

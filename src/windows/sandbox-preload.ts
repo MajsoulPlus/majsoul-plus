@@ -3,10 +3,7 @@ import * as electron from 'electron'
 const path = electron.remote.require('path')
 
 // tslint:disable-next-line
-const __dirname = path.resolve(
-  electron.ipcRenderer.sendSync('sandbox-dirname-request'),
-  '..'
-)
+const __dirname = electron.ipcRenderer.sendSync('sandbox-dirname-request')
 
 // tslint:disable-next-line
 const __appdata = electron.ipcRenderer.sendSync('sandbox-appdata-request')
