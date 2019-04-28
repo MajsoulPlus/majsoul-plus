@@ -97,11 +97,22 @@ saveAndInstall.addEventListener('click', event => {
   const name = document.getElementById('name').value
   const author = document.getElementById('author').value
   const description = document.getElementById('description').value
-  const dirPath = path.join(
+  const modDir = path.join(
     MajsoulPlus.__appdata,
-    MajsoulPlus.globalPath.ModsDir,
-    dirName
+    MajsoulPlus.globalPath.ModsDir
   )
+  const stat_dir = (() => {
+    try {
+      return fs.statSync(modDir)
+    } catch (e) {
+      return null
+    }
+  })()
+  if (!stat_dir) {
+    fs.mkdirSync(modDir)
+  }
+
+  const dirPath = path.join(modDir, dirName)
   if (dirName.length < 4) {
     alert('文件夹名长度过短')
     return
