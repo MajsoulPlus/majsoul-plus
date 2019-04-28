@@ -91,14 +91,17 @@ darknessRange.addEventListener('change', event => {
 selectImg.addEventListener('change', drawView)
 
 saveAndInstall.addEventListener('click', event => {
-  const fs = require('fs')
-  const { Configs } = require('../../config')
-  const path = require('path')
+  const fs = MajsoulPlus.fs
+  const path = MajsoulPlus.path
   const dirName = document.getElementById('dirName').value
   const name = document.getElementById('name').value
   const author = document.getElementById('author').value
   const description = document.getElementById('description').value
-  const dirPath = path.join(__dirname, '../../', Configs.MODS_DIR, dirName)
+  const dirPath = path.join(
+    MajsoulPlus.__appdata,
+    MajsoulPlus.globalPath.ModsDir,
+    dirName
+  )
   if (dirName.length < 4) {
     alert('文件夹名长度过短')
     return

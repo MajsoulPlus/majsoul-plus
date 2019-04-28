@@ -72,12 +72,20 @@ declare namespace MajsoulPlus {
   }
 
   /**
+   * Common Metadata
+   */
+  export interface Metadata {
+    id: string
+    version: string
+    name?: string
+    author?: string | string[]
+    description?: string
+  }
+
+  /**
    * Mod
    */
-  export interface Mod {
-    name: string
-    author: string
-    description: string
+  export interface Mod extends Metadata {
     dir?: string
     filesDir?: string
     preview: string
@@ -93,12 +101,7 @@ declare namespace MajsoulPlus {
   /**
    * Extension
    */
-  export interface Extension {
-    id: string
-    version: string
-    name?: string
-    author?: string | string[]
-    description?: string
+  export interface Extension extends Metadata {
     dependencies?: { [key: string]: string }
     preview?: string
     entry?: string | string[]
@@ -135,4 +138,12 @@ declare namespace MajsoulPlus {
     context: ExtensionContext,
     next?: () => Promise<any>
   ) => Promise<void>
+
+  /**
+   * Tools
+   */
+  export interface ToolConfig extends Metadata {
+    index?: string
+    windowOptions: BrowserWindowConstructorOptions
+  }
 }

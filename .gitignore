@@ -69,3 +69,6 @@ assets/manager/**/*.css
 
 # vscode
 .vscode/
+
+# portable data
+data/

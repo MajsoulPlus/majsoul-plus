@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, Menu } from 'electron'
+import { app, BrowserWindow, globalShortcut, Menu, ipcMain } from 'electron'
 import * as https from 'https'
 import * as os from 'os'
 import { UserConfigs } from './config-refactor'
@@ -6,6 +6,9 @@ import { Server, serverOptions } from './server'
 import { GameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { LoadExtension } from './extension/extension'
+import { ToolManager } from './windows/tool'
+import { MajsoulPlus } from './majsoul_plus'
+import { appDataDir } from './global'
 
 LoadExtension()
 export const httpsServer = https.createServer(serverOptions, Server.callback())
@@ -71,7 +74,7 @@ app.on(
       'sha256/UMNIGcBbbIcru/0L2e1idl+aQS7PUHqsZDcrETqdMsc='
     ) {
       event.preventDefault()
-      callback(true) // eslint-disable-line standard/no-callback-literal
+      callback(true)
     } else {
       callback(false)
     }
@@ -82,71 +85,85 @@ app.on('ready', info => {
   // console.log(info);
 
   // remove application menu
-  Menu.setApplicationMenu(null);
+  Menu.setApplicationMenu(null)
 
   // add boss key
-  (() => {
-    const windowsStatus = {
-      bosskeyActive: false,
-      game: {
-        visible: false,
-        muted: false
-      },
-      manager: {
-        visible: false,
-        muted: false
-      }
+  const windowsStatus = {
+    bosskeyActive: false,
+    game: {
+      visible: false,
+      muted: false
+    },
+    manager: {
+      visible: false,
+      muted: false
     }
-    globalShortcut.register('Alt+X', () => {
-      windowsStatus.bosskeyActive = !windowsStatus.bosskeyActive
-      if (windowsStatus.bosskeyActive) {
-        const hideAll = (
-          window: BrowserWindow,
-          option: {
-            visible: boolean;
-            muted: boolean;
-          }
-        ) => {
-          if (window) {
-            option.visible = window.isVisible()
-            option.muted = ManagerWindow.webContents.isAudioMuted()
-            window.webContents.on('crashed', e => {
-              app.relaunch()
-              app.quit()
-            })
-
-            window.hide()
-            window.webContents.setAudioMuted(true)
-          }
+  }
+  globalShortcut.register('Alt+X', () => {
+    windowsStatus.bosskeyActive = !windowsStatus.bosskeyActive
+    if (windowsStatus.bosskeyActive) {
+      const hideAll = (
+        window: BrowserWindow,
+        option: {
+          visible: boolean
+          muted: boolean
         }
+      ) => {
+        if (window) {
+          option.visible = window.isVisible()
+          option.muted = ManagerWindow.webContents.isAudioMuted()
+          window.webContents.on('crashed', e => {
+            app.relaunch()
+            app.quit()
+          })
 
-        // backup window information & hide window
-        hideAll(ManagerWindow, windowsStatus.manager)
-        hideAll(GameWindow, windowsStatus.game)
-      } else {
-        const showAll = (
-          window: BrowserWindow,
-          option: { visible: boolean; muted: boolean }
-        ) => {
-          if (window) {
-            if (option.visible) {
-              window.show()
-            }
-            window.webContents.setAudioMuted(option.muted)
-          }
+          window.hide()
+          window.webContents.setAudioMuted(true)
         }
-
-        // reopen windows
-        showAll(ManagerWindow, windowsStatus.manager)
-        showAll(GameWindow, windowsStatus.game)
       }
-    })
-  })();
+
+      // backup window information & hide window
+      hideAll(ManagerWindow, windowsStatus.manager)
+      hideAll(GameWindow, windowsStatus.game)
+    } else {
+      const showAll = (
+        window: BrowserWindow,
+        option: { visible: boolean; muted: boolean }
+      ) => {
+        if (window) {
+          if (option.visible) {
+            window.show()
+          }
+          window.webContents.setAudioMuted(option.muted)
+        }
+      }
+
+      // reopen windows
+      showAll(ManagerWindow, windowsStatus.manager)
+      showAll(GameWindow, windowsStatus.game)
+    }
+  })
 
   // ipc listeners
-  (() => {
-    //
-  })()
+  ipcMain.on('application-message', (event, ...args) => {
+    if (args && args.length > 0) {
+      switch (args[0]) {
+        case 'start-tool':
+          ToolManager.start((args[1] as MajsoulPlus.ToolConfig).id)
+          break
+        default:
+          break
+      }
+    }
+  })
+
+  // sandbox
+  ipcMain.on('sandbox-dirname-request', event => {
+    event.returnValue = __dirname
+  })
+  ipcMain.on('sandbox-appdata-request', event => {
+    event.returnValue = appDataDir
+  })
 
   // initialize manager window
   // 初始化扩展资源管理器窗口

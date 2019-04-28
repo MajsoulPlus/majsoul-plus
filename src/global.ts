@@ -11,7 +11,12 @@ const app = electron.app ? electron.app : electron.remote.app
  * 应用保存数据的路径
  */
 export const appDataDir: string = ((): string => {
-  const localData = path.join(app.getAppPath(), 'data')
+  const localData = path.join(
+    process.env.NODE_ENV === 'development'
+      ? path.resolve(__dirname, '..')
+      : app.getAppPath(),
+    'data'
+  )
   const appData = app.getPath('userData')
   if (fs.existsSync(localData) && fs.statSync(localData).isDirectory()) {
     return localData
