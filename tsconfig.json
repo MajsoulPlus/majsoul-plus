@@ -8,7 +8,8 @@
     "preserveConstEnums": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "pretty": true
+    "pretty": true,
+    "resolveJsonModule": true
     // "strict": true
   },
   "include": ["src/*.ts", "src/**/*.ts"],

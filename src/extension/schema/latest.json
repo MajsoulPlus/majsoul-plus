@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ext-latest",
+  "description": "MajsoulPlus Extension describe file schema",
+  "type": "object",
+  "definitions": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-((0|[1-9]\\d*|\\d*[A-Z-a-z-][\\dA-Za-z-]*)(\\.(0|[1-9]\\d*|\\d*[A-Za-z-][\\dA-Za-z-]*))*))?(\\+([\\dA-Za-z-]+(\\.[\\dA-Za-z-]*)*))?$"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[_a-zA-Z]+$"
+    },
+    "version": {
+      "$ref": "#/definitions/semver"
+    },
+    "name": {
+      "type": "string"
+    },
+    "author": {
+      "type": ["string", "array"],
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "$ref": "#/definitions/semver"
+        }
+      }
+    },
+    "preview": {
+      "type": "string"
+    },
+    "entry": {
+      "type": ["string", "array"],
+      "pattern": "^(.+)\\.js$",
+      "items": {
+        "type": "string",
+        "pattern": "^(.+)\\.js$"
+      }
+    }
+  },
+  "required": ["id", "version"]
+}

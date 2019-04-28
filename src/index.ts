@@ -20,7 +20,7 @@ import { Util } from './utils'
 const server = express()
 
 // const i18n = require('./i18nInstance')
-import { AddressInfo } from 'dgram'
+import { AddressInfo } from 'net'
 import { I18n } from './i18n'
 const i18n = new I18n({
   autoReload: process.env.NODE_ENV === 'development',
