@@ -1,7 +1,7 @@
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
-import { UserConfigs } from './config-refactor'
+import { UserConfigs } from './config'
 import { appDataDir, InitGlobal } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { GameWindow } from './windows/game'

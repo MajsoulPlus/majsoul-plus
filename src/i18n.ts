@@ -179,6 +179,7 @@ export class I18n {
     copy.pop()
     return copy
   }
+
   set actives(localTags: string[]) {
     this._actives = localTags.concat(this.defaultLocale)
     this._updateLocales()
@@ -204,9 +205,7 @@ export class I18n {
 
     // 如果文件夹为空，报错
     if (!fs.readdirSync(directory)) {
-      throw new Error(
-        'directory is empty, please make sure there is any files'
-      )
+      throw new Error('directory is empty, please make sure there is any files')
     }
 
     // 读取所有翻译文本
@@ -216,9 +215,9 @@ export class I18n {
     // 当优先语言全部不存在，则加载该默认语言
     this.defaultLocale = defaultLocale
     // 设置活动的语言列表
-    this.actives = actives;
+    this.actives = actives
 
-    (() => {
+    ;(() => {
       /**
        * 格式化模板字符串
        * @param str
@@ -278,9 +277,7 @@ export class I18n {
           {
             get: (target, key) => {
               if (!target[key]) {
-                target[key] = createProxy(
-                  target._chains.concat(key.toString())
-                )
+                target[key] = createProxy(target._chains.concat(key.toString()))
               }
               return target[key]
             }

@@ -1,17 +1,17 @@
 import { BrowserWindow, Menu, MenuItem } from 'electron'
-import { Configs } from '../config'
 import { takeScreenshot } from '../utils-refactor'
-import { UserConfigs } from '../config-refactor'
+import { UserConfigs } from '../config'
+import { Global } from '../global'
 
 // tslint:disable-next-line
-export let GameWindow: BrowserWindow;
+export let GameWindow: BrowserWindow
 
 export function initGameWindow() {
-  GameWindow = new BrowserWindow(Configs.GAME_WINDOW_CONFIG)
+  GameWindow = new BrowserWindow(Global.GameWindowConfig)
 }
 
 // tslint:disable-next-line
-export const GameWindowMenu: Menu = new Menu();
+export const GameWindowMenu: Menu = new Menu()
 
 GameWindowMenu.append(
   new MenuItem({

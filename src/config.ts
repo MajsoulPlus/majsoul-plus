@@ -1,117 +1,75 @@
-import * as electron from 'electron'
 import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
+import { Global } from './global'
+import { MajsoulPlus } from './majsoul_plus'
+import { fillObject } from './utils-refactor'
 
-// 提供app模块
-let app = electron.app
-if (!app) {
-  app = electron.remote.app
+/**
+ * 默认配置
+ */
+const defaultWindowConfig: MajsoulPlus.UserWindowConfig = {
+  OSTheme: 'light',
+  gameWindowSize: '',
+  zoomFactor: 1,
+  renderingMultiple: 100,
+  isKioskModeOn: false,
+  isNoBorder: false,
+  isManagerHide: false
 }
 
-// 防止首次运行时扑街
-const appDataDir = app.getPath('userData')
-try {
-  fs.statSync(appDataDir)
-} catch (error) {
-  fs.mkdirSync(appDataDir)
+const defaultUpdateConfig: MajsoulPlus.UserUpdateConfig = {
+  prerelease: false
 }
 
-const getIcon = () => {
-  switch (os.platform()) {
-    case 'win32':
-      return path.join(__dirname, '/bin/icons/icon.ico')
-    case 'darwin':
-      return path.join(__dirname, '/bin/icons/icon.icns')
-    case 'linux':
-    default:
-      return path.join(__dirname, '/bin/icons/icon.png')
+const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
+  isHardwareAccelerationDisable: false,
+  isInProcessGpuOn: true,
+  isIgnoreGpuBlacklist: false
+}
+
+const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
+  useAppdataLibrary: false
+}
+
+// tslint:disable-next-line
+export const DefaultConfig: MajsoulPlus.UserConfig = {
+  window: defaultWindowConfig,
+  update: defaultUpdateConfig,
+  chromium: defaultChromiumConfig,
+  userData: defaultUserDataConfig
+}
+
+/**
+ * 冻结对象使其不可更改
+ */
+Object.freeze(defaultWindowConfig)
+Object.freeze(defaultUpdateConfig)
+Object.freeze(defaultChromiumConfig)
+Object.freeze(defaultUserDataConfig)
+Object.freeze(DefaultConfig)
+
+/**
+ * 加载配置文件 json
+ */
+export function LoadConfigJson(): MajsoulPlus.UserConfig {
+  let config: MajsoulPlus.UserConfig
+  try {
+    config = JSON.parse(
+      fs.readFileSync(Global.UserConfigPath, {
+        encoding: 'utf-8'
+      })
+    )
+  } catch (e) {
+    config = fillObject({}, DefaultConfig) as MajsoulPlus.UserConfig
   }
+  SaveConfigJson(config)
+  return config
 }
 
-export const Configs = {
-  SERVER_PORT: 8887,
-  // PIPE_PORT: 8888,
-  XOR_KEY: 73,
-  EXTEND_RES_KEYWORD: 'extendRes',
-  REMOTE_DOMAIN: 'https://majsoul.union-game.com/',
-  HTTP_REMOTE_DOMAIN: 'http://majsoul.union-game.com/',
-  LOCAL_DIR: '/static',
-  MODS_DIR: '/mod',
-  MODS_CONFIG_PATH: path.join(appDataDir, 'modsEnabled.json'),
-  PLUGINS_DIR: '/plugin',
-  TOOLS_DIR: '/tool',
-  EXECUTES_DIR: '/execute',
-  EXECUTES_CONFIG_PATH: path.join(appDataDir, 'executesEnabled.json'),
-  USER_CONFIG_PATH: path.join(appDataDir, 'Configs-user.json'),
-  GAME_WINDOW_CONFIG: {
-    width: 1280 + 16,
-    height: 720 + 39,
-    frame: true,
-    resizable: true,
-    backgroundColor: '#000000',
-    webPreferences: {
-      webSecurity: false
-      // nodeIntegration: false
-      // plugins: true
-    },
-    autoHideMenuBar: true,
-    // useContentSize: true,
-    icon: getIcon(),
-    show: false,
-    enableLargerThanScreen: true
-  },
-  MANAGER_WINDOW_CONFIG: {
-    width: 1280, // + 16,
-    height: 720, // + 39,
-    frame: false,
-    resizable: false,
-    backgroundColor: '#FFFFFF',
-    webPreferences: {
-      webSecurity: false,
-      allowRunningInsecureContent: true
-    },
-    title: '雀魂Plus',
-    autoHideMenuBar: true,
-    icon: getIcon(),
-    maximizable: false,
-    fullscreenable: false,
-    show: false
-  },
-  TOOL_WINDOW_CONFIG: {
-    width: 960, // + 16,
-    height: 540, // + 39,
-    frame: true,
-    resizable: false,
-    backgroundColor: '#FFFFFF',
-    webPreferences: {
-      webSecurity: false,
-      allowRunningInsecureContent: true
-    },
-    autoHideMenuBar: true,
-    icon: getIcon(),
-    maximizable: false,
-    fullscreenable: false,
-    useContentSize: true
-  },
-  HTTP_GET_USER_AGENT: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
-    process.versions.chrome
-  }`
+export function SaveConfigJson(config: MajsoulPlus.UserConfig) {
+  fs.writeFileSync(Global.UserConfigPath, JSON.stringify(config, null, 2), {
+    encoding: 'utf-8'
+  })
 }
 
-try {
-  fs.statSync(Configs.EXECUTES_CONFIG_PATH)
-} catch (error) {
-  fs.copyFileSync(
-    path.join(__dirname, '../', Configs.EXECUTES_DIR, 'active.json'),
-    Configs.EXECUTES_CONFIG_PATH
-  )
-}
-try {
-  fs.statSync(Configs.MODS_CONFIG_PATH)
-} catch (error) {
-  fs.copyFileSync(
-    path.join(__dirname, '../', Configs.MODS_DIR, 'active.json'),
-    Configs.MODS_CONFIG_PATH
-  )
-}
+// tslint:disable-next-line
+export const UserConfigs: MajsoulPlus.UserConfig = LoadConfigJson();

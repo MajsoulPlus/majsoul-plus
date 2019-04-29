@@ -1,10 +1,10 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 import * as path from 'path'
-import { UserConfigs } from '../config-refactor'
+import { UserConfigs } from '../config'
 import { Global } from '../global'
 
 // tslint:disable-next-line
-export let ManagerWindow: BrowserWindow;
+export let ManagerWindow: BrowserWindow
 
 export function initManagerWindow() {
   const config: BrowserWindowConstructorOptions = {

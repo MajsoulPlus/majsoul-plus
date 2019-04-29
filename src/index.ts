@@ -14,7 +14,6 @@ import * as fs from 'fs'
 import * as https from 'https'
 import * as os from 'os'
 import * as path from 'path'
-import { Configs } from './config'
 import { Util } from './utils'
 
 const server = express()
@@ -22,6 +21,7 @@ const server = express()
 // const i18n = require('./i18nInstance')
 import { AddressInfo } from 'net'
 import { I18n } from './i18n'
+import { Global, GlobalPath } from './global'
 const i18n = new I18n({
   autoReload: process.env.NODE_ENV === 'development',
   actives: [electronApp.getLocale()]
@@ -31,7 +31,7 @@ const i18n = new I18n({
 let userConfigs
 try {
   userConfigs = JSON.parse(
-    fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: 'utf-8' })
+    fs.readFileSync(Global.UserConfigPath, { encoding: 'utf-8' })
   )
 } catch (error) {
   userConfigs = {}
@@ -55,12 +55,12 @@ function jsonKeyUpdate(ja, jb) {
 }
 jsonKeyUpdate(userConfigs, require(path.join(__dirname, 'configs-user.json')))
 // 写入 configs-user.json
-fs.writeFileSync(Configs.USER_CONFIG_PATH, JSON.stringify(userConfigs))
+fs.writeFileSync(Global.UserConfigPath, JSON.stringify(userConfigs))
 
 // 获取用户数据 %appdata% 路径
 const userDataDir = electronApp.getPath('userData')
 // 获取 Configs 记录的扩展资源路径
-const paths = [Configs.EXECUTES_DIR, Configs.MODS_DIR, Configs.TOOLS_DIR]
+const paths = [GlobalPath.ExecutesDir, GlobalPath.ModsDir, GlobalPath.ToolsDir]
 paths
   .map(dir => path.join(userDataDir, dir))
   .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
@@ -314,14 +314,14 @@ const windowControl = {
   _getExecuteScripts: () => {
     let executeScripts
     try {
-      const data = fs.readFileSync(Configs.EXECUTES_CONFIG_PATH)
+      const data = fs.readFileSync(Global.ExecutesConfigPath)
       executeScripts = JSON.parse(data.toString('utf-8'))
     } catch (error) {
       console.error(error)
       executeScripts = []
     }
     try {
-      const data = fs.readFileSync(Configs.MODS_CONFIG_PATH)
+      const data = fs.readFileSync(Global.ModsConfigPath)
       const mods = JSON.parse(data.toString('utf-8'))
       mods.forEach(mod => {
         if (mod.execute) {
@@ -536,9 +536,9 @@ const windowControl = {
           // 资源管理器通知启动游戏
           case 'start-game': {
             windowControl
-              .initLocalMirrorServer(sererHttps, Configs.SERVER_PORT)
+              .initLocalMirrorServer(sererHttps, Global.ServerPort)
               .then(() => {
-                windowControl.initGameWindow(Configs.GAME_WINDOW_CONFIG)
+                windowControl.initGameWindow(Global.GameWindowConfig)
                 if (userConfigs.window.isManagerHide) {
                   windowControl.hideManagerWindow()
                 } else {
@@ -555,7 +555,7 @@ const windowControl = {
               toolInfo.windowOption = {}
             }
             const toolConfig = {
-              ...Configs.TOOL_WINDOW_CONFIG,
+              ...Global.ToolWindowConfig,
               ...toolInfo.windowOptions
             }
             const indexPage = toolInfo.index ? toolInfo.index : 'index.html'
@@ -579,13 +579,11 @@ const windowControl = {
           // 通知更新用户设置，目前仅用于更改缩放比例
           case 'update-user-config': {
             userConfigs = JSON.parse(
-              fs.readFileSync(Configs.USER_CONFIG_PATH, { encoding: 'utf-8' })
+              fs.readFileSync(Global.UserConfigPath, { encoding: 'utf-8' })
             )
             windowControl.windowMap['manager'].setContentSize(
-              Configs.MANAGER_WINDOW_CONFIG.width *
-                userConfigs.window.zoomFactor,
-              Configs.MANAGER_WINDOW_CONFIG.height *
-                userConfigs.window.zoomFactor
+              Global.ManagerWindowConfig.width * userConfigs.window.zoomFactor,
+              Global.ManagerWindowConfig.height * userConfigs.window.zoomFactor
             )
             windowControl.windowMap['manager'].webContents.setZoomFactor(
               userConfigs.window.zoomFactor
@@ -655,13 +653,13 @@ const windowControl = {
               clipboardText &&
               // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
               // TODO: 这里需要适配多服务器
-              clipboardText.includes(Configs.REMOTE_DOMAIN)
+              clipboardText.includes(Global.RemoteDomain)
             ) {
               // FIXME: remove type assertion
               windowControl.windowMap['game'].webContents.send(
                 'load-url',
                 (new RegExp(
-                  Configs.REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                  Global.RemoteDomain.replace(/\./g, '\\.') +
                     '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
                 ).exec(clipboardText) as string[])[0]
               )
@@ -670,12 +668,12 @@ const windowControl = {
               // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
               // TODO: 这里需要适配多服务器
               // HTTP_REMOTE_DOMAIN 似乎已经被废弃
-              clipboardText.includes(Configs.HTTP_REMOTE_DOMAIN)
+              clipboardText.includes(Global.HttpRemoteDomain)
             ) {
               windowControl.windowMap['game'].webContents.send(
                 'load-url',
                 (new RegExp(
-                  Configs.HTTP_REMOTE_DOMAIN.replace(/\./g, '\\.') +
+                  Global.HttpRemoteDomain.replace(/\./g, '\\.') +
                     '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
                 ).exec(clipboardText) as string[])[0]
               )
@@ -794,7 +792,7 @@ const windowControl = {
       // 注册监听器
       windowControl.addAppListener()
       // 初始化扩展资源管理器
-      windowControl.initManagerWindow({ ...Configs.MANAGER_WINDOW_CONFIG })
+      windowControl.initManagerWindow({ ...Global.ManagerWindowConfig })
     })
   }
 }

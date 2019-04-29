@@ -10,8 +10,8 @@ import { IncomingMessage } from 'http'
 import * as https from 'https'
 import * as path from 'path'
 import * as url from 'url'
-import { Configs } from './config'
 import { MajsoulPlus } from './majsoul_plus'
+import { Global, GlobalPath } from './global'
 
 // 用于存储Mod对象
 let mods: MajsoulPlus.Mod[]
@@ -19,6 +19,7 @@ let mods: MajsoulPlus.Mod[]
 // 播放器
 let audioPlayer: BrowserWindow
 
+// tslint:disable-next-line
 export const Util = {
   /**
    * 加密或者解密文件
@@ -29,7 +30,7 @@ export const Util = {
     const array = []
     for (let index = 0; index < buffer.length; index++) {
       const byte = buffer.readUInt8(index)
-      array.push(Configs.XOR_KEY ^ byte)
+      array.push(Global.XOR_KEY ^ byte)
     }
     return Buffer.from(array)
   },
@@ -40,7 +41,7 @@ export const Util = {
    * @returns {boolean}
    */
   isEncryptRes(originalUrl: string): boolean {
-    return originalUrl.includes(Configs.EXTEND_RES_KEYWORD)
+    return originalUrl.includes(Global.EXTEND_RES_KEYWORD)
   },
 
   /**
@@ -99,7 +100,7 @@ export const Util = {
    * @returns {string}
    */
   getRemoteUrl(originalUrl: string): string {
-    return Configs.REMOTE_DOMAIN + originalUrl
+    return Global.RemoteDomain + originalUrl
   },
 
   /**
@@ -114,16 +115,16 @@ export const Util = {
     encrypt: boolean,
     encoding: BufferEncoding = 'binary'
   ): Promise<{
-    res: IncomingMessage;
-    statusCode?: number;
-    data: Buffer | string;
+    res: IncomingMessage
+    statusCode?: number
+    data: Buffer | string
   }> {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
       https.get(
         {
           ...url.parse(remoteUrl),
-          headers: { 'User-Agent': Configs.HTTP_GET_USER_AGENT }
+          headers: { 'User-Agent': Global.HttpGetUserAgent }
         },
         httpRes => {
           const { statusCode } = httpRes
@@ -207,7 +208,7 @@ export const Util = {
       https.get(
         {
           ...url.parse(URI),
-          headers: { 'User-Agent': Configs.HTTP_GET_USER_AGENT }
+          headers: { 'User-Agent': Global.HttpGetUserAgent }
         },
         httpRes => {
           const { statusCode } = httpRes
@@ -256,9 +257,7 @@ export const Util = {
               })
             } else {
               if (statusCode === 302 || statusCode === 301) {
-                console.warn(
-                  `访问 ${URI} 被重定向, statusCode = ${statusCode}`
-                )
+                console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
                 return resolve(
                   this.httpsGetFile(
                     httpRes.headers.location,
@@ -287,7 +286,7 @@ export const Util = {
   getLocalURI(
     originalUrl: string,
     isPath: boolean,
-    dirBase = path.join(__dirname, Configs.LOCAL_DIR)
+    dirBase = path.join(__dirname, GlobalPath.LocalDir)
   ): string {
     const indexOfProps = originalUrl.indexOf('?')
     originalUrl = originalUrl.substring(
@@ -456,7 +455,7 @@ export const Util = {
     // 所有已在目录中的Mod目录
     // const modDirs = fs.readdirSync(modRootDir)
     try {
-      const data = fs.readFileSync(Configs.MODS_CONFIG_PATH)
+      const data = fs.readFileSync(Global.ModsConfigPath)
       mods = JSON.parse(data.toString('utf-8'))
     } catch (error) {
       console.error(error)
