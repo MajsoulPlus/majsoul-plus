@@ -97,6 +97,13 @@
   resolved "http://registry.npm.taobao.org/@types/mime/download/@types/mime-2.0.1.tgz#dc488842312a7f075149312905b5e3c0b054c79d"
   integrity sha1-3EiIQjEqfwdRSTEpBbXjwLBUx50=
 
+"@types/ncp@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/@types/ncp/download/@types/ncp-2.0.1.tgz#749432511f6ad747d04e98837b18cca9045567fb"
+  integrity sha1-dJQyUR9q10fQTpiDexjMqQRVZ/s=
+  dependencies:
+    "@types/node" "*"
+
 "@types/node@*":
   version "11.13.0"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-11.13.0.tgz#b0df8d6ef9b5001b2be3a94d909ce3c29a80f9e1"

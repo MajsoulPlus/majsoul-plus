@@ -1,18 +1,19 @@
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
-import * as https from 'https'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config-refactor'
-import { LoadExtension } from './extension/extension'
-import { appDataDir } from './global'
+import { appDataDir, InitGlobal } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { Server, serverOptions } from './server'
 import { GameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { ToolManager } from './windows/tool'
 
-LoadExtension()
-export const httpsServer = https.createServer(serverOptions, Server.callback())
+// 初始化全局变量
+// Initialize Global variables
+InitGlobal()
+
+// TODO: 将这一步移至启动游戏后
+// LoadExtension()
 
 // in-process GPU
 // 禁用/启用进程内 GPU 处理

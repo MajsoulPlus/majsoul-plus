@@ -48,6 +48,7 @@ declare namespace MajsoulPlus {
     ModsConfigPath: string
     ExtensionConfigPath: string
     ExecutesConfigPath: string
+    ToolConfigPath: string
     UserConfigPath: string
 
     GameWindowConfig: BrowserWindowConstructorOptions

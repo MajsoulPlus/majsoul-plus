@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as https from 'https'
 import { ServerOptions } from 'https'
 import * as Koa from 'koa'
 import * as path from 'path'
@@ -69,7 +70,7 @@ export function processRequest(mods: MajsoulPlus.Mod[]) {
 }
 
 // tslint:disable-next-line
-export const Server = new Koa().use(processRequest(Mods));
+export const Server = new Koa().use(processRequest(Mods))
 
 // tslint:disable-next-line
 export const serverOptions: ServerOptions = {
@@ -78,3 +79,5 @@ export const serverOptions: ServerOptions = {
 }
 
 Object.freeze(serverOptions)
+
+export const httpsServer = https.createServer(serverOptions, Server.callback())
