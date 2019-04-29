@@ -3,7 +3,7 @@ interface HandlerItem {
   handle: Function
 }
 
-class Listener {
+export class Listener {
   private handles: HandlerItem[] = []
 
   on(event: string, handle: Function) {
@@ -38,6 +38,3 @@ class Listener {
     }
   }
 }
-
-// TODO: 禁止导出分配
-export = Listener

@@ -16,24 +16,24 @@ class Tools extends CardList {
   constructor(options) {
     super({ ...defaultOptions, ...options })
   }
-  _handleCardClick(key) {
-    const { card } = this._cardList.find(item => item.key === key)
+  handleCardClick(key) {
+    const { card } = this.cardList.find(item => item.key === key)
     ipcRenderer.send('application-message', 'start-tool', card.options)
   }
 
-  _getCard(cardInfo) {
+  getCard(cardInfo) {
     const card = new ButtonCard(cardInfo)
     const key = `${cardInfo.name}|${cardInfo.author}`
-    card.on('click', () => this._handleCardClick(key))
-    card.on('export', () => this._handleExport(key))
-    card.on('remove', () => this._handleRemove(key))
+    card.on('click', () => this.handleCardClick(key))
+    card.on('export', () => this.handleExport(key))
+    card.on('remove', () => this.handleRemove(key))
     return {
       key,
       card
     }
   }
 
-  _getExportInfo() {
+  getExportInfo() {
     return {
       extend: 'mspt',
       typeText: i18n.text.manager.fileTypeMSPT()

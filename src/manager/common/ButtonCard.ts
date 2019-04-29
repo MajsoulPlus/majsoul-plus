@@ -1,14 +1,14 @@
-const Card = require('./Card')
+import { Card } from './Card'
 
 class ButtonCard extends Card {
-  _createInputElements () {
+  protected createInputElements() {
     const input = document.createElement('input')
     const label = document.createElement('label')
     input.type = 'button'
-    input.addEventListener('click', evt => {
-      this._listener.emit('click', evt)
+    input.addEventListener('click', event => {
+      this.listener.emit('click', event)
     })
-    input.id = this._getRandomId()
+    input.id = this.getRandomId()
     label.setAttribute('for', input.id)
     return {
       input,
@@ -17,4 +17,4 @@ class ButtonCard extends Card {
   }
 }
 
-module.exports = ButtonCard
+export = ButtonCard
