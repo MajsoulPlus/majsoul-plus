@@ -6,7 +6,7 @@ import { appDataDir, InitGlobal } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { GameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
-import { ToolManager } from './windows/tool'
+import { ToolManager, initToolManager } from './windows/tool'
 
 // 初始化全局变量
 // Initialize Global variables
@@ -170,6 +170,7 @@ app.on('ready', info => {
   // initialize manager window
   // 初始化扩展资源管理器窗口
   initManagerWindow()
+  initToolManager()
 })
 
 // uncaught exception
