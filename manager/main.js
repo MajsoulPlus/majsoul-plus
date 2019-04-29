@@ -2,7 +2,7 @@ const panel = require('./Panel')
 const ping = require('./Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
-const About = require('./About')
+const { About: about } = require('./About')
 
 const {
   ipcRenderer,
@@ -13,16 +13,15 @@ const path = require('path')
 const os = require('os')
 
 const setting = new Setting()
-const about = new About()
 const Mods = require('./Mods')
 const Executes = require('./Executes')
 const Tools = require('./Tools')
 
-const { Configs } = require('..//config')
+const { Global, GlobalPath } = require('..//global')
 const { i18n } = require('..//i18nInstance')
 
 class Manager {
-  constructor (options) {
+  constructor(options) {
     this.options = options
     this.mods = null
     this.executes = null
@@ -43,26 +42,26 @@ class Manager {
     this.gameStart = this.gameStart.bind(this)
   }
 
-  _saveSettings () {
+  _saveSettings() {
     setting.save()
     this.mods.save()
     this.executes.save()
     this.tools.save()
   }
 
-  _changeModEditable () {
+  _changeModEditable() {
     this.mods.changeEditable()
   }
 
-  _changeExecuteEditable () {
+  _changeExecuteEditable() {
     this.executes.changeEditable()
   }
 
-  _changeToolEditable () {
+  _changeToolEditable() {
     this.tools.changeEditable()
   }
 
-  _getRootDirs () {
+  _getRootDirs() {
     const {
       userConfig: {
         userData: { useAppdataLibrary }
@@ -79,7 +78,7 @@ class Manager {
     }
   }
 
-  _getInstallDirByExtname (extname) {
+  _getInstallDirByExtname(extname) {
     const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
     const map = {
       '.mspm': modRootDir,
@@ -89,7 +88,7 @@ class Manager {
     return map[extname]
   }
 
-  _import () {
+  _import() {
     dialog.showOpenDialog(
       {
         title: i18n.text.manager.installFrom(),
@@ -121,7 +120,7 @@ class Manager {
     )
   }
 
-  _addEventListener () {
+  _addEventListener() {
     const installMod = document.getElementById('installMod')
     const installExecute = document.getElementById('installExecute')
     const installTool = document.getElementById('installTool')
@@ -163,7 +162,7 @@ class Manager {
     closeBtn.addEventListener('click', window.close)
   }
 
-  _loadCards () {
+  _loadCards() {
     const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
     this.mods = new Mods({ rootDir: modRootDir })
     this.executes = new Executes({ rootDir: executeRootDir })
@@ -173,11 +172,11 @@ class Manager {
     this.tools.load()
   }
 
-  _runExtends () {
+  _runExtends() {
     this._extends.forEach(fun => fun.call())
   }
 
-  initRPC () {
+  initRPC() {
     ipcRenderer.on('changeConfig', (_, data) => {
       let obj = JSON.parse(data)
       this.options.userConfig[obj.mainKey][obj.key] = obj.value
@@ -189,7 +188,7 @@ class Manager {
     })
   }
 
-  init () {
+  init() {
     this._update.checkUpdate()
     ping.init()
     panel.init()
@@ -202,14 +201,14 @@ class Manager {
     i18n.parseAllElementsText(document.documentElement)
   }
 
-  gameStart () {
+  gameStart() {
     this._saveSettings()
     setting.save()
     ipcRenderer.send('application-message', 'start-game')
   }
 
   // add a function after init to run
-  extend (fun) {
+  extend(fun) {
     if (typeof fun !== 'function') {
       throw new Error('extend accept 1 function as argument')
     }
@@ -225,16 +224,16 @@ const darkMode = require('./extra/darkMode')
 const options = {
   userConfig: (() => {
     try {
-      return require(Configs.USER_CONFIG_PATH)
+      return require(Global.UserConfigPath)
     } catch (error) {
       return require('../Configs-user.json')
     }
   })(),
-  modRootDirs: userDataPaths.map(root => path.join(root, Configs.MODS_DIR)),
+  modRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ModsDir)),
   executeRootDirs: userDataPaths.map(root =>
-    path.join(root, Configs.EXECUTES_DIR)
+    path.join(root, GlobalPath.ExecutesDir)
   ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, Configs.TOOLS_DIR))
+  toolRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ToolsDir))
 }
 
 const manager = new Manager(options)

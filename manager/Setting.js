@@ -2,12 +2,12 @@ const fs = require('fs')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 // const { app } = remote
-const { Configs } = require('..//config')
-const defaultUserConfig = require(Configs.USER_CONFIG_PATH)
+const { Global } = require('..//global')
+const defaultUserConfig = require(Global.UserConfigPath)
 const { i18n } = require('..//i18nInstance')
 
 class Settings {
-  constructor (options = {}) {
+  constructor(options = {}) {
     this.userConfig = options.userConfig || defaultUserConfig
     this._saveConfig = this._saveConfig.bind(this)
     this._renderSection = this._renderSection.bind(this)
@@ -22,13 +22,13 @@ class Settings {
     this.save = this.save.bind(this)
   }
 
-  _getUserLocalConfig () {
+  _getUserLocalConfig() {
     const defaultConfigPath = path.join(__dirname, '../configs-user.json')
     const defaultConfigJson = fs.readFileSync(defaultConfigPath)
     return this.userConfig || JSON.parse(defaultConfigJson)
   }
 
-  _renderSection ({ settingInner, section, data }) {
+  _renderSection({ settingInner, section, data }) {
     if (typeof this.userConfig[section] === 'undefined') {
       this.userConfig[section] = data
     }
@@ -42,7 +42,7 @@ class Settings {
     })
   }
 
-  _renderCheckBoxSectionItem ({ settingInner, section, item, data, index }) {
+  _renderCheckBoxSectionItem({ settingInner, section, item, data, index }) {
     // const itemName = Settings._keyToTitle(item)
     const checkBox = document.createElement('input')
     checkBox.type = 'checkbox'
@@ -59,7 +59,7 @@ class Settings {
     settingInner.append(label)
   }
 
-  _renderNumberSectionItem ({ settingInner, section, item, data, index }) {
+  _renderNumberSectionItem({ settingInner, section, item, data, index }) {
     // const itemName = Settings._keyToTitle(item)
     const input = document.createElement('input')
     input.type = 'number'
@@ -78,11 +78,11 @@ class Settings {
     settingInner.append(br)
   }
 
-  _renderFunctionSectionItem ({ settingInner, section, item, data, index }) {
+  _renderFunctionSectionItem({ settingInner, section, item, data, index }) {
     // TODO 这里将会插入一个按钮，从 item 读取 函数 和 名称
   }
 
-  _renderSectionItem ({ settingInner, section, item, data, index }) {
+  _renderSectionItem({ settingInner, section, item, data, index }) {
     if (typeof this.userConfig[section][item] === 'undefined') {
       this.userConfig[section][item] = data
     }
@@ -121,7 +121,7 @@ class Settings {
     processes[type] && processes[type].call(data)
   }
 
-  _renderSections () {
+  _renderSections() {
     const userLocalConfig = this._getUserLocalConfig()
     const settingInner = document.getElementById('settingInner')
     settingInner.innerHTML = ''
@@ -130,7 +130,7 @@ class Settings {
     })
   }
 
-  _handleSaveConfigClick () {
+  _handleSaveConfigClick() {
     this._saveConfig()
       .then(() => {
         alert(i18n.text.manager.saveSucceeded())
@@ -140,13 +140,10 @@ class Settings {
       })
   }
 
-  _saveConfig () {
+  _saveConfig() {
     return new Promise((resolve, reject) => {
       try {
-        fs.writeFileSync(
-          Configs.USER_CONFIG_PATH,
-          JSON.stringify(this.userConfig)
-        )
+        fs.writeFileSync(Global.UserConfigPath, JSON.stringify(this.userConfig))
         ipcRenderer.send('application-message', 'update-user-config')
         resolve()
       } catch (error) {
@@ -155,22 +152,22 @@ class Settings {
     })
   }
 
-  _addSaveListener () {
+  _addSaveListener() {
     const saveBtn = document.getElementById('saveConfigs')
     saveBtn.addEventListener('click', this._handleSaveConfigClick)
   }
 
-  render () {
+  render() {
     this._renderSections()
     // this._renderVersionInfo()
   }
 
-  init () {
+  init() {
     this._addSaveListener()
     this.render()
   }
 
-  save () {
+  save() {
     this._saveConfig()
   }
 }

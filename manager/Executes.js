@@ -1,24 +1,24 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const { Configs } = require('..//config')
+const { Global, GlobalPath } = require('..//global')
 const { i18n } = require('..//i18nInstance')
 
 const enabledExecutes = (() => {
   try {
     return JSON.parse(
-      fs.readFileSync(Configs.EXECUTES_CONFIG_PATH).toString('utf-8')
+      fs.readFileSync(Global.ExecutesConfigPath).toString('utf-8')
     )
   } catch (error) {
     return []
   }
 })()
 const defaultOptions = {
-  settingFilePath: Configs.EXECUTES_CONFIG_PATH,
+  settingFilePath: Global.ExecutesConfigPath,
   checkedKeys: enabledExecutes.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', Configs.EXECUTES_DIR),
+  rootDir: path.join(__dirname, '../', GlobalPath.ExecutesDir),
   config: 'execute.json',
   renderTarget: 'executeInfos',
   executePreferences: {
@@ -32,13 +32,13 @@ const defaultOptions = {
 }
 
 class Executes extends CardList {
-  constructor (options = {}) {
+  constructor(options = {}) {
     super({
       ...defaultOptions,
       ...options
     })
   }
-  _getCardInfo (dir) {
+  _getCardInfo(dir) {
     const info = super._getCardInfo.call(this, dir)
     if (typeof info === 'object' && info !== null) {
       info.executePreferences = {
@@ -48,13 +48,13 @@ class Executes extends CardList {
     }
     return info
   }
-  _getExportInfo () {
+  _getExportInfo() {
     return {
       extend: 'mspe',
       typeText: i18n.text.manager.fileTypeMSPE()
     }
   }
-  _handleCheckedChange (key) {
+  _handleCheckedChange(key) {
     const { card } = this._cardList.find(item => item.key === key)
     const isAleatNeeded = Object.keys(card.options.executePreferences).filter(
       key => {

@@ -1,38 +1,36 @@
 const fs = require('fs')
 const path = require('path')
 const CardList = require('./common/CardList')
-const { Configs } = require('..//config')
+const { Global, GlobalPath } = require('..//global')
 const enabledMods = (() => {
   try {
-    return JSON.parse(
-      fs.readFileSync(Configs.MODS_CONFIG_PATH).toString('utf-8')
-    )
+    return JSON.parse(fs.readFileSync(Global.ModsConfigPath).toString('utf-8'))
   } catch (error) {
     return []
   }
 })()
 const { i18n } = require('..//i18nInstance')
 const defaultOptions = {
-  settingFilePath: Configs.MODS_CONFIG_PATH,
+  settingFilePath: Global.ModsConfigPath,
   checkedKeys: enabledMods.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', Configs.MODS_DIR),
+  rootDir: path.join(__dirname, '../', GlobalPath.ModsDir),
   config: 'mod.json',
   renderTarget: 'modInfos'
 }
 
 class Mods extends CardList {
-  constructor (options) {
+  constructor(options) {
     super({ ...defaultOptions, ...options })
   }
-  _getExportInfo () {
+  _getExportInfo() {
     return {
       extend: 'mspm',
       typeText: i18n.text.manager.fileTypeMSPM()
     }
   }
-  _handleCheckedChange (key) {
+  _handleCheckedChange(key) {
     const { card } = this._cardList.find(item => item.key === key)
     if (typeof card.options.execute === 'object') {
       if (!card.options.execute.executePreferences) {
