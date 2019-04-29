@@ -44,9 +44,9 @@ class Manager {
 
   _saveSettings() {
     setting.save()
-    this.mods.save()
-    this.executes.save()
-    this.tools.save()
+    // this.mods.save()
+    // this.executes.save()
+    // this.tools.save()
   }
 
   _changeModEditable() {

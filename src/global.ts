@@ -12,10 +12,10 @@ const app = electron.app ? electron.app : electron.remote.app
  * 应用保存数据的路径
  */
 export const appDataDir: string = ((): string => {
-  const localData = path.join(
+  const localData = path.resolve(
     process.env.NODE_ENV === 'development'
       ? path.resolve(__dirname, '..')
-      : app.getAppPath(),
+      : path.resolve(app.getAppPath(), '../..'),
     'data'
   )
   const appData = app.getPath('userData')
@@ -68,13 +68,13 @@ export const Global: MajsoulPlus.Global = {
     const p = path.join(appDataDir, 'executesEnabled.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', GlobalPath.ExecutesDir, 'active.json'),
+        path.join(__dirname, GlobalPath.ExecutesDir, 'active.json'),
         p
       )
     }
     const folder = path.join(appDataDir, GlobalPath.ExecutesDir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, '../', GlobalPath.ExecutesDir), folder, err => {
+      ncp(path.join(__dirname, GlobalPath.ExecutesDir), folder, err => {
         if (err) console.error(err)
       })
     }
@@ -144,13 +144,13 @@ export function InitGlobal() {
     // 复制 Mod 配置文件
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', GlobalPath.ModsDir, 'active.json'),
+        path.join(__dirname, GlobalPath.ModsDir, 'active.json'),
         p
       )
     }
     const folder = path.join(appDataDir, GlobalPath.ModsDir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, '../', GlobalPath.ModsDir), folder, err => {
+      ncp(path.join(__dirname, GlobalPath.ModsDir), folder, err => {
         if (err) console.error(err)
       })
     }
@@ -161,13 +161,13 @@ export function InitGlobal() {
     const p = path.join(appDataDir, 'extensions.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', GlobalPath.ExtensionDir, 'extensions.json'),
+        path.join(__dirname, GlobalPath.ExtensionDir, 'extensions.json'),
         p
       )
     }
     const folder = path.join(appDataDir, GlobalPath.ExtensionDir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, '../', GlobalPath.ExtensionDir), folder, err => {
+      ncp(path.join(__dirname, GlobalPath.ExtensionDir), folder, err => {
         if (err) console.error(err)
       })
     }
@@ -178,13 +178,13 @@ export function InitGlobal() {
     const p = path.join(appDataDir, 'tools.json')
     if (!fs.existsSync(p)) {
       fs.copyFileSync(
-        path.join(__dirname, '../', GlobalPath.ToolsDir, 'active.json'),
+        path.join(__dirname, GlobalPath.ToolsDir, 'active.json'),
         p
       )
     }
     const folder = path.join(appDataDir, GlobalPath.ToolsDir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, '../', GlobalPath.ToolsDir), folder, err => {
+      ncp(path.join(__dirname, GlobalPath.ToolsDir), folder, err => {
         console.error(err)
       })
     }

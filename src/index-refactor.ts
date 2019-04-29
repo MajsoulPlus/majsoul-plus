@@ -153,6 +153,11 @@ app.on('ready', info => {
         case 'start-tool':
           ToolManager.start((args[1] as MajsoulPlus.ToolConfig).id)
           break
+        case 'close-ready': {
+          console.log('Manager ready to be closed.')
+          ManagerWindow.close()
+          break
+        }
         default:
           break
       }
