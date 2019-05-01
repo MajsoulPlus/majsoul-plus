@@ -1,6 +1,6 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
-const NetworkUtil = require('./Network')
+const { Network } = require('./utils/Network')
 const { Util } = require('..//utils')
 const {
   remote: { app },
@@ -16,21 +16,21 @@ const defaultOptions = {
 }
 
 class Update {
-  constructor (options) {
+  constructor(options) {
     this.options = { ...defaultOptions, ...options }
     this._getRemoteVersionInfo = this._getRemoteVersionInfo.bind(this)
     this.checkUpdate = this.checkUpdate.bind(this)
   }
 
-  _getLocalVersion () {
+  _getLocalVersion() {
     return `v${app.getVersion()}`
   }
 
-  _getRemoteVersionInfo () {
+  _getRemoteVersionInfo() {
     const checkApi = this.options.prerelease
       ? this.options.preReleaseApi
       : this.options.releaseApi
-    return NetworkUtil.getJson(checkApi)
+    return Network.getJson(checkApi)
       .then(res => {
         const result = this.options.prerelease ? res[0] : res
         return {
@@ -46,9 +46,9 @@ class Update {
       })
   }
 
-  _openDownloadPage () {}
+  _openDownloadPage() {}
 
-  _renderUpdateHint ({ remoteVersion, localVersion, time, url }) {
+  _renderUpdateHint({ remoteVersion, localVersion, time, url }) {
     const updateCard = document.getElementById('updateCard')
 
     const updateCardClose = document.getElementById('updateCard_close')
@@ -73,7 +73,7 @@ class Update {
     publishTime.innerText = new Date(time).toLocaleString()
   }
 
-  async checkUpdate () {
+  async checkUpdate() {
     const localVersion = await this._getLocalVersion()
     const remoteVersionInfo = await this._getRemoteVersionInfo()
     const { remoteVersion, body, time, url } = remoteVersionInfo

@@ -1,13 +1,14 @@
-const { i18n } = require('..//i18nInstance')
-class NetWork {
-  getJson (input, params) {
+import { i18n } from '../../i18nInstance'
+
+export class Network {
+  static getJson(input: RequestInfo, init?: RequestInit) {
     return new Promise((resolve, reject) => {
-      (function timeout () {
+      (function timeout() {
         setTimeout(() => {
           reject(new Error('network request timeout'))
         }, 30 * 1000)
       })()
-      fetch(input, params)
+      fetch(input, init)
         .then(_checkStatus)
         .then(_processJson)
         .then(resolve)
@@ -16,15 +17,13 @@ class NetWork {
   }
 }
 
-function _checkStatus (response) {
+function _checkStatus(response: Response) {
   if (response.ok && response.status >= 200 && response.status < 400) {
     return response
   }
   throw new Error(i18n.text.manager.XMLHttpRequestFailed(response.status))
 }
 
-function _processJson (response) {
+function _processJson(response: Response) {
   return response.json()
 }
-
-module.exports = new NetWork()

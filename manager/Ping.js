@@ -1,11 +1,11 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
-const NetworkUtil = require('./Network')
+const { Network } = require('./utils/Network')
 const tcpPing = require('tcp-ping')
 const { i18n } = require('..//i18nInstance')
 
 class Ping {
-  constructor () {
+  constructor() {
     this.services = null
     this.currentService = null
     this.serviceList = []
@@ -23,45 +23,45 @@ class Ping {
     this.ping = this.ping.bind(this)
   }
 
-  _getRandomUrl (url) {
+  _getRandomUrl(url) {
     return `${url}?randv=${Math.random()
       .toString()
       .substring(2, 17)
       .padStart(16, '0')}`
   }
 
-  _getVersion () {
+  _getVersion() {
     const url = this._getRandomUrl(
       'https://majsoul.union-game.com/0/version.json'
     )
-    return NetworkUtil.getJson(url).then(res => res.version)
+    return Network.getJson(url).then(res => res.version)
   }
 
-  _getResVersion (version) {
+  _getResVersion(version) {
     const originUrl = `https://majsoul.union-game.com/0/resversion${version}.json`
     const url = this._getRandomUrl(originUrl)
-    return NetworkUtil.getJson(url).then(res => res.res['config.json'].prefix)
+    return Network.getJson(url).then(res => res.res['config.json'].prefix)
   }
 
-  _getConfig (prefix) {
+  _getConfig(prefix) {
     const originUrl = `https://majsoul.union-game.com/0/${prefix}/config.json`
     const url = this._getRandomUrl(originUrl)
-    return NetworkUtil.getJson(url).then(res => res.ip)
+    return Network.getJson(url).then(res => res.ip)
   }
 
-  _saveServices (ips) {
+  _saveServices(ips) {
     this.services = ips[0].region_urls
     this.serviceList = Object.keys(this.services)
   }
 
-  _getServices () {
+  _getServices() {
     return this._getVersion()
       .then(this._getResVersion)
       .then(this._getConfig)
       .then(this._saveServices)
   }
 
-  _getService () {
+  _getService() {
     if (!this.services) return Promise.reject(new Error('services is null'))
     const choseService = window.localStorage.getItem('choseService')
     if (choseService) {
@@ -74,7 +74,7 @@ class Ping {
     return Promise.resolve()
   }
 
-  _getServiceName (service) {
+  _getServiceName(service) {
     return i18n.text.servers[service]
     // const map = {
     //   mainland: '中国大陆',
@@ -92,14 +92,14 @@ class Ping {
     // return map[service] || service
   }
 
-  _getChildService () {
+  _getChildService() {
     return new Promise((resolve, reject) => {
       if (this.services) {
         const originUrl = `${this.services[this.currentService]}`
         const url = `${this._getRandomUrl(
           originUrl
         )}&service=ws-gateway&protocol=ws&ssl=true`
-        NetworkUtil.getJson(url)
+        Network.getJson(url)
           .then(res => {
             resolve(res.servers[0])
           })
@@ -111,13 +111,13 @@ class Ping {
   }
 
   // 这个函数没有被使用
-  _renderError (err) {
+  _renderError(err) {
     console.error(err)
     const serverTextDom = document.getElementById('serverText')
     serverTextDom.innerText = '加载失败'
   }
 
-  _renderService () {
+  _renderService() {
     const serverTextDom = document.getElementById('serverText')
     const pingInfoDom = document.getElementById('pingInfo')
     const pingTextDom = document.getElementById('pingText')
@@ -128,20 +128,20 @@ class Ping {
     return Promise.resolve()
   }
 
-  _renderPing (time) {
+  _renderPing(time) {
     const pingTextDom = document.getElementById('pingText')
     const pingInfoDom = document.getElementById('pingInfo')
     pingTextDom.innerText = time >> 0
     pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
   }
 
-  _renderPingFail () {
+  _renderPingFail() {
     const serverTextDom = document.getElementById('serverText')
     i18n.unbindElement(serverTextDom)
     i18n.text.manager.loadFailed.renderAsText(serverTextDom)
   }
 
-  _ping (service) {
+  _ping(service) {
     return new Promise((resolve, reject) => {
       const address = service.split(':')[0]
       const port = service.split(':')[1]
@@ -162,7 +162,7 @@ class Ping {
     })
   }
 
-  _initPing () {
+  _initPing() {
     this._getServices()
       .then(this._getService)
       .then(this._renderService)
@@ -171,7 +171,7 @@ class Ping {
       .catch(this._renderPingFail)
   }
 
-  _getNextService () {
+  _getNextService() {
     let index = this.serviceList.indexOf(this.currentService)
     index = index + 1 >= this.serviceList.length ? 0 : index + 1
     this.currentService = this.serviceList[index]
@@ -179,7 +179,7 @@ class Ping {
     return Promise.resolve()
   }
 
-  _changeService () {
+  _changeService() {
     this._getNextService()
       .then(this._renderService)
       .then(this._getChildService)
@@ -187,12 +187,12 @@ class Ping {
       .catch(this._renderPingFail)
   }
 
-  addEventListener () {
+  addEventListener() {
     const serverInfoDom = document.getElementById('serverInfo')
     serverInfoDom.addEventListener('click', this._changeService)
   }
 
-  _refresh () {
+  _refresh() {
     this._getService()
       .then(this._renderService)
       .then(this._getChildService)
@@ -200,14 +200,14 @@ class Ping {
       .catch(console.error)
   }
 
-  ping (service) {
+  ping(service) {
     clearInterval(this.interval)
     this.interval = setInterval(() => {
       this._ping(service).then(this._renderPing)
     }, 5000)
   }
 
-  init () {
+  init() {
     this._initPing()
     this.addEventListener()
   }

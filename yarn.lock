@@ -132,6 +132,11 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
+"@types/tcp-ping@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/@types/tcp-ping/download/@types/tcp-ping-0.1.0.tgz#f8e02d8cfc16f511d1364889e39408896b02a99a"
+  integrity sha1-+OAtjPwW9RHRNkiJ45QIiWsCqZo=
+
 abbrev@1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/abbrev/download/abbrev-1.1.1.tgz?cache=0&other_urls=http%3A%2F%2Fregistry.npm.taobao.org%2Fabbrev%2Fdownload%2Fabbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"

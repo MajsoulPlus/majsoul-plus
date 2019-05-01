@@ -4,7 +4,7 @@
   "productName": "Majsoul Plus",
   "author": "MajsoulPlus Team",
   "description": "Majsoul Plus",
-  "main": "./dist/index.js",
+  "main": "./dist/index-refactor.js",
   "scripts": {
     "sass": "node-sass assets/manager/ -o assets/manager/",
     "pre-build": "tsc && yarn sass && node build.js",
@@ -36,13 +36,13 @@
     },
     "mac": {
       "icon": "assets/bin/icons/icon.icns",
-      "asar": false,
+      "asar": true,
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}",
       "darkModeSupport": true
     },
     "win": {
       "icon": "assets/bin/icons/icon.ico",
-      "asar": false,
+      "asar": true,
       "target": [
         "nsis",
         "portable",
@@ -52,7 +52,7 @@
     "linux": {
       "icon": "assets/bin/icons",
       "category": "Game",
-      "asar": false,
+      "asar": true,
       "target": [
         "tar.gz",
         "AppImage"
@@ -89,6 +89,7 @@
     "@types/koa": "^2.0.48",
     "@types/ncp": "^2.0.1",
     "@types/semver": "^6.0.0",
+    "@types/tcp-ping": "^0.1.0",
     "cross-env": "^5.2.0",
     "electron": "^2.0.0",
     "electron-builder": "^20.40.2",
