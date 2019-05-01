@@ -45,6 +45,7 @@
 body {
   height: 360px;
   width: 640px;
+  padding: 12px;
   overflow: hidden;
   background-color: var(--section-color);
 }
