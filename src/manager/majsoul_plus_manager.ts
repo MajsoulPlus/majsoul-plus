@@ -14,4 +14,37 @@ declare namespace MajsoulPlus_Manager {
     renderTarget: string
     settingFilePath: string
   }
+
+  /**
+   * Majsoul JSON
+   */
+  export interface VersionJson {
+    code: string
+    version: string
+  }
+
+  export interface ResVersionJson {
+    [key: string]: {
+      prefix: string
+    }
+  }
+
+  export interface ConfigJson {
+    ip: ConfigJsonItem[]
+    goods_sheleve_id: string
+  }
+
+  export interface ConfigJsonItem {
+    name: string
+    region_urls: RegionUrls
+  }
+
+  export interface RegionUrls {
+    ['mainland']: string
+    ['hk']: string
+  }
+
+  export interface ServerListJson {
+    servers: string[]
+  }
 }

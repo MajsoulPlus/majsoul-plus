@@ -54,6 +54,13 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
 }
 
 // tslint:disable-next-line
+export const RemoteDomains = {
+  zh: 'https://majsoul.union-game.com/0/',
+  jp: 'https://game.mahjongsoul.com/',
+  en: 'https://mahjongsoul.game.yo-star.com/'
+}
+
+// tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
   version: '1.12.0-beta.3',
   ServerPort: 8887,

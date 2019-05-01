@@ -1,5 +1,5 @@
 const panel = require('./Panel')
-const ping = require('./Ping')
+const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
 const { About: about } = require('./About')
@@ -190,7 +190,7 @@ class Manager {
 
   init() {
     this._update.checkUpdate()
-    ping.init()
+    new Ping('zh').init()
     panel.init()
     setting.init()
     this.initRPC()
