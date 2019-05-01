@@ -1,10 +1,10 @@
-const path = require('path')
-const { ipcRenderer } = require('electron')
+import { ipcRenderer } from 'electron'
+import * as path from 'path'
+import { Global, GlobalPath } from '../../global'
+import { i18n } from '../../i18nInstance'
+import { ButtonCard } from '../ui/ButtonCard'
+import { CardList } from '../ui/CardList'
 
-const CardList = require('./ui/CardList')
-const { Global, GlobalPath } = require('..//global')
-const ButtonCard = require('./ui/ButtonCard')
-const { i18n } = require('..//i18nInstance')
 const defaultOptions = {
   settingFilePath: Global.ToolWindowConfig,
   rootDir: path.join(__dirname, '../', GlobalPath.ToolsDir),
@@ -12,16 +12,17 @@ const defaultOptions = {
   renderTarget: 'toolInfos'
 }
 
-class Tools extends CardList {
+export class Tools extends CardList {
   constructor(options) {
     super({ ...defaultOptions, ...options })
   }
-  handleCardClick(key) {
+
+  handleCardClick(key: string) {
     const { card } = this.cardList.find(item => item.key === key)
-    ipcRenderer.send('application-message', 'start-tool', card.options)
+    ipcRenderer.send('start-tool', card.options)
   }
 
-  getCard(cardInfo) {
+  getCard(cardInfo: MajsoulPlus_Manager.CardConstructorOptions) {
     const card = new ButtonCard(cardInfo)
     const key = `${cardInfo.name}|${cardInfo.author}`
     card.on('click', () => this.handleCardClick(key))
@@ -42,4 +43,3 @@ class Tools extends CardList {
 
   save() {}
 }
-module.exports = Tools

@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import * as fs from 'fs'
 import { ManagerWindow } from './manager'
@@ -89,4 +89,11 @@ export let ToolManager: Tool
 
 export function initToolManager() {
   ToolManager = new Tool()
+
+  ipcMain.on(
+    'start-tool',
+    (event: Electron.Event, config: MajsoulPlus.ToolConfig) => {
+      ToolManager.start(config.id)
+    }
+  )
 }

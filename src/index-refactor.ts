@@ -150,9 +150,6 @@ app.on('ready', info => {
   ipcMain.on('application-message', (event: Electron.Event, ...args) => {
     if (args && args.length > 0) {
       switch (args[0]) {
-        case 'start-tool':
-          ToolManager.start((args[1] as MajsoulPlus.ToolConfig).id)
-          break
         case 'close-ready': {
           console.log('Manager ready to be closed.')
           ManagerWindow.close()

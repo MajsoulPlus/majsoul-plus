@@ -26,7 +26,7 @@ const defaultOptions = {
   renderTarget: ''
 }
 
-class CardList {
+export class CardList {
   cardList: CardListItem[] = []
   options: MajsoulPlus_Manager.CardListConstructorOptions
 
@@ -183,5 +183,3 @@ class CardList {
     })
   }
 }
-
-export = CardList

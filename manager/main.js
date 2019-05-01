@@ -15,7 +15,7 @@ const os = require('os')
 const setting = new Setting()
 const Mods = require('./Mods')
 const Executes = require('./Executes')
-const Tools = require('./Tools')
+const { Tools } = require('./pages/Tools')
 
 const { Global, GlobalPath } = require('..//global')
 const { i18n } = require('..//i18nInstance')

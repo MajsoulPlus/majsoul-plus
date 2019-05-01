@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const CardList = require('./ui/CardList')
+const { CardList } = require('./ui/CardList')
 const { Global, GlobalPath } = require('..//global')
 const enabledMods = (() => {
   try {
