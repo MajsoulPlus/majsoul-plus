@@ -2,6 +2,7 @@ import { Global, GlobalPath, appDataDir } from '../global'
 import * as path from 'path'
 import * as fs from 'fs'
 import { Ping } from './utils/Ping'
+import { LeftPanel } from './common/Panel'
 
 class Manager {
   private options: {}
@@ -12,6 +13,7 @@ class Manager {
   init = () => {
     // TODO: support more server types
     new Ping('zh').init()
+    LeftPanel.init()
   }
 }
 

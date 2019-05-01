@@ -1,4 +1,4 @@
-const panel = require('./Panel')
+const { LeftPanel: panel } = require('./common/Panel')
 const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
