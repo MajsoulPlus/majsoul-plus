@@ -1,9 +1,9 @@
 const path = require('path')
 const { ipcRenderer } = require('electron')
 
-const CardList = require('./common/CardList')
+const CardList = require('./ui/CardList')
 const { Global, GlobalPath } = require('..//global')
-const ButtonCard = require('./common/ButtonCard')
+const ButtonCard = require('./ui/ButtonCard')
 const { i18n } = require('..//i18nInstance')
 const defaultOptions = {
   settingFilePath: Global.ToolWindowConfig,

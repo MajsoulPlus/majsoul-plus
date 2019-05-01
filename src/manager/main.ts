@@ -2,7 +2,7 @@ import { Global, GlobalPath, appDataDir } from '../global'
 import * as path from 'path'
 import * as fs from 'fs'
 import { Ping } from './utils/Ping'
-import { LeftPanel } from './common/Panel'
+import { LeftPanel } from './ui/Panel'
 
 class Manager {
   private options: {}

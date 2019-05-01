@@ -1,8 +1,8 @@
-const { LeftPanel: panel } = require('./common/Panel')
+const { LeftPanel: panel } = require('./ui/Panel')
 const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
 const Setting = require('./Setting')
-const { About: about } = require('./About')
+const { About: about } = require('./pages/About')
 
 const {
   ipcRenderer,

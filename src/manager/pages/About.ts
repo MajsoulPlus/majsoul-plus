@@ -1,8 +1,8 @@
 import { remote, shell } from 'electron'
 import * as path from 'path'
-import { GlobalPath } from '../global'
-import { i18n } from '../i18nInstance'
-import { removeDirSync } from '../utils-refactor'
+import { GlobalPath } from '../../global'
+import { i18n } from '../../i18nInstance'
+import { removeDirSync } from '../../utils-refactor'
 const { app } = remote
 
 class AboutPage {
