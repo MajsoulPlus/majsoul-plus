@@ -1,7 +1,7 @@
 const { LeftPanel: panel } = require('./ui/Panel')
 const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
-const Setting = require('./Setting')
+const { Setting } = require('./pages/Setting')
 const { About: about } = require('./pages/About')
 
 const {

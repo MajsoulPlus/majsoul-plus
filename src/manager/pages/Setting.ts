@@ -1,34 +1,24 @@
-const fs = require('fs')
-const path = require('path')
-const { ipcRenderer } = require('electron')
-// const { app } = remote
-const { Global } = require('..//global')
-const defaultUserConfig = require(Global.UserConfigPath)
-const { i18n } = require('..//i18nInstance')
+import { ipcRenderer } from 'electron'
+import * as fs from 'fs'
+import * as path from 'path'
+import { Global } from '../../global'
+import { i18n } from '../../i18nInstance'
+import { MajsoulPlus } from '../../majsoul_plus'
 
-class Settings {
-  constructor(options = {}) {
-    this.userConfig = options.userConfig || defaultUserConfig
-    this._saveConfig = this._saveConfig.bind(this)
-    this._renderSection = this._renderSection.bind(this)
-    this._renderSections = this._renderSections.bind(this)
-    this._renderSectionItem = this._renderSectionItem.bind(this)
-    this._renderCheckBoxSectionItem = this._renderCheckBoxSectionItem.bind(this)
-    this._renderNumberSectionItem = this._renderNumberSectionItem.bind(this)
-    this._handleSaveConfigClick = this._handleSaveConfigClick.bind(this)
-    this._addSaveListener = this._addSaveListener.bind(this)
-    this.render = this.render.bind(this)
-    this.init = this.init.bind(this)
-    this.save = this.save.bind(this)
-  }
+export class Setting {
+  userConfig: MajsoulPlus.UserConfig = require(Global.UserConfigPath)
 
-  _getUserLocalConfig() {
-    const defaultConfigPath = path.join(__dirname, '../configs-user.json')
-    const defaultConfigJson = fs.readFileSync(defaultConfigPath)
+  private getUserLocalConfig() {
+    const defaultConfigPath = path.join(__dirname, '../../configs-user.json')
+    const defaultConfigJson = fs.readFileSync(defaultConfigPath, {
+      encoding: 'utf-8'
+    })
+
+    // TODO: JSON schema
     return this.userConfig || JSON.parse(defaultConfigJson)
   }
 
-  _renderSection({ settingInner, section, data }) {
+  private renderSection = ({ settingInner, section, data }) => {
     if (typeof this.userConfig[section] === 'undefined') {
       this.userConfig[section] = data
     }
@@ -38,11 +28,23 @@ class Settings {
     // h3.innerText = sectionName
     settingInner.append(h3)
     Object.entries(data).forEach(([item, data], index) => {
-      this._renderSectionItem({ settingInner, section, item, data, index })
+      this.renderSectionItem({
+        settingInner,
+        section,
+        item,
+        data,
+        index
+      })
     })
   }
 
-  _renderCheckBoxSectionItem({ settingInner, section, item, data, index }) {
+  private renderCheckBoxSectionItem = ({
+    settingInner,
+    section,
+    item,
+    data,
+    index
+  }) => {
     // const itemName = Settings._keyToTitle(item)
     const checkBox = document.createElement('input')
     checkBox.type = 'checkbox'
@@ -59,7 +61,13 @@ class Settings {
     settingInner.append(label)
   }
 
-  _renderNumberSectionItem({ settingInner, section, item, data, index }) {
+  private renderNumberSectionItem = ({
+    settingInner,
+    section,
+    item,
+    data,
+    index
+  }) => {
     // const itemName = Settings._keyToTitle(item)
     const input = document.createElement('input')
     input.type = 'number'
@@ -78,17 +86,29 @@ class Settings {
     settingInner.append(br)
   }
 
-  _renderFunctionSectionItem({ settingInner, section, item, data, index }) {
+  private renderFunctionSectionItem({
+    settingInner,
+    section,
+    item,
+    data,
+    index
+  }) {
     // TODO 这里将会插入一个按钮，从 item 读取 函数 和 名称
   }
 
-  _renderSectionItem({ settingInner, section, item, data, index }) {
+  private renderSectionItem = ({
+    settingInner,
+    section,
+    item,
+    data,
+    index
+  }) => {
     if (typeof this.userConfig[section][item] === 'undefined') {
       this.userConfig[section][item] = data
     }
     const processes = {
       boolean: () =>
-        this._renderCheckBoxSectionItem({
+        this.renderCheckBoxSectionItem({
           settingInner,
           section,
           item,
@@ -96,20 +116,18 @@ class Settings {
           index
         }),
       number: () =>
-        this._renderNumberSectionItem({
+        this.renderNumberSectionItem({
           settingInner,
           section,
           item,
           data,
           index
         }),
-      /**
-       * @param {string} data
-       */
-      string: data => {
+      string: (data: string) => {
         switch (data) {
           case 'function': {
-            this._renderFunctionSectionItem({})
+            // TODO:
+            // this.renderFunctionSectionItem({})
             break
           }
           default:
@@ -117,21 +135,22 @@ class Settings {
         }
       }
     }
-    const type = typeof data
-    processes[type] && processes[type].call(data)
+    if (processes[typeof data]) {
+      processes[typeof data].call(data)
+    }
   }
 
-  _renderSections() {
-    const userLocalConfig = this._getUserLocalConfig()
-    const settingInner = document.getElementById('settingInner')
+  private renderSections = () => {
+    const userLocalConfig = this.getUserLocalConfig()
+    const settingInner = document.querySelector('#settingInner')
     settingInner.innerHTML = ''
     Object.entries(userLocalConfig).forEach(([section, data]) => {
-      this._renderSection({ settingInner, section, data })
+      this.renderSection({ settingInner, section, data })
     })
   }
 
-  _handleSaveConfigClick() {
-    this._saveConfig()
+  private handleSaveConfigClick = () => {
+    this.saveConfig()
       .then(() => {
         alert(i18n.text.manager.saveSucceeded())
       })
@@ -140,7 +159,7 @@ class Settings {
       })
   }
 
-  _saveConfig() {
+  private saveConfig = () => {
     return new Promise((resolve, reject) => {
       try {
         fs.writeFileSync(Global.UserConfigPath, JSON.stringify(this.userConfig))
@@ -152,24 +171,22 @@ class Settings {
     })
   }
 
-  _addSaveListener() {
-    const saveBtn = document.getElementById('saveConfigs')
-    saveBtn.addEventListener('click', this._handleSaveConfigClick)
+  private addSaveListener = () => {
+    const saveBtn = document.querySelector('#saveConfigs')
+    saveBtn.addEventListener('click', this.handleSaveConfigClick)
   }
 
-  render() {
-    this._renderSections()
+  render = () => {
+    this.renderSections()
     // this._renderVersionInfo()
   }
 
-  init() {
-    this._addSaveListener()
+  init = () => {
+    this.addSaveListener()
     this.render()
   }
 
-  save() {
-    this._saveConfig()
+  save = () => {
+    this.saveConfig()
   }
 }
-
-module.exports = Settings
