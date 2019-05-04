@@ -216,7 +216,6 @@ export class I18n {
     this.defaultLocale = defaultLocale
     // 设置活动的语言列表
     this.actives = actives
-
     ;(() => {
       /**
        * 格式化模板字符串
@@ -257,17 +256,9 @@ export class I18n {
               return 'MissingText'
             }
             f._chains = chainsArray
-            /**
-             * @param htmlElement
-             * @param args
-             */
             f.renderAsText = (htmlElement: HTMLElement, ...args: string[]) => {
               this.bindElementText(f, htmlElement, ...args)
             }
-            /**
-             * @param htmlElement
-             * @param args
-             */
             f.renderAsHTML = (htmlElement: HTMLElement, ...args: string[]) => {
               this.bindElementHTML(f, htmlElement, ...args)
             }
@@ -337,9 +328,9 @@ export class I18n {
 
   /**
    * 解绑指定DOM元素的所有绑定
-   * @param htmlElement HTMLElement
+   * @param Element Element
    */
-  unbindElement(htmlElement: HTMLElement) {
+  unbindElement(htmlElement: Element) {
     // FIXME: 完成该函数
     // htmlElementTest 是假的
     // this._bindElementList = this._bindElementList.filter(

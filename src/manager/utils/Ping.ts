@@ -97,7 +97,8 @@ export class Ping {
   renderError = (err: Error) => {
     console.error(err)
     const serverTextDom = document.querySelector('#serverText')
-    serverTextDom.innerText = '加载失败'
+    serverTextDom.textContent = '加载失败'
+    // serverTextDom.innerText = '加载失败'
   }
 
   renderService = () => {
@@ -105,7 +106,7 @@ export class Ping {
     const pingInfoDom = document.querySelector('#pingInfo')
     const pingTextDom = document.querySelector('#pingText')
     pingInfoDom.className = 'offline'
-    pingTextDom.innerText = '--'
+    pingTextDom.textContent = '--'
     i18n.unbindElement(serverTextDom)
     this.getServiceName(this.currentService).renderAsText(serverTextDom)
     return Promise.resolve()
@@ -114,7 +115,7 @@ export class Ping {
   renderPing = (time: number) => {
     const pingTextDom = document.querySelector('#pingText')
     const pingInfoDom = document.querySelector('#pingInfo')
-    pingTextDom.innerText = String(time >> 0)
+    pingTextDom.textContent = String(time >> 0)
     pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
   }
 
