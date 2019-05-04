@@ -96,14 +96,14 @@ export class Ping {
   // 这个函数没有被使用
   renderError = (err: Error) => {
     console.error(err)
-    const serverTextDom = document.getElementById('serverText')
+    const serverTextDom = document.querySelector('#serverText')
     serverTextDom.innerText = '加载失败'
   }
 
   renderService = () => {
-    const serverTextDom = document.getElementById('serverText')
-    const pingInfoDom = document.getElementById('pingInfo')
-    const pingTextDom = document.getElementById('pingText')
+    const serverTextDom = document.querySelector('#serverText')
+    const pingInfoDom = document.querySelector('#pingInfo')
+    const pingTextDom = document.querySelector('#pingText')
     pingInfoDom.className = 'offline'
     pingTextDom.innerText = '--'
     i18n.unbindElement(serverTextDom)
@@ -112,14 +112,14 @@ export class Ping {
   }
 
   renderPing = (time: number) => {
-    const pingTextDom = document.getElementById('pingText')
-    const pingInfoDom = document.getElementById('pingInfo')
+    const pingTextDom = document.querySelector('#pingText')
+    const pingInfoDom = document.querySelector('#pingInfo')
     pingTextDom.innerText = String(time >> 0)
     pingInfoDom.className = time < 150 ? 'green' : time < 500 ? 'orange' : 'red'
   }
 
   renderPingFail = () => {
-    const serverTextDom = document.getElementById('serverText')
+    const serverTextDom = document.querySelector('#serverText')
     i18n.unbindElement(serverTextDom)
     i18n.text.manager.loadFailed.renderAsText(serverTextDom)
   }
@@ -171,7 +171,7 @@ export class Ping {
   }
 
   addEventListener = () => {
-    const serverInfoDom = document.getElementById('serverInfo')
+    const serverInfoDom = document.querySelector('#serverInfo')
     serverInfoDom.addEventListener('click', this.changeService)
   }
 

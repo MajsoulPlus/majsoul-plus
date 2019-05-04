@@ -7,14 +7,14 @@ const { app } = remote
 
 class AboutPage {
   render = () => {
-    const aboutInner = document.getElementById('aboutInner')
+    const aboutInner = document.querySelector('#aboutInner')
     aboutInner.innerHTML = ''
     this.addToUsers()
     this.addGitHubLink()
   }
 
   private addBlock = ({ title, value }) => {
-    const aboutInner = document.getElementById('aboutInner')
+    const aboutInner = document.querySelector('#aboutInner')
     const h3 = document.createElement('h3')
     const info = document.createElement('p')
     if (typeof value === 'string') {
