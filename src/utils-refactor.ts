@@ -164,9 +164,9 @@ export function getRemoteSource(
   encrypt: boolean,
   encoding: BufferEncoding = 'binary'
 ): Promise<{
-  res: IncomingMessage;
-  statusCode?: number;
-  data: Buffer | string;
+  res: IncomingMessage
+  statusCode?: number
+  data: Buffer | string
 }> {
   return new Promise((resolve, reject) => {
     const remoteUrl = this.getRemoteUrl(originalUrl)

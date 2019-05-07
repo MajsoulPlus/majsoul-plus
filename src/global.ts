@@ -104,7 +104,7 @@ export const Global: MajsoulPlus.Global = {
     autoHideMenuBar: true,
     // useContentSize: true,
     icon: appIcon,
-    show: false,
+    show: true,
     enableLargerThanScreen: true
   },
   ManagerWindowConfig: {

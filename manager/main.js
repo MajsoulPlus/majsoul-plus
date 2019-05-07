@@ -184,7 +184,7 @@ class Manager {
 
     ipcRenderer.on('saveConfig', () => {
       this._saveSettings()
-      ipcRenderer.send('application-message', 'close-ready')
+      ipcRenderer.send('close-manager')
     })
   }
 
@@ -204,7 +204,7 @@ class Manager {
   gameStart() {
     this._saveSettings()
     setting.save()
-    ipcRenderer.send('application-message', 'start-game')
+    ipcRenderer.send('start-game')
   }
 
   // add a function after init to run

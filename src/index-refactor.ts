@@ -2,11 +2,13 @@ import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
-import { appDataDir, InitGlobal } from './global'
+import { appDataDir, InitGlobal, Global } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { GameWindow } from './windows/game'
+import { GameWindow, initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
-import { ToolManager, initToolManager } from './windows/tool'
+import { initToolManager } from './windows/tool'
+import { httpsServer } from './server'
+import { AddressInfo } from 'net'
 
 // 初始化全局变量
 // Initialize Global variables
@@ -59,11 +61,7 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 // Exit when all the windows are closed
 // 当全部窗口退出后，结束进程
 app.on('window-all-closed', () => {
-  // 在 OS X 上，通常用户在明确地按下 Cmd + Q 之前
-  // 应用会保持活动状态
-  // if (process.platform !== 'darwin') {
   app.quit()
-  // }
 })
 
 // 阻止证书验证
@@ -84,8 +82,6 @@ app.on(
 )
 
 app.on('ready', info => {
-  // console.log(info);
-
   // remove application menu
   Menu.setApplicationMenu(null)
 
@@ -147,18 +143,27 @@ app.on('ready', info => {
   })
 
   // ipc listeners
-  ipcMain.on('application-message', (event: Electron.Event, ...args) => {
-    if (args && args.length > 0) {
-      switch (args[0]) {
-        case 'close-ready': {
-          console.log('Manager ready to be closed.')
-          ManagerWindow.close()
-          break
-        }
-        default:
-          break
+  ipcMain.on('start-game', () => {
+    // Start game.
+    httpsServer.listen(Global.ServerPort)
+    httpsServer.on('error', err => {
+      if (err.code === 'EADDRINUSE') {
+        // console.warn(i18n.text.main.portInUse())
+        httpsServer.close()
+        // 随机监听一个空闲端口
+        httpsServer.listen(0)
       }
+    })
+    initGameWindow()
+    if (UserConfigs.window.isManagerHide) {
+      ManagerWindow.hide()
+    } else {
+      ManagerWindow.close()
     }
+  })
+
+  ipcMain.on('screenshot', () => {
+    // Screenshot
   })
 
   // sandbox
@@ -173,6 +178,11 @@ app.on('ready', info => {
   // 初始化扩展资源管理器窗口
   initManagerWindow()
   initToolManager()
+})
+
+// 监听 GPU 进程崩溃事件
+app.on('gpu-process-crashed', (event, killed) => {
+  console.error(`gpu-process-crashed: ${killed}`)
 })
 
 // uncaught exception

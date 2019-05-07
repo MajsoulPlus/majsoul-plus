@@ -242,7 +242,7 @@ ipcRenderer.on('take-screenshot', () => {
   if (webContents) {
     // 回调函数
     const callbackFunction = (image: Electron.NativeImage) => {
-      ipcRenderer.send('application-message', 'take-screenshot', image.toPNG())
+      ipcRenderer.send('take-screenshot', image.toPNG())
     }
     const rect = clientRect
     const display = electronScreen.getDisplayMatching({
@@ -302,7 +302,7 @@ const redirectGameWindow = (url: string, gameWindow) => {
 ipcRenderer.on('server-port-load', (event, ...args) => {
   console.warn('server-port-load')
   serverPort = args[0]
-  ipcRenderer.send('main-loader-message', 'server-port-loaded')
+  ipcRenderer.send('server-port-loaded')
 })
 
 ipcRenderer.on('executes-load', (event, ...args) => {
@@ -313,7 +313,7 @@ ipcRenderer.on('executes-load', (event, ...args) => {
     const code = prebuildExecuteCode(executeScript)
     executeScriptsCodes.push(code)
   })
-  ipcRenderer.send('main-loader-message', 'executes-loaded')
+  ipcRenderer.send('executes-loaded')
 })
 
 const scaleWindow = (percent = scalePercent) => {
@@ -328,7 +328,7 @@ mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
     webContents = mainWindow.getWebContents()
     webContents.setZoomFactor(1)
-    ipcRenderer.send('main-loader-message', 'main-loader-ready')
+    ipcRenderer.send('main-loader-ready')
 
     webContents.on('dom-ready', () => {
       executeScriptsCodes.forEach(executeScriptCode => {

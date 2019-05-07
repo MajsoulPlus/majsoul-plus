@@ -1,4 +1,8 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
+import {
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  ipcMain
+} from 'electron'
 import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
@@ -35,6 +39,10 @@ export function initManagerWindow() {
     event.preventDefault()
     ManagerWindow.hide()
     event.sender.send('saveConfig')
+  })
+
+  ipcMain.on('close-manager', () => {
+    ManagerWindow.close()
   })
 
   ManagerWindow.loadURL(

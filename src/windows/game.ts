@@ -1,13 +1,85 @@
-import { BrowserWindow, Menu, MenuItem } from 'electron'
-import { takeScreenshot } from '../utils-refactor'
+import { BrowserWindow, Menu, MenuItem, ipcMain } from 'electron'
+import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
+import { httpsServer } from '../server'
+import { takeScreenshot } from '../utils-refactor'
+import { initPlayer, shutoffPlayer } from './audioPlayer'
+import { ManagerWindow } from './manager'
+import { AddressInfo } from 'net'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow
 
 export function initGameWindow() {
   GameWindow = new BrowserWindow(Global.GameWindowConfig)
+
+  // 阻止标题更改
+  GameWindow.on('page-title-updated', event => event.preventDefault())
+
+  // 监听 console 信息并转发至主进程
+  GameWindow.webContents.on('console-message', (event, level, msg) => {
+    switch (level) {
+      case 'warn':
+        console.warn(msg)
+        break
+      case 'error':
+        console.error(msg)
+        break
+      default:
+    }
+  })
+
+  GameWindow.on('closed', () => {
+    // 关闭后台音频播放器
+    shutoffPlayer()
+    // 关闭本地镜像服务器
+    httpsServer.close()
+    // 依据用户设置显示被隐藏的管理器窗口
+    if (UserConfigs.window.isManagerHide) {
+      if (ManagerWindow) {
+        ManagerWindow.show()
+      }
+    }
+  })
+
+  initPlayer()
+  Menu.setApplicationMenu(GameWindowMenu)
+
+  ipcMain.on('main-loader-ready', () => {
+    GameWindow.webContents.send(
+      'server-port-load',
+      (httpsServer.address() as AddressInfo).port
+    )
+  })
+
+  ipcMain.on('server-port-loaded', () => {
+    GameWindow.webContents.send('executes-load', [])
+  })
+
+  ipcMain.on('executes-loaded', () => {
+    // 加载本地服务器地址
+    // TODO: 这里需要适配多服务器
+    // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
+    console.error(
+      `https://localhost:${(httpsServer.address() as AddressInfo).port}/0/`
+    )
+    GameWindow.webContents.send(
+      'load-url',
+      `https://localhost:${(httpsServer.address() as AddressInfo).port}/0/`
+    )
+  })
+
+  // 载入本地启动器
+  GameWindow.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'))
+
+  // Detect environment variable to open developer tools
+  // 在 debug 启动环境下打开开发者工具
+  if (process.env.NODE_ENV === 'development') {
+    GameWindow.webContents.openDevTools({
+      mode: 'detach'
+    })
+  }
 }
 
 // tslint:disable-next-line
