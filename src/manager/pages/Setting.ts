@@ -5,7 +5,7 @@ import { Global } from '../../global'
 import { i18n } from '../../i18nInstance'
 import { MajsoulPlus } from '../../majsoul_plus'
 
-export class Setting {
+class Setting {
   userConfig: MajsoulPlus.UserConfig = require(Global.UserConfigPath)
 
   private getUserLocalConfig() {
@@ -190,3 +190,5 @@ export class Setting {
     this.saveConfig()
   }
 }
+
+export default new Setting()

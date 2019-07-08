@@ -1,8 +1,8 @@
 const { LeftPanel: panel } = require('./ui/Panel')
 const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
-const { Setting } = require('./pages/Setting')
-const { About: about } = require('./pages/About')
+const setting = require('./pages/Setting').default
+const about = require('./pages/About').default
 
 const {
   ipcRenderer,
@@ -12,7 +12,6 @@ const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
 
-const setting = new Setting()
 const Mods = require('./Mods')
 const Executes = require('./Executes')
 const { Tools } = require('./pages/Tools')

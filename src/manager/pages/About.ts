@@ -55,7 +55,7 @@ class AboutPage {
       <input type="button" value="${i18n.text.manager.clearCache()}">
       <br>
       ${i18n.text.manager.localVersion()} ${app.getVersion()}`
-    const alinks = info.getElementsByTagName('a')
+    const alinks = info.querySelectorAll('a')
     this.bindAlink(alinks)
     info
       .querySelector('input[type="button"]')
@@ -67,9 +67,9 @@ class AboutPage {
     return info
   }
 
-  private bindAlink = alinks => {
-    alinks = Array.from(alinks || [])
-    alinks.forEach(alink => {
+  private bindAlink = (alinks: NodeListOf<HTMLAnchorElement>) => {
+    const links = Array.from(alinks || [])
+    links.forEach(alink => {
       alink.addEventListener('click', (event: Event) => {
         event.preventDefault()
         shell.openExternal(alink.href)
@@ -78,5 +78,4 @@ class AboutPage {
   }
 }
 
-// tslint:disable-next-line
-export const About = new AboutPage()
+export default new AboutPage()

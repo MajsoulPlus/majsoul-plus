@@ -3,12 +3,10 @@ import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
 import { appDataDir, InitGlobal, Global } from './global'
-import { MajsoulPlus } from './majsoul_plus'
 import { GameWindow, initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
 import { httpsServer } from './server'
-import { AddressInfo } from 'net'
 
 // 初始化全局变量
 // Initialize Global variables

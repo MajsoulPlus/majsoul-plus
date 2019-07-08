@@ -11,6 +11,9 @@
     },
     "variable-name": {
       "severity": "warn"
+    },
+    "no-default-export": {
+      "severity": "off"
     }
   }
 }
