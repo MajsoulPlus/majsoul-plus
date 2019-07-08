@@ -44,12 +44,17 @@
 
 ## 从源码启动
 
-请确保 Git, node.js 和 NPM 已经被正确安装
+请确保 Git, node.js 和 yarn 已经被正确安装
 
 1. `git clone git@github.com:MajsoulPlus/majsoul-plus-client.git`
 2. `cd majsoul-plus-client`
-3. `npm install`
-4. `npm start`
+3. `yarn`
+4. `yarn start`
+
+如果你使用的是 ArchLinux 系，注意要在 `yarn start` 之前安装 `gconf` 才能正常运行：
+```bash
+sudo pacman -S gconf
+```
 
 ## 快捷键
 
