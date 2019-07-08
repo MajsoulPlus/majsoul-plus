@@ -18,7 +18,7 @@ const defaultOptions = {
   checkedKeys: enabledExecutes.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', GlobalPath.ExecutesDir),
+  rootDir: path.join(__dirname, '../bin', GlobalPath.ExecutesDir),
   config: 'execute.json',
   renderTarget: 'executeInfos',
   executePreferences: {

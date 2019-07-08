@@ -163,7 +163,7 @@ app.on('ready', info => {
   })
 
   ipcMain.on('screenshot', () => {
-    // Screenshot
+    // TODO: Screenshot
   })
 
   // sandbox

@@ -15,7 +15,7 @@ const defaultOptions = {
   checkedKeys: enabledMods.map(
     item => `${item.name || '未命名'}|${item.author || '无名氏'}`
   ),
-  rootDir: path.join(__dirname, '../', GlobalPath.ModsDir),
+  rootDir: path.join(__dirname, '../bin', GlobalPath.ModsDir),
   config: 'mod.json',
   renderTarget: 'modInfos'
 }

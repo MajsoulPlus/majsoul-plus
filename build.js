@@ -6,7 +6,7 @@ const dest = path.resolve('./dist/')
 
 // 移除包含 exports 的第二行
 function simpleBrowserify(dir) {
-  fs.readFile(path.resolve(dest, dir), { encoding: 'utf-8' }, function(
+  fs.readFile(path.resolve(dest, dir), { encoding: 'utf-8' }, function (
     err,
     data
   ) {
@@ -20,7 +20,7 @@ function simpleBrowserify(dir) {
       path.resolve(dest, dir),
       lines.join('\n'),
       { encoding: 'utf-8' },
-      () => {}
+      () => { }
     )
   })
 }
@@ -32,13 +32,17 @@ function copy(from, to = from) {
   )
 }
 
+function copyA(from, parent = 'bin') {
+  copy(from, parent + "/" + from)
+}
+
 copy('assets', '')
 copy('manager')
 copy('i18n')
-copy('execute')
-copy('mod')
-copy('extension')
-copy('tool')
+copyA('execute')
+copyA('mod')
+copyA('extension')
+copyA('tool')
 copy('configs-user.json')
 
 simpleBrowserify('windows/sandbox-preload.js')

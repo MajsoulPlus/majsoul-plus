@@ -229,11 +229,11 @@ const options = {
       return require('../Configs-user.json')
     }
   })(),
-  modRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ModsDir)),
+  modRootDirs: userDataPaths.map(root => path.join(root, 'bin', GlobalPath.ModsDir)),
   executeRootDirs: userDataPaths.map(root =>
-    path.join(root, GlobalPath.ExecutesDir)
+    path.join(root, 'bin', GlobalPath.ExecutesDir)
   ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ToolsDir))
+  toolRootDirs: userDataPaths.map(root => path.join(root, 'bin', GlobalPath.ToolsDir))
 }
 
 const manager = new Manager(options)
