@@ -2,7 +2,7 @@ import { remote, shell } from 'electron'
 import * as path from 'path'
 import { GlobalPath } from '../../global'
 import { i18n } from '../../i18nInstance'
-import { removeDirSync } from '../../utils-refactor'
+import { removeDirSync } from '../../utils'
 const { app } = remote
 
 class AboutPage {

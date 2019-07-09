@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { Global } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject } from './utils-refactor'
+import { fillObject } from './utils'
 
 /**
  * 默认配置
@@ -72,4 +72,4 @@ export function SaveConfigJson(config: MajsoulPlus.UserConfig) {
 }
 
 // tslint:disable-next-line
-export const UserConfigs: MajsoulPlus.UserConfig = LoadConfigJson();
+export const UserConfigs: MajsoulPlus.UserConfig = LoadConfigJson()

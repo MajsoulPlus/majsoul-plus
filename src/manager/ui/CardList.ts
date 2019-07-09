@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { i18n } from '../../i18nInstance'
-import { removeDirSync, zipDir } from '../../utils-refactor'
+import { removeDirSync, zipDir } from '../../utils'
 import { Card } from './Card'
 import { CheckedboxCard } from './CheckedboxCard'
 

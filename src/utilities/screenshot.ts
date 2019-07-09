@@ -1,7 +1,7 @@
 import Utility from './utility'
 import { ipcMain, app, clipboard, nativeImage } from 'electron'
 import * as path from 'path'
-import { writeFile } from '../utils-refactor'
+import { writeFile } from '../utils'
 import { GameWindow } from '../windows/game'
 
 class ScreenShot extends Utility {

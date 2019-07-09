@@ -10,7 +10,6 @@ import * as express from 'express'
 import * as fs from 'fs'
 import * as https from 'https'
 import * as path from 'path'
-import { Util } from './utils'
 
 const server = express()
 

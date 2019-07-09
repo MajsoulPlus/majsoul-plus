@@ -11,7 +11,7 @@ import {
   encodeData,
   XOR,
   writeFile
-} from './utils-refactor'
+} from './utils'
 import { GlobalPath, appDataDir } from './global'
 import { getRemoteSource } from './utils/main'
 

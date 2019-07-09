@@ -1,6 +1,6 @@
 import { Global } from '../global'
 import fetch, { Response } from 'electron-fetch'
-import { getRemoteUrl, XOR } from '../utils-refactor'
+import { getRemoteUrl, XOR } from '../utils'
 
 /**
  * 读取远程的官方资源数据
