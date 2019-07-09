@@ -1,4 +1,10 @@
-import { BrowserWindow, ipcMain, Menu, MenuItem } from 'electron'
+import {
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  MenuItem,
+  BrowserWindowConstructorOptions
+} from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
 import { UserConfigs } from '../config'
@@ -8,6 +14,7 @@ import { httpsServer } from '../server'
 import { takeScreenshot } from '../utils-refactor'
 import { initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
+import { i18n } from '../i18nInstance'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow
@@ -18,7 +25,22 @@ export const GameWindowStatus: MajsoulPlus.WindowStatus = {
 }
 
 export function initGameWindow() {
-  GameWindow = new BrowserWindow(Global.GameWindowConfig)
+  const config: BrowserWindowConstructorOptions = {
+    ...Global.GameWindowConfig,
+    title: getGameWindowTitle(),
+    frame: !UserConfigs.window.isNoBorder
+  }
+
+  // TODO: 等待新设置系统 UI 设计和功能实现
+  if (UserConfigs.window.gameWindowSize !== '') {
+    const windowSize: number[] = UserConfigs.window.gameWindowSize
+      .split(',')
+      .map((value: string) => Number(value))
+    config.width = windowSize[0]
+    config.height = windowSize[1]
+  }
+
+  GameWindow = new BrowserWindow(config)
 
   // 阻止标题更改
   GameWindow.on('page-title-updated', event => event.preventDefault())
@@ -26,6 +48,31 @@ export function initGameWindow() {
   // 监听 console 信息并转发至主进程
   GameWindow.webContents.on('console-message', (_, level, msg) => {
     console[level](msg)
+  })
+
+  // 监听到崩溃事件，输出 console
+  GameWindow.webContents.on('crashed', () =>
+    console.warn(i18n.text.main.webContentsCrashed())
+  )
+
+  // 监听尺寸更改事件，用于正确得到截图所需要的窗口尺寸
+  GameWindow.on('resize', () => {
+    UserConfigs.window.gameWindowSize = GameWindow.getSize().toString()
+    const obj = {
+      mainKey: 'window',
+      key: 'gameWindowSize',
+      value: UserConfigs.window.gameWindowSize
+    }
+    ManagerWindow.webContents.send('changeConfig', JSON.stringify(obj))
+    // 将窗口尺寸信息发送给渲染进程用于截图
+    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
+  })
+  // 监听移动事件，用途同上
+  GameWindow.on('move', () => {
+    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
+  })
+  GameWindow.on('moved', () => {
+    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
   })
 
   GameWindow.on('closed', () => {
@@ -66,6 +113,15 @@ export function initGameWindow() {
       'load-url',
       `https://localhost:${(httpsServer.address() as AddressInfo).port}/0/`
     )
+  })
+
+  GameWindow.once('ready-to-show', () => {
+    // 设置页面缩放比例为 1 来防止缩放比例异常
+    // 但这样会造成截图提示悬浮窗尺寸不合适
+    GameWindow.webContents.setZoomFactor(1)
+    GameWindow.show()
+    // 窗口展示后，通知渲染窗口实际尺寸以便截图
+    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
   })
 
   // 载入本地启动器
@@ -197,3 +253,36 @@ GameWindowMenu.append(
     ]
   })
 )
+
+// 获取窗口标题，有 0.5% 概率显示为喵喵喵
+// TODO: 此处 i18n 适配有问题
+function getGameWindowTitle(): string {
+  // 彩蛋标题
+  const titles = [
+    {
+      text: i18n.text.main.programName(),
+      weight: 200
+    },
+    {
+      text: i18n.text.main.nya(),
+      weight: 1
+    }
+  ]
+  const sumWeight = titles.reduce((last, value) => last + value.weight, 0)
+  let randomResult = Math.random() * sumWeight
+
+  const index = titles.reduce((last: number | null, value, i) => {
+    if (typeof last === 'number' && Number.isInteger(last)) {
+      return last
+    }
+
+    randomResult -= value.weight
+    if (randomResult <= 0) {
+      return i
+    }
+
+    return null
+  }, null)
+
+  return titles[index].text
+}

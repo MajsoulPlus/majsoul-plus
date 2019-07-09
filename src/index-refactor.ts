@@ -85,9 +85,9 @@ app.on('ready', () => {
   // 注册老板键
   bossKey.register()
 
-  // ipc listeners
+  // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
-    // 资源管理器通知启动游戏
+    // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
     httpsServer.listen(Global.ServerPort)
     httpsServer.on('error', err => {
       if (err.code === 'EADDRINUSE') {
@@ -97,7 +97,9 @@ app.on('ready', () => {
         httpsServer.listen(0)
       }
     })
+
     initGameWindow()
+
     if (UserConfigs.window.isManagerHide) {
       ManagerWindow.hide()
     } else {
