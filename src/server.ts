@@ -10,10 +10,10 @@ import {
   readFile,
   encodeData,
   XOR,
-  getRemoteSource,
   writeFile
 } from './utils-refactor'
 import { GlobalPath, appDataDir } from './global'
+import { getRemoteSource } from './utils/main'
 
 // tslint:disable-next-line
 export const Server = new Koa()
@@ -44,17 +44,17 @@ Server.use(async (ctx, next) => {
     }
   } else {
     try {
-      const { res: result, data } = await getRemoteSource(
+      const remoteSource = await getRemoteSource(
         originalUrl,
         encrypt && !isRoutePath
       )
-      ctx.res.statusCode = result.statusCode
+      ctx.res.statusCode = remoteSource.res.status
       if (!isRoutePath) {
-        writeFile(localURI, data)
+        writeFile(localURI, remoteSource.data)
       }
-      allData = data
-    } catch ({ res: result, data }) {
-      ctx.res.statusCode = result.statusCode
+      allData = remoteSource.data
+    } catch (e) {
+      console.error(e)
       return
     }
   }

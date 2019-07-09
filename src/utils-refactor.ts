@@ -2,10 +2,7 @@ import * as AdmZip from 'adm-zip'
 import * as childProcess from 'child_process'
 import { WebContents } from 'electron'
 import * as fs from 'fs'
-import { IncomingMessage } from 'http'
-import * as https from 'https'
 import * as path from 'path'
-import * as url from 'url'
 import { Global, GlobalPath } from './global'
 import { AudioPlayer } from './windows/audioPlayer'
 
@@ -151,91 +148,6 @@ export function mkdirsSync(dirname: string) {
  */
 export function getRemoteUrl(originalUrl: string): string {
   return Global.RemoteDomain + originalUrl
-}
-
-/**
- * 读取远程的官方资源数据
- * @param originalUrl 原始请求的相对路径
- * @param encrypt 是否是加密数据
- * @param encoding 请求的数据格式，默认是binary
- */
-export function getRemoteSource(
-  originalUrl: string,
-  encrypt: boolean,
-  encoding: BufferEncoding = 'binary'
-): Promise<{
-  res: IncomingMessage
-  statusCode?: number
-  data: Buffer | string
-}> {
-  return new Promise((resolve, reject) => {
-    const remoteUrl = this.getRemoteUrl(originalUrl)
-    https.get(
-      {
-        ...url.parse(remoteUrl),
-        headers: { 'User-Agent': Global.HttpGetUserAgent }
-      },
-      httpRes => {
-        const { statusCode } = httpRes
-        httpRes.setEncoding(encoding)
-
-        const chunks = []
-        let chunksSize = 0
-
-        httpRes.on('data', chunk => {
-          chunks.push(chunk)
-          chunksSize += chunk.length
-        })
-
-        httpRes.on('end', () => {
-          let fileData = null
-          switch (chunks.length) {
-            case 0:
-              fileData = Buffer.alloc(0)
-              break
-            case 1:
-              fileData = Buffer.from(chunks[0], encoding)
-              break
-            default:
-              fileData = Buffer.alloc(chunksSize)
-              for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
-                const chunk: string | Buffer = chunks[i]
-                if (Buffer.isBuffer(chunk)) {
-                  chunk.copy(fileData, position)
-                } else {
-                  Buffer.from(chunk, encoding).copy(fileData, position)
-                }
-                position += chunk.length
-              }
-              break
-          }
-          if (statusCode < 200 || statusCode >= 400) {
-            console.warn(
-              `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-            )
-            reject({
-              res: httpRes,
-              data: (encrypt ? this.XOR(fileData) : fileData).toString(encoding)
-            })
-          } else {
-            if (statusCode === 302 || statusCode === 301) {
-              return resolve(
-                this.getRemoteSource(
-                  httpRes.headers.location,
-                  encrypt,
-                  encoding
-                )
-              )
-            }
-            resolve({
-              res: httpRes,
-              data: (encrypt ? this.XOR(fileData) : fileData).toString(encoding)
-            })
-          }
-        })
-      }
-    )
-  })
 }
 
 /**
