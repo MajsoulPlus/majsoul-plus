@@ -10,12 +10,13 @@ import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
 import bossKey from './utilities/bossKey'
 import screenshot from './utilities/screenshot'
+import { LoadExtension } from './extension/extension'
 
 // 初始化全局变量
 InitGlobal()
 
 // TODO: 将这一步移至启动游戏后
-// LoadExtension()
+LoadExtension()
 
 // 禁用/启用进程内 GPU 处理
 if (UserConfigs.chromium.isInProcessGpuOn) {

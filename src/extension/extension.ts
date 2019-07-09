@@ -2,6 +2,8 @@ import * as fs from 'fs'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { ExtensionManager } from './manager'
+import { ipcMain, Event } from 'electron'
+import { ManagerWindow } from '../windows/manager'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
@@ -13,10 +15,10 @@ export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
 }
 
 export const defaultExtension: MajsoulPlus.Extension = {
-  id: 'test',
-  version: '1.0.0',
-  name: 'Test Extension',
-  author: 'undefined',
+  id: 'majsoul_plus',
+  version: '2.0.0',
+  name: 'Majsoul Plus',
+  author: 'Majsoul Plus Team',
   description: 'No description provided.',
   dependencies: {},
   preview: 'preview.png',
@@ -42,4 +44,13 @@ export function LoadExtension() {
     })
   )
   enabled.forEach(extension => ExtensionManager.use(extension))
+
+  // Register ipcMain
+  ipcMain.on('extension-list', (event: Event) => {
+    event.returnValue = enabled
+  })
+
+  ipcMain.on('extension-detail', (event: Event) => {
+    event.returnValue = ExtensionManager.getDetails()
+  })
 }

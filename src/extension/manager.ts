@@ -12,12 +12,16 @@ import * as latestSchema from './schema/latest.json'
 
 class MajsoulPlusExtensionManager {
   private loadedExtensions: { [extension: string]: semver.SemVer } = {}
+  private loadedExtensionDetails: {
+    [extension: string]: MajsoulPlus.Extension
+  } = {}
   private extensionConfigs: MajsoulPlus.Extension[]
   private extensionMiddlewares: MajsoulPlus.ExtensionMiddleware[] = []
   readonly version: string = '1.0.0'
 
   constructor() {
     this.loadedExtensions['majsoul_plus'] = semver.parse(Global.version)
+    this.loadedExtensionDetails['majsoul_plus'] = defaultExtension
   }
 
   use(ext: string) {
@@ -64,9 +68,7 @@ class MajsoulPlusExtensionManager {
 
     // id uniqueness check
     if (this.loadedExtensions[extension.id]) {
-      console.error(
-        `failed to load extension ${ext}: extension already loaded`
-      )
+      console.error(`failed to load extension ${ext}: extension already loaded`)
       return this
     }
 
@@ -136,6 +138,7 @@ class MajsoulPlusExtensionManager {
 
     // all error checks are ok
     this.useScript(ext, extension)
+    this.loadedExtensionDetails[ext] = extension
     return this
   }
 
@@ -149,12 +152,7 @@ class MajsoulPlusExtensionManager {
     const useScript = (entry: string) => {
       if (err) return
 
-      const p = path.resolve(
-        appDataDir,
-        GlobalPath.ExtensionDir,
-        folder,
-        entry
-      )
+      const p = path.resolve(appDataDir, GlobalPath.ExtensionDir, folder, entry)
       if (!fs.existsSync(p)) {
         console.error(`extension entry ${entry} not found!`)
         return
@@ -184,7 +182,11 @@ class MajsoulPlusExtensionManager {
     GameWindow.webContents.send('extension-context', undefined)
     GameWindow.webContents.send('extension-middlewares', fn)
   }
+
+  getDetails() {
+    return { ...this.loadedExtensionDetails }
+  }
 }
 
 // tslint:disable-next-line
-export const ExtensionManager = new MajsoulPlusExtensionManager();
+export const ExtensionManager = new MajsoulPlusExtensionManager()

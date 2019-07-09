@@ -56,7 +56,7 @@ fs.writeFileSync(Global.UserConfigPath, JSON.stringify(userConfigs))
 // 获取用户数据 %appdata% 路径
 const userDataDir = electronApp.getPath('userData')
 // 获取 Configs 记录的扩展资源路径
-const paths = [GlobalPath.ExecutesDir, GlobalPath.ModsDir, GlobalPath.ToolsDir]
+const paths = [GlobalPath.ExecutesDir, GlobalPath.ToolsDir]
 paths
   .map(dir => path.join(userDataDir, dir))
   .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
@@ -85,14 +85,14 @@ const windowControl = {
       executeScripts = []
     }
     try {
-      const data = fs.readFileSync(Global.ModsConfigPath)
-      const mods = JSON.parse(data.toString('utf-8'))
-      mods.forEach(mod => {
-        if (mod.execute) {
-          mod.execute.filesDir = mod.filesDir
-          executeScripts.push(mod.execute)
-        }
-      })
+      // const data = fs.readFileSync(Global.ModsConfigPath)
+      // const mods = JSON.parse(data.toString('utf-8'))
+      // mods.forEach(mod => {
+      //   if (mod.execute) {
+      //     mod.execute.filesDir = mod.filesDir
+      //     executeScripts.push(mod.execute)
+      //   }
+      // })
     } catch (error) {
       console.error(error)
     }

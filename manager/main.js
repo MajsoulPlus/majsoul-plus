@@ -12,7 +12,7 @@ const AdmZip = require("adm-zip")
 const path = require("path")
 const os = require("os")
 
-const Mods = require("./Mods")
+const { Extensions } = require("./pages/Extensions")
 const Executes = require("./Executes")
 const { Tools } = require("./pages/Tools")
 
@@ -22,7 +22,7 @@ const { i18n } = require("..//i18nInstance")
 class Manager {
   constructor(options) {
     this.options = options
-    this.mods = null
+    this.extensions = null
     this.executes = null
     this.tools = null
     this._extends = []
@@ -30,7 +30,7 @@ class Manager {
     this._update = new Update(this.options.update)
     this._addEventListener = this._addEventListener.bind(this)
     this._import = this._import.bind(this)
-    this._changeModEditable = this._changeModEditable.bind(this)
+    this._changeModEditable = this._changeExtensionEditable.bind(this)
     this._changeExecuteEditable = this._changeExecuteEditable.bind(this)
     this._changeToolEditable = this._changeToolEditable.bind(this)
     this._loadCards = this._loadCards.bind(this)
@@ -43,13 +43,13 @@ class Manager {
 
   _saveSettings() {
     setting.save()
-    // this.mods.save()
+    // this.extensions.save()
     // this.executes.save()
     // this.tools.save()
   }
 
-  _changeModEditable() {
-    this.mods.changeEditable()
+  _changeExtensionEditable() {
+    this.extensions.changeEditable()
   }
 
   _changeExecuteEditable() {
@@ -65,22 +65,26 @@ class Manager {
       userConfig: {
         userData: { useAppdataLibrary }
       },
-      modRootDirs,
+      extensionRootDirs,
       executeRootDirs,
       toolRootDirs
     } = this.options
     const index = Number(!!useAppdataLibrary)
     return {
-      modRootDir: modRootDirs[index],
+      extensionRootDir: extensionRootDirs[index],
       executeRootDir: executeRootDirs[index],
       toolRootDir: toolRootDirs[index]
     }
   }
 
   _getInstallDirByExtname(extname) {
-    const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
+    const {
+      extensionRootDir,
+      executeRootDir,
+      toolRootDir
+    } = this._getRootDirs()
     const map = {
-      ".mspm": modRootDir,
+      ".mspm": extensionRootDir,
       ".mspe": executeRootDir,
       ".mspt": toolRootDir
     }
@@ -128,7 +132,7 @@ class Manager {
     installTool.addEventListener("click", this._import)
 
     const editMod = document.getElementById("editMod")
-    editMod.addEventListener("click", this._changeModEditable)
+    editMod.addEventListener("click", this._changeExtensionEditable)
     const editExecute = document.getElementById("editExecute")
     editExecute.addEventListener("click", this._changeExecuteEditable)
     const editTool = document.getElementById("editTool")
@@ -162,11 +166,15 @@ class Manager {
   }
 
   _loadCards() {
-    const { modRootDir, executeRootDir, toolRootDir } = this._getRootDirs()
-    this.mods = new Mods({ rootDir: modRootDir })
+    const {
+      extensionRootDir,
+      executeRootDir,
+      toolRootDir
+    } = this._getRootDirs()
+    this.extensions = new Extensions({ rootDir: extensionRootDir })
     this.executes = new Executes({ rootDir: executeRootDir })
     this.tools = new Tools({ rootDir: toolRootDir })
-    this.mods.load()
+    this.extensions.load()
     this.executes.load()
     this.tools.load()
   }
@@ -228,7 +236,9 @@ const options = {
       return require("../Configs-user.json")
     }
   })(),
-  modRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ModsDir)),
+  extensionRootDirs: userDataPaths.map(root =>
+    path.join(root, GlobalPath.ExtensionDir)
+  ),
   executeRootDirs: userDataPaths.map(root =>
     path.join(root, GlobalPath.ExecutesDir)
   ),

@@ -13,9 +13,6 @@ import * as url from 'url'
 import { MajsoulPlus } from './majsoul_plus'
 import { Global, GlobalPath } from './global'
 
-// 用于存储Mod对象
-let mods: MajsoulPlus.Mod[]
-
 // 播放器
 let audioPlayer: BrowserWindow
 
@@ -110,88 +107,88 @@ export const Util = {
    * @param {string} encoding 请求的数据格式，默认是binary
    * @returns {Promise<{statusCode: number,data:Buffer | string}>}
    */
-  getRemoteSource(
-    originalUrl: string,
-    encrypt: boolean,
-    encoding: BufferEncoding = 'binary'
-  ): Promise<{
-    res: IncomingMessage
-    statusCode?: number
-    data: Buffer | string
-  }> {
-    return new Promise((resolve, reject) => {
-      const remoteUrl = this.getRemoteUrl(originalUrl)
-      https.get(
-        {
-          ...url.parse(remoteUrl),
-          headers: { 'User-Agent': Global.HttpGetUserAgent }
-        },
-        httpRes => {
-          const { statusCode } = httpRes
-          httpRes.setEncoding(encoding)
-          const chunks = []
-          let chunksSize = 0
-          httpRes.on('data', chunk => {
-            chunks.push(chunk)
-            chunksSize += chunk.length
-          })
-          httpRes.on('end', () => {
-            let fileData = null
-            switch (chunks.length) {
-              case 0:
-                fileData = Buffer.alloc(0)
-                break
-              case 1:
-                fileData = Buffer.from(chunks[0], encoding)
-                break
-              default:
-                fileData = Buffer.alloc(chunksSize)
-                for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
-                  /**
-                   * @type {string | Buffer}
-                   */
-                  const chunk: string | Buffer = chunks[i]
-                  if (Buffer.isBuffer(chunk)) {
-                    chunk.copy(fileData, position)
-                  } else {
-                    Buffer.from(chunk, encoding).copy(fileData, position)
-                  }
-                  position += chunk.length
-                }
-                break
-            }
-            if (statusCode < 200 || statusCode >= 400) {
-              console.warn(
-                `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-              )
-              reject({
-                res: httpRes,
-                data: (encrypt ? this.XOR(fileData) : fileData).toString(
-                  encoding
-                )
-              })
-            } else {
-              if (statusCode === 302 || statusCode === 301) {
-                return resolve(
-                  this.getRemoteSource(
-                    httpRes.headers.location,
-                    encrypt,
-                    encoding
-                  )
-                )
-              }
-              resolve({
-                res: httpRes,
-                data: (encrypt ? this.XOR(fileData) : fileData).toString(
-                  encoding
-                )
-              })
-            }
-          })
-        }
-      )
-    })
-  },
+  // getRemoteSource(
+  //   originalUrl: string,
+  //   encrypt: boolean,
+  //   encoding: BufferEncoding = 'binary'
+  // ): Promise<{
+  //   res: IncomingMessage
+  //   statusCode?: number
+  //   data: Buffer | string
+  // }> {
+  //   return new Promise((resolve, reject) => {
+  //     const remoteUrl = this.getRemoteUrl(originalUrl)
+  //     https.get(
+  //       {
+  //         ...url.parse(remoteUrl),
+  //         headers: { 'User-Agent': Global.HttpGetUserAgent }
+  //       },
+  //       httpRes => {
+  //         const { statusCode } = httpRes
+  //         httpRes.setEncoding(encoding)
+  //         const chunks = []
+  //         let chunksSize = 0
+  //         httpRes.on('data', chunk => {
+  //           chunks.push(chunk)
+  //           chunksSize += chunk.length
+  //         })
+  //         httpRes.on('end', () => {
+  //           let fileData = null
+  //           switch (chunks.length) {
+  //             case 0:
+  //               fileData = Buffer.alloc(0)
+  //               break
+  //             case 1:
+  //               fileData = Buffer.from(chunks[0], encoding)
+  //               break
+  //             default:
+  //               fileData = Buffer.alloc(chunksSize)
+  //               for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
+  //                 /**
+  //                  * @type {string | Buffer}
+  //                  */
+  //                 const chunk: string | Buffer = chunks[i]
+  //                 if (Buffer.isBuffer(chunk)) {
+  //                   chunk.copy(fileData, position)
+  //                 } else {
+  //                   Buffer.from(chunk, encoding).copy(fileData, position)
+  //                 }
+  //                 position += chunk.length
+  //               }
+  //               break
+  //           }
+  //           if (statusCode < 200 || statusCode >= 400) {
+  //             console.warn(
+  //               `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
+  //             )
+  //             reject({
+  //               res: httpRes,
+  //               data: (encrypt ? this.XOR(fileData) : fileData).toString(
+  //                 encoding
+  //               )
+  //             })
+  //           } else {
+  //             if (statusCode === 302 || statusCode === 301) {
+  //               return resolve(
+  //                 this.getRemoteSource(
+  //                   httpRes.headers.location,
+  //                   encrypt,
+  //                   encoding
+  //                 )
+  //               )
+  //             }
+  //             resolve({
+  //               res: httpRes,
+  //               data: (encrypt ? this.XOR(fileData) : fileData).toString(
+  //                 encoding
+  //               )
+  //             })
+  //           }
+  //         })
+  //       }
+  //     )
+  //   })
+  // },
 
   /**
    * 使用https，从指定网址获取一个文件到一个指定路径
@@ -199,83 +196,83 @@ export const Util = {
    * @param {string} encoding 编码格式
    * @param {Function} dataCallback 当获取到数据时候的callback
    */
-  httpsGetFile(
-    URI: string,
-    encoding: BufferEncoding = 'binary',
-    dataCallback: Function
-  ) {
-    return new Promise((resolve, reject) => {
-      https.get(
-        {
-          ...url.parse(URI),
-          headers: { 'User-Agent': Global.HttpGetUserAgent }
-        },
-        httpRes => {
-          const { statusCode } = httpRes
-          httpRes.setEncoding(encoding)
-          const chunks = []
-          let chunksSize = 0
-          httpRes.on('data', chunk => {
-            chunks.push(chunk)
-            chunksSize += chunk.length
-            if (dataCallback) {
-              dataCallback(chunk)
-            }
-          })
-          httpRes.on('end', () => {
-            let fileData = null
-            switch (chunks.length) {
-              case 0:
-                fileData = Buffer.alloc(0)
-                break
-              case 1:
-                fileData = chunks[0]
-                break
-              default:
-                fileData = Buffer.alloc(chunksSize)
-                for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
-                  /**
-                   * @type {string | Buffer}
-                   */
-                  const chunk: string | Buffer = chunks[i]
-                  if (Buffer.isBuffer(chunk)) {
-                    chunk.copy(fileData, position)
-                  } else {
-                    Buffer.from(chunk, encoding).copy(fileData, position)
-                  }
-                  position += chunk.length
-                }
-                break
-            }
-            if (statusCode < 200 || statusCode >= 400) {
-              console.warn(
-                `尝试下载资源 ${URI} 失败, statusCode = ${statusCode}`
-              )
-              reject({
-                res: httpRes,
-                data: fileData
-              })
-            } else {
-              if (statusCode === 302 || statusCode === 301) {
-                console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
-                return resolve(
-                  this.httpsGetFile(
-                    httpRes.headers.location,
-                    encoding,
-                    dataCallback
-                  )
-                )
-              }
-              resolve({
-                res: httpRes,
-                data: fileData
-              })
-            }
-          })
-        }
-      )
-    })
-  },
+  // httpsGetFile(
+  //   URI: string,
+  //   encoding: BufferEncoding = 'binary',
+  //   dataCallback: Function
+  // ) {
+  //   return new Promise((resolve, reject) => {
+  //     https.get(
+  //       {
+  //         ...url.parse(URI),
+  //         headers: { 'User-Agent': Global.HttpGetUserAgent }
+  //       },
+  //       httpRes => {
+  //         const { statusCode } = httpRes
+  //         httpRes.setEncoding(encoding)
+  //         const chunks = []
+  //         let chunksSize = 0
+  //         httpRes.on('data', chunk => {
+  //           chunks.push(chunk)
+  //           chunksSize += chunk.length
+  //           if (dataCallback) {
+  //             dataCallback(chunk)
+  //           }
+  //         })
+  //         httpRes.on('end', () => {
+  //           let fileData = null
+  //           switch (chunks.length) {
+  //             case 0:
+  //               fileData = Buffer.alloc(0)
+  //               break
+  //             case 1:
+  //               fileData = chunks[0]
+  //               break
+  //             default:
+  //               fileData = Buffer.alloc(chunksSize)
+  //               for (let i = 0, position = 0, l = chunks.length; i < l; i++) {
+  //                 /**
+  //                  * @type {string | Buffer}
+  //                  */
+  //                 const chunk: string | Buffer = chunks[i]
+  //                 if (Buffer.isBuffer(chunk)) {
+  //                   chunk.copy(fileData, position)
+  //                 } else {
+  //                   Buffer.from(chunk, encoding).copy(fileData, position)
+  //                 }
+  //                 position += chunk.length
+  //               }
+  //               break
+  //           }
+  //           if (statusCode < 200 || statusCode >= 400) {
+  //             console.warn(
+  //               `尝试下载资源 ${URI} 失败, statusCode = ${statusCode}`
+  //             )
+  //             reject({
+  //               res: httpRes,
+  //               data: fileData
+  //             })
+  //           } else {
+  //             if (statusCode === 302 || statusCode === 301) {
+  //               console.warn(`访问 ${URI} 被重定向, statusCode = ${statusCode}`)
+  //               return resolve(
+  //                 this.httpsGetFile(
+  //                   httpRes.headers.location,
+  //                   encoding,
+  //                   dataCallback
+  //                 )
+  //               )
+  //             }
+  //             resolve({
+  //               res: httpRes,
+  //               data: fileData
+  //             })
+  //           }
+  //         })
+  //       }
+  //     )
+  //   })
+  // },
 
   /**
    * 从远程URI转成本地存储路径
@@ -351,117 +348,117 @@ export const Util = {
    * @param res Response对象
    * @param next NextFunction对象
    */
-  processRequest(req: express.Request, res: express.Response) {
-    if (!mods) {
-      this.loadMods()
-    }
+  // processRequest(req: express.Request, res: express.Response) {
+  //   if (!mods) {
+  //     this.loadMods()
+  //   }
 
-    const originalUrl = req.originalUrl
-    const encrypt = this.isEncryptRes(originalUrl)
-    const isPath = this.isPath(originalUrl)
-    const localURI = this.getLocalURI(originalUrl, isPath)
+  //   const originalUrl = req.originalUrl
+  //   const encrypt = this.isEncryptRes(originalUrl)
+  //   const isPath = this.isPath(originalUrl)
+  //   const localURI = this.getLocalURI(originalUrl, isPath)
 
-    let promise: Promise<express.NextFunction> = Promise.reject()
-    mods.forEach(mod => {
-      promise = promise.then(
-        data => data,
-        () => {
-          const modDir = mod.dir
-          let promiseMod: Promise<express.NextFunction> = Promise.reject()
-          // const readModFile = path => {
-          //   return this.readFile(localURI)
-          // }
+  //   let promise: Promise<express.NextFunction> = Promise.reject()
+  //   mods.forEach(mod => {
+  //     promise = promise.then(
+  //       data => data,
+  //       () => {
+  //         const modDir = mod.dir
+  //         let promiseMod: Promise<express.NextFunction> = Promise.reject()
+  //         // const readModFile = path => {
+  //         //   return this.readFile(localURI)
+  //         // }
 
-          // 平滑升级至 mod.dir
-          if (mod.dir === undefined && mod.filesDir) {
-            mod.dir = mod.filesDir
-            mod.filesDir = undefined
-          }
+  //         // 平滑升级至 mod.dir
+  //         if (mod.dir === undefined && mod.filesDir) {
+  //           mod.dir = mod.filesDir
+  //           mod.filesDir = undefined
+  //         }
 
-          if (mod.replace && mod.replace.length > 0) {
-            mod.replace.forEach(replaceInfo => {
-              const regExp = new RegExp(replaceInfo.from)
-              if (!regExp.test(originalUrl)) {
-                return
-              }
-              const localURI = this.getLocalURI(
-                originalUrl.replace(regExp, replaceInfo.to),
-                isPath,
-                path.join(mod.dir, modDir || '/files')
-              )
-              promiseMod = promiseMod.then(
-                data => data,
-                () => this.readFile(localURI)
-              )
-            })
-          }
-          const localURI = this.getLocalURI(
-            originalUrl,
-            isPath,
-            path.join(mod.dir, modDir || '/files')
-          )
-          promiseMod = promiseMod.then(
-            data => data,
-            () => this.readFile(localURI)
-          )
-          return promiseMod
-        }
-      )
-    })
-    promise
-      .then(data => data, () => this.readFile(localURI))
-      .then(
-        data => data,
-        () => {
-          return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
-            ({ data, res: result }) => {
-              res.statusCode = result.statusCode
-              if (!isPath) {
-                this.writeFile(localURI, data)
-              }
-              return data
-            },
-            ({ data, res: result }) => {
-              res.statusCode = result.statusCode
-              return Promise.reject(data)
-            }
-          )
-        }
-      )
-      .then(
-        data => {
-          let sendData = isPath
-            ? this.encodeData(data).toString('utf-8')
-            : this.encodeData(data)
-          if (encrypt) {
-            sendData = this.XOR(sendData)
-          }
-          res.end(sendData)
-        },
-        data => {
-          const sendData = this.encodeData(data).toString('utf-8')
-          res.send(sendData)
-        }
-      )
-      .catch(err => console.error(err))
-  },
+  //         if (mod.replace && mod.replace.length > 0) {
+  //           mod.replace.forEach(replaceInfo => {
+  //             const regExp = new RegExp(replaceInfo.from)
+  //             if (!regExp.test(originalUrl)) {
+  //               return
+  //             }
+  //             const localURI = this.getLocalURI(
+  //               originalUrl.replace(regExp, replaceInfo.to),
+  //               isPath,
+  //               path.join(mod.dir, modDir || '/files')
+  //             )
+  //             promiseMod = promiseMod.then(
+  //               data => data,
+  //               () => this.readFile(localURI)
+  //             )
+  //           })
+  //         }
+  //         const localURI = this.getLocalURI(
+  //           originalUrl,
+  //           isPath,
+  //           path.join(mod.dir, modDir || '/files')
+  //         )
+  //         promiseMod = promiseMod.then(
+  //           data => data,
+  //           () => this.readFile(localURI)
+  //         )
+  //         return promiseMod
+  //       }
+  //     )
+  //   })
+  //   promise
+  //     .then(data => data, () => this.readFile(localURI))
+  //     .then(
+  //       data => data,
+  //       () => {
+  //         return this.getRemoteSource(originalUrl, encrypt && !isPath).then(
+  //           ({ data, res: result }) => {
+  //             res.statusCode = result.statusCode
+  //             if (!isPath) {
+  //               this.writeFile(localURI, data)
+  //             }
+  //             return data
+  //           },
+  //           ({ data, res: result }) => {
+  //             res.statusCode = result.statusCode
+  //             return Promise.reject(data)
+  //           }
+  //         )
+  //       }
+  //     )
+  //     .then(
+  //       data => {
+  //         let sendData = isPath
+  //           ? this.encodeData(data).toString('utf-8')
+  //           : this.encodeData(data)
+  //         if (encrypt) {
+  //           sendData = this.XOR(sendData)
+  //         }
+  //         res.end(sendData)
+  //       },
+  //       data => {
+  //         const sendData = this.encodeData(data).toString('utf-8')
+  //         res.send(sendData)
+  //       }
+  //     )
+  //     .catch(err => console.error(err))
+  // },
 
   /**
    * 加载Mod
    */
-  loadMods() {
-    // Mod文件根目录
-    // const modRootDir = path.join(__dirname, Configs.MODS_DIR)
-    // 所有已在目录中的Mod目录
-    // const modDirs = fs.readdirSync(modRootDir)
-    try {
-      const data = fs.readFileSync(Global.ModsConfigPath)
-      mods = JSON.parse(data.toString('utf-8'))
-    } catch (error) {
-      console.error(error)
-      mods = []
-    }
-  },
+  // loadMods() {
+  //   // Mod文件根目录
+  //   // const modRootDir = path.join(__dirname, Configs.MODS_DIR)
+  //   // 所有已在目录中的Mod目录
+  //   // const modDirs = fs.readdirSync(modRootDir)
+  //   try {
+  //     const data = fs.readFileSync(Global.ModsConfigPath)
+  //     mods = JSON.parse(data.toString('utf-8'))
+  //   } catch (error) {
+  //     console.error(error)
+  //     mods = []
+  //   }
+  // },
 
   /**
    * 同步删除文件夹

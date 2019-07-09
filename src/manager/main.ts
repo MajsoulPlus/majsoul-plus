@@ -3,9 +3,12 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { Ping } from './utils/Ping'
 import { LeftPanel } from './ui/Panel'
+import setting from './pages/Setting'
+import about from './pages/About'
 
 class Manager {
   private options: {}
+
   constructor(options: {}) {
     this.options = options
   }
@@ -14,6 +17,10 @@ class Manager {
     // TODO: support more server types
     new Ping('zh').init()
     LeftPanel.init()
+  }
+
+  private saveSettings = () => {
+    setting.save()
   }
 }
 
@@ -29,7 +36,6 @@ const managerOptions = {
       return require('../Configs-user.json')
     }
   })(),
-  modRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ModsDir)),
   executeRootDirs: userDataPaths.map(root =>
     path.join(root, GlobalPath.ExecutesDir)
   ),

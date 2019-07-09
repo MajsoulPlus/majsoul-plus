@@ -45,7 +45,6 @@ declare namespace MajsoulPlus {
     EXTEND_RES_KEYWORD: string
     RemoteDomain: string
     HttpRemoteDomain: string
-    ModsConfigPath: string
     ExtensionConfigPath: string
     ExecutesConfigPath: string
     ToolConfigPath: string
@@ -66,7 +65,6 @@ declare namespace MajsoulPlus {
 
   export interface GlobalPath {
     LocalDir: string
-    ModsDir: string
     ExtensionDir: string
     ToolsDir: string
     ExecutesDir: string

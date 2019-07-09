@@ -3,8 +3,6 @@ import * as https from 'https'
 import { ServerOptions } from 'https'
 import * as Koa from 'koa'
 import * as path from 'path'
-import { MajsoulPlus } from './majsoul_plus'
-import { loadMods, Mods } from './mod/mods'
 import {
   getLocalURI,
   isEncryptRes,
@@ -20,7 +18,7 @@ import { GlobalPath, appDataDir } from './global'
 // tslint:disable-next-line
 export const Server = new Koa()
 
-// TODO: Load mods here
+// TODO: Load extensions here
 Server.use(async (ctx, next) => {
   await next()
 })
@@ -29,7 +27,11 @@ Server.use(async (ctx, next) => {
   const originalUrl = ctx.request.originalUrl
   const encrypt = isEncryptRes(originalUrl)
   const isRoutePath = isPath(originalUrl)
-  const localURI = getLocalURI(originalUrl, isRoutePath, path.join(appDataDir, GlobalPath.LocalDir))
+  const localURI = getLocalURI(
+    originalUrl,
+    isRoutePath,
+    path.join(appDataDir, GlobalPath.LocalDir)
+  )
 
   let allData: string | Buffer
 
@@ -51,7 +53,6 @@ Server.use(async (ctx, next) => {
         writeFile(localURI, data)
       }
       allData = data
-
     } catch ({ res: result, data }) {
       ctx.res.statusCode = result.statusCode
       return

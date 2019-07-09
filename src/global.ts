@@ -47,7 +47,6 @@ export const appIcon: string = (() => {
 // tslint:disable-next-line
 export const GlobalPath: MajsoulPlus.GlobalPath = {
   LocalDir: '/static',
-  ModsDir: 'mod',
   ExtensionDir: 'extension',
   ToolsDir: 'tool',
   ExecutesDir: 'execute'
@@ -69,7 +68,6 @@ export const Global: MajsoulPlus.Global = {
   EXTEND_RES_KEYWORD: 'extendRes',
   RemoteDomain: 'https://majsoul.union-game.com/',
   HttpRemoteDomain: 'http://majsoul.union-game.com/',
-  ModsConfigPath: '',
   ExtensionConfigPath: '',
   ExecutesConfigPath: '',
   ToolConfigPath: '',
@@ -132,12 +130,10 @@ export const Global: MajsoulPlus.Global = {
 
 export function InitGlobal() {
   [
-    Global.ModsConfigPath,
     Global.ExtensionConfigPath,
     Global.ExecutesConfigPath,
     Global.ToolConfigPath
   ] = [
-    GlobalPath.ModsDir,
     GlobalPath.ExtensionDir,
     GlobalPath.ExecutesDir,
     GlobalPath.ToolsDir
