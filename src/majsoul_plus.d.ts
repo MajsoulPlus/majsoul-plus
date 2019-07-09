@@ -71,7 +71,6 @@ declare namespace MajsoulPlus {
     ToolsDir: string
     ExecutesDir: string
   }
-  WindowStatus
 
   /**
    * Common Metadata
