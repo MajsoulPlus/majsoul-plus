@@ -358,58 +358,6 @@ const windowControl = {
     })
   },
 
-  // 初始化扩展资源管理器窗口
-  initManagerWindow: managerWindowConfig => {
-    const config = {
-      ...managerWindowConfig
-    }
-    // hack macOS config
-    // macOS 专有设置，设置背景为透明色
-    if (process.platform === 'darwin') {
-      config.frame = false
-      config.titleBarStyle = 'hidden'
-      if (Number(process.versions.electron.split('.')[0]) > 2) {
-        config.vibrancy = 'light'
-        config.backgroundColor = 'rgba(0,0,0,0)'
-      }
-    }
-
-    // 计算资源管理器缩放宽高
-    config.width *= userConfigs.window.zoomFactor
-    config.height *= userConfigs.window.zoomFactor
-
-    const managerWindow = new BrowserWindow(config)
-
-    managerWindow.once('ready-to-show', () => {
-      // 根据资源管理器设置的缩放宽高进行缩放操作
-      managerWindow.webContents.setZoomFactor(userConfigs.window.zoomFactor)
-      managerWindow.show()
-    })
-
-    // 锁定资源管理器窗口标题
-    managerWindow.on('page-title-updated', evt => evt.preventDefault())
-    managerWindow.once('close', evt => {
-      evt.preventDefault()
-      // 隐藏窗口，发送消息提示储存设置，待返回消息后再真正关闭窗口
-      managerWindow.hide()
-      evt.sender.send('saveConfig')
-    })
-    // 载入本地页面，对于 Linux 系统 file：// 不能省略
-    managerWindow.loadURL(
-      'file://' + path.join(__dirname, 'manager/index.html')
-    )
-
-    // Add environment config to open developer tools
-    // 在 debug 环境下启动会打开开发者工具
-    if (process.env.NODE_ENV === 'development') {
-      managerWindow.webContents.openDevTools({ mode: 'detach' })
-    }
-
-    // 链接至统一的 windowMap 进行管理
-    // 手柄：明明是 Object 不是 Map
-    windowControl.windowMap['manager'] = managerWindow
-  },
-
   // 初始化游戏窗口
   // TODO: 为游戏窗口设置类似资源管理器的模态标题栏
   initGameWindow: gameWindowConfig => {
@@ -509,23 +457,6 @@ const windowControl = {
     windowControl.windowMap['game'] = gameWindow
   },
 
-  // 关闭资源管理器窗口
-  closeManagerWindow: () => {
-    const managerWindow = windowControl.windowMap['manager']
-    if (managerWindow) {
-      managerWindow.close()
-    }
-  },
-
-  // 隐藏资源管理器窗口
-  hideManagerWindow: () => {
-    const managerWindow: Electron.BrowserWindow =
-      windowControl.windowMap['manager']
-    if (managerWindow) {
-      managerWindow.hide()
-    }
-  },
-
   // 添加监听器
   addAppListener: () => {
     // 资源管理器消息
@@ -533,49 +464,6 @@ const windowControl = {
     ipcMain.on('application-message', (evt, ...args) => {
       if (args && args.length > 0) {
         switch (args[0]) {
-          // 资源管理器通知启动游戏
-          case 'start-game': {
-            windowControl
-              .initLocalMirrorServer(sererHttps, Global.ServerPort)
-              .then(() => {
-                windowControl.initGameWindow(Global.GameWindowConfig)
-                if (userConfigs.window.isManagerHide) {
-                  windowControl.hideManagerWindow()
-                } else {
-                  windowControl.closeManagerWindow()
-                }
-              })
-            break
-          }
-          // 启动指定工具
-          case 'start-tool': {
-            // 工具信息
-            const toolInfo = args[1]
-            if (!toolInfo.windowOptions) {
-              toolInfo.windowOption = {}
-            }
-            const toolConfig = {
-              ...Global.ToolWindowConfig,
-              ...toolInfo.windowOptions
-            }
-            const indexPage = toolInfo.index ? toolInfo.index : 'index.html'
-            toolConfig.parent = windowControl.windowMap['manager']
-
-            const toolWindow = new BrowserWindow(toolConfig)
-
-            windowControl.windowMap.toolsMap[toolInfo.filesDir] = toolWindow
-
-            if (process.env.NODE_ENV === 'development') {
-              toolWindow.webContents.openDevTools({
-                mode: 'detach'
-              })
-            }
-
-            toolWindow.loadURL(
-              'file://' + path.join(toolInfo.filesDir, indexPage)
-            )
-            break
-          }
           // 通知更新用户设置，目前仅用于更改缩放比例
           case 'update-user-config': {
             userConfigs = JSON.parse(
@@ -588,28 +476,6 @@ const windowControl = {
             windowControl.windowMap['manager'].webContents.setZoomFactor(
               userConfigs.window.zoomFactor
             )
-            break
-          }
-          // 通知进行截图
-          case 'take-screenshot': {
-            // 接收到的截图 Buffer
-            const buffer: Buffer = args[1]
-            // 由主进程进行保存
-            const filePath = path.join(
-              electronApp.getPath('pictures'),
-              electronApp.getName(),
-              Date.now() + '.png'
-            )
-            // 写入文件
-            Util.writeFile(filePath, buffer).then(() => {
-              // 通知渲染进程（游戏宿主窗口）截图已保存，并由渲染进程弹窗
-              windowControl.windowMap['game'].webContents.send(
-                'screenshot-saved',
-                filePath
-              )
-            })
-            // 写入图像到剪切板
-            clipboard.writeImage(nativeImage.createFromBuffer(buffer))
             break
           }
           // 通知已保存完毕，可以关闭资源管理器
@@ -712,87 +578,17 @@ const windowControl = {
     })
   },
 
-  // 声明 Accelerator
-  addAccelerator() {
-    // 老板键
-    // TODO: 此处的 静音 对以下几个窗口无效
-    //        1. 游戏宿主窗口内的游戏窗口 (webview)
-    //        2. 音频播放器后台窗口
-    const addBossKey = () => {
-      const windowsStatus = {
-        gameWindowVisible: false,
-        gameWindowMuted: false,
-        managerWindowVisible: false,
-        managerWindowMuted: false,
-        bosskeyActive: false
-      }
-      globalShortcut.register('Alt+X', () => {
-        const gameWindow: Electron.BrowserWindow =
-          windowControl.windowMap['game']
-        const managerWindow: Electron.BrowserWindow =
-          windowControl.windowMap['manager']
-
-        if (windowsStatus.bosskeyActive) {
-          // 如果老板键已经被按下
-          windowsStatus.bosskeyActive = false
-
-          if (managerWindow) {
-            if (windowsStatus.managerWindowVisible) {
-              managerWindow.show()
-            }
-            managerWindow.webContents.setAudioMuted(
-              windowsStatus.managerWindowMuted
-            )
-          }
-          if (gameWindow) {
-            if (windowsStatus.gameWindowVisible) {
-              gameWindow.show()
-            }
-            gameWindow.webContents.setAudioMuted(windowsStatus.gameWindowMuted)
-          }
-        } else {
-          // 备份窗口信息并隐藏窗口
-          windowsStatus.bosskeyActive = true
-
-          if (managerWindow) {
-            windowsStatus.managerWindowVisible = managerWindow.isVisible()
-            windowsStatus.managerWindowMuted = managerWindow.webContents.isAudioMuted()
-            managerWindow.webContents.on('crashed', e => {
-              electronApp.relaunch()
-              electronApp.quit()
-            })
-
-            managerWindow.hide()
-            managerWindow.webContents.setAudioMuted(true)
-          }
-          if (gameWindow) {
-            windowsStatus.gameWindowVisible = gameWindow.isVisible()
-            windowsStatus.gameWindowMuted = gameWindow.webContents.isAudioMuted()
-            gameWindow.webContents.on('crashed', e => {
-              electronApp.relaunch()
-              electronApp.quit()
-            })
-
-            gameWindow.hide()
-            gameWindow.webContents.setAudioMuted(true)
-          }
-        }
-      })
-    }
-    addBossKey()
-  },
-
   // 启动雀魂 Plus 程序
   start: () => {
     windowControl.electronReady().then(() => {
       // 清空菜单
-      Menu.setApplicationMenu(null)
+      // Menu.setApplicationMenu(null)
       // 注册 Accelerator
-      windowControl.addAccelerator()
+      // windowControl.addAccelerator()
       // 注册监听器
       windowControl.addAppListener()
       // 初始化扩展资源管理器
-      windowControl.initManagerWindow({ ...Global.ManagerWindowConfig })
+      // windowControl.initManagerWindow({ ...Global.ManagerWindowConfig })
     })
   }
 }

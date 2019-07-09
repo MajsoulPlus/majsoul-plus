@@ -1,23 +1,22 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
+import { app, ipcMain, Menu } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
 import { appDataDir, Global, InitGlobal } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { httpsServer } from './server'
-import { GameWindow, initGameWindow } from './windows/game'
+import { initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
 import bossKey from './utilities/bossKey'
+import screenshot from './utilities/screenshot'
 
 // 初始化全局变量
-// Initialize Global variables
 InitGlobal()
 
 // TODO: 将这一步移至启动游戏后
 // LoadExtension()
 
-// in-process GPU
 // 禁用/启用进程内 GPU 处理
 if (UserConfigs.chromium.isInProcessGpuOn) {
   const osplatform = os.platform()
@@ -37,13 +36,11 @@ if (UserConfigs.chromium.isInProcessGpuOn) {
   }
 }
 
-// Ignore GPU Blacklist
 // 忽略 GPU 黑名单
 if (UserConfigs.chromium.isIgnoreGpuBlacklist) {
   app.commandLine.appendArgument('ignore-gpu-blacklist')
 }
 
-// Disable Hardware Acceleration
 // 禁用 / 启用 硬件加速
 if (UserConfigs.chromium.isHardwareAccelerationDisable) {
   app.disableHardwareAcceleration()
@@ -52,7 +49,6 @@ if (UserConfigs.chromium.isHardwareAccelerationDisable) {
 // Disable certificate validation TLS connections
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-// ignore certificate error
 // 忽略证书错误
 // app.commandLine.appendSwitch('ignore-certificate-errors')
 
@@ -82,29 +78,16 @@ app.on(
   }
 )
 
-app.on('ready', info => {
-  // remove application menu
+app.on('ready', () => {
+  // 清空菜单
   Menu.setApplicationMenu(null)
 
-  // add boss key
-  const windowsStatus = {
-    bosskeyActive: false,
-    game: {
-      visible: false,
-      muted: false
-    },
-    manager: {
-      visible: false,
-      muted: false
-    }
-  }
-
-  // Boss Key
+  // 注册老板键
   bossKey.register()
 
   // ipc listeners
   ipcMain.on('start-game', () => {
-    // Start game.
+    // 资源管理器通知启动游戏
     httpsServer.listen(Global.ServerPort)
     httpsServer.on('error', err => {
       if (err.code === 'EADDRINUSE') {
@@ -122,9 +105,8 @@ app.on('ready', info => {
     }
   })
 
-  ipcMain.on('screenshot', () => {
-    // TODO: Screenshot
-  })
+  // 截图
+  screenshot.register()
 
   // sandbox
   ipcMain.on('sandbox-dirname-request', (event: Electron.Event) => {
@@ -134,7 +116,6 @@ app.on('ready', info => {
     event.returnValue = appDataDir
   })
 
-  // initialize manager window
   // 初始化扩展资源管理器窗口
   initManagerWindow()
   initToolManager()

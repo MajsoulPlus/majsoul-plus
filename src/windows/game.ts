@@ -24,16 +24,8 @@ export function initGameWindow() {
   GameWindow.on('page-title-updated', event => event.preventDefault())
 
   // 监听 console 信息并转发至主进程
-  GameWindow.webContents.on('console-message', (event, level, msg) => {
-    switch (level) {
-      case 'warn':
-        console.warn(msg)
-        break
-      case 'error':
-        console.error(msg)
-        break
-      default:
-    }
+  GameWindow.webContents.on('console-message', (_, level, msg) => {
+    console[level](msg)
   })
 
   GameWindow.on('closed', () => {
