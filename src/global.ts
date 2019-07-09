@@ -71,22 +71,7 @@ export const Global: MajsoulPlus.Global = {
   HttpRemoteDomain: 'http://majsoul.union-game.com/',
   ModsConfigPath: '',
   ExtensionConfigPath: '',
-  ExecutesConfigPath: ((): string => {
-    const p = path.join(appDataDir, 'executesEnabled.json')
-    if (!fs.existsSync(p)) {
-      fs.copyFileSync(
-        path.join(__dirname, 'bin', GlobalPath.ExecutesDir, 'active.json'),
-        p
-      )
-    }
-    const folder = path.join(appDataDir, GlobalPath.ExecutesDir)
-    if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, 'bin', GlobalPath.ExecutesDir), folder, err => {
-        if (err) console.error(err)
-      })
-    }
-    return p
-  })(),
+  ExecutesConfigPath: '',
   ToolConfigPath: '',
   UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
 
@@ -142,59 +127,27 @@ export const Global: MajsoulPlus.Global = {
   },
   HttpGetUserAgent: `Mozilla/5.0 (${os.type()} ${os.release()}; ${os.arch()}) MajsoulPlus/${app.getVersion()} Chrome/${
     process.versions.chrome
-    }`
+  }`
 }
 
 export function InitGlobal() {
-  Global.ModsConfigPath = ((): string => {
-    const p = path.join(appDataDir, 'modsEnabled.json')
-    // 复制 Mod 配置文件
-    if (!fs.existsSync(p)) {
-      fs.copyFileSync(
-        path.join(__dirname, 'bin', GlobalPath.ModsDir, 'active.json'),
-        p
-      )
-    }
-    const folder = path.join(appDataDir, GlobalPath.ModsDir)
+  [
+    Global.ModsConfigPath,
+    Global.ExtensionConfigPath,
+    Global.ExecutesConfigPath,
+    Global.ToolConfigPath
+  ] = [
+    GlobalPath.ModsDir,
+    GlobalPath.ExtensionDir,
+    GlobalPath.ExecutesDir,
+    GlobalPath.ToolsDir
+  ].map(dir => {
+    const folder = path.join(appDataDir, dir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, 'bin', GlobalPath.ModsDir), folder, err => {
+      ncp(path.join(__dirname, 'bin', dir), folder, err => {
         if (err) console.error(err)
       })
     }
-    return p
-  })()
-
-  Global.ExtensionConfigPath = ((): string => {
-    const p = path.join(appDataDir, 'extensions.json')
-    if (!fs.existsSync(p)) {
-      fs.copyFileSync(
-        path.join(__dirname, 'bin', GlobalPath.ExtensionDir, 'extensions.json'),
-        p
-      )
-    }
-    const folder = path.join(appDataDir, GlobalPath.ExtensionDir)
-    if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, 'bin', GlobalPath.ExtensionDir), folder, err => {
-        if (err) console.error(err)
-      })
-    }
-    return p
-  })()
-
-  Global.ToolConfigPath = ((): string => {
-    const p = path.join(appDataDir, 'tools.json')
-    if (!fs.existsSync(p)) {
-      fs.copyFileSync(
-        path.join(__dirname, 'bin', GlobalPath.ToolsDir, 'active.json'),
-        p
-      )
-    }
-    const folder = path.join(appDataDir, GlobalPath.ToolsDir)
-    if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, 'bin', GlobalPath.ToolsDir), folder, err => {
-        console.error(err)
-      })
-    }
-    return p
-  })()
+    return path.join(folder, 'active.json')
+  })
 }
