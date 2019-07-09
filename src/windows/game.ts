@@ -1,15 +1,21 @@
-import { BrowserWindow, Menu, MenuItem, ipcMain } from 'electron'
+import { BrowserWindow, ipcMain, Menu, MenuItem } from 'electron'
+import { AddressInfo } from 'net'
 import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
+import { MajsoulPlus } from '../majsoul_plus'
 import { httpsServer } from '../server'
 import { takeScreenshot } from '../utils-refactor'
 import { initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
-import { AddressInfo } from 'net'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow
+// tslint:disable-next-line
+export const GameWindowStatus: MajsoulPlus.WindowStatus = {
+  visible: false,
+  muted: false
+}
 
 export function initGameWindow() {
   GameWindow = new BrowserWindow(Global.GameWindowConfig)

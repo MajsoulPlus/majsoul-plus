@@ -71,6 +71,7 @@ declare namespace MajsoulPlus {
     ToolsDir: string
     ExecutesDir: string
   }
+  WindowStatus
 
   /**
    * Common Metadata
@@ -146,5 +147,10 @@ declare namespace MajsoulPlus {
   export interface ToolConfig extends Metadata {
     index?: string
     windowOptions: BrowserWindowConstructorOptions
+  }
+
+  export interface WindowStatus {
+    visible: boolean
+    muted: boolean
   }
 }

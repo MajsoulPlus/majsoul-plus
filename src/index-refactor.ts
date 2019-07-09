@@ -2,11 +2,13 @@ import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
-import { appDataDir, InitGlobal, Global } from './global'
+import { appDataDir, Global, InitGlobal } from './global'
+import { MajsoulPlus } from './majsoul_plus'
+import { httpsServer } from './server'
 import { GameWindow, initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
-import { httpsServer } from './server'
+import bossKey from './utilities/bossKey'
 
 // 初始化全局变量
 // Initialize Global variables
@@ -42,6 +44,7 @@ if (UserConfigs.chromium.isIgnoreGpuBlacklist) {
 }
 
 // Disable Hardware Acceleration
+// 禁用 / 启用 硬件加速
 if (UserConfigs.chromium.isHardwareAccelerationDisable) {
   app.disableHardwareAcceleration()
 }
@@ -95,50 +98,9 @@ app.on('ready', info => {
       muted: false
     }
   }
-  globalShortcut.register('Alt+X', () => {
-    windowsStatus.bosskeyActive = !windowsStatus.bosskeyActive
-    if (windowsStatus.bosskeyActive) {
-      const hideAll = (
-        window: BrowserWindow,
-        option: {
-          visible: boolean
-          muted: boolean
-        }
-      ) => {
-        if (window) {
-          option.visible = window.isVisible()
-          option.muted = ManagerWindow.webContents.isAudioMuted()
-          window.webContents.on('crashed', e => {
-            app.relaunch()
-            app.quit()
-          })
 
-          window.hide()
-          window.webContents.setAudioMuted(true)
-        }
-      }
-
-      // backup window information & hide window
-      hideAll(ManagerWindow, windowsStatus.manager)
-      hideAll(GameWindow, windowsStatus.game)
-    } else {
-      const showAll = (
-        window: BrowserWindow,
-        option: { visible: boolean; muted: boolean }
-      ) => {
-        if (window) {
-          if (option.visible) {
-            window.show()
-          }
-          window.webContents.setAudioMuted(option.muted)
-        }
-      }
-
-      // reopen windows
-      showAll(ManagerWindow, windowsStatus.manager)
-      showAll(GameWindow, windowsStatus.game)
-    }
-  })
+  // Boss Key
+  bossKey.register()
 
   // ipc listeners
   ipcMain.on('start-game', () => {

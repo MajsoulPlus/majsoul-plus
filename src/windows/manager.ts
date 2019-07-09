@@ -6,9 +6,15 @@ import {
 import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
+import { MajsoulPlus } from '../majsoul_plus'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
+// tslint:disable-next-line
+export const ManagerWindowStatus: MajsoulPlus.WindowStatus = {
+  visible: false,
+  muted: false
+}
 
 export function initManagerWindow() {
   const config: BrowserWindowConstructorOptions = {
