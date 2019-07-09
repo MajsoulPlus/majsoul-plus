@@ -919,13 +919,6 @@ ejs@^2.6.1:
   resolved "http://registry.npm.taobao.org/ejs/download/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
   integrity sha1-SY7A1JVlWrxvI81hho2SZGQHGqA=
 
-electron-better-ipc@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npm.taobao.org/electron-better-ipc/download/electron-better-ipc-0.3.0.tgz#e59e2f00195d4391c8c896a557a226b4ffc72fbd"
-  integrity sha1-5Z4vABldQ5HIyJalV6ImtP/HL70=
-  dependencies:
-    type-fest "^0.3.1"
-
 electron-builder@^20.40.2:
   version "20.40.2"
   resolved "https://registry.npm.taobao.org/electron-builder/download/electron-builder-20.40.2.tgz#434751bbb57be17513eb501848a52d2573a307bb"
@@ -3251,11 +3244,6 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "http://registry.npm.taobao.org/tweetnacl/download/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
-
-type-fest@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.npm.taobao.org/type-fest/download/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
-  integrity sha1-Y9ANIE4FlHT+Xht8ARESu9HcKeE=
 
 type-is@^1.6.16, type-is@~1.6.16:
   version "1.6.16"
