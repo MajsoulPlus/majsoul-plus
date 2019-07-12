@@ -1,13 +1,13 @@
+import * as Ajv from 'ajv'
 import * as fs from 'fs'
 import * as compose from 'koa-compose'
 import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { GameWindow } from '../windows/game'
 import { fillObject } from '../utils'
+import { GameWindow } from '../windows/game'
 import { defaultExtension } from './extension'
-import * as Ajv from 'ajv'
 import * as latestSchema from './schema/latest.json'
 
 class MajsoulPlusExtensionManager {
@@ -128,8 +128,8 @@ class MajsoulPlusExtensionManager {
 
     // preview image not found
     if (
-      !fs.existsSync(extension.preview) ||
-      !fs.statSync(extension.preview).isFile()
+      !fs.existsSync(path.resolve(folder, extension.preview)) ||
+      !fs.statSync(path.resolve(folder, extension.preview)).isFile()
     ) {
       console.warn(
         `warning on loading extension ${ext}: preview image not found`

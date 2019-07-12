@@ -129,8 +129,8 @@ class ResourcePackManager {
 
     // preview image not found
     if (
-      !fs.existsSync(resourcepack.preview) ||
-      !fs.statSync(resourcepack.preview).isFile()
+      !fs.existsSync(path.resolve(folder, resourcepack.preview)) ||
+      !fs.statSync(path.resolve(folder, resourcepack.preview)).isFile()
     ) {
       console.warn(
         `warning on loading resourcepack ${id}: preview image not found`
