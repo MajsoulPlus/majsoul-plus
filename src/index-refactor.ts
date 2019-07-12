@@ -4,16 +4,20 @@ import * as path from 'path'
 import { UserConfigs } from './config'
 import { appDataDir, Global, InitGlobal } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { httpsServer } from './server'
+import { httpsServer, LoadServer } from './server'
 import { initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
 import bossKey from './utilities/bossKey'
 import screenshot from './utilities/screenshot'
 import { LoadExtension } from './extension/extension'
+import { LoadResourcePack } from './resourcepack/resourcepack'
 
 // 初始化全局变量
 InitGlobal()
+
+// 加载资源包
+LoadResourcePack()
 
 // TODO: 将这一步移至启动游戏后
 LoadExtension()
@@ -89,6 +93,7 @@ app.on('ready', () => {
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
     // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
+    LoadServer()
     httpsServer.listen(Global.ServerPort)
     httpsServer.on('error', err => {
       if (err.code === 'EADDRINUSE') {

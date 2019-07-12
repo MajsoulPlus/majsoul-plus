@@ -45,6 +45,7 @@ declare namespace MajsoulPlus {
     EXTEND_RES_KEYWORD: string
     RemoteDomain: string
     HttpRemoteDomain: string
+    ResourcePackConfigPath: string
     ExtensionConfigPath: string
     ExecutesConfigPath: string
     ToolConfigPath: string
@@ -65,6 +66,7 @@ declare namespace MajsoulPlus {
 
   export interface GlobalPath {
     LocalDir: string
+    ResourcePackDir: string
     ExtensionDir: string
     ToolsDir: string
     ExecutesDir: string
@@ -87,6 +89,12 @@ declare namespace MajsoulPlus {
    */
   export interface ResourcePack extends Metadata {
     dependencies?: { [key: string]: string }
+    replace: string | ResourcePackReplaceEntry[]
+  }
+
+  export interface ResourcePackReplaceEntry {
+    from: string | string[]
+    to: string
   }
 
   /**
