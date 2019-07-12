@@ -26,7 +26,7 @@ export function LoadResourcePack() {
   // TODO: Tool to convert old files, but not written in new code
   // TODO: Toposort for extension dependencies
   const enabled: string[] = JSON.parse(
-    fs.readFileSync(Global.ExtensionConfigPath, {
+    fs.readFileSync(Global.ResourcePackConfigPath, {
       encoding: 'utf-8'
     })
   )

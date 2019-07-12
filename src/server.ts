@@ -22,10 +22,10 @@ const router = new Router()
 // tslint:disable-next-line
 export const Server = new Koa()
 
-// Resource Packs
-resourcePackManager.addRouter(Server, router)
-
 export function LoadServer() {
+  // Resource Packs
+  resourcePackManager.register(Server, router)
+
   // TODO: Load extensions here
   Server.use(async (ctx, next) => {
     await next()
@@ -33,7 +33,6 @@ export function LoadServer() {
 
   // Routers
   Server.use(router.routes())
-  Server.use(router.allowedMethods())
 
   Server.use(async (ctx, next) => {
     const originalUrl = ctx.request.originalUrl
@@ -61,7 +60,7 @@ export function LoadServer() {
           encrypt && !isRoutePath
         )
         ctx.res.statusCode = remoteSource.res.status
-        if (!isRoutePath) {
+        if (!isRoutePath && remoteSource.res.status.toString()[0] !== '4') {
           writeFile(localURI, remoteSource.data)
         }
         allData = remoteSource.data
