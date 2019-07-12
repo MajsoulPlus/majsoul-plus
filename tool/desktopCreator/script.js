@@ -1,37 +1,34 @@
-/**
- * @type {HTMLCanvasElement}
- */
-const canvas = document.getElementById("canvas")
-const context = canvas.getContext("2d")
-const darknessRange = document.getElementById("darknessRange")
-const selectImg = document.getElementById("selectImg")
-const saveAndInstall = document.getElementById("saveAndInstall")
+const canvas = document.getElementById('canvas')
+const context = canvas.getContext('2d')
+const darknessRange = document.getElementById('darknessRange')
+const selectImg = document.getElementById('selectImg')
+const saveAndInstall = document.getElementById('saveAndInstall')
 
-const canvasPreview = document.createElement("canvas")
+const canvasPreview = document.createElement('canvas')
 canvasPreview.width = canvasPreview.height = 512
-const contextPreview = canvasPreview.getContext("2d")
+const contextPreview = canvasPreview.getContext('2d')
 
 const drawView = event => {
   const file = selectImg.files[0]
-  if (typeof file === "undefined" || file.size <= 0) {
+  if (typeof file === 'undefined' || file.size <= 0) {
     return
   }
   const fileReader = new FileReader()
   fileReader.readAsDataURL(file)
-  fileReader.addEventListener("load", event => {
+  fileReader.addEventListener('load', event => {
     const fileBlobUrl = fileReader.result
     const img = new Image()
     img.src = fileBlobUrl
     const imgDesktopBorder = new Image()
-    imgDesktopBorder.src = "desktopBorder.png"
+    imgDesktopBorder.src = 'desktopBorder.png'
     const imgInner = new Image()
-    imgInner.src = "inner.png"
+    imgInner.src = 'inner.png'
     Promise.all([
-      new Promise(resolve => img.addEventListener("load", resolve)),
+      new Promise(resolve => img.addEventListener('load', resolve)),
       new Promise(resolve =>
-        imgDesktopBorder.addEventListener("load", resolve)
+        imgDesktopBorder.addEventListener('load', resolve)
       ),
-      new Promise(resolve => imgInner.addEventListener("load", resolve))
+      new Promise(resolve => imgInner.addEventListener('load', resolve))
     ]).then(() => {
       context.clearRect(0, 0, canvas.width, canvas.height)
       context.drawImage(
@@ -77,48 +74,48 @@ const drawView = event => {
   })
 }
 
-darknessRange.addEventListener("change", event => {
+darknessRange.addEventListener('change', event => {
   const value = darknessRange.value / 100
   let valueText = value.toString(10)
   if (value === 0 || value === 1) {
-    valueText += ".00"
+    valueText += '.00'
   } else {
-    valueText = valueText.padEnd(4, "0")
+    valueText = valueText.padEnd(4, '0')
   }
-  document.getElementById("darknessRangeText").innerText = valueText
+  document.getElementById('darknessRangeText').innerText = valueText
   drawView(event)
 })
-selectImg.addEventListener("change", drawView)
+selectImg.addEventListener('change', drawView)
 
-saveAndInstall.addEventListener("click", event => {
+saveAndInstall.addEventListener('click', event => {
   const fs = MajsoulPlus.fs
   const path = MajsoulPlus.path
-  const dirName = document.getElementById("dirName").value
-  const name = document.getElementById("name").value
-  const author = document.getElementById("author").value
-  const description = document.getElementById("description").value
-  const modDir = path.join(
+  const dirName = document.getElementById('dirName').value
+  const name = document.getElementById('name').value
+  const author = document.getElementById('author').value
+  const description = document.getElementById('description').value
+  const resDir = path.join(
     MajsoulPlus.__appdata,
-    MajsoulPlus.globalPath.ExtensionDir
+    MajsoulPlus.globalPath.ResourcePackDir
   )
   const stat_dir = (() => {
     try {
-      return fs.statSync(modDir)
+      return fs.statSync(resDir)
     } catch (e) {
       return null
     }
   })()
   if (!stat_dir) {
-    fs.mkdirSync(modDir)
+    fs.mkdirSync(resDir)
   }
 
-  const dirPath = path.join(modDir, dirName)
+  const dirPath = path.join(resDir, dirName)
   if (dirName.length < 4) {
-    alert("文件夹名长度过短")
+    alert('文件夹名长度过短')
     return
   }
   if (name.length === 0) {
-    alert("Mod名称不能为空")
+    alert('资源包名称不能为空')
     return
   }
   const stat = (() => {
@@ -129,41 +126,46 @@ saveAndInstall.addEventListener("click", event => {
     }
   })()
   if (stat) {
-    alert("文件夹名称已存在！")
+    alert('文件夹名称已存在！')
     return
   }
   fs.mkdirSync(dirPath)
-  fs.mkdirSync(path.join(dirPath, "/files"))
-  const modInfo = {
+  fs.mkdirSync(path.join(dirPath, '/assets'))
+  const respInfo = {
+    id: dirName,
+    version: '1.0.0',
     name,
     author,
     description,
-    dir: "/files",
-    preview: "/files/preview.jpg",
+    preview: 'assets/preview.jpg',
+
     replace: [
       {
         from:
-          "/0/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg",
-        to: "/Table_Dif.jpg"
+          'scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg',
+        to: 'Table_Dif.jpg'
       },
       {
-        from: "/0/[^/]+/myres2/tablecloth/tablecloth_default/preview.jpg",
-        to: "/preview.jpg"
+        from: 'myres2/tablecloth/tablecloth_default/preview.jpg',
+        to: 'preview.jpg'
       }
     ]
   }
-  fs.writeFileSync(path.join(dirPath, "mod.json"), JSON.stringify(modInfo))
+  fs.writeFileSync(
+    path.join(dirPath, 'resourcepack.json'),
+    JSON.stringify(respInfo)
+  )
   const desktopData = canvas
-    .toDataURL("image/jpeg", 1)
-    .replace(/^data:image\/\w+;base64,/, "")
+    .toDataURL('image/jpeg', 1)
+    .replace(/^data:image\/\w+;base64,/, '')
   const previewData = canvasPreview
-    .toDataURL("image/jpeg")
-    .replace(/^data:image\/\w+;base64,/, "")
+    .toDataURL('image/jpeg')
+    .replace(/^data:image\/\w+;base64,/, '')
   Promise.all([
     new Promise(resolve =>
       fs.writeFile(
-        path.join(dirPath, "/files", "Table_Dif.jpg"),
-        Buffer.from(desktopData, "base64"),
+        path.join(dirPath, '/assets', 'Table_Dif.jpg'),
+        Buffer.from(desktopData, 'base64'),
         err => {
           if (err) {
             console.warn(err)
@@ -175,8 +177,8 @@ saveAndInstall.addEventListener("click", event => {
     ),
     new Promise(resolve =>
       fs.writeFile(
-        path.join(dirPath, "/files", "preview.jpg"),
-        Buffer.from(previewData, "base64"),
+        path.join(dirPath, 'assets', 'preview.jpg'),
+        Buffer.from(previewData, 'base64'),
         err => {
           if (err) {
             console.warn(err)
@@ -187,6 +189,6 @@ saveAndInstall.addEventListener("click", event => {
       )
     )
   ]).then(() => {
-    alert("已保存！\n请刷新模组后启用")
+    alert('已保存！\n请刷新资源包列表后启用')
   })
 })
