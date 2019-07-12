@@ -2,8 +2,8 @@ import * as electron from 'electron'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { ncp } from 'ncp'
 import { MajsoulPlus } from './majsoul_plus'
+import { copyFolder } from './utils'
 
 // 提供 app模块
 const app = electron.app ? electron.app : electron.remote.app
@@ -131,7 +131,8 @@ export const Global: MajsoulPlus.Global = {
 }
 
 export function InitGlobal() {
-  [
+  const promises = []
+  ;[
     Global.ResourcePackConfigPath,
     Global.ExtensionConfigPath,
     Global.ExecutesConfigPath,
@@ -144,10 +145,14 @@ export function InitGlobal() {
   ].map(dir => {
     const folder = path.join(appDataDir, dir)
     if (!fs.existsSync(folder)) {
-      ncp(path.join(__dirname, 'bin', dir), folder, err => {
-        if (err) console.error(err)
-      })
+      promises.push(
+        copyFolder(path.join(__dirname, 'bin', dir), folder).catch(err =>
+          console.error(err)
+        )
+      )
     }
     return path.join(folder, 'active.json')
   })
+
+  return Promise.all(promises)
 }

@@ -2,25 +2,24 @@ import { app, ipcMain, Menu } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
+import { LoadExtension } from './extension/extension'
 import { appDataDir, Global, InitGlobal } from './global'
-import { MajsoulPlus } from './majsoul_plus'
+import { LoadResourcePack } from './resourcepack/resourcepack'
 import { httpsServer, LoadServer } from './server'
+import bossKey from './utilities/bossKey'
+import screenshot from './utilities/screenshot'
 import { initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
-import bossKey from './utilities/bossKey'
-import screenshot from './utilities/screenshot'
-import { LoadExtension } from './extension/extension'
-import { LoadResourcePack } from './resourcepack/resourcepack'
 
 // 初始化全局变量
-InitGlobal()
+InitGlobal().then(() => {
+  // 加载资源包
+  LoadResourcePack()
 
-// 加载资源包
-LoadResourcePack()
-
-// TODO: 将这一步移至启动游戏后
-LoadExtension()
+  // TODO: 将这一步移至启动游戏后
+  LoadExtension()
+})
 
 // 禁用/启用进程内 GPU 处理
 if (UserConfigs.chromium.isInProcessGpuOn) {

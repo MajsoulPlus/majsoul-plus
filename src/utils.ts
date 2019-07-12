@@ -2,6 +2,7 @@ import * as AdmZip from 'adm-zip'
 import * as childProcess from 'child_process'
 import { WebContents } from 'electron'
 import * as fs from 'fs'
+import { ncp } from 'ncp'
 import * as path from 'path'
 import { Global, GlobalPath } from './global'
 import { AudioPlayer } from './windows/audioPlayer'
@@ -256,4 +257,16 @@ export function zipDir(from: string, to: string) {
   zip.addLocalFolder(from, path.basename(from))
   zip.writeZip(to)
   return to
+}
+
+export function copyFolder(from: string, to: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    ncp(from, to, err => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
 }
