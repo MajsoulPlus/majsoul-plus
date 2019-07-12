@@ -89,7 +89,7 @@ declare namespace MajsoulPlus {
    */
   export interface ResourcePack extends Metadata {
     dependencies?: { [key: string]: string }
-    replace: string | ResourcePackReplaceEntry[]
+    replace: Array<string | ResourcePackReplaceEntry>
   }
 
   export interface ResourcePackReplaceEntry {

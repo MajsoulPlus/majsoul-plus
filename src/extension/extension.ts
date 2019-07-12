@@ -3,7 +3,6 @@ import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { ExtensionManager } from './manager'
 import { ipcMain, Event } from 'electron'
-import { ManagerWindow } from '../windows/manager'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
@@ -47,7 +46,7 @@ export function LoadExtension() {
 
   // Register ipcMain
   ipcMain.on('extension-list', (event: Event) => {
-    event.returnValue = enabled
+    event.returnValue = []
   })
 
   ipcMain.on('extension-detail', (event: Event) => {

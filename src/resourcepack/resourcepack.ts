@@ -4,9 +4,9 @@ import { MajsoulPlus } from '../majsoul_plus'
 import resourcePackmanager from './manager'
 
 export const defaultResourcePack: MajsoulPlus.ResourcePack = {
-  id: 'sample',
-  version: '1.0.0',
-  name: 'sample_pack',
+  id: 'majsoul_plus',
+  version: '2.0.0',
+  name: 'Majsoul Plus',
   author: 'Majsoul Plus Team',
   description: 'No description provided.',
   preview: 'preview.png',
@@ -18,13 +18,10 @@ export const defaultResourcePack: MajsoulPlus.ResourcePack = {
 Object.freeze(defaultResourcePack)
 
 export function LoadResourcePack() {
-  // Load from config file
+  // 从配置文件(active.json) 加载资源包
+  // 配置文件中只存储需要加载的资源包的 ID
+  // 详细的数据保存在各资源包的 resourcepack.json 内
 
-  // Config file should only save extension folder name
-  // Detailed setting should be read from dedicated files
-
-  // TODO: Tool to convert old files, but not written in new code
-  // TODO: Toposort for extension dependencies
   const enabled: string[] = JSON.parse(
     fs.readFileSync(Global.ResourcePackConfigPath, {
       encoding: 'utf-8'

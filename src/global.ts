@@ -62,7 +62,7 @@ export const RemoteDomains = {
 
 // tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
-  version: '1.12.0-beta.3',
+  version: '2.0.0',
   ServerPort: 8887,
   // PIPE_PORT: 8888,
   XOR_KEY: 73,

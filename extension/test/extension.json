@@ -4,6 +4,6 @@
   "name": "test",
   "author": ["a", "b"],
   "dependencies": {
-    "majsoul_plus": "^1.19.0"
+    "majsoul_plus": "^2.0.0"
   }
 }

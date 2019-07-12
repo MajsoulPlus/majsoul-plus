@@ -1,7 +1,6 @@
 /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 
 const { Network } = require('./utils/Network')
-const { Util } = require('..//utils')
 const {
   remote: { app },
   shell
@@ -77,10 +76,10 @@ class Update {
     const localVersion = await this._getLocalVersion()
     const remoteVersionInfo = await this._getRemoteVersionInfo()
     const { remoteVersion, body, time, url } = remoteVersionInfo
-    const shouldUpdate = Util.compareVersion(remoteVersion, localVersion)
-    if (shouldUpdate) {
-      this._renderUpdateHint({ remoteVersion, localVersion, time, body, url })
-    }
+    // const shouldUpdate = Util.compareVersion(remoteVersion, localVersion)
+    // if (shouldUpdate) {
+    //   this._renderUpdateHint({ remoteVersion, localVersion, time, body, url })
+    // }
     // TODO
     // https://github.com/MajsoulPlus/majsoul-plus/blob/abe443fd809f1941b2ddcd2765f6b30bc1e21d12/manager/manager.js#L829
     // 重写 自动更新 内容

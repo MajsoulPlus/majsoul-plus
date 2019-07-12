@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ext-latest",
-  "description": "MajsoulPlus Extension describe file schema",
+  "title": "resourcepack",
+  "description": "MajsoulPlus Resource Pack describe file schema",
   "type": "object",
   "definitions": {
     "semver": {
@@ -29,6 +29,9 @@
     "description": {
       "type": "string"
     },
+    "preview": {
+      "type": "string"
+    },
     "dependencies": {
       "type": "object",
       "patternProperties": {
@@ -37,15 +40,31 @@
         }
       }
     },
-    "preview": {
-      "type": "string"
-    },
-    "entry": {
-      "type": ["string", "array"],
-      "pattern": "^(.+)\\.js$",
+    "replace": {
+      "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^(.+)\\.js$"
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "oneOf": [
+                  { "type": "string" },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "to": {
+                "type": "string"
+              }
+            }
+          }
+        ]
       }
     }
   },

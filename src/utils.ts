@@ -41,7 +41,7 @@ export function updateObject(toUpdate: {}, latest: {}): {} {
 export function fillObject(toFill: {}, latest: {}): {} {
   for (const key in latest) {
     if (typeof toFill[key] === 'object' && typeof latest[key] === 'object') {
-      updateObject(toFill[key], latest[key])
+      fillObject(toFill[key], latest[key])
     } else if (toFill[key] === undefined) {
       if (typeof latest[key] === 'object') {
         toFill[key] = {}
