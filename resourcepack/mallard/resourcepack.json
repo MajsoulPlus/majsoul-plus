@@ -1,0 +1,29 @@
+{
+  "id": "mallard",
+  "version": "1.0.0",
+  "name": "千织普通改绿头鸭",
+  "author": "Handle",
+  "description": "图片来源pixabay，由Capri23auto上传，CC0协议\n这是一个Mod示范，用途为将普通千织立绘和头像改为绿头鸭。",
+
+  "dependencies": {
+    "majsoul": "^v0.5.1w",
+    "majsoul_plus": "^2.0.0"
+  },
+  "replace": [
+    {
+      "from": [
+        "audio/sound/qianzhi/lobby_normal1.mp3",
+        "audio/sound/qianzhi/lobby_normal2.mp3",
+        "audio/sound/qianzhi/lobby_normal3.mp3",
+        "audio/sound/qianzhi/lobby_normal4.mp3",
+        "audio/sound/qianzhi/lobby_normal5.mp3"
+      ],
+      "to": "audio/quack.mp3"
+    },
+    "extendRes/charactor/qianzhi/bighead.png",
+    "extendRes/charactor/qianzhi/full.png",
+    "extendRes/charactor/qianzhi/half.png",
+    "extendRes/charactor/qianzhi/smallhead.png",
+    "extendRes/charactor/qianzhi/waitingroom.png"
+  ]
+}
