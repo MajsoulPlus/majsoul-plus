@@ -6,7 +6,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, GlobalPath } from '../global.js'
 import { MajsoulPlus } from '../majsoul_plus'
-import { fillObject, readFile } from '../utils.js'
+import { fillObject, readFile, XOR, isEncryptRes } from '../utils.js'
 import { getRemoteSource } from '../utils/main'
 import { defaultResourcePack } from './resourcepack.js'
 import * as schema from './schema.json'
@@ -155,27 +155,39 @@ class ResourcePackManager {
     )
 
     // 为每一个资源包分配一个路径
-    this.resourcePacks.forEach((value, pack) => {
+    this.resourcePacks.forEach((pack, packName) => {
       router.get(
         // TODO: 兼容非国服 将此处 true 改为判断是否国服
-        `${true ? '/0' : ''}/majsoul_plus/resourcepack/${pack}/*`,
+        `${true ? '/0' : ''}/majsoul_plus/resourcepack/${packName}/*`,
         async (ctx, next) => {
-          const queryPath = ctx.path.substr(
-            `${true ? '/0' : ''}/majsoul_plus/resourcepack/${pack}/`.length
+          let queryPath = ctx.path.substr(
+            `${true ? '/0' : ''}/majsoul_plus/resourcepack/${packName}/`.length
           )
+          const encrypted = isEncryptRes(queryPath)
+
+          // 检测 from 中是否存在 queryPath
+          // 有则重定向到对应的 to
+          for (const rep of pack.replace) {
+            if (typeof rep === 'object') {
+              if (rep.from.indexOf(queryPath) !== -1) {
+                queryPath = rep.to
+                break
+              }
+            }
+          }
 
           try {
             const content = await readFile(
               path.resolve(
                 appDataDir,
                 GlobalPath.ResourcePackDir,
-                pack,
+                packName,
                 'assets',
                 queryPath
               )
             )
             ctx.response.status = 200
-            ctx.body = content
+            ctx.body = encrypted ? XOR(content as Buffer) : content
           } catch (e) {
             ctx.response.status = 404
             ctx.body = undefined
@@ -201,6 +213,24 @@ class ResourcePackManager {
         } else {
           ctx.res.statusCode = remote.res.status
           const resMap = JSON.parse(remote.data as string)
+
+          this.resourcePacks.forEach(pack => {
+            pack.replace.forEach(rep => {
+              if (typeof rep === 'string') {
+                resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+              } else {
+                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+                const from =
+                  typeof repo.from === 'string' ? [repo.from] : repo.from
+
+                from.forEach(rep => {
+                  resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
+                    pack.id
+                  }`
+                })
+              }
+            })
+          })
           ctx.body = JSON.stringify(resMap, null, 2)
         }
       }
