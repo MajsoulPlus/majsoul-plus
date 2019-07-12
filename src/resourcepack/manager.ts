@@ -6,7 +6,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, GlobalPath } from '../global.js'
 import { MajsoulPlus } from '../majsoul_plus'
-import { fillObject } from '../utils.js'
+import { fillObject, readFile } from '../utils.js'
 import { getRemoteSource } from '../utils/main'
 import { defaultResourcePack } from './resourcepack.js'
 import * as schema from './schema.json'
@@ -155,14 +155,31 @@ class ResourcePackManager {
     )
 
     // 为每一个资源包分配一个路径
-    this.resourcePacks.forEach((value, key) => {
+    this.resourcePacks.forEach((value, pack) => {
       router.get(
         // TODO: 兼容非国服 将此处 true 改为判断是否国服
-        `${true ? '/0' : ''}/majsoul_plus/resourcepack/${key}/*`,
+        `${true ? '/0' : ''}/majsoul_plus/resourcepack/${pack}/*`,
         async (ctx, next) => {
-          ctx.response.status = 200
-          ctx.body = ctx.path
-          // await next()
+          const queryPath = ctx.path.substr(
+            `${true ? '/0' : ''}/majsoul_plus/resourcepack/${pack}/`.length
+          )
+
+          try {
+            const content = await readFile(
+              path.resolve(
+                appDataDir,
+                GlobalPath.ResourcePackDir,
+                pack,
+                'assets',
+                queryPath
+              )
+            )
+            ctx.response.status = 200
+            ctx.body = content
+          } catch (e) {
+            ctx.response.status = 404
+            ctx.body = undefined
+          }
         }
       )
     })
