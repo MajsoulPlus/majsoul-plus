@@ -1,23 +1,23 @@
-const { LeftPanel: panel } = require("./ui/Panel")
-const { Ping } = require("./utils/Ping")
-const Update = require("./Update")
-const setting = require("./pages/Setting").default
-const about = require("./pages/About").default
+const { LeftPanel: panel } = require('./ui/Panel')
+const { Ping } = require('./utils/Ping')
+const Update = require('./Update')
+const setting = require('./pages/Setting').default
+const about = require('./pages/About').default
 
 const {
   ipcRenderer,
   remote: { dialog, app }
-} = require("electron")
-const AdmZip = require("adm-zip")
-const path = require("path")
-const os = require("os")
+} = require('electron')
+const AdmZip = require('adm-zip')
+const path = require('path')
+const os = require('os')
 
-const { Extensions } = require("./pages/Extensions")
-const Executes = require("./Executes")
-const { Tools } = require("./pages/Tools")
+const { Extensions } = require('./pages/Extensions')
+const Executes = require('./Executes')
+const { Tools } = require('./pages/Tools')
 
-const { appDataDir, Global, GlobalPath } = require("..//global")
-const { i18n } = require("..//i18nInstance")
+const { appDataDir, Global, GlobalPath } = require('..//global')
+const { i18n } = require('..//i18nInstance')
 
 class Manager {
   constructor(options) {
@@ -84,9 +84,9 @@ class Manager {
       toolRootDir
     } = this._getRootDirs()
     const map = {
-      ".mspm": extensionRootDir,
-      ".mspe": executeRootDir,
-      ".mspt": toolRootDir
+      '.mspm': extensionRootDir,
+      '.mspe': executeRootDir,
+      '.mspt': toolRootDir
     }
     return map[extname]
   }
@@ -98,10 +98,10 @@ class Manager {
         filters: [
           {
             name: i18n.text.manager.fileTypeMajsoulPlusExtendResourcesPack(),
-            extensions: ["mspm", "mspe", "mspt"]
+            extensions: ['mspm', 'mspe', 'mspt']
           }
         ],
-        properties: ["openFile", "multiSelections"]
+        properties: ['openFile', 'multiSelections']
       },
       filenames => {
         if (filenames && filenames.length) {
@@ -124,45 +124,45 @@ class Manager {
   }
 
   _addEventListener() {
-    const installMod = document.getElementById("installMod")
-    const installExecute = document.getElementById("installExecute")
-    const installTool = document.getElementById("installTool")
-    installMod.addEventListener("click", this._import)
-    installExecute.addEventListener("click", this._import)
-    installTool.addEventListener("click", this._import)
+    const installMod = document.getElementById('installMod')
+    const installExecute = document.getElementById('installExecute')
+    const installTool = document.getElementById('installTool')
+    installMod.addEventListener('click', this._import)
+    installExecute.addEventListener('click', this._import)
+    installTool.addEventListener('click', this._import)
 
-    const editMod = document.getElementById("editMod")
-    editMod.addEventListener("click", this._changeExtensionEditable)
-    const editExecute = document.getElementById("editExecute")
-    editExecute.addEventListener("click", this._changeExecuteEditable)
-    const editTool = document.getElementById("editTool")
-    editTool.addEventListener("click", this._changeToolEditable)
+    const editMod = document.getElementById('editMod')
+    editMod.addEventListener('click', this._changeExtensionEditable)
+    const editExecute = document.getElementById('editExecute')
+    editExecute.addEventListener('click', this._changeExecuteEditable)
+    const editTool = document.getElementById('editTool')
+    editTool.addEventListener('click', this._changeToolEditable)
 
-    window.addEventListener("blur", () => document.body.classList.add("blur"))
-    window.addEventListener("focus", () =>
-      document.body.classList.remove("blur")
+    window.addEventListener('blur', () => document.body.classList.add('blur'))
+    window.addEventListener('focus', () =>
+      document.body.classList.remove('blur')
     )
 
-    const refreshMod = document.getElementById("refreshMod")
-    const refreshExecute = document.getElementById("refreshExecute")
-    const refreshTool = document.getElementById("refreshTool")
-    refreshMod.addEventListener("click", this._loadCards)
-    refreshExecute.addEventListener("click", this._loadCards)
-    refreshTool.addEventListener("click", this._loadCards)
+    const refreshMod = document.getElementById('refreshMod')
+    const refreshExecute = document.getElementById('refreshExecute')
+    const refreshTool = document.getElementById('refreshTool')
+    refreshMod.addEventListener('click', this._loadCards)
+    refreshExecute.addEventListener('click', this._loadCards)
+    refreshTool.addEventListener('click', this._loadCards)
 
-    const launch = document.getElementById("launch")
-    launch.addEventListener("click", this.gameStart)
+    const launch = document.getElementById('launch')
+    launch.addEventListener('click', this.gameStart)
 
-    const closeBtn = document.getElementById("closeBtn")
-    if (os.platform() === "darwin") {
-      closeBtn.className = "close-btn darwin"
+    const closeBtn = document.getElementById('closeBtn')
+    if (os.platform() === 'darwin') {
+      closeBtn.className = 'close-btn darwin'
       // hack close bar
-      const body = document.querySelector("body")
-      body.classList.add("darwin")
-      const closeButton = document.querySelector("body > .close-btn.darwin")
+      const body = document.querySelector('body')
+      body.classList.add('darwin')
+      const closeButton = document.querySelector('body > .close-btn.darwin')
       body.removeChild(closeButton)
     }
-    closeBtn.addEventListener("click", window.close)
+    closeBtn.addEventListener('click', window.close)
   }
 
   _loadCards() {
@@ -184,20 +184,20 @@ class Manager {
   }
 
   initRPC() {
-    ipcRenderer.on("changeConfig", (_, data) => {
-      let obj = JSON.parse(data)
+    ipcRenderer.on('change-config', (_, data) => {
+      let obj = data
       this.options.userConfig[obj.mainKey][obj.key] = obj.value
     })
 
-    ipcRenderer.on("saveConfig", () => {
+    ipcRenderer.on('save-config', () => {
       this._saveSettings()
-      ipcRenderer.send("close-manager")
+      ipcRenderer.send('close-manager')
     })
   }
 
   init() {
     this._update.checkUpdate()
-    new Ping("zh").init()
+    new Ping('zh').init()
     panel.init()
     setting.init()
     this.initRPC()
@@ -211,13 +211,13 @@ class Manager {
   gameStart() {
     this._saveSettings()
     setting.save()
-    ipcRenderer.send("start-game")
+    ipcRenderer.send('start-game')
   }
 
   // add a function after init to run
   extend(fun) {
-    if (typeof fun !== "function") {
-      throw new Error("extend accept 1 function as argument")
+    if (typeof fun !== 'function') {
+      throw new Error('extend accept 1 function as argument')
     }
     this._extends.push(fun)
   }
@@ -225,15 +225,15 @@ class Manager {
 
 const userDataPaths = [appDataDir]
 
-const springFestivalExtend = require("./extra/springFestivalTheme")
-const darkMode = require("./extra/darkMode")
+const springFestivalExtend = require('./extra/springFestivalTheme')
+const darkMode = require('./extra/darkMode')
 
 const options = {
   userConfig: (() => {
     try {
       return require(Global.UserConfigPath)
     } catch (error) {
-      return require("../Configs-user.json")
+      return require('../Configs-user.json')
     }
   })(),
   extensionRootDirs: userDataPaths.map(root =>

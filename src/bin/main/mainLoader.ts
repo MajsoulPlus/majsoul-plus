@@ -206,7 +206,7 @@ const sandbox = new Proxy(
 )
 
 let screenshotCounter = 0
-let screenshotTimer
+let screenshotTimer: NodeJS.Timeout
 const showScreenshotLabel = src => {
   const screenshotImage: HTMLImageElement = document.querySelector(
     '#screenshotImage'

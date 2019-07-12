@@ -49,7 +49,7 @@ export function initManagerWindow() {
   ManagerWindow.once('close', event => {
     event.preventDefault()
     ManagerWindow.hide()
-    event.sender.send('saveConfig')
+    event.sender.send('save-config')
   })
 
   ipcMain.on('close-manager', () => {
