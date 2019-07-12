@@ -44,7 +44,7 @@
 
 ## 从源码启动
 
-请确保 Git, node.js 和 yarn 已经被正确安装
+请确保 Git, Node.js 和 yarn 已经被正确安装
 
 1. `git clone git@github.com:MajsoulPlus/majsoul-plus-client.git`
 2. `cd majsoul-plus-client`
@@ -52,6 +52,7 @@
 4. `yarn start`
 
 如果你使用的是 ArchLinux 系，注意要在 `yarn start` 之前安装 `gconf` 才能正常运行：
+
 ```bash
 sudo pacman -S gconf
 ```
@@ -64,9 +65,9 @@ sudo pacman -S gconf
 
 ## 制作模组
 
-- 模组 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/CourseMod)
-- 插件 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/CourseExecute)
-- 工具 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/CourseTool)
+- 资源包 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/v2_resourcepack)
+- 扩展 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/v2_extension)
+- 工具 [浏览 Wiki](https://github.com/MajsoulPlus/majsoul-plus/wiki/v2_tool)
 
 ## 协助翻译
 

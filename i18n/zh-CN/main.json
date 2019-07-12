@@ -1,7 +1,7 @@
 {
   "programName": "雀魂Plus",
-  "mod": "模组",
-  "execute": "插件",
+  "resourcepack": "资源包",
+  "extension": "扩展",
   "tool": "工具",
   "setting": "设置",
   "about": "关于",

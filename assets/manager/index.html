@@ -15,21 +15,23 @@
       <!-- 左侧选单 -->
       <div class="left-panel" id="leftPanel">
         <ul>
-          <li data-target="modPage" data-i18n="main.mod">模组</li>
-          <li data-target="executePage" data-i18n="main.execute">插件</li>
+          <li data-target="resourcepackPage" data-i18n="main.resourcepack">
+            资源包
+          </li>
+          <li data-target="extensionPage" data-i18n="main.extension">扩展</li>
           <li data-target="toolPage" data-i18n="main.tool">工具箱</li>
           <li data-target="settingPage" data-i18n="main.setting">设置</li>
           <li data-target="aboutPage" data-i18n="main.about">关于</li>
         </ul>
       </div>
 
-      <!-- 模组页面 -->
-      <section data-name="modPage">
+      <!-- 资源包页面 -->
+      <section data-name="resourcepackPage">
         <button id="refreshMod" class="big-btn refresh-btn"></button>
         <button id="installMod" class="big-btn install-btn"></button>
         <button id="editMod" class="big-btn edit-btn"></button>
         <div id="modInfos" class="info-cards">
-          <article>
+          <!-- <article>
             <img src="" />
             <h3>千织普通改绿头鸭</h3>
             <address>Handle</address>
@@ -39,17 +41,17 @@
             <input type="checkbox" />
             <button id="mod0_export" class="export-btn"></button>
             <button id="mod0_remove" class="remove-btn"></button>
-          </article>
+          </article> -->
         </div>
       </section>
 
       <!-- 插件页面 -->
-      <section data-name="executePage">
+      <section data-name="extensionPage">
         <button id="refreshExecute" class="big-btn refresh-btn"></button>
         <button id="installExecute" class="big-btn install-btn"></button>
         <button id="editExecute" class="big-btn edit-btn"></button>
         <div id="executeInfos" class="info-cards">
-          <article>
+          <!-- <article>
             <img src="" />
             <h3>强制开启语音报番型</h3>
             <address>aoarashi1988</address>
@@ -57,7 +59,7 @@
             <input type="checkbox" />
             <button id="execute0_export" class="export-btn">导出</button>
             <button id="execute0_remove" class="remove-btn">删除</button>
-          </article>
+          </article> -->
         </div>
       </section>
 
@@ -169,7 +171,7 @@
 
     <!-- <script src="./manager.js"></script> -->
     <script>
-      require("./main.js");
+      require('./main.js')
     </script>
   </body>
 </html>

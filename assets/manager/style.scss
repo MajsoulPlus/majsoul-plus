@@ -579,10 +579,10 @@ h1 {
           line-height: 48px;
           color: var(--icon-color);
         }
-        &[data-target='modPage']::before {
+        &[data-target='resourcepackPage']::before {
           content: '';
         }
-        &[data-target='executePage']::before {
+        &[data-target='extensionPage']::before {
           content: '';
           font-size: 16px;
         }
