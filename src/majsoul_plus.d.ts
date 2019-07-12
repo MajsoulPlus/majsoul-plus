@@ -79,30 +79,21 @@ declare namespace MajsoulPlus {
     name?: string
     author?: string | string[]
     description?: string
+    preview?: string
   }
 
   /**
-   * Mod
+   * 资源包(Resource Pack)
    */
-  export interface Mod extends Metadata {
-    dir?: string
-    filesDir?: string
-    preview: string
-    replace: Replace[]
-    execute: Extension
-  }
-
-  export interface Replace {
-    from: string
-    to: string
+  export interface ResourcePack extends Metadata {
+    dependencies?: { [key: string]: string }
   }
 
   /**
-   * Extension
+   * 扩展(Extension)
    */
   export interface Extension extends Metadata {
     dependencies?: { [key: string]: string }
-    preview?: string
     entry?: string | string[]
     sync?: boolean
     executePreferences?: ExtensionPreferences
@@ -139,7 +130,7 @@ declare namespace MajsoulPlus {
   ) => Promise<void>
 
   /**
-   * Tools
+   * 工具(Tools)
    */
   export interface ToolConfig extends Metadata {
     index?: string
