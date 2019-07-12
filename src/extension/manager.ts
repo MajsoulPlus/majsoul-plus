@@ -8,7 +8,7 @@ import { MajsoulPlus } from '../majsoul_plus'
 import { fillObject } from '../utils'
 import { GameWindow } from '../windows/game'
 import { defaultExtension } from './extension'
-import * as latestSchema from './schema/latest.json'
+import * as schema from './schema.json'
 
 class MajsoulPlusExtensionManager {
   private loadedExtensions: { [extension: string]: semver.SemVer } = {}
@@ -58,7 +58,7 @@ class MajsoulPlusExtensionManager {
 
     // JSON Schema
     const ajv = new Ajv({ allErrors: true })
-    const validate = ajv.compile(latestSchema)
+    const validate = ajv.compile(schema)
     const valid = validate(extension)
     if (!valid) {
       console.error(`failed to load extension ${ext}: json schema failed`)

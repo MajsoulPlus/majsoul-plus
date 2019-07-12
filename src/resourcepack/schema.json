@@ -3,19 +3,13 @@
   "title": "resourcepack",
   "description": "MajsoulPlus Resource Pack describe file schema",
   "type": "object",
-  "definitions": {
-    "semver": {
-      "type": "string",
-      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-((0|[1-9]\\d*|\\d*[A-Z-a-z-][\\dA-Za-z-]*)(\\.(0|[1-9]\\d*|\\d*[A-Za-z-][\\dA-Za-z-]*))*))?(\\+([\\dA-Za-z-]+(\\.[\\dA-Za-z-]*)*))?$"
-    }
-  },
   "properties": {
     "id": {
       "type": "string",
       "pattern": "^[_a-zA-Z]+$"
     },
     "version": {
-      "$ref": "#/definitions/semver"
+      "type": "string"
     },
     "name": {
       "type": "string"
