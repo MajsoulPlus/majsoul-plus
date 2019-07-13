@@ -90,7 +90,7 @@ selectImg.addEventListener('change', drawView)
 saveAndInstall.addEventListener('click', event => {
   const fs = MajsoulPlus.fs
   const path = MajsoulPlus.path
-  const dirName = document.getElementById('dirName').value
+  const id = document.getElementById('dirName').value
   const name = document.getElementById('name').value
   const author = document.getElementById('author').value
   const description = document.getElementById('description').value
@@ -109,9 +109,9 @@ saveAndInstall.addEventListener('click', event => {
     fs.mkdirSync(resDir)
   }
 
-  const dirPath = path.join(resDir, dirName)
-  if (dirName.length < 4) {
-    alert('文件夹名长度过短')
+  const dirPath = path.join(resDir, id)
+  if (!id.match(/^[_a-zA-Z]+$/)) {
+    alert('资源包 ID 格式只能含有大小写字母和下划线！')
     return
   }
   if (name.length === 0) {
@@ -132,7 +132,7 @@ saveAndInstall.addEventListener('click', event => {
   fs.mkdirSync(dirPath)
   fs.mkdirSync(path.join(dirPath, '/assets'))
   const respInfo = {
-    id: dirName,
+    id: id,
     version: '1.0.0',
     name,
     author,
@@ -143,11 +143,13 @@ saveAndInstall.addEventListener('click', event => {
       {
         from:
           'scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg',
-        to: 'Table_Dif.jpg'
+        to: 'Table_Dif.jpg',
+        'all-servers': true
       },
       {
         from: 'myres2/tablecloth/tablecloth_default/preview.jpg',
-        to: 'preview.jpg'
+        to: 'preview.jpg',
+        'all-servers': true
       }
     ]
   }
