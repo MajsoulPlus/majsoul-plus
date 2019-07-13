@@ -275,6 +275,15 @@ export async function getRemoteOrCachedFile(
   return ret
 }
 
+export async function fetchAnySite(url: string, encoding = 'binary') {
+  const resp = await fetch(url, {
+    headers: {
+      'User-Agent': Global.HttpGetUserAgent
+    }
+  })
+  return (await resp.buffer()).toString(encoding)
+}
+
 /**
  * 写入本地文件
  */

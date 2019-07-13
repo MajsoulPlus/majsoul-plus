@@ -6,8 +6,14 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { encodeData, fillObject, getRemoteOrCachedFile } from '../utils'
+import {
+  encodeData,
+  fillObject,
+  getRemoteOrCachedFile,
+  fetchAnySite
+} from '../utils'
 import * as schema from './schema.json'
+import { UserConfigs } from '../config'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
@@ -203,11 +209,24 @@ class MajsoulPlusExtensionManager {
     server.use(async (ctx, next) => {
       // 只针对 code.js 进行特殊处理 注入扩展
       const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
+      let prefix = '',
+        postfix: string
       if (path.basename(originalUrl) === 'code.js') {
         const code = await getRemoteOrCachedFile(ctx.request.originalUrl, false)
 
+        // 针对日服的 Yo 对象处理
+        if (UserConfigs.userData.serverToPlay === 1) {
+          const yo = await fetchAnySite(
+            'https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js',
+            'utf-8'
+          )
+
+          prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n\n`
+        }
+
         // TODO: 在 data 前后注入扩展
-        ctx.body = encodeData(code.data)
+        postfix = ''
+        ctx.body = encodeData(prefix + code.data.toString('utf-8') + postfix)
       } else {
         await next()
       }
