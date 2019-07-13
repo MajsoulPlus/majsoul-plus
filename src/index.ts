@@ -1,161 +1,67 @@
-import { app as electronApp, clipboard, dialog, ipcMain } from 'electron'
-import * as express from 'express'
-import * as fs from 'fs'
+import { clipboard, ipcMain } from 'electron'
 import * as https from 'https'
-import * as path from 'path'
-
-const server = express()
 
 import { AddressInfo } from 'net'
-import { Global, GlobalPath } from './global'
-
-// 获取用户数据 %appdata% 路径
-const userDataDir = electronApp.getPath('userData')
-// 获取 Configs 记录的扩展资源路径
-const paths = [GlobalPath.ExecutesDir, GlobalPath.ToolsDir]
-paths
-  .map(dir => path.join(userDataDir, dir))
-  .forEach(dir => !fs.existsSync(dir) && fs.mkdirSync(dir))
+import { Global } from './global'
 
 // 创建一个 https 服务器
-const sererHttps = https.createServer(
-  {
-    key: fs.readFileSync(path.join(__dirname, 'certificate/key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, 'certificate/cert.crt'))
-  },
-  server
-)
+const sererHttps = https.createServer()
 
-const windowControl = {
-  windowMap: { toolsMap: {} },
+const windowMap = {}
 
-  // 读取插件文件夹并返回一个数组
-  // 注意：这个函数同样也会从模组中加载插件
-  _getExecuteScripts: () => {
-    let executeScripts
-    try {
-      const data = fs.readFileSync(Global.ExecutesConfigPath)
-      executeScripts = JSON.parse(data.toString('utf-8'))
-    } catch (error) {
-      console.error(error)
-      executeScripts = []
-    }
-    try {
-      // const data = fs.readFileSync(Global.ModsConfigPath)
-      // const mods = JSON.parse(data.toString('utf-8'))
-      // mods.forEach(mod => {
-      //   if (mod.execute) {
-      //     mod.execute.filesDir = mod.filesDir
-      //     executeScripts.push(mod.execute)
-      //   }
-      // })
-    } catch (error) {
-      console.error(error)
-    }
-    return executeScripts
-  },
-
-  // Electron app ready 事件
-  // 手柄：个人觉得没必要每个事件都抽象化成函数，太绕了……
-  electronReady: () => {
-    return new Promise(resolve => electronApp.once('ready', resolve))
-  },
-
-  // 添加监听器
-  addAppListener: () => {
-    // 游戏宿主窗口消息
-    ipcMain.on('main-loader-message', (evt, ...args) => {
-      if (args && args.length > 0) {
-        switch (args[0]) {
-          // 游戏宿主窗口已创建并初始化完毕，需要加载端口信息
-          case 'main-loader-ready': {
-            windowControl.windowMap['game'].webContents.send(
-              'server-port-load',
-              (sererHttps.address() as AddressInfo).port
-            )
-            break
-          }
-          // 游戏宿主窗口已获知本地服务器端口，需要加载脚本（插件）资源以注入
-          case 'server-port-loaded': {
-            const executeScripts = windowControl._getExecuteScripts()
-            windowControl.windowMap['game'].webContents.send(
-              'executes-load',
-              executeScripts
-            )
-            break
-          }
-          // 游戏宿主窗口已获知插件资源，需要主进程提供 URL 以载入
-          case 'executes-loaded': {
-            const clipboardText = clipboard.readText()
-            if (
-              clipboardText &&
-              // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
-              // TODO: 这里需要适配多服务器
-              clipboardText.includes(Global.RemoteDomain)
-            ) {
-              // FIXME: remove type assertion
-              windowControl.windowMap['game'].webContents.send(
-                'load-url',
-                (new RegExp(
-                  Global.RemoteDomain.replace(/\./g, '\\.') +
-                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
-                ).exec(clipboardText) as string[])[0]
-              )
-            } else if (
-              clipboardText &&
-              // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
-              // TODO: 这里需要适配多服务器
-              // HTTP_REMOTE_DOMAIN 似乎已经被废弃
-              clipboardText.includes(Global.HttpRemoteDomain)
-            ) {
-              windowControl.windowMap['game'].webContents.send(
-                'load-url',
-                (new RegExp(
-                  Global.HttpRemoteDomain.replace(/\./g, '\\.') +
-                    '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
-                ).exec(clipboardText) as string[])[0]
-              )
-            } else {
-              // 加载本地服务器地址
-              // TODO: 这里需要适配多服务器
-              // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
-              windowControl.windowMap['game'].webContents.send(
-                'load-url',
-                `https://localhost:${
-                  (sererHttps.address() as AddressInfo).port
-                }/0/`
-              )
-            }
-            break
-          }
-          // 打开文件弹窗
-          case 'open-file-dialog': {
-            dialog.showOpenDialog(
-              {
-                properties: ['openFile', 'openDirectory']
-              },
-              files => {
-                if (files) {
-                  // 送回所选择的问价内容
-                  evt.sender.send('selected-directory', files)
-                }
-              }
-            )
-            break
-          }
-          default:
-            break
-        }
+ipcMain.on('main-loader-message', (evt, ...args) => {
+  if (args && args.length > 0) {
+    switch (args[0]) {
+      // 游戏宿主窗口已获知本地服务器端口，需要加载脚本（插件）资源以注入
+      case 'server-port-loaded': {
+        const executeScripts = []
+        windowMap['game'].webContents.send('executes-load', executeScripts)
+        break
       }
-    })
-  },
-
-  // 启动雀魂 Plus 程序
-  start: () => {
-    windowControl.electronReady().then(() => {
-      windowControl.addAppListener()
-    })
+      // 游戏宿主窗口已获知插件资源，需要主进程提供 URL 以载入
+      case 'executes-loaded': {
+        const clipboardText = clipboard.readText()
+        if (
+          clipboardText &&
+          // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
+          // TODO: 这里需要适配多服务器
+          clipboardText.includes(Global.RemoteDomain)
+        ) {
+          // FIXME: remove type assertion
+          windowMap['game'].webContents.send(
+            'load-url',
+            (new RegExp(
+              Global.RemoteDomain.replace(/\./g, '\\.') +
+                '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+            ).exec(clipboardText) as string[])[0]
+          )
+        } else if (
+          clipboardText &&
+          // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
+          // TODO: 这里需要适配多服务器
+          // HTTP_REMOTE_DOMAIN 似乎已经被废弃
+          clipboardText.includes(Global.HttpRemoteDomain)
+        ) {
+          windowMap['game'].webContents.send(
+            'load-url',
+            (new RegExp(
+              Global.HttpRemoteDomain.replace(/\./g, '\\.') +
+                '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
+            ).exec(clipboardText) as string[])[0]
+          )
+        } else {
+          // 加载本地服务器地址
+          // TODO: 这里需要适配多服务器
+          // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
+          windowMap['game'].webContents.send(
+            'load-url',
+            `https://localhost:${(sererHttps.address() as AddressInfo).port}/0/`
+          )
+        }
+        break
+      }
+      default:
+        break
+    }
   }
-}
-// 立即启动程序
-windowControl.start()
+})

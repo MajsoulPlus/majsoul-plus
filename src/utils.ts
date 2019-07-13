@@ -3,7 +3,7 @@ import * as childProcess from 'child_process'
 import fetch, { Response } from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
-import { Global, GlobalPath } from './global'
+import { Global, GlobalPath, appDataDir } from './global'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -212,7 +212,7 @@ export function getRemoteUrl(originalUrl: string): string {
 export function getLocalURI(
   originalUrl: string,
   isPath: boolean,
-  dirBase = path.join(__dirname, GlobalPath.LocalDir)
+  dirBase = path.join(appDataDir, GlobalPath.LocalDir)
 ): string {
   const indexOfProps = originalUrl.indexOf('?')
   originalUrl = originalUrl.substring(
