@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import * as path from 'path'
 import { Global, GlobalPath } from '../../global'
-import { i18n } from '../../i18nInstance'
+import i18n from '../../i18n'
 import { MajsoulPlus } from '../../majsoul_plus'
 import { CardList } from '../ui/CardList'
 

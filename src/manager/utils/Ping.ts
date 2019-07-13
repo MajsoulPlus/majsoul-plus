@@ -1,6 +1,6 @@
 import { Network } from './Network'
 import * as tcpPing from 'tcp-ping'
-import { i18n } from '../../i18nInstance'
+import i18n from '../../i18n'
 
 export class Ping {
   server: string

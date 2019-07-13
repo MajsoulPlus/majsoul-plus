@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { CardList } = require('./ui/CardList')
 const { Global, GlobalPath } = require('..//global')
-const { i18n } = require('..//i18nInstance')
+const i18n = require('../i18n').default
 
 const enabledExecutes = (() => {
   try {

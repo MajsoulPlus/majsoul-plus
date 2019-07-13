@@ -17,7 +17,7 @@ const Executes = require('./Executes')
 const { Tools } = require('./pages/Tools')
 
 const { appDataDir, Global, GlobalPath } = require('..//global')
-const { i18n } = require('..//i18nInstance')
+const i18n = require('../i18n').default
 
 class Manager {
   constructor(options) {

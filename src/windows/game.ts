@@ -14,7 +14,7 @@ import { httpsServer } from '../server'
 import { takeScreenshot } from '../utils'
 import { initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
-import { i18n } from '../i18nInstance'
+import i18n from '../i18n'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow

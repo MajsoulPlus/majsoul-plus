@@ -1,7 +1,7 @@
 import { ipcRenderer, screen as electronScreen } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
-import { i18n } from '../../i18nInstance'
+import i18n from '../../i18n'
 import { Global } from '../../global'
 
 const userConfigs = require(Global.UserConfigPath)

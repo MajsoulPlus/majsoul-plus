@@ -13,14 +13,8 @@ import * as path from 'path'
 
 const server = express()
 
-// const i18n = require('./i18nInstance')
 import { AddressInfo } from 'net'
-import { I18n } from './i18n'
 import { Global, GlobalPath } from './global'
-const i18n = new I18n({
-  autoReload: process.env.NODE_ENV === 'development',
-  actives: [electronApp.getLocale()]
-})
 
 // 尝试读取用户设置项 configs-user.json
 let userConfigs

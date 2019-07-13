@@ -1,4 +1,4 @@
-import { i18n } from '../../i18nInstance'
+import i18n from '../../i18n'
 
 export class Network {
   static getJson(input: RequestInfo, init?: RequestInit) {

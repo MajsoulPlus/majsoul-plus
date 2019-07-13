@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as CSV from 'comma-separated-values'
+import { app, remote } from 'electron'
 
 /**
  * 本地化，单条语句翻译对象
@@ -150,12 +151,12 @@ export interface I18nConstructor {
   autoReload?: boolean
 }
 
-export class I18n {
+class I18n {
   /**
    * 获取翻译文本
    */
   get text() {
-    return this._text
+    return this.pText
   }
   get t() {
     return this.text
@@ -168,28 +169,28 @@ export class I18n {
    * 已经加载的翻译文本
    */
   get locals() {
-    return this._locals
+    return this.pLocals
   }
 
   /**
    * 活动的语言列表的拷贝
    */
   get actives(): string[] {
-    const copy = this._actives.concat()
+    const copy = this.pActives.concat()
     copy.pop()
     return copy
   }
 
   set actives(localTags: string[]) {
-    this._actives = localTags.concat(this.defaultLocale)
+    this.pActives = localTags.concat(this.defaultLocale)
     this._updateLocales()
   }
 
-  defaultLocale
-  private _actives
-  private _locals: StringPack
-  private _bindElementList: BindElement[]
-  private _text
+  defaultLocale: string
+  private pActives
+  private pLocals: StringPack
+  private pBindElementList: BindElement[]
+  private pText
 
   constructor(arg: I18nConstructor) {
     const {
@@ -209,9 +210,9 @@ export class I18n {
     }
 
     // 读取所有翻译文本
-    this._locals = readLangDir(directory)
+    this.pLocals = readLangDir(directory)
     // 设置一个绑定列表
-    this._bindElementList = []
+    this.pBindElementList = []
     // 当优先语言全部不存在，则加载该默认语言
     this.defaultLocale = defaultLocale
     // 设置活动的语言列表
@@ -239,8 +240,8 @@ export class I18n {
           (() => {
             const f = (...args: string[]) => {
               // TODO: Replace it with for ... of
-              for (let i = 0; i < this._actives.length; i++) {
-                let localeObj = this.locals[this._actives[i]]
+              for (let i = 0; i < this.pActives.length; i++) {
+                let localeObj = this.locals[this.pActives[i]]
                 if (!localeObj) {
                   continue
                 }
@@ -275,7 +276,7 @@ export class I18n {
           }
         )
       }
-      this._text = new Proxy(
+      this.pText = new Proxy(
         {},
         {
           get: (target, key) => {
@@ -314,7 +315,7 @@ export class I18n {
         fs.watch(dirPath, eventType => {
           if (eventType === 'change') {
             // 重新载入所有翻译文本
-            this._locals = readLangDir(directory)
+            this.pLocals = readLangDir(directory)
             // 如果出现新文件夹，自动监听
             recursiveDir(dirPath, dirWatcher)
             // 更新绑定的翻译
@@ -380,7 +381,7 @@ export class I18n {
    * 更新所有绑定翻译的内容
    */
   private _updateLocales() {
-    this._bindElementList.forEach(({ locale, htmlElement, type, args }) => {
+    this.pBindElementList.forEach(({ locale, htmlElement, type, args }) => {
       const text = locale(...args)
       if (type === 'text') {
         htmlElement.innerText = text
@@ -404,7 +405,7 @@ export class I18n {
     type: 'text' | 'html',
     ...args: string[]
   ) {
-    this._bindElementList.push({
+    this.pBindElementList.push({
       locale,
       htmlElement,
       type,
@@ -445,3 +446,8 @@ export class I18n {
     htmlElement.querySelectorAll('[data-i18n]').forEach(renderElement)
   }
 }
+
+export default new I18n({
+  autoReload: process.env.NODE_ENV === 'development',
+  actives: [(app || remote.app).getLocale()]
+})

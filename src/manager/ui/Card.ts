@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { i18n } from '../../i18nInstance'
+import i18n from '../../i18n'
 import { Listener } from './Listener'
 
 interface InputElement {
