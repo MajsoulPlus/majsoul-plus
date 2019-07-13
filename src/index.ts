@@ -1,11 +1,4 @@
-import {
-  app as electronApp,
-  BrowserWindow,
-  clipboard,
-  dialog,
-  ipcMain,
-  Menu
-} from 'electron'
+import { app as electronApp, clipboard, dialog, ipcMain } from 'electron'
 import * as express from 'express'
 import * as fs from 'fs'
 import * as https from 'https'
@@ -15,36 +8,6 @@ const server = express()
 
 import { AddressInfo } from 'net'
 import { Global, GlobalPath } from './global'
-
-// 尝试读取用户设置项 configs-user.json
-let userConfigs
-try {
-  userConfigs = JSON.parse(
-    fs.readFileSync(Global.UserConfigPath, { encoding: 'utf-8' })
-  )
-} catch (error) {
-  userConfigs = {}
-}
-
-// 同步 configs-user.json，如果当前存储的结构较旧则会被更新
-function jsonKeyUpdate(ja, jb) {
-  Object.keys(ja).forEach(key => {
-    if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
-      jsonKeyUpdate(ja[key], jb[key])
-    }
-    if (jb[key] === undefined) {
-      delete ja[key]
-    }
-  })
-  Object.keys(jb).forEach(key => {
-    if (ja[key] === undefined) {
-      ja[key] = jb[key]
-    }
-  })
-}
-jsonKeyUpdate(userConfigs, require(path.join(__dirname, 'configs-user.json')))
-// 写入 configs-user.json
-fs.writeFileSync(Global.UserConfigPath, JSON.stringify(userConfigs))
 
 // 获取用户数据 %appdata% 路径
 const userDataDir = electronApp.getPath('userData')
@@ -100,38 +63,6 @@ const windowControl = {
 
   // 添加监听器
   addAppListener: () => {
-    // 资源管理器消息
-    // 手柄：'application-message' 命名绝对错了
-    ipcMain.on('application-message', (evt, ...args) => {
-      if (args && args.length > 0) {
-        switch (args[0]) {
-          // 通知更新用户设置，目前仅用于更改缩放比例
-          case 'update-user-config': {
-            userConfigs = JSON.parse(
-              fs.readFileSync(Global.UserConfigPath, { encoding: 'utf-8' })
-            )
-            windowControl.windowMap['manager'].setContentSize(
-              Global.ManagerWindowConfig.width * userConfigs.window.zoomFactor,
-              Global.ManagerWindowConfig.height * userConfigs.window.zoomFactor
-            )
-            windowControl.windowMap['manager'].webContents.setZoomFactor(
-              userConfigs.window.zoomFactor
-            )
-            break
-          }
-          // 通知已保存完毕，可以关闭资源管理器
-          case 'close-ready': {
-            console.log('Manager ready to be closed.')
-            windowControl.windowMap['manager'].close()
-            break
-          }
-          // 未知或错误的指令
-          default:
-            console.warn('Received unknown command.' + args[0])
-            break
-        }
-      }
-    })
     // 游戏宿主窗口消息
     ipcMain.on('main-loader-message', (evt, ...args) => {
       if (args && args.length > 0) {

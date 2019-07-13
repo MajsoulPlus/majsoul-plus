@@ -4,7 +4,7 @@ import {
   ipcMain
 } from 'electron'
 import * as path from 'path'
-import { UserConfigs } from '../config'
+import { UserConfigs, SaveConfigJson } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { removeDirSync, zipDir } from '../utils'
@@ -80,4 +80,17 @@ export function initManagerWindow() {
   ipcMain.on('zip-dir', (event: Electron.Event, dir: string, to: string) => {
     event.returnValue = zipDir(dir, to)
   })
+
+  ipcMain.on(
+    'update-user-config',
+    (event: Electron.Event, config: MajsoulPlus.UserConfig) => {
+      SaveConfigJson(config)
+
+      ManagerWindow.setContentSize(
+        Global.ManagerWindowConfig.width * UserConfigs.window.zoomFactor,
+        Global.ManagerWindowConfig.height * UserConfigs.window.zoomFactor
+      )
+      ManagerWindow.webContents.setZoomFactor(UserConfigs.window.zoomFactor)
+    }
+  )
 }

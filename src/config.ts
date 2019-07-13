@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { Global } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject } from './utils'
+import { fillObject, updateObject } from './utils'
 
 /**
  * 默认配置
@@ -66,6 +66,7 @@ export function LoadConfigJson(): MajsoulPlus.UserConfig {
 }
 
 export function SaveConfigJson(config: MajsoulPlus.UserConfig) {
+  updateObject(UserConfigs, config)
   fs.writeFileSync(Global.UserConfigPath, JSON.stringify(config, null, 2), {
     encoding: 'utf-8'
   })

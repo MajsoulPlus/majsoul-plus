@@ -162,8 +162,7 @@ class Setting {
   private saveConfig = () => {
     return new Promise((resolve, reject) => {
       try {
-        fs.writeFileSync(Global.UserConfigPath, JSON.stringify(this.userConfig))
-        ipcRenderer.send('application-message', 'update-user-config')
+        ipcRenderer.send('update-user-config', Global.UserConfigPath)
         resolve()
       } catch (error) {
         reject(error)
