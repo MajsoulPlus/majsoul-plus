@@ -137,6 +137,17 @@ class ResourcePackManager {
       )
     }
 
+    // 将所有 replace 都转换为 Object 形式
+    // 并对其中原 string 的部分开启强制外服兼容
+    resourcepack.replace.forEach((rep, index) => {
+      if (typeof rep === 'string') {
+        resourcepack.replace[index] = {
+          from: [rep, 'jp/' + rep, 'en/' + rep],
+          to: rep
+        }
+      }
+    })
+
     // all error checks are ok
     this.resourcePacks.set(id, resourcepack)
     return this
@@ -163,12 +174,11 @@ class ResourcePackManager {
 
           // 检测 from 中是否存在 queryPath
           // 有则重定向到对应的 to
-          for (const rep of pack.replace) {
-            if (typeof rep === 'object') {
-              if (rep.from.includes(queryPath)) {
-                queryPath = rep.to
-                break
-              }
+          for (let rep of pack.replace) {
+            rep = rep as MajsoulPlus.ResourcePackReplaceEntry
+            if (rep.from.includes(queryPath)) {
+              queryPath = rep.to
+              break
             }
           }
 
@@ -207,34 +217,16 @@ class ResourcePackManager {
         ctx.res.statusCode = remote.res.status
         const resMap = JSON.parse(remote.data as string)
 
-        // TODO: 手动开启强制外服兼容
         this.resourcePacks.forEach(pack => {
-          pack.replace.forEach(rep => {
-            if (typeof rep === 'string') {
-              // 对字符串类型的替换实现强制外服兼容
-              [rep, 'jp/' + rep, 'en/' + rep].forEach(entry => {
-                if (resMap.res[entry] === undefined) {
-                  resMap.res[entry] = { prefix: '' }
-                }
-                resMap.res[entry].prefix = `majsoul_plus/resourcepack/${
-                  pack.id
-                }`
-              })
-            } else {
-              const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-              const from =
-                typeof repo.from === 'string' ? [repo.from] : repo.from
+          pack.replace.forEach((rep: MajsoulPlus.ResourcePackReplaceEntry) => {
+            const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+            const from = typeof repo.from === 'string' ? [repo.from] : repo.from
 
-              from.forEach(rep => {
-                // 对 Object 类型的替换暂时关闭强制外服兼容
-                // [rep, 'jp/' + rep, 'en/' + rep].forEach(rep => {
-                if (resMap.res[rep] === undefined) {
-                  resMap.res[rep] = { prefix: '' }
-                }
+            from.forEach(rep => {
+              if (resMap.res[rep] !== undefined) {
                 resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
-                // })
-              })
-            }
+              }
+            })
           })
         })
         ctx.body = JSON.stringify(resMap, null, 2)
