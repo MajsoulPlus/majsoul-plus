@@ -74,7 +74,9 @@ export function initGameWindow() {
       key: 'gameWindowSize',
       value: UserConfigs.window.gameWindowSize
     }
-    ManagerWindow.webContents.send('change-config', newConfig)
+    if (ManagerWindow) {
+      ManagerWindow.webContents.send('change-config', newConfig)
+    }
     // 将窗口尺寸信息发送给渲染进程用于截图
     GameWindow.webContents.send('window-resize', GameWindow.getBounds())
   })
@@ -105,31 +107,16 @@ export function initGameWindow() {
   Menu.setApplicationMenu(GameWindowMenu)
 
   ipcMain.on('main-loader-ready', () => {
-    GameWindow.webContents.send(
-      'server-port-load',
-      (UserConfigs.userData.useHttpServer
-        ? (httpServer.address() as AddressInfo)
-        : (httpsServer.address() as AddressInfo)
-      ).port
-    )
-  })
-
-  ipcMain.on('server-port-loaded', () => {
-    GameWindow.webContents.send('executes-load', [])
-  })
-
-  ipcMain.on('executes-loaded', () => {
     // 加载本地服务器地址
+    const http = UserConfigs.userData.useHttpServer
+    const port = (UserConfigs.userData.useHttpServer
+      ? (httpServer.address() as AddressInfo)
+      : (httpsServer.address() as AddressInfo)
+    ).port
     const url = `http${
       UserConfigs.userData.useHttpServer ? '' : 's'
-    }://localhost:${
-      (UserConfigs.userData.useHttpServer
-        ? (httpServer.address() as AddressInfo)
-        : (httpsServer.address() as AddressInfo)
-      ).port
-    }/`
-    console.log(url)
-    GameWindow.webContents.send('load-url', url)
+    }://localhost:${port}/`
+    GameWindow.webContents.send('load-url', url, port, http)
   })
 
   GameWindow.once('ready-to-show', () => {

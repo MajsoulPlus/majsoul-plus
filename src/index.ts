@@ -1,67 +1,156 @@
-import { clipboard, ipcMain } from 'electron'
-import * as https from 'https'
+import { app, ipcMain, Menu } from 'electron'
+import * as os from 'os'
+import * as path from 'path'
+import { UserConfigs } from './config'
+import { LoadExtension } from './extension/extension'
+import { appDataDir, Global, InitGlobal } from './global'
+import { LoadResourcePack } from './resourcepack/resourcepack'
+import { httpsServer, LoadServer, httpServer } from './server'
+import bossKey from './utilities/bossKey'
+import screenshot from './utilities/screenshot'
+import { initGameWindow } from './windows/game'
+import { initManagerWindow, ManagerWindow } from './windows/manager'
+import { initToolManager } from './windows/tool'
 
-import { AddressInfo } from 'net'
-import { Global } from './global'
+// 初始化全局变量
+InitGlobal()
 
-// 创建一个 https 服务器
-const sererHttps = https.createServer()
+// 加载资源包
+LoadResourcePack()
 
-const windowMap = {}
+// 加载扩展
+LoadExtension()
 
-ipcMain.on('main-loader-message', (evt, ...args) => {
-  if (args && args.length > 0) {
-    switch (args[0]) {
-      // 游戏宿主窗口已获知本地服务器端口，需要加载脚本（插件）资源以注入
-      case 'server-port-loaded': {
-        const executeScripts = []
-        windowMap['game'].webContents.send('executes-load', executeScripts)
-        break
-      }
-      // 游戏宿主窗口已获知插件资源，需要主进程提供 URL 以载入
-      case 'executes-loaded': {
-        const clipboardText = clipboard.readText()
-        if (
-          clipboardText &&
-          // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
-          // TODO: 这里需要适配多服务器
-          clipboardText.includes(Global.RemoteDomain)
-        ) {
-          // FIXME: remove type assertion
-          windowMap['game'].webContents.send(
-            'load-url',
-            (new RegExp(
-              Global.RemoteDomain.replace(/\./g, '\\.') +
-                '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
-            ).exec(clipboardText) as string[])[0]
-          )
-        } else if (
-          clipboardText &&
-          // 如果剪切板内容包含 configs 设置的服务器 URL，则加载
-          // TODO: 这里需要适配多服务器
-          // HTTP_REMOTE_DOMAIN 似乎已经被废弃
-          clipboardText.includes(Global.HttpRemoteDomain)
-        ) {
-          windowMap['game'].webContents.send(
-            'load-url',
-            (new RegExp(
-              Global.HttpRemoteDomain.replace(/\./g, '\\.') +
-                '[-A-Za-z0-9+&@#/%?=~_|!:,.;]*'
-            ).exec(clipboardText) as string[])[0]
-          )
-        } else {
-          // 加载本地服务器地址
-          // TODO: 这里需要适配多服务器
-          // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
-          windowMap['game'].webContents.send(
-            'load-url',
-            `https://localhost:${(sererHttps.address() as AddressInfo).port}/0/`
-          )
-        }
-        break
-      }
-      default:
-        break
+// 代理设置
+if (UserConfigs.chromium.proxyUrl !== '') {
+  app.commandLine.appendSwitch('proxy-server', UserConfigs.chromium.proxyUrl)
+}
+
+// 禁用/启用进程内 GPU 处理
+if (UserConfigs.chromium.isInProcessGpuOn) {
+  const osplatform = os.platform()
+  switch (osplatform) {
+    case 'darwin':
+    case 'win32':
+      app.commandLine.appendSwitch('in-process-gpu')
+      break
+    case 'aix':
+    case 'android':
+    case 'cygwin':
+    case 'freebsd':
+    case 'openbsd':
+    case 'sunos':
+    default:
+      break
+  }
+}
+
+// 忽略 GPU 黑名单
+if (UserConfigs.chromium.isIgnoreGpuBlacklist) {
+  app.commandLine.appendArgument('ignore-gpu-blacklist')
+}
+
+// 禁用 / 启用 硬件加速
+if (UserConfigs.chromium.isHardwareAccelerationDisable) {
+  app.disableHardwareAcceleration()
+}
+
+// Disable certificate validation TLS connections
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
+// 忽略证书错误
+// app.commandLine.appendSwitch('ignore-certificate-errors')
+
+// 允许自动播放音视频
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
+// Exit when all the windows are closed
+// 当全部窗口退出后，结束进程
+app.on('window-all-closed', () => {
+  app.quit()
+})
+
+// 阻止证书验证
+app.on(
+  'certificate-error',
+  (event, webContents, url, error, certificate, callback) => {
+    if (
+      certificate.fingerprint ===
+      // 祖传本地证书
+      'sha256/UMNIGcBbbIcru/0L2e1idl+aQS7PUHqsZDcrETqdMsc='
+    ) {
+      event.preventDefault()
+      callback(true)
+    } else {
+      callback(false)
     }
   }
+)
+
+app.on('ready', () => {
+  // 清空菜单
+  Menu.setApplicationMenu(null)
+
+  // 注册老板键
+  bossKey.register()
+
+  // 资源管理器通知启动游戏
+  ipcMain.on('start-game', () => {
+    // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
+    LoadServer()
+    if (UserConfigs.userData.useHttpServer) {
+      httpServer.listen(Global.ServerPort)
+      httpServer.on('error', err => {
+        if (err.name === 'EADDRINUSE') {
+          // console.warn(i18n.text.main.portInUse())
+          httpServer.close()
+          // 随机监听一个空闲端口
+          httpServer.listen(0)
+        }
+      })
+    } else {
+      httpsServer.listen(Global.ServerPort)
+      httpsServer.on('error', err => {
+        if (err.code === 'EADDRINUSE') {
+          // console.warn(i18n.text.main.portInUse())
+          httpsServer.close()
+          // 随机监听一个空闲端口
+          httpsServer.listen(0)
+        }
+      })
+    }
+
+    initGameWindow()
+
+    if (UserConfigs.window.isManagerHide) {
+      ManagerWindow.hide()
+    } else {
+      ManagerWindow.close()
+    }
+  })
+
+  // 截图
+  screenshot.register()
+
+  // sandbox
+  ipcMain.on('sandbox-dirname-request', (event: Electron.Event) => {
+    event.returnValue = path.resolve(__dirname, '..')
+  })
+  ipcMain.on('sandbox-appdata-request', (event: Electron.Event) => {
+    event.returnValue = appDataDir
+  })
+
+  // 初始化扩展资源管理器窗口
+  initManagerWindow()
+  initToolManager()
+})
+
+// 监听 GPU 进程崩溃事件
+app.on('gpu-process-crashed', (event, killed) => {
+  console.error(`gpu-process-crashed: ${killed}`)
+})
+
+// uncaught exception
+process.on('uncaughtException', err => {
+  console.error(err)
 })

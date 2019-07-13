@@ -26,9 +26,13 @@
 
 ### GameWindow
 
-| ID  | 名称             | 参数   | 说明                                  |
-| --- | ---------------- | ------ | ------------------------------------- |
-| 01  | server-port-load | `port` | 在 `main-loader-ready` 后返回端口信息 |
+| ID  | 名称             | 参数                     | 说明                     |
+| --- | ---------------- | ------------------------ | ------------------------ |
+| 01  | window-resize    | rect: Electron.Rectangle | 更新游戏窗口的 Rectangle |
+| 02  | take-screenshot  | 无                       | 截图                     |
+| 03  | screenshot-saved | filePath                 | 表示截图保存成功         |
+| 04  | open-devtools    | 无                       | 打开开发者工具           |
+| 04  | load-url         | url, port, http          | 加载服务器对应网页       |
 
 ### ManagerWindow
 
