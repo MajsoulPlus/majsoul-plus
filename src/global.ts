@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { MajsoulPlus } from './majsoul_plus'
-import { copyFolder } from './utils'
+import { copyFolderSync } from './utils'
 
 // 提供 app模块
 const app = electron.app ? electron.app : electron.remote.app
@@ -131,8 +131,7 @@ export const Global: MajsoulPlus.Global = {
 }
 
 export function InitGlobal() {
-  const promises = []
-  ;[
+  [
     Global.ResourcePackConfigPath,
     Global.ExtensionConfigPath,
     Global.ExecutesConfigPath,
@@ -145,14 +144,8 @@ export function InitGlobal() {
   ].map(dir => {
     const folder = path.join(appDataDir, dir)
     if (!fs.existsSync(folder)) {
-      promises.push(
-        copyFolder(path.join(__dirname, 'bin', dir), folder).catch(err =>
-          console.error(err)
-        )
-      )
+      copyFolderSync(path.join(__dirname, 'bin', dir), appDataDir)
     }
     return path.join(folder, 'active.json')
   })
-
-  return Promise.all(promises)
 }
