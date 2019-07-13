@@ -287,11 +287,9 @@ const testIsLocalGameWindow = url => {
 }
 const getLocalUrlWithParams = url => {
   if (url.includes('?')) {
-    return `https://localhost:${serverPort}/0/${url.substring(
-      url.indexOf('?')
-    )}`
+    return `https://localhost:${serverPort}/${url.substring(url.indexOf('?'))}`
   }
-  return `https://localhost:${serverPort}/0/`
+  return `https://localhost:${serverPort}/`
 }
 const redirectGameWindow = (url: string, gameWindow) => {
   const localUrl = getLocalUrlWithParams(url)

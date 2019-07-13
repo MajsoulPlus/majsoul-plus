@@ -28,7 +28,8 @@ const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
 
 const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   useAppdataLibrary: false,
-  useHttpServer: false
+  useHttpServer: false,
+  serverToPlay: 0
 }
 
 // tslint:disable-next-line

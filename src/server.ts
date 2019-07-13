@@ -35,49 +35,47 @@ export function LoadServer() {
   // Routers
   Server.use(router.routes())
 
-  Server.use(async (ctx, next) => {
-    const originalUrl = ctx.request.originalUrl
-    const encrypt = isEncryptRes(originalUrl)
+  Server.use(async ctx => {
+    const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
+    const isEncrypted = isEncryptRes(originalUrl)
     const isRoutePath = isPath(originalUrl)
-    const localURI = getLocalURI(
-      originalUrl,
-      isRoutePath,
-      path.join(appDataDir, GlobalPath.LocalDir)
-    )
+    const localPath = getLocalURI(originalUrl)
 
-    let allData: string | Buffer
+    let originData: string | Buffer
 
-    if (!isRoutePath && fs.existsSync(localURI)) {
+    if (!isRoutePath && fs.existsSync(localPath)) {
       try {
-        allData = await readFile(localURI)
+        originData = await readFile(localPath)
       } catch (e) {
         console.error(e)
-        return
       }
-    } else {
+    }
+
+    // 当上述 readFile 出现异常时或上述 if 条件不符合时向远端服务器请求
+    if (originData === undefined) {
       try {
         const remoteSource = await getRemoteSource(
           originalUrl,
-          encrypt && !isRoutePath
+          isEncrypted && !isRoutePath
         )
         ctx.res.statusCode = remoteSource.res.status
         if (!isRoutePath && remoteSource.res.status.toString()[0] !== '4') {
-          writeFile(localURI, remoteSource.data)
+          writeFile(localPath, remoteSource.data)
         }
-        allData = remoteSource.data
+        originData = remoteSource.data
       } catch (e) {
         console.error(e)
-        return
+        ctx.res.end()
       }
     }
 
-    let sendData = isRoutePath
-      ? encodeData(allData).toString('utf-8')
-      : encodeData(allData)
-    if (encrypt) {
-      sendData = XOR(sendData as Buffer)
+    let responseData = isRoutePath
+      ? encodeData(originData).toString('utf-8')
+      : encodeData(originData)
+    if (isEncrypted) {
+      responseData = XOR(responseData as Buffer)
     }
-    ctx.body = sendData
+    ctx.body = responseData
   })
 }
 

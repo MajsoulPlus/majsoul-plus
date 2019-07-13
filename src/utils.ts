@@ -3,7 +3,8 @@ import * as childProcess from 'child_process'
 import fetch, { Response } from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
-import { Global, GlobalPath, appDataDir } from './global'
+import { Global, GlobalPath, appDataDir, RemoteDomains } from './global'
+import { UserConfigs } from './config'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -200,28 +201,24 @@ export function mkdirsSync(dirname: string) {
  * @param originalUrl
  */
 export function getRemoteUrl(originalUrl: string): string {
-  return Global.RemoteDomain + originalUrl
+  return (
+    RemoteDomains[UserConfigs.userData.serverToPlay].domain +
+    originalUrl.replace(/^\/(0\/)?/g, '')
+  )
 }
 
 /**
  * 从远程URI转成本地存储路径
  * @param originalUrl
  * @param isPath
- * @param dirBase
  */
-export function getLocalURI(
-  originalUrl: string,
-  isPath: boolean,
-  dirBase = path.join(appDataDir, GlobalPath.LocalDir)
-): string {
-  const indexOfProps = originalUrl.indexOf('?')
-  originalUrl = originalUrl.substring(
-    0,
-    indexOfProps === -1 ? undefined : indexOfProps
+export function getLocalURI(originalUrl: string): string {
+  const dirBase = path.join(appDataDir, GlobalPath.LocalDir)
+  return path.join(
+    dirBase,
+    UserConfigs.userData.serverToPlay.toString(),
+    /^([^?]+)(\?.*)?$/.exec(originalUrl)[1]
   )
-  const localURI = path.join(dirBase, originalUrl)
-  return isPath ? localURI : localURI
-  // `${localURI}localfile.dirindexfile` : localURI
 }
 
 /**

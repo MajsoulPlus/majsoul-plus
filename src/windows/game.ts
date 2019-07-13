@@ -120,8 +120,6 @@ export function initGameWindow() {
 
   ipcMain.on('executes-loaded', () => {
     // 加载本地服务器地址
-    // TODO: 这里需要适配多服务器
-    // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
     const url = `http${
       UserConfigs.userData.useHttpServer ? '' : 's'
     }://localhost:${
@@ -129,7 +127,7 @@ export function initGameWindow() {
         ? (httpServer.address() as AddressInfo)
         : (httpsServer.address() as AddressInfo)
       ).port
-    }/0/`
+    }/`
     console.log(url)
     GameWindow.webContents.send('load-url', url)
   })

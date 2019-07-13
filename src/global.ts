@@ -53,11 +53,11 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
 }
 
 // tslint:disable-next-line
-export const RemoteDomains = {
-  zh: 'https://majsoul.union-game.com/0/',
-  jp: 'https://game.mahjongsoul.com/',
-  en: 'https://mahjongsoul.game.yo-star.com/'
-}
+export const RemoteDomains = [
+  { id: 0, name: 'zh', domain: 'https://majsoul.union-game.com/0/' },
+  { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com/' },
+  { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com/' }
+]
 
 // tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {

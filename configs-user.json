@@ -18,6 +18,7 @@
   },
   "userData": {
     "useAppdataLibrary": false,
-    "useHttpServer": false
+    "useHttpServer": false,
+    "serverToPlay": 0
   }
 }

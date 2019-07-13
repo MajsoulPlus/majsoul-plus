@@ -144,21 +144,17 @@ class ResourcePackManager {
 
   register(server: Koa, router: Router) {
     // 获取资源包基本信息
-    router.get(
-      `${true ? '/0' : ''}/majsoul_plus/resourcepack/:id`,
-      async (ctx, next) => {
-        ctx.response.status = this.resourcePacks.has(ctx.params.id) ? 200 : 404
-        ctx.body = this.resourcePacks.has(ctx.params.id)
-          ? JSON.stringify(this.resourcePacks.get(ctx.params.id), null, 2)
-          : 'Not Found'
-      }
-    )
+    router.get(`/majsoul_plus/resourcepack/:id`, async (ctx, next) => {
+      ctx.response.status = this.resourcePacks.has(ctx.params.id) ? 200 : 404
+      ctx.body = this.resourcePacks.has(ctx.params.id)
+        ? JSON.stringify(this.resourcePacks.get(ctx.params.id), null, 2)
+        : 'Not Found'
+    })
 
     // 为每一个资源包分配一个路径
     this.resourcePacks.forEach((pack, packName) => {
       router.get(
-        // TODO: 兼容非国服 将此处 true 改为判断是否国服
-        `${true ? '/0' : ''}/majsoul_plus/resourcepack/${packName}/*`,
+        `/majsoul_plus/resourcepack/${packName}/*`,
         async (ctx, next) => {
           let queryPath = ctx.path.substr(
             `${true ? '/0' : ''}/majsoul_plus/resourcepack/${packName}/`.length
