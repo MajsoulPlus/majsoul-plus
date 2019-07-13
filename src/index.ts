@@ -1,12 +1,12 @@
 import { app, ipcMain, Menu } from 'electron'
 import * as os from 'os'
-import * as path from 'path'
 import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
-import { appDataDir, Global, InitGlobal } from './global'
+import { Global, InitGlobal } from './global'
 import { LoadResourcePack } from './resourcepack/resourcepack'
-import { httpsServer, LoadServer, httpServer } from './server'
+import { httpServer, httpsServer, LoadServer } from './server'
 import bossKey from './utilities/bossKey'
+import sandbox from './utilities/sandbox'
 import screenshot from './utilities/screenshot'
 import { initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
@@ -64,11 +64,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 // 允许自动播放音视频
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
-// Exit when all the windows are closed
 // 当全部窗口退出后，结束进程
-app.on('window-all-closed', () => {
-  app.quit()
-})
+app.on('window-all-closed', app.quit)
 
 // 阻止证书验证
 app.on(
@@ -91,13 +88,12 @@ app.on('ready', () => {
   // 清空菜单
   Menu.setApplicationMenu(null)
 
-  // 注册老板键
-  bossKey.register()
-
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
-    // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
+    // 加载服务器路由规则
     LoadServer()
+
+    // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
     if (UserConfigs.userData.useHttpServer) {
       httpServer.listen(Global.ServerPort)
       httpServer.on('error', err => {
@@ -120,8 +116,10 @@ app.on('ready', () => {
       })
     }
 
+    // 初始化游戏窗口
     initGameWindow()
 
+    // 根据设置决定销毁 / 隐藏 Manager 窗口
     if (UserConfigs.window.isManagerHide) {
       ManagerWindow.hide()
     } else {
@@ -129,16 +127,9 @@ app.on('ready', () => {
     }
   })
 
-  // 截图
-  screenshot.register()
-
-  // sandbox
-  ipcMain.on('sandbox-dirname-request', (event: Electron.Event) => {
-    event.returnValue = path.resolve(__dirname, '..')
-  })
-  ipcMain.on('sandbox-appdata-request', (event: Electron.Event) => {
-    event.returnValue = appDataDir
-  })
+  bossKey.register() // 注册老板键功能
+  screenshot.register() // 注册截图功能
+  sandbox.register() // 注册工具窗口的沙盒功能
 
   // 初始化扩展资源管理器窗口
   initManagerWindow()

@@ -15,13 +15,13 @@ const router = new Router()
 export const Server = new Koa()
 
 export function LoadServer() {
-  // 资源包
+  // 注册资源包路由
   ResourcePackManager.register(Server, router)
 
-  // 扩展
+  // 注册扩展路由
   ExtensionManager.register(Server, router)
 
-  // 注册路由
+  // 使用 koa-router 的路由
   Server.use(router.routes())
 
   // 默认从远端获取文件

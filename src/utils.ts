@@ -74,10 +74,7 @@ export function cleanObject(toClean: {}, sample: {}): {} {
   return toClean
 }
 
-/**
- * 加密或者解密文件
- * @param buffer
- */
+// 加密或者解密文件
 export function XOR(buffer: Buffer): Buffer {
   const array = []
   for (let index = 0; index < buffer.length; index++) {
@@ -87,18 +84,12 @@ export function XOR(buffer: Buffer): Buffer {
   return Buffer.from(array)
 }
 
-/**
- * 判断请求资源是否是加密资源
- * @param originalUrl 原始请求的相对路径
- */
+// 判断请求资源是否是加密资源
 export function isEncryptRes(originalUrl: string): boolean {
   return originalUrl.includes(Global.EXTEND_RES_KEYWORD)
 }
 
-/**
- * 判断请求是否为路由路径
- * @param originalUrl
- */
+// 判断请求是否为路由路径
 export function isPath(originalUrl: string): boolean {
   return (
     originalUrl.endsWith('\\') ||
@@ -111,7 +102,7 @@ export function isPath(originalUrl: string): boolean {
  * 读取远程的官方资源数据
  * @param originalUrl 原始请求的相对路径
  * @param encrypt 是否是加密数据
- * @param encoding 请求的数据格式，默认是binary
+ * @param encoding 请求的数据格式，默认是 binary
  */
 export async function getRemoteSource(
   originalUrl: string,
@@ -149,6 +140,7 @@ export async function getRemoteSource(
   }
 }
 
+// fs.mkdir 的 Promise 形式
 export function mkdirPromise(dirname: string) {
   return new Promise((resolve, reject) => {
     fs.mkdir(dirname, err => {
@@ -160,6 +152,7 @@ export function mkdirPromise(dirname: string) {
   })
 }
 
+// fs.stst 的 Promise 形式
 export function statPromise(dirname: string): Promise<fs.Stats> {
   return new Promise((resolve, reject) => {
     fs.stat(dirname, (err, stats) => {
@@ -171,9 +164,7 @@ export function statPromise(dirname: string): Promise<fs.Stats> {
   })
 }
 
-/**
- * 递归创建目录，异步方法
- */
+// 递归创建目录，异步方法
 export async function mkdirs(dirname: string): Promise<void> {
   try {
     await statPromise(dirname)
@@ -183,10 +174,7 @@ export async function mkdirs(dirname: string): Promise<void> {
   }
 }
 
-/**
- * 递归创建目录，同步方法
- * @param dirname 文件夹路径
- */
+// 递归创建目录，同步方法
 export function mkdirsSync(dirname: string) {
   try {
     fs.statSync(dirname)
@@ -196,10 +184,7 @@ export function mkdirsSync(dirname: string) {
   }
 }
 
-/**
- * 转换远程Url
- * @param originalUrl
- */
+// 将 path 转换为远程 URL
 export function getRemoteUrl(originalUrl: string): string {
   return (
     RemoteDomains[UserConfigs.userData.serverToPlay].domain +
@@ -207,11 +192,7 @@ export function getRemoteUrl(originalUrl: string): string {
   )
 }
 
-/**
- * 从远程URI转成本地存储路径
- * @param originalUrl
- * @param isPath
- */
+// 从远程 URI 转成本地存储路径
 export function getLocalURI(originalUrl: string): string {
   const dirBase = path.join(appDataDir, GlobalPath.LocalDir)
   return path.join(
@@ -221,6 +202,7 @@ export function getLocalURI(originalUrl: string): string {
   )
 }
 
+// 获取资源，当本地存在时优先使用本地缓存
 export async function getRemoteOrCachedFile(
   url: string,
   encode = true
@@ -275,6 +257,7 @@ export async function getRemoteOrCachedFile(
   return ret
 }
 
+// 主进程获取资源
 export async function fetchAnySite(url: string, encoding = 'binary') {
   const resp = await fetch(url, {
     headers: {
@@ -284,9 +267,7 @@ export async function fetchAnySite(url: string, encoding = 'binary') {
   return (await resp.buffer()).toString(encoding)
 }
 
-/**
- * 写入本地文件
- */
+// 写入本地文件
 export async function writeFile(
   to: string,
   data: Buffer | string,
@@ -303,9 +284,7 @@ export async function writeFile(
   })
 }
 
-/**
- * 读取本地文件
- */
+// 读取本地文件
 export function readFile(filepath: string): Promise<Buffer | string> {
   return new Promise((resolve, reject) => {
     fs.readFile(filepath, (err, data) => {
@@ -330,7 +309,6 @@ export function encodeData(
 
 /**
  * 同步删除文件夹
- * @param dir 要删除的目录
  */
 export function removeDirSync(dir: string) {
   let command = ''
@@ -371,13 +349,13 @@ export function copyFileSync(source: string, target: string) {
 export function copyFolderSync(source: string, target: string) {
   let files = []
 
-  //check if folder needs to be created or integrated
+  // check if folder needs to be created or integrated
   const targetFolder = path.join(target, path.basename(source))
   if (!fs.existsSync(targetFolder)) {
     fs.mkdirSync(targetFolder)
   }
 
-  //copy
+  // copy
   if (fs.lstatSync(source).isDirectory()) {
     files = fs.readdirSync(source)
     files.forEach(file => {
