@@ -207,17 +207,32 @@ class ResourcePackManager {
         ctx.res.statusCode = remote.res.status
         const resMap = JSON.parse(remote.data as string)
 
+        // TODO: 手动开启强制外服兼容
         this.resourcePacks.forEach(pack => {
           pack.replace.forEach(rep => {
             if (typeof rep === 'string') {
-              resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+              // 对字符串类型的替换实现强制外服兼容
+              [rep, 'jp/' + rep, 'en/' + rep].forEach(entry => {
+                if (resMap.res[entry] === undefined) {
+                  resMap.res[entry] = { prefix: '' }
+                }
+                resMap.res[entry].prefix = `majsoul_plus/resourcepack/${
+                  pack.id
+                }`
+              })
             } else {
               const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
               const from =
                 typeof repo.from === 'string' ? [repo.from] : repo.from
 
               from.forEach(rep => {
+                // 对 Object 类型的替换暂时关闭强制外服兼容
+                // [rep, 'jp/' + rep, 'en/' + rep].forEach(rep => {
+                if (resMap.res[rep] === undefined) {
+                  resMap.res[rep] = { prefix: '' }
+                }
                 resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+                // })
               })
             }
           })
