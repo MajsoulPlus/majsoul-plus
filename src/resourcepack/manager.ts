@@ -143,8 +143,18 @@ class ResourcePackManager {
       if (typeof rep === 'string') {
         resourcepack.replace[index] = {
           from: [rep, 'jp/' + rep, 'en/' + rep],
-          to: rep
+          to: rep,
+          'all-servers': true
         }
+      } else if (rep['all-servers']) {
+        const all = []
+        if (typeof rep.from === 'string') {
+          rep.from = [rep.from]
+        }
+        rep.from.forEach(key => {
+          all.push(key, 'jp/' + key, 'en/' + key)
+        })
+        rep.from = all
       }
     })
 
@@ -176,7 +186,7 @@ class ResourcePackManager {
           // 有则重定向到对应的 to
           for (let rep of pack.replace) {
             rep = rep as MajsoulPlus.ResourcePackReplaceEntry
-            if (rep.from.includes(queryPath)) {
+            if ((rep.from as string[]).includes(queryPath)) {
               queryPath = rep.to
               break
             }

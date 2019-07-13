@@ -55,6 +55,9 @@
               },
               "to": {
                 "type": "string"
+              },
+              "all-servers": {
+                "type": "boolean"
               }
             }
           }

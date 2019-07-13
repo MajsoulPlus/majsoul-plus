@@ -99,6 +99,7 @@ declare namespace MajsoulPlus {
   export interface ResourcePackReplaceEntry {
     from: string | string[]
     to: string
+    'all-servers': boolean
   }
 
   /**
