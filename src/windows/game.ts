@@ -1,20 +1,20 @@
 import {
   BrowserWindow,
+  BrowserWindowConstructorOptions,
   ipcMain,
   Menu,
   MenuItem,
-  BrowserWindowConstructorOptions,
   WebContents
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
-import { MajsoulPlus } from '../majsoul_plus'
-import { httpsServer } from '../server'
-import { initPlayer, shutoffPlayer, AudioPlayer } from './audioPlayer'
-import { ManagerWindow } from './manager'
 import i18n from '../i18n'
+import { MajsoulPlus } from '../majsoul_plus'
+import { httpServer, httpsServer } from '../server'
+import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
+import { ManagerWindow } from './manager'
 
 // tslint:disable-next-line
 export let GameWindow: BrowserWindow
@@ -90,7 +90,9 @@ export function initGameWindow() {
     // 关闭后台音频播放器
     shutoffPlayer()
     // 关闭本地镜像服务器
-    httpsServer.close()
+    UserConfigs.userData.useHttpServer
+      ? httpServer.close()
+      : httpsServer.close()
     // 依据用户设置显示被隐藏的管理器窗口
     if (UserConfigs.window.isManagerHide) {
       if (ManagerWindow) {
@@ -105,7 +107,10 @@ export function initGameWindow() {
   ipcMain.on('main-loader-ready', () => {
     GameWindow.webContents.send(
       'server-port-load',
-      (httpsServer.address() as AddressInfo).port
+      (UserConfigs.userData.useHttpServer
+        ? (httpServer.address() as AddressInfo)
+        : (httpsServer.address() as AddressInfo)
+      ).port
     )
   })
 
@@ -117,13 +122,16 @@ export function initGameWindow() {
     // 加载本地服务器地址
     // TODO: 这里需要适配多服务器
     // FIXME: 这里硬编码了 /0/ ，与国际服不兼容
-    console.error(
-      `https://localhost:${(httpsServer.address() as AddressInfo).port}/0/`
-    )
-    GameWindow.webContents.send(
-      'load-url',
-      `https://localhost:${(httpsServer.address() as AddressInfo).port}/0/`
-    )
+    const url = `http${
+      UserConfigs.userData.useHttpServer ? '' : 's'
+    }://localhost:${
+      (UserConfigs.userData.useHttpServer
+        ? (httpServer.address() as AddressInfo)
+        : (httpsServer.address() as AddressInfo)
+      ).port
+    }/0/`
+    console.log(url)
+    GameWindow.webContents.send('load-url', url)
   })
 
   GameWindow.once('ready-to-show', () => {

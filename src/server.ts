@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as http from 'http'
 import * as https from 'https'
 import { ServerOptions } from 'https'
 import * as Koa from 'koa'
@@ -88,4 +89,5 @@ export const serverOptions: ServerOptions = {
 
 Object.freeze(serverOptions)
 
+export const httpServer = http.createServer(Server.callback())
 export const httpsServer = https.createServer(serverOptions, Server.callback())

@@ -5,7 +5,7 @@ import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
 import { appDataDir, Global, InitGlobal } from './global'
 import { LoadResourcePack } from './resourcepack/resourcepack'
-import { httpsServer, LoadServer } from './server'
+import { httpsServer, LoadServer, httpServer } from './server'
 import bossKey from './utilities/bossKey'
 import screenshot from './utilities/screenshot'
 import { initGameWindow } from './windows/game'
@@ -93,15 +93,27 @@ app.on('ready', () => {
   ipcMain.on('start-game', () => {
     // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
     LoadServer()
-    httpsServer.listen(Global.ServerPort)
-    httpsServer.on('error', err => {
-      if (err.code === 'EADDRINUSE') {
-        // console.warn(i18n.text.main.portInUse())
-        httpsServer.close()
-        // 随机监听一个空闲端口
-        httpsServer.listen(0)
-      }
-    })
+    if (UserConfigs.userData.useHttpServer) {
+      httpServer.listen(Global.ServerPort)
+      httpServer.on('error', err => {
+        if (err.name === 'EADDRINUSE') {
+          // console.warn(i18n.text.main.portInUse())
+          httpServer.close()
+          // 随机监听一个空闲端口
+          httpServer.listen(0)
+        }
+      })
+    } else {
+      httpsServer.listen(Global.ServerPort)
+      httpsServer.on('error', err => {
+        if (err.code === 'EADDRINUSE') {
+          // console.warn(i18n.text.main.portInUse())
+          httpsServer.close()
+          // 随机监听一个空闲端口
+          httpsServer.listen(0)
+        }
+      })
+    }
 
     initGameWindow()
 

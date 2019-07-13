@@ -27,7 +27,8 @@ const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
 }
 
 const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
-  useAppdataLibrary: false
+  useAppdataLibrary: false,
+  useHttpServer: false
 }
 
 // tslint:disable-next-line
@@ -59,8 +60,9 @@ export function LoadConfigJson(): MajsoulPlus.UserConfig {
       })
     )
   } catch (e) {
-    config = fillObject({}, DefaultConfig) as MajsoulPlus.UserConfig
+    config = {} as MajsoulPlus.UserConfig
   }
+  config = fillObject(config, DefaultConfig) as MajsoulPlus.UserConfig
   SaveConfigJson(config)
   return config
 }

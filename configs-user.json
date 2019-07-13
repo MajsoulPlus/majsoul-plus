@@ -17,6 +17,7 @@
     "isIgnoreGpuBlacklist": false
   },
   "userData": {
-    "useAppdataLibrary": false
+    "useAppdataLibrary": false,
+    "useHttpServer": false
   }
 }

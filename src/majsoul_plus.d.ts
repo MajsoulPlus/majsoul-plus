@@ -26,6 +26,7 @@ declare namespace MajsoulPlus {
 
   export interface UserDataConfig {
     useAppdataLibrary: boolean
+    useHttpServer: boolean
   }
 
   export interface UserConfig {
