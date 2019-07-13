@@ -6,17 +6,19 @@
 
 下表列出了主进程接收到的请求：
 
-| ID  | 名称                    | 参数   | 说明                                     |
-| --- | ----------------------- | ------ | ---------------------------------------- |
-| 01  | extension-list          | 无     | 返回目前**启用**的扩展列表。(`string[]`) |
-| 02  | extension-detail        | 无     | 返回目前加载了的扩展的详细信息。         |
-| 03  | sandbox-dirname-request | 无     | 返回当前的 `dirname`。                   |
-| 04  | sandbox-appdata-request | 无     | 返回当前的 `appDataDir`                  |
-| 05  | start-game              | 无     | 启动游戏。                               |
-| 06  | take-screenshot         | buffer | 对截屏进行保存。                         |
-| 07  | start-tool              | config | 启动 config 对应的工具。                 |
-| 08  | close-manage            | 无     | 关闭 Manager 窗口。                      |
-| 09  | clear-cache             | 无     | 清理缓存（`appDataDir/static/`）         |
+| ID  | 名称                    | 参数        | 说明                                     |
+| --- | ----------------------- | ----------- | ---------------------------------------- |
+| 01  | extension-list          | 无          | 返回目前**启用**的扩展列表。(`string[]`) |
+| 02  | extension-detail        | 无          | 返回目前加载了的扩展的详细信息。         |
+| 03  | sandbox-dirname-request | 无          | 返回当前的 `dirname`。                   |
+| 04  | sandbox-appdata-request | 无          | 返回当前的 `appDataDir`                  |
+| 05  | start-game              | 无          | 启动游戏。                               |
+| 06  | take-screenshot         | buffer      | 对截屏进行保存。                         |
+| 07  | start-tool              | config      | 启动 config 对应的工具。                 |
+| 08  | close-manage            | 无          | 关闭 Manager 窗口。                      |
+| 09  | clear-cache             | 无          | 清理缓存（`appDataDir/static/`）         |
+| 10  | remove-dir              | `dir`       | 删除 `dir` 目录                          |
+| 11  | zip-dir                 | `dir`, `to` | 压缩 `dir` 目录至 `to` 目录              |
 
 ## ipcRenderer
 

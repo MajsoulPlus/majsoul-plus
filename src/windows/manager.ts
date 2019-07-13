@@ -7,7 +7,7 @@ import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { removeDirSync } from '../utils'
+import { removeDirSync, zipDir } from '../utils'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
@@ -70,5 +70,14 @@ export function initManagerWindow() {
   ipcMain.on('clear-cache', (event: Electron.Event) => {
     removeDirSync(Global.LocalCachePath)
     event.returnValue = 0
+  })
+
+  ipcMain.on('remove-dir', (event: Electron.Event, dir: string) => {
+    removeDirSync(dir)
+    event.returnValue = 0
+  })
+
+  ipcMain.on('zip-dir', (event: Electron.Event, dir: string, to: string) => {
+    event.returnValue = zipDir(dir, to)
   })
 }

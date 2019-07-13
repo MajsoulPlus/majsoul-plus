@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { MajsoulPlus } from './majsoul_plus'
-import { copyFolderSync } from './utils'
 
 // 提供 app模块
 const app = electron.app ? electron.app : electron.remote.app
@@ -144,8 +143,13 @@ export function InitGlobal() {
     GlobalPath.ToolsDir
   ].map(dir => {
     const folder = path.join(appDataDir, dir)
-    if (!fs.existsSync(folder)) {
-      copyFolderSync(path.join(__dirname, 'bin', dir), appDataDir)
+    // 通过 require 避免在 renderer 中引入 utils
+    // utils 存在只能在主进程调用的方法
+    if (!fs.existsSync(folder) && app) {
+      require('./utils').copyFolderSync(
+        path.join(__dirname, 'bin', dir),
+        appDataDir
+      )
     }
     return path.join(folder, 'active.json')
   })

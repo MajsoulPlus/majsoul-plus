@@ -4,18 +4,18 @@ import { ServerOptions } from 'https'
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
+import { appDataDir, GlobalPath } from './global'
+import resourcePackManager from './resourcepack/manager'
 import {
+  encodeData,
   getLocalURI,
+  getRemoteSource,
   isEncryptRes,
   isPath,
   readFile,
-  encodeData,
-  XOR,
-  writeFile
+  writeFile,
+  XOR
 } from './utils'
-import { GlobalPath, appDataDir } from './global'
-import { getRemoteSource } from './utils/main'
-import resourcePackManager from './resourcepack/manager'
 
 const router = new Router()
 

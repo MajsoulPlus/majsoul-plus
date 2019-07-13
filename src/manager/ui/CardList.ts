@@ -1,9 +1,8 @@
-import { remote } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import i18n from '../../i18n'
-import { removeDirSync, zipDir } from '../../utils'
 import { Card } from './Card'
 import { CheckedboxCard } from './CheckedboxCard'
 
@@ -117,7 +116,7 @@ export class CardList {
     const { extend, typeText } = this.getExportInfo()
     const tempZipName = `${name}-${author}.${extend}`
     const tempZipPath = path.join(os.tmpdir(), tempZipName)
-    zipDir(filesDir, tempZipPath)
+    ipcRenderer.sendSync('zip-dir', filesDir, tempZipPath)
     const userChosenPath = dialog.showSaveDialog({
       title: i18n.text.manager.exportTo(),
       filters: [
@@ -147,7 +146,7 @@ export class CardList {
     const { card } = this.cardList.find(item => item.key === key)
     card.DOM.remove()
     const { filesDir } = card.options
-    removeDirSync(filesDir)
+    ipcRenderer.sendSync('remove-dir', filesDir)
     this.load()
   }
 
