@@ -14,6 +14,7 @@ userData,用户数据,ユーザーデータ
 isUseDefaultPath,使用默认用户库目录,デフォルトのユーザーライブラリディレクトリを使用する
 useAppdataLibrary,使用 AppData 存储扩展资源,AppDataディレクトリを拡張リソースの保存先として使用する
 useHttpServer,使用 http 服务器（不存在证书错误）,http サービスを使用する（証明書エラーがない）
+serverToPlay,游戏服务器（0为国服，1为日服，2为美服）,ゲームサーバー（０は中国サーバー、１は日本サーバー、２は米国サーバー）
 userLibPath,用户库目录,ユーザライブラリディレクトリ
 localVersion,版本,バージョン
 isManagerHide,退出游戏后回到管理器界面,ゲーム終了後、管理画面に戻る

@@ -15,6 +15,7 @@
   "isUseDefaultPath": "Use 'User Library'",
   "useAppdataLibrary": "Use AppData dir to storage resources",
   "useHttpServer": "User http server(avoid certificate error)",
+  "serverToPlay": "Server to play (0 is China server, 1 is Japan server, 2 is America server)",
   "userLibPath": "'User Library' Path",
   "localVersion": "Version",
   "isManagerHide": "Re-open the launcher when the game quit",

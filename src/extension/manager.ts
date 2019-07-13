@@ -221,12 +221,18 @@ class MajsoulPlusExtensionManager {
             'utf-8'
           )
 
-          prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n\n`
+          prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n`
         }
 
         // TODO: 在 data 前后注入扩展
         postfix = ''
-        ctx.body = encodeData(prefix + code.data.toString('utf-8') + postfix)
+        ctx.body =
+          prefix +
+          '\n\n\n' +
+          '// code.js\n' +
+          code.data.toString('utf-8') +
+          '\n\n\n' +
+          postfix
       } else {
         await next()
       }
