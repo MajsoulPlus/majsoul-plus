@@ -45,4 +45,19 @@ copyA('extension')
 copyA('tool')
 copy('configs-user.json')
 
+// 桌布生成工具的字体
+fs.copyFile(
+  './assets/manager/SourceHanSansCN-Light.otf',
+  './dist/bin/tool/desktopCreator/SourceHanSansCN-Light.otf',
+  err => {
+    if (err) console.error(err)
+  }
+)
+fs.copyFile(
+  './assets/manager/SourceHanSansCN-Normal.otf',
+  './dist/bin/tool/desktopCreator/SourceHanSansCN-Normal.otf',
+  err => {
+    if (err) console.error(err)
+  }
+)
 simpleBrowserify('windows/sandbox-preload.js')
