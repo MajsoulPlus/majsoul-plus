@@ -74,6 +74,7 @@ export const Global: MajsoulPlus.Global = {
   ExecutesConfigPath: '',
   ToolConfigPath: '',
   UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
+  LocalCachePath: path.join(appDataDir, GlobalPath.LocalDir),
 
   GameWindowConfig: {
     width: 1280 + 16,

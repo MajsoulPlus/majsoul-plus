@@ -1,8 +1,5 @@
-import { remote, shell } from 'electron'
-import * as path from 'path'
-import { GlobalPath } from '../../global'
+import { remote, shell, ipcRenderer } from 'electron'
 import i18n from '../../i18n'
-import { removeDirSync } from '../../utils'
 const { app } = remote
 
 class AboutPage {
@@ -61,7 +58,7 @@ class AboutPage {
       .querySelector('input[type="button"]')
       .addEventListener('click', evt => {
         evt.preventDefault()
-        removeDirSync(path.join(__dirname, '../', GlobalPath.LocalDir))
+        ipcRenderer.sendSync('clear-cache')
         alert(i18n.text.manager.clearCacheSucceeded())
       })
     return info

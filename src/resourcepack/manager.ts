@@ -169,7 +169,7 @@ class ResourcePackManager {
           // 有则重定向到对应的 to
           for (const rep of pack.replace) {
             if (typeof rep === 'object') {
-              if (rep.from.indexOf(queryPath) !== -1) {
+              if (rep.from.includes(queryPath)) {
                 queryPath = rep.to
                 break
               }

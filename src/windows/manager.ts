@@ -7,6 +7,7 @@ import * as path from 'path'
 import { UserConfigs } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
+import { removeDirSync } from '../utils'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
@@ -65,4 +66,9 @@ export function initManagerWindow() {
   if (process.env.NODE_ENV === 'development') {
     ManagerWindow.webContents.openDevTools({ mode: 'detach' })
   }
+
+  ipcMain.on('clear-cache', (event: Electron.Event) => {
+    removeDirSync(Global.LocalCachePath)
+    event.returnValue = 0
+  })
 }

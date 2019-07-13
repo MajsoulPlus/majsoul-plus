@@ -16,6 +16,7 @@
 | 06  | take-screenshot         | buffer | 对截屏进行保存。                         |
 | 07  | start-tool              | config | 启动 config 对应的工具。                 |
 | 08  | close-manage            | 无     | 关闭 Manager 窗口。                      |
+| 09  | clear-cache             | 无     | 清理缓存（`appDataDir/static/`）         |
 
 ## ipcRenderer
 

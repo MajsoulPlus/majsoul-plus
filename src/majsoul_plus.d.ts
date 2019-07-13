@@ -50,6 +50,7 @@ declare namespace MajsoulPlus {
     ExecutesConfigPath: string
     ToolConfigPath: string
     UserConfigPath: string
+    LocalCachePath: string
 
     GameWindowConfig: BrowserWindowConstructorOptions
     ManagerWindowConfig: BrowserWindowConstructorOptions
