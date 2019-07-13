@@ -3,7 +3,8 @@ import {
   ipcMain,
   Menu,
   MenuItem,
-  BrowserWindowConstructorOptions
+  BrowserWindowConstructorOptions,
+  WebContents
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
@@ -11,8 +12,7 @@ import { UserConfigs } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { httpsServer } from '../server'
-import { takeScreenshot } from '../utils'
-import { initPlayer, shutoffPlayer } from './audioPlayer'
+import { initPlayer, shutoffPlayer, AudioPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
 import i18n from '../i18n'
 
@@ -296,4 +296,16 @@ function getGameWindowTitle(): string {
   }, null)
 
   return titles[index].text
+}
+
+/**
+ * 截取屏幕画面
+ * @param webContents
+ */
+export function takeScreenshot(webContents: WebContents) {
+  AudioPlayer.webContents.send(
+    'audio-play',
+    path.join(__dirname, 'bin/audio/screenshot.mp3')
+  )
+  webContents.send('take-screenshot')
 }

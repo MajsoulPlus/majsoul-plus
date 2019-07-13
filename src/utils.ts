@@ -1,11 +1,9 @@
 import * as AdmZip from 'adm-zip'
 import * as childProcess from 'child_process'
-import { WebContents } from 'electron'
 import fetch, { Response } from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
 import { Global, GlobalPath } from './global'
-import { AudioPlayer } from './windows/audioPlayer'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -150,26 +148,38 @@ export async function getRemoteSource(
   }
 }
 
-/**
- * 递归创建目录，异步方法
- * @author huqiji
- * @description http://huqiji.iteye.com/blog/2278036
- * @param dirname 文件夹路径
- */
-export function mkdirs(dirname: string): Promise<void> {
-  return new Promise(resolve => {
-    fs.stat(dirname, err => {
-      if (!err) {
-        resolve()
-      } else {
-        resolve(
-          this.mkdirs(path.dirname(dirname)).then(() => {
-            return new Promise(res => fs.mkdir(dirname, res))
-          })
-        )
+export function mkdirPromise(dirname: string) {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(dirname, err => {
+      if (err) {
+        reject(err)
       }
+      resolve()
     })
   })
+}
+
+export function statPromise(dirname: string): Promise<fs.Stats> {
+  return new Promise((resolve, reject) => {
+    fs.stat(dirname, (err, stats) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(stats)
+    })
+  })
+}
+
+/**
+ * 递归创建目录，异步方法
+ */
+export async function mkdirs(dirname: string): Promise<void> {
+  try {
+    await statPromise(dirname)
+  } catch (e) {
+    await mkdirs(path.dirname(dirname))
+    await mkdirPromise(dirname)
+  }
 }
 
 /**
@@ -180,7 +190,7 @@ export function mkdirsSync(dirname: string) {
   try {
     fs.statSync(dirname)
   } catch (error) {
-    this.mkdirsSync(path.dirname(dirname))
+    mkdirsSync(path.dirname(dirname))
     fs.mkdirSync(dirname)
   }
 }
@@ -216,30 +226,25 @@ export function getLocalURI(
 
 /**
  * 写入本地文件
- * @param pathToWrite
- * @param data
- * @param encoding
  */
-export function writeFile(
-  pathToWrite: string,
+export async function writeFile(
+  to: string,
   data: Buffer | string,
   encoding = 'binary'
 ): Promise<void> {
+  await mkdirs(path.dirname(to))
   return new Promise((resolve, reject) => {
-    this.mkdirs(path.dirname(pathToWrite)).then(() => {
-      fs.writeFile(pathToWrite, data, encoding, err => {
-        if (err) {
-          reject(err)
-        }
-        resolve()
-      })
+    fs.writeFile(to, data, encoding, err => {
+      if (err) {
+        reject(err)
+      }
+      resolve()
     })
   })
 }
 
 /**
  * 读取本地文件
- * @param filepath
  */
 export function readFile(filepath: string): Promise<Buffer | string> {
   return new Promise((resolve, reject) => {
@@ -278,18 +283,6 @@ export function removeDirSync(dir: string) {
 }
 
 /**
- * 截取屏幕画面
- * @param webContents
- */
-export function takeScreenshot(webContents: WebContents) {
-  AudioPlayer.webContents.send(
-    'audio-play',
-    path.join(__dirname, 'bin/audio/screenshot.mp3')
-  )
-  webContents.send('take-screenshot')
-}
-
-/**
  * 选取一个路径和目标，生成一个压缩文件，返回生成的压缩文件路径
  * @param from 要被打包的文件夹
  * @param to 打包到的路径
@@ -299,18 +292,6 @@ export function zipDir(from: string, to: string) {
   zip.addLocalFolder(from, path.basename(from))
   zip.writeZip(to)
   return to
-}
-
-export function fsStat(dir: string): Promise<fs.Stats> {
-  return new Promise((resolve, reject) => {
-    fs.stat(dir, (err, stat) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(stat)
-      }
-    })
-  })
 }
 
 // https://stackoverflow.com/a/26038979
