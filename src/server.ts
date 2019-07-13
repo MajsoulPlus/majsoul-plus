@@ -5,8 +5,8 @@ import { ServerOptions } from 'https'
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
-import { appDataDir, GlobalPath } from './global'
-import resourcePackManager from './resourcepack/manager'
+import ExtensionManager from './extension/manager'
+import ResourcePackManager from './resourcepack/manager'
 import {
   encodeData,
   getLocalURI,
@@ -24,17 +24,16 @@ const router = new Router()
 export const Server = new Koa()
 
 export function LoadServer() {
-  // Resource Packs
-  resourcePackManager.register(Server, router)
+  // 资源包
+  ResourcePackManager.register(Server, router)
 
-  // TODO: Load extensions here
-  Server.use(async (ctx, next) => {
-    await next()
-  })
+  // 扩展
+  ExtensionManager.register(Server, router)
 
-  // Routers
+  // 注册路由
   Server.use(router.routes())
 
+  // 默认从远端获取文件
   Server.use(async ctx => {
     const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
     const isEncrypted = isEncryptRes(originalUrl)
@@ -79,7 +78,6 @@ export function LoadServer() {
   })
 }
 
-// tslint:disable-next-line
 export const serverOptions: ServerOptions = {
   key: fs.readFileSync(path.join(__dirname, 'certificate/key.pem')),
   cert: fs.readFileSync(path.join(__dirname, 'certificate/cert.crt'))

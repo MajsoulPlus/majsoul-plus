@@ -115,7 +115,7 @@ export function isPath(originalUrl: string): boolean {
  */
 export async function getRemoteSource(
   originalUrl: string,
-  encrypt: boolean,
+  encrypt = false,
   encoding: BufferEncoding = 'binary'
 ): Promise<{
   res: Response

@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import resourcePackmanager from './manager'
+import ResourcePackmanager from './manager'
 
 export const defaultResourcePack: MajsoulPlus.ResourcePack = {
   id: 'majsoul_plus',
@@ -27,5 +27,5 @@ export function LoadResourcePack() {
       encoding: 'utf-8'
     })
   )
-  enabled.forEach(resourcepack => resourcePackmanager.use(resourcepack))
+  enabled.forEach(resourcepack => ResourcePackmanager.use(resourcepack))
 }

@@ -1,12 +1,19 @@
 import * as Ajv from 'ajv'
 import * as fs from 'fs'
-import * as compose from 'koa-compose'
+import * as Koa from 'koa'
+import * as Router from 'koa-router'
 import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { fillObject } from '../utils'
-import { GameWindow } from '../windows/game'
+import {
+  encodeData,
+  fillObject,
+  getLocalURI,
+  getRemoteSource,
+  readFile,
+  writeFile
+} from '../utils'
 import { defaultExtension } from './extension'
 import * as schema from './schema.json'
 
@@ -17,7 +24,6 @@ class MajsoulPlusExtensionManager {
   } = {}
   private extensionConfigs: MajsoulPlus.Extension[]
   private extensionMiddlewares: MajsoulPlus.ExtensionMiddleware[] = []
-  readonly version: string = '1.0.0'
 
   constructor() {
     this.loadedExtensions['majsoul_plus'] = semver.parse(Global.version)
@@ -176,11 +182,39 @@ class MajsoulPlusExtensionManager {
     return this
   }
 
-  inject() {
-    const fn = compose(this.extensionMiddlewares)
-    // TODO: Implement on('extension-context'), communicate between threads
-    GameWindow.webContents.send('extension-context', undefined)
-    GameWindow.webContents.send('extension-middlewares', fn)
+  register(server: Koa, router: Router) {
+    server.use(async (ctx, next) => {
+      // 只针对 code.js 进行特殊处理 注入扩展
+      const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
+      if (path.basename(originalUrl) === 'code.js') {
+        const localPath = getLocalURI(originalUrl)
+        let data: Buffer | string
+        if (fs.existsSync(localPath)) {
+          // 文件存在，直接读取文件
+          try {
+            data = await readFile(localPath)
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        if (data === undefined) {
+          // 文件不存在或无法读取，则从服务器获取
+          try {
+            const remoteSource = await getRemoteSource(originalUrl)
+            ctx.res.statusCode = remoteSource.res.status
+            writeFile(localPath, remoteSource.data)
+            data = remoteSource.data
+          } catch (e) {
+            console.error(e)
+            ctx.res.end()
+          }
+        }
+        // TODO: 在 data 前后注入扩展
+        ctx.body = encodeData(data)
+      } else {
+        await next()
+      }
+    })
   }
 
   getDetails() {
@@ -188,5 +222,4 @@ class MajsoulPlusExtensionManager {
   }
 }
 
-// tslint:disable-next-line
-export const ExtensionManager = new MajsoulPlusExtensionManager()
+export default new MajsoulPlusExtensionManager()

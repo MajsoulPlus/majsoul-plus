@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { ExtensionManager } from './manager'
+import ExtensionManager from './manager'
 import { ipcMain, Event } from 'electron'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
@@ -22,7 +22,7 @@ export const defaultExtension: MajsoulPlus.Extension = {
   dependencies: {},
   preview: 'preview.png',
   entry: 'script.js',
-  sync: false,
+  loadBeforeGame: false,
   executePreferences: defaultExtensionPermission
 }
 
