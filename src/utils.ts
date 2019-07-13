@@ -179,7 +179,7 @@ export async function mkdirs(dirname: string): Promise<void> {
     await statPromise(dirname)
   } catch (e) {
     await mkdirs(path.dirname(dirname))
-    await mkdirPromise(dirname)
+    await mkdirPromise(dirname).catch(() => {})
   }
 }
 

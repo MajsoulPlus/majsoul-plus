@@ -157,7 +157,7 @@ class ResourcePackManager {
         `/majsoul_plus/resourcepack/${packName}/*`,
         async (ctx, next) => {
           let queryPath = ctx.path.substr(
-            `${true ? '/0' : ''}/majsoul_plus/resourcepack/${packName}/`.length
+            `/majsoul_plus/resourcepack/${packName}/`.length
           )
           const encrypted = isEncryptRes(queryPath)
 
@@ -193,44 +193,38 @@ class ResourcePackManager {
     })
 
     // 修改资源映射表
-    router.get(
-      // TODO: 兼容非国服 将此处 true 改为判断是否国服
-      `${true ? '/0' : ''}/resversion([^w]+)w.json`,
-      async (ctx, next) => {
-        ctx.response.type = 'application/json'
-        const remote = await getRemoteSource(ctx.path, false)
+    router.get(`/resversion([^w]+)w.json`, async (ctx, next) => {
+      ctx.response.type = 'application/json'
+      const remote = await getRemoteSource(ctx.path, false)
 
-        if (remote.res.status !== 200) {
-          ctx.res.statusCode = remote.res.status
-          ctx.body = {
-            code: remote.res.status,
-            message: remote.data
-          }
-        } else {
-          ctx.res.statusCode = remote.res.status
-          const resMap = JSON.parse(remote.data as string)
-
-          this.resourcePacks.forEach(pack => {
-            pack.replace.forEach(rep => {
-              if (typeof rep === 'string') {
-                resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
-              } else {
-                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-                const from =
-                  typeof repo.from === 'string' ? [repo.from] : repo.from
-
-                from.forEach(rep => {
-                  resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
-                    pack.id
-                  }`
-                })
-              }
-            })
-          })
-          ctx.body = JSON.stringify(resMap, null, 2)
+      if (remote.res.status !== 200) {
+        ctx.res.statusCode = remote.res.status
+        ctx.body = {
+          code: remote.res.status,
+          message: remote.data
         }
+      } else {
+        ctx.res.statusCode = remote.res.status
+        const resMap = JSON.parse(remote.data as string)
+
+        this.resourcePacks.forEach(pack => {
+          pack.replace.forEach(rep => {
+            if (typeof rep === 'string') {
+              resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+            } else {
+              const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+              const from =
+                typeof repo.from === 'string' ? [repo.from] : repo.from
+
+              from.forEach(rep => {
+                resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+              })
+            }
+          })
+        })
+        ctx.body = JSON.stringify(resMap, null, 2)
       }
-    )
+    })
   }
 }
 
