@@ -214,8 +214,8 @@ class MajsoulPlusExtensionManager {
       if (path.basename(originalUrl) === 'code.js') {
         const code = await getRemoteOrCachedFile(ctx.request.originalUrl, false)
 
-        // 针对日服的 Yo 对象处理
-        if (UserConfigs.userData.serverToPlay === 1) {
+        // 针对非国服的 Yo 对象处理
+        if (UserConfigs.userData.serverToPlay !== 0) {
           const yo = await fetchAnySite(
             'https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js',
             'utf-8'
