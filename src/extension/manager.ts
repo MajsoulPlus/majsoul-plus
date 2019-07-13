@@ -6,14 +6,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import {
-  encodeData,
-  fillObject,
-  getLocalURI,
-  getRemoteSource,
-  readFile,
-  writeFile
-} from '../utils'
+import { encodeData, fillObject, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
@@ -211,30 +204,10 @@ class MajsoulPlusExtensionManager {
       // 只针对 code.js 进行特殊处理 注入扩展
       const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
       if (path.basename(originalUrl) === 'code.js') {
-        const localPath = getLocalURI(originalUrl)
-        let data: Buffer | string
-        if (fs.existsSync(localPath)) {
-          // 文件存在，直接读取文件
-          try {
-            data = await readFile(localPath)
-          } catch (e) {
-            console.error(e)
-          }
-        }
-        if (data === undefined) {
-          // 文件不存在或无法读取，则从服务器获取
-          try {
-            const remoteSource = await getRemoteSource(originalUrl)
-            ctx.res.statusCode = remoteSource.res.status
-            writeFile(localPath, remoteSource.data)
-            data = remoteSource.data
-          } catch (e) {
-            console.error(e)
-            ctx.res.end()
-          }
-        }
+        const code = await getRemoteOrCachedFile(ctx.request.originalUrl, false)
+
         // TODO: 在 data 前后注入扩展
-        ctx.body = encodeData(data)
+        ctx.body = encodeData(code.data)
       } else {
         await next()
       }

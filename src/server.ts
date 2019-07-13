@@ -7,16 +7,7 @@ import * as Router from 'koa-router'
 import * as path from 'path'
 import ExtensionManager from './extension/manager'
 import ResourcePackManager from './resourcepack/manager'
-import {
-  encodeData,
-  getLocalURI,
-  getRemoteSource,
-  isEncryptRes,
-  isPath,
-  readFile,
-  writeFile,
-  XOR
-} from './utils'
+import { getRemoteOrCachedFile } from './utils'
 
 const router = new Router()
 
@@ -35,46 +26,9 @@ export function LoadServer() {
 
   // 默认从远端获取文件
   Server.use(async ctx => {
-    const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
-    const isEncrypted = isEncryptRes(originalUrl)
-    const isRoutePath = isPath(originalUrl)
-    const localPath = getLocalURI(originalUrl)
-
-    let originData: string | Buffer
-
-    if (!isRoutePath && fs.existsSync(localPath)) {
-      try {
-        originData = await readFile(localPath)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
-    // 当上述 readFile 出现异常时或上述 if 条件不符合时向远端服务器请求
-    if (originData === undefined) {
-      try {
-        const remoteSource = await getRemoteSource(
-          originalUrl,
-          isEncrypted && !isRoutePath
-        )
-        ctx.res.statusCode = remoteSource.res.status
-        if (!isRoutePath && remoteSource.res.status.toString()[0] !== '4') {
-          writeFile(localPath, remoteSource.data)
-        }
-        originData = remoteSource.data
-      } catch (e) {
-        console.error(e)
-        ctx.res.end()
-      }
-    }
-
-    let responseData = isRoutePath
-      ? encodeData(originData).toString('utf-8')
-      : encodeData(originData)
-    if (isEncrypted) {
-      responseData = XOR(responseData as Buffer)
-    }
-    ctx.body = responseData
+    const resp = await getRemoteOrCachedFile(ctx.request.originalUrl)
+    ctx.res.statusCode = resp.code
+    ctx.body = resp.data
   })
 }
 

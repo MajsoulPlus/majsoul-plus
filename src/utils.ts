@@ -3,8 +3,8 @@ import * as childProcess from 'child_process'
 import fetch, { Response } from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
-import { Global, GlobalPath, appDataDir, RemoteDomains } from './global'
 import { UserConfigs } from './config'
+import { appDataDir, Global, GlobalPath, RemoteDomains } from './global'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -219,6 +219,60 @@ export function getLocalURI(originalUrl: string): string {
     UserConfigs.userData.serverToPlay.toString(),
     /^([^?]+)(\?.*)?$/.exec(originalUrl)[1]
   )
+}
+
+export async function getRemoteOrCachedFile(
+  url: string,
+  encode = true
+): Promise<{ code: number; data: Buffer | string }> {
+  const originalUrl = url.replace(/^\/0\//g, '')
+  const isEncrypted = isEncryptRes(originalUrl)
+  const isRoutePath = isPath(originalUrl)
+  const localPath = getLocalURI(originalUrl)
+  const ret: { code: number; data: Buffer | string } = {
+    code: 0,
+    data: ''
+  }
+
+  let originData: string | Buffer
+
+  if (!isRoutePath && fs.existsSync(localPath)) {
+    try {
+      originData = await readFile(localPath)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // 当上述 readFile 出现异常时或上述 if 条件不符合时向远端服务器请求
+  if (originData === undefined) {
+    try {
+      const remoteSource = await getRemoteSource(
+        originalUrl,
+        isEncrypted && !isRoutePath
+      )
+      ret.code = remoteSource.res.status
+      if (!isRoutePath && remoteSource.res.status.toString()[0] !== '4') {
+        writeFile(localPath, remoteSource.data)
+      }
+      originData = remoteSource.data
+    } catch (e) {
+      return { code: 403, data: e }
+    }
+  }
+  let responseData: Buffer | string
+  if (encode) {
+    responseData = isRoutePath
+      ? encodeData(originData).toString('utf-8')
+      : encodeData(originData)
+    if (isEncrypted) {
+      responseData = XOR(responseData as Buffer)
+    }
+  } else {
+    responseData = originData
+  }
+  ret.data = responseData
+  return ret
 }
 
 /**
