@@ -1,21 +1,6 @@
 import * as fs from 'fs'
 import { Global } from '../global'
-import { MajsoulPlus } from '../majsoul_plus'
 import ResourcePackmanager from './manager'
-
-export const defaultResourcePack: MajsoulPlus.ResourcePack = {
-  id: 'majsoul_plus',
-  version: '2.0.0',
-  name: 'Majsoul Plus',
-  author: 'Majsoul Plus Team',
-  description: 'No description provided.',
-  preview: 'preview.png',
-
-  dependencies: {},
-  replace: []
-}
-
-Object.freeze(defaultResourcePack)
 
 export function LoadResourcePack() {
   // 从配置文件(active.json) 加载资源包

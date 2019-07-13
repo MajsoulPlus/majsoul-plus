@@ -8,8 +8,21 @@ import { appDataDir, GlobalPath } from '../global.js'
 import { MajsoulPlus } from '../majsoul_plus'
 import { getRemoteSource } from '../utils'
 import { fillObject, isEncryptRes, readFile, XOR } from '../utils.js'
-import { defaultResourcePack } from './resourcepack.js'
 import * as schema from './schema.json'
+
+const defaultResourcePack: MajsoulPlus.ResourcePack = {
+  id: 'majsoul_plus',
+  version: '2.0.0',
+  name: 'Majsoul Plus',
+  author: 'Majsoul Plus Team',
+  description: 'No description provided.',
+  preview: 'preview.png',
+
+  dependencies: {},
+  replace: []
+}
+
+Object.freeze(defaultResourcePack)
 
 class ResourcePackManager {
   private resourcePacks: Map<string, MajsoulPlus.ResourcePack> = new Map()

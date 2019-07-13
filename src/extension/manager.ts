@@ -14,8 +14,32 @@ import {
   readFile,
   writeFile
 } from '../utils'
-import { defaultExtension } from './extension'
 import * as schema from './schema.json'
+
+export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
+  nodeRequire: false,
+  document: false,
+  localStorage: false,
+  XMLHttpRequest: false,
+  WebSocket: false,
+  writeableWindowObject: false
+}
+
+export const defaultExtension: MajsoulPlus.Extension = {
+  id: 'majsoul_plus',
+  version: '2.0.0',
+  name: 'Majsoul Plus',
+  author: 'Majsoul Plus Team',
+  description: 'No description provided.',
+  dependencies: {},
+  preview: 'preview.png',
+  entry: 'script.js',
+  loadBeforeGame: false,
+  executePreferences: defaultExtensionPermission
+}
+
+Object.freeze(defaultExtension)
+Object.freeze(defaultExtensionPermission)
 
 class MajsoulPlusExtensionManager {
   private loadedExtensions: { [extension: string]: semver.SemVer } = {}
