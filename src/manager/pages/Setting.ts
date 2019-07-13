@@ -162,7 +162,7 @@ class Setting {
   private saveConfig = () => {
     return new Promise((resolve, reject) => {
       try {
-        ipcRenderer.send('update-user-config', Global.UserConfigPath)
+        ipcRenderer.send('update-user-config', this.userConfig)
         resolve()
       } catch (error) {
         reject(error)

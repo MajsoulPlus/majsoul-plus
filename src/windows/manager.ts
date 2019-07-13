@@ -7,7 +7,7 @@ import * as path from 'path'
 import { UserConfigs, SaveConfigJson } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { removeDirSync, zipDir } from '../utils'
+import { removeDirSync, zipDir, updateObject } from '../utils'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
@@ -84,6 +84,7 @@ export function initManagerWindow() {
   ipcMain.on(
     'update-user-config',
     (event: Electron.Event, config: MajsoulPlus.UserConfig) => {
+      updateObject(UserConfigs, config)
       SaveConfigJson(config)
 
       ManagerWindow.setContentSize(
