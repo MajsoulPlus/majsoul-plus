@@ -18,8 +18,13 @@ InitGlobal()
 // 加载资源包
 LoadResourcePack()
 
-// TODO: 将这一步移至启动游戏后
+// 加载扩展
 LoadExtension()
+
+// 代理设置
+if (UserConfigs.chromium.proxyUrl !== '') {
+  app.commandLine.appendSwitch('proxy-server', UserConfigs.chromium.proxyUrl)
+}
 
 // 禁用/启用进程内 GPU 处理
 if (UserConfigs.chromium.isInProcessGpuOn) {

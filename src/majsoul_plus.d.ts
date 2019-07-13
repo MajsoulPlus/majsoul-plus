@@ -22,6 +22,7 @@ declare namespace MajsoulPlus {
     isHardwareAccelerationDisable: boolean
     isInProcessGpuOn: boolean
     isIgnoreGpuBlacklist: boolean
+    proxyUrl: string
   }
 
   export interface UserDataConfig {

@@ -14,7 +14,8 @@
   "chromium": {
     "isHardwareAccelerationDisable": false,
     "isInProcessGpuOn": true,
-    "isIgnoreGpuBlacklist": false
+    "isIgnoreGpuBlacklist": false,
+    "proxyUrl": ""
   },
   "userData": {
     "useAppdataLibrary": false,

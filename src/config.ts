@@ -23,7 +23,8 @@ const defaultUpdateConfig: MajsoulPlus.UserUpdateConfig = {
 const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
   isHardwareAccelerationDisable: false,
   isInProcessGpuOn: true,
-  isIgnoreGpuBlacklist: false
+  isIgnoreGpuBlacklist: false,
+  proxyUrl: ''
 }
 
 const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
