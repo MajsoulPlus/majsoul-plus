@@ -100,4 +100,12 @@ export function initToolManager() {
   ipcMain.on('get-tool-details', (event: Electron.Event) => {
     event.returnValue = {}
   })
+
+  ipcMain.on('zip-tool', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
+
+  ipcMain.on('remove-tool', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
 }

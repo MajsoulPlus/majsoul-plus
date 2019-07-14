@@ -21,4 +21,12 @@ export function LoadExtension() {
   ipcMain.on('get-extension-details', (event: Event) => {
     event.returnValue = ExtensionManager.getDetails()
   })
+
+  ipcMain.on('zip-extension', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
+
+  ipcMain.on('remove-extension', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
 }

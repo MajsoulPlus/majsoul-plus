@@ -18,4 +18,12 @@ export function LoadResourcePack() {
   ipcMain.on('get-resourcepack-details', (event: Electron.Event) => {
     event.returnValue = {}
   })
+
+  ipcMain.on('zip-resourcepack', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
+
+  ipcMain.on('remove-resourcepack', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
 }
