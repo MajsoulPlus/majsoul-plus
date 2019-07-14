@@ -10,7 +10,7 @@ class Extension extends CardList {
   }
 
   protected handleCheckedChange = (key: string) => {
-    //
+    // TODO
   }
 }
 

@@ -65,6 +65,7 @@ class ResourceManager {
   private static initRPC() {
     ipcRenderer.on('change-config', (event: Electron.Event, data) => {
       const obj = data
+      // FIXME
       // ResourceManager.options.userConfig[obj.mainKey][obj.key] = obj.value
     })
 
@@ -148,6 +149,7 @@ class ResourceManager {
       '.mspe': ResourceManager.extensionRootDir,
       '.mspt': ResourceManager.toolRootDir
     }
+    // FIXME
     // dialog.showOpenDialog(
     //   {
     //     title: i18n.text.manager.installFrom(),

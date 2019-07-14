@@ -10,7 +10,7 @@ class ResourcePack extends CardList {
   }
 
   protected handleCheckedChange = (key: string) => {
-    //
+    // TODO
   }
 }
 

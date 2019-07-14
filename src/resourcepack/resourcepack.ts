@@ -20,10 +20,12 @@ export function LoadResourcePack() {
   })
 
   ipcMain.on('zip-resourcepack', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 
   ipcMain.on('remove-resourcepack', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 }

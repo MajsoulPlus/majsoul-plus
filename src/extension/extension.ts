@@ -23,10 +23,12 @@ export function LoadExtension() {
   })
 
   ipcMain.on('zip-extension', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 
   ipcMain.on('remove-extension', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 }

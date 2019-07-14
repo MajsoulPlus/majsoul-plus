@@ -141,10 +141,12 @@ export function initToolManager() {
   })
 
   ipcMain.on('zip-tool', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 
   ipcMain.on('remove-tool', (event: Electron.Event) => {
+    // TODO
     event.returnValue = {}
   })
 }
