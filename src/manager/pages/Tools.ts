@@ -9,7 +9,9 @@ class Tool extends CardList {
     ipcRenderer.send('start-tool', cardItem.card.options)
   }
 
-  generateCardFromMetadata(info: MajsoulPlus_Manager.CardMetadataWithEnable) {
+  generateCardFromMetadata = (
+    info: MajsoulPlus_Manager.CardMetadataWithEnable
+  ) => {
     const card = new ButtonCard(info.metadata)
     const id = info.metadata.id
     this.cardListItemMap.set(id, { ...info, id, card })

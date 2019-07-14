@@ -30,6 +30,7 @@ export class CardList {
     details: MajsoulPlus_Manager.GetDetailMetadataResponse
   ) => {
     for (const id of Object.keys(details)) {
+      details[id].metadata.type = this.name
       this.generateCardFromMetadata(details[id])
     }
   }
@@ -43,9 +44,9 @@ export class CardList {
     })
   }
 
-  protected generateCardFromMetadata(
+  protected generateCardFromMetadata = (
     info: MajsoulPlus_Manager.CardMetadataWithEnable
-  ) {
+  ) => {
     const card = new CheckedboxCard(info.metadata, info.enabled)
     const id = info.metadata.id
     this.cardListItemMap.set(id, { ...info, id, card })
