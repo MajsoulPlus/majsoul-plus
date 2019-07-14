@@ -4,6 +4,7 @@
   "name": "解锁所有语音",
   "author": "Majsoul Plus Team",
   "description": "可以在本地解锁全部报番型、主菜单交互语音。\n让您获得完整麻将体验。",
+  "preview": "preview.jpg",
   "entry": "script.js",
   "executePreferences": {
     "document": false,
