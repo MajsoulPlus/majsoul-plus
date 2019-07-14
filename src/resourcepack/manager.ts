@@ -230,15 +230,15 @@ class ResourcePackManager {
       ctx.response.type = 'application/json'
       const remote = await getRemoteSource(ctx.path, false)
 
-      if (remote.res.status !== 200) {
-        ctx.res.statusCode = remote.res.status
+      if (remote.code !== 200) {
+        ctx.res.statusCode = remote.code
         ctx.body = {
-          code: remote.res.status,
+          code: remote.code,
           message: remote.data
         }
       } else {
-        ctx.res.statusCode = remote.res.status
-        const resMap = JSON.parse(remote.data as string)
+        ctx.res.statusCode = remote.code
+        const resMap = JSON.parse(remote.data.toString('utf-8'))
 
         this.resourcePacks.forEach(pack => {
           pack.replace.forEach((rep: MajsoulPlus.ResourcePackReplaceEntry) => {

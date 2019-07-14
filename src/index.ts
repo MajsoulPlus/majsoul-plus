@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu } from 'electron'
+import { app, ipcMain } from 'electron'
 import * as os from 'os'
 import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
@@ -85,9 +85,6 @@ app.on(
 )
 
 app.on('ready', () => {
-  // 清空菜单
-  Menu.setApplicationMenu(null)
-
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
     // 加载服务器路由规则

@@ -1,13 +1,14 @@
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  ipcMain
+  ipcMain,
+  Menu
 } from 'electron'
 import * as path from 'path'
-import { UserConfigs, SaveConfigJson } from '../config'
+import { SaveConfigJson, UserConfigs } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { removeDirSync, zipDir, updateObject } from '../utils'
+import { removeDirSync, updateObject, zipDir } from '../utils'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
@@ -18,6 +19,9 @@ export const ManagerWindowStatus: MajsoulPlus.WindowStatus = {
 }
 
 export function initManagerWindow() {
+  // 清空菜单
+  Menu.setApplicationMenu(null)
+
   const config: BrowserWindowConstructorOptions = {
     ...Global.ManagerWindowConfig
   }

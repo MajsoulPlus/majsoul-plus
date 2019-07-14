@@ -1,6 +1,6 @@
 import * as AdmZip from 'adm-zip'
 import * as childProcess from 'child_process'
-import fetch, { Response } from 'electron-fetch'
+import fetch from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
 import { UserConfigs } from './config'
@@ -108,20 +108,14 @@ export function isPath(originalUrl: string): boolean {
 
 /**
  * 读取远程的官方资源数据
- * @param originalUrl 原始请求的相对路径
+ * @param url 原始请求的相对路径
  * @param encrypt 是否是加密数据
- * @param encoding 请求的数据格式，默认是 binary
  */
 export async function getRemoteSource(
-  originalUrl: string,
-  encrypt = false,
-  encoding: BufferEncoding = 'binary'
-): Promise<{
-  res: Response
-  statusCode?: number
-  data: Buffer | string
-}> {
-  const remoteUrl = getRemoteUrl(originalUrl)
+  url: string,
+  encrypt = false
+): Promise<{ code: number; data: Buffer }> {
+  const remoteUrl = getRemoteUrl(url)
   const resp = await fetch(remoteUrl, {
     headers: {
       'User-Agent': Global.HttpGetUserAgent
@@ -130,20 +124,17 @@ export async function getRemoteSource(
 
   const statusCode = resp.status
   const fileData = await resp.buffer()
-  if (statusCode < 200 || statusCode >= 400) {
-    console.warn(
-      `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
-    )
-    return {
-      res: resp,
-      data: (encrypt ? XOR(fileData) : fileData).toString(encoding)
-    }
-  } else if (statusCode === 302 || statusCode === 301) {
-    return getRemoteSource(resp.headers['location'], encrypt, encoding)
+  if (statusCode === 302 || statusCode === 301) {
+    return getRemoteSource(resp.headers['location'], encrypt)
   } else {
+    if (statusCode < 200 || statusCode >= 400) {
+      console.warn(
+        `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
+      )
+    }
     return {
-      res: resp,
-      data: (encrypt ? XOR(fileData) : fileData).toString(encoding)
+      code: resp.status,
+      data: encrypt ? XOR(fileData) : fileData
     }
   }
 }
@@ -213,18 +204,19 @@ export function getLocalURI(originalUrl: string): string {
 // 获取资源，当本地存在时优先使用本地缓存
 export async function getRemoteOrCachedFile(
   url: string,
-  encode = true
+  encode = true,
+  callback: (data: Buffer) => Buffer = data => data
 ): Promise<{ code: number; data: Buffer | string }> {
   const originalUrl = url.replace(/^\/0\//g, '')
   const isEncrypted = isEncryptRes(originalUrl)
   const isRoutePath = isPath(originalUrl)
   const localPath = getLocalURI(originalUrl)
-  const ret: { code: number; data: Buffer | string } = {
+  const ret: { code: number; data: Buffer } = {
     code: 0,
-    data: ''
+    data: undefined
   }
 
-  let originData: string | Buffer
+  let originData: Buffer
 
   if (!isRoutePath && fs.existsSync(localPath)) {
     try {
@@ -241,20 +233,20 @@ export async function getRemoteOrCachedFile(
         originalUrl,
         isEncrypted && !isRoutePath
       )
-      ret.code = remoteSource.res.status
-      if (!isRoutePath && remoteSource.res.status.toString()[0] !== '4') {
-        writeFile(localPath, remoteSource.data)
+      ret.code = remoteSource.code
+      let data = remoteSource.data
+      if (!isRoutePath && remoteSource.code.toString()[0] !== '4') {
+        data = callback(remoteSource.data)
+        writeFile(localPath, data)
       }
-      originData = remoteSource.data
+      originData = data
     } catch (e) {
       return { code: 403, data: e }
     }
   }
-  let responseData: Buffer | string
+  let responseData: Buffer
   if (encode) {
-    responseData = isRoutePath
-      ? encodeData(originData).toString('utf-8')
-      : encodeData(originData)
+    responseData = encodeData(originData)
     if (isEncrypted) {
       responseData = XOR(responseData as Buffer)
     }
@@ -293,7 +285,7 @@ export async function writeFile(
 }
 
 // 读取本地文件
-export function readFile(filepath: string): Promise<Buffer | string> {
+export function readFile(filepath: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     fs.readFile(filepath, (err, data) => {
       if (err) {

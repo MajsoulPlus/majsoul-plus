@@ -4,11 +4,11 @@ import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
 import * as semver from 'semver'
+import { UserConfigs } from '../config'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { fillObject, getRemoteOrCachedFile, fetchAnySite } from '../utils'
+import { fetchAnySite, fillObject, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
-import { UserConfigs } from '../config'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
@@ -264,7 +264,15 @@ class MajsoulPlusExtensionManager {
         if (this.codejs === '') {
           const code = await getRemoteOrCachedFile(
             ctx.request.originalUrl,
-            false
+            false,
+            data =>
+              UserConfigs.userData.serverToPlay === 0
+                ? Buffer.from(
+                    data
+                      .toString('utf-8')
+                      .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
+                  )
+                : data
           )
 
           this.extensionScripts.forEach((scripts, ext) => {
