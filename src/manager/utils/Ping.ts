@@ -2,7 +2,7 @@ import { Network } from './Network'
 import * as tcpPing from 'tcp-ping'
 import i18n from '../../i18n'
 
-export class Ping {
+export default class Ping {
   server: string
   services: MajsoulPlus_Manager.RegionUrls
   currentService = null
