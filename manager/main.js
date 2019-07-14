@@ -213,8 +213,8 @@ class Manager {
   }
 }
 
-const springFestivalExtend = require('./extra/springFestivalTheme')
-const darkMode = require('./extra/darkMode')
+const springFestivalExtend = require('./extra/springFestivalTheme/main').default
+const darkMode = require('./extra/darkMode/main').default
 
 const options = {
   userConfig: (() => {
