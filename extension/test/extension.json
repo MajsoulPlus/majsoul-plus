@@ -1,9 +1,0 @@
-{
-  "id": "test",
-  "version": "0.0.1-SNAPSHOT+test",
-  "name": "test",
-  "author": ["a", "b"],
-  "dependencies": {
-    "majsoul_plus": "^2.0.0"
-  }
-}

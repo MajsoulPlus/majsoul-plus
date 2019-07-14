@@ -26,14 +26,33 @@ function simpleBrowserify(dir) {
 }
 
 // Copy files
-function copy(from, to = from) {
-  ncp(path.resolve('./', from), path.resolve(dest, to), err =>
-    err ? console.error(err) : null
-  )
+function copy(from, to = from, callback = () => {}) {
+  ncp(path.resolve('./', from), path.resolve(dest, to), err => {
+    if (err) console.error(err)
+    else callback()
+  })
 }
 
-function copyA(from, parent = 'bin') {
-  copy(from, parent + '/' + from)
+function copyA(from, parent = 'bin', callback = () => {}) {
+  copy(from, parent + '/' + from, callback)
+}
+
+function copyDesktopCreatorFonts() {
+  // 桌布生成工具的字体
+  fs.copyFile(
+    './assets/manager/SourceHanSansCN-Light.otf',
+    './dist/bin/tool/desktopCreator/SourceHanSansCN-Light.otf',
+    err => {
+      if (err) console.error(err)
+    }
+  )
+  fs.copyFile(
+    './assets/manager/SourceHanSansCN-Normal.otf',
+    './dist/bin/tool/desktopCreator/SourceHanSansCN-Normal.otf',
+    err => {
+      if (err) console.error(err)
+    }
+  )
 }
 
 copy('assets', '')
@@ -42,22 +61,7 @@ copy('i18n')
 copyA('execute')
 copyA('resourcepack')
 copyA('extension')
-copyA('tool')
+copyA('tool', 'bin', copyDesktopCreatorFonts)
 copy('configs-user.json')
 
-// 桌布生成工具的字体
-fs.copyFile(
-  './assets/manager/SourceHanSansCN-Light.otf',
-  './dist/bin/tool/desktopCreator/SourceHanSansCN-Light.otf',
-  err => {
-    if (err) console.error(err)
-  }
-)
-fs.copyFile(
-  './assets/manager/SourceHanSansCN-Normal.otf',
-  './dist/bin/tool/desktopCreator/SourceHanSansCN-Normal.otf',
-  err => {
-    if (err) console.error(err)
-  }
-)
 simpleBrowserify('windows/sandbox-preload.js')

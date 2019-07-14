@@ -6,12 +6,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import {
-  encodeData,
-  fillObject,
-  getRemoteOrCachedFile,
-  fetchAnySite
-} from '../utils'
+import { fillObject, getRemoteOrCachedFile, fetchAnySite } from '../utils'
 import * as schema from './schema.json'
 import { UserConfigs } from '../config'
 
@@ -43,46 +38,54 @@ Object.freeze(defaultExtensionPermission)
 class MajsoulPlusExtensionManager {
   private loadedExtensions: { [extension: string]: semver.SemVer } = {}
   private loadedExtensionDetails: {
-    [extension: string]: MajsoulPlus.Extension
+    [extension: string]: {
+      enabled: boolean
+      extension: MajsoulPlus.Extension
+    }
   } = {}
-  private extensionConfigs: MajsoulPlus.Extension[]
-  private extensionMiddlewares: MajsoulPlus.ExtensionMiddleware[] = []
+  private extensionScripts: Map<string, string[]> = new Map()
+  private codejs = ''
 
   constructor() {
     this.loadedExtensions['majsoul_plus'] = semver.parse(Global.version)
-    this.loadedExtensionDetails['majsoul_plus'] = defaultExtension
+    this.loadedExtensionDetails['majsoul_plus'] = {
+      enabled: true,
+      extension: defaultExtension
+    }
   }
 
   use(ext: string) {
-    // extension id check
+    // 检查目录 ID 是否合法
     if (!ext.match(/^[_a-zA-Z]+$/)) {
-      console.error(`failed to load extension ${ext}: invalid extension id `)
+      console.error(
+        `failed to load extension ${ext}: invalid extension folder path(id) `
+      )
       return this
     }
 
     const folder = path.resolve(appDataDir, GlobalPath.ExtensionDir, ext)
     const cfg = path.resolve(folder, 'extension.json')
 
-    // folder
+    // 检查扩展目录存在性
     if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
       console.error(`failed to load extension ${ext}: ${folder} not found`)
       return this
     }
 
-    // configuration file
+    // 检查配置文件存在性
     if (!fs.existsSync(cfg) || !fs.statSync(cfg).isFile()) {
       console.error(`failed to load extension ${ext}: ${cfg} not found`)
       return this
     }
 
-    // get extension
+    // 加载扩展配置文件
     const extension: MajsoulPlus.Extension = JSON.parse(
       fs.readFileSync(cfg, {
         encoding: 'utf-8'
       })
     )
 
-    // fill default value
+    // 向空缺的字段填入默认值
     fillObject(extension, defaultExtension)
 
     // JSON Schema
@@ -95,13 +98,19 @@ class MajsoulPlusExtensionManager {
       return this
     }
 
-    // id uniqueness check
+    // ID 唯一性检查
     if (this.loadedExtensions[extension.id]) {
       console.error(`failed to load extension ${ext}: extension already loaded`)
       return this
     }
 
-    // version validate
+    // 加载到这一步时可以显示在 Manager 内
+    this.loadedExtensionDetails[ext] = {
+      enabled: false,
+      extension
+    }
+
+    // 检查扩展的 version 字段是否合法
     if (!semver.valid(extension.version)) {
       console.error(
         `failed to load extension ${ext}: broken version ${extension.version}`
@@ -109,7 +118,7 @@ class MajsoulPlusExtensionManager {
       return this
     }
 
-    // check dependencies
+    // 检查依赖
     if (extension.dependencies) {
       for (const dep in extension.dependencies) {
         // dependency not found
@@ -148,14 +157,14 @@ class MajsoulPlusExtensionManager {
     /**
      * Warnings
      */
-    // extension id & folder name mismatch
+    // 扩展的 id 与文件夹名不同
     if (extension.id !== ext) {
       console.warn(
         `warning on loading extension ${ext}: folder name & id mismatch`
       )
     }
 
-    // preview image not found
+    // 没有找到预览图片
     if (
       !fs.existsSync(path.resolve(folder, extension.preview)) ||
       !fs.statSync(path.resolve(folder, extension.preview)).isFile()
@@ -165,9 +174,9 @@ class MajsoulPlusExtensionManager {
       )
     }
 
-    // all error checks are ok
+    // 所有错误检测均已通过
     this.useScript(ext, extension)
-    this.loadedExtensionDetails[ext] = extension
+    this.loadedExtensionDetails[ext].enabled = true
     return this
   }
 
@@ -188,8 +197,10 @@ class MajsoulPlusExtensionManager {
       }
 
       try {
-        const script = require(p)
-        this.extensionMiddlewares.push(script())
+        const script = fs.readFileSync(p, { encoding: 'utf-8' })
+        const scripts = this.extensionScripts.get(extension.id) || []
+        scripts.push(script)
+        this.extensionScripts.set(extension.id, scripts)
       } catch (e) {
         console.error(
           `failed to load extension ${extension.name} from ${p}: ${e}`
@@ -210,10 +221,17 @@ class MajsoulPlusExtensionManager {
       // 只针对 code.js 进行特殊处理 注入扩展
       const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
       let prefix = '',
-        postfix: string
+        postfix = ''
       if (path.basename(originalUrl) === 'code.js') {
+        if (this.codejs !== '') {
+          ctx.res.statusCode = 200
+          ctx.body = this.codejs
+          return
+        }
+
         const code = await getRemoteOrCachedFile(ctx.request.originalUrl, false)
 
+        // TODO: 将 Yo 插件化
         // 针对非国服的 Yo 对象处理
         if (UserConfigs.userData.serverToPlay !== 0) {
           const yo = await fetchAnySite(
@@ -224,8 +242,22 @@ class MajsoulPlusExtensionManager {
           prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n`
         }
 
-        // TODO: 在 data 前后注入扩展
-        postfix = ''
+        this.extensionScripts.forEach((scripts, ext) => {
+          const extension = this.loadedExtensionDetails[ext].extension
+          const extCode = `/**
+ * Extension： ${extension.id}
+ * Author: ${extension.author}
+ * Version: ${extension.version}
+ */
+${scripts.join('\n')}\n\n`
+          if (extension.loadBeforeGame) {
+            prefix += extCode
+          } else {
+            postfix += extCode
+          }
+        })
+
+        ctx.res.statusCode = 200
         ctx.body =
           prefix +
           '\n\n\n' +

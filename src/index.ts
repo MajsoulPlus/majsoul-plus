@@ -97,8 +97,8 @@ app.on('ready', () => {
     if (UserConfigs.userData.useHttpServer) {
       httpServer.listen(Global.ServerPort)
       httpServer.on('error', err => {
+        // TODO: 验证 http 端口冲突时的提示信息是否是下面的内容
         if (err.name === 'EADDRINUSE') {
-          // console.warn(i18n.text.main.portInUse())
           httpServer.close()
           // 随机监听一个空闲端口
           httpServer.listen(0)
@@ -108,7 +108,6 @@ app.on('ready', () => {
       httpsServer.listen(Global.ServerPort)
       httpsServer.on('error', err => {
         if (err.code === 'EADDRINUSE') {
-          // console.warn(i18n.text.main.portInUse())
           httpsServer.close()
           // 随机监听一个空闲端口
           httpsServer.listen(0)

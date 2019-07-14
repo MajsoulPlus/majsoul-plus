@@ -107,7 +107,7 @@ declare namespace MajsoulPlus {
    */
   export interface Extension extends Metadata {
     dependencies?: { [key: string]: string }
-    entry?: string | string[]
+    entry: string | string[]
     loadBeforeGame?: boolean
     executePreferences?: ExtensionPreferences
   }
