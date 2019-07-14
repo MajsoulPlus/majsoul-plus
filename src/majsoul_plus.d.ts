@@ -46,8 +46,6 @@ declare namespace MajsoulPlus {
     ServerPort: number
     XOR_KEY: number
     EXTEND_RES_KEYWORD: string
-    RemoteDomain: string
-    HttpRemoteDomain: string
     ResourcePackConfigPath: string
     ExtensionConfigPath: string
     ExecutesConfigPath: string

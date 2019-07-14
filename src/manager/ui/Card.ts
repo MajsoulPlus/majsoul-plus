@@ -7,24 +7,15 @@ interface InputElement {
   label?: HTMLElement
 }
 
-const defaultOptions = {
-  name: '未知',
-  author: i18n.text.manager.missingAuthor(),
-  description: '无描述',
-  preview: 'preview.jpg'
-}
-
 export class Card {
   options: MajsoulPlus_Manager.CardMetadata
-  protected listener: Listener
+  protected listener: Listener = new Listener()
   protected dom: HTMLElement
-  protected editable: boolean
+  protected editable = false
 
   constructor(options: MajsoulPlus_Manager.CardMetadata) {
-    this.options = { ...defaultOptions, ...options }
-    this.listener = new Listener()
+    this.options = options
     this.dom = this.createDOM()
-    this.editable = false
   }
 
   protected getPreviewPath(): string {
@@ -62,13 +53,13 @@ export class Card {
     return {}
   }
 
-  protected createH3Element() {
+  protected createNameElement() {
     const h3 = document.createElement('h3')
     h3.innerText = this.options.name
     return h3
   }
 
-  protected createAddressElement() {
+  protected createAuthorElement() {
     const address = document.createElement('address')
     address.innerText = this.options.author.toString()
     return address
@@ -77,7 +68,8 @@ export class Card {
   protected createPreviewElement() {
     const preview = document.createElement('img')
     preview.src = this.getPreviewPath()
-    preview.addEventListener('error', function errFun() {
+    preview.addEventListener('error', function errFun(event) {
+      event.preventDefault()
       preview.src = path.join(__dirname, '../', 'defaultPreview.jpg')
       preview.removeEventListener('error', errFun)
     })
@@ -85,7 +77,7 @@ export class Card {
     return preview
   }
 
-  protected createPElement() {
+  protected createDescriptionElement() {
     const p = document.createElement('p')
     p.innerText = this.options.description
     return p
@@ -114,13 +106,13 @@ export class Card {
     const preview = this.createPreviewElement()
     if (preview) article.appendChild(preview)
 
-    const h3 = this.createH3Element()
+    const h3 = this.createNameElement()
     if (h3) article.appendChild(h3)
 
-    const address = this.createAddressElement()
+    const address = this.createAuthorElement()
     if (address) article.appendChild(address)
 
-    const p = this.createPElement()
+    const p = this.createDescriptionElement()
     if (p) article.appendChild(p)
 
     const exportButton = this.createExportButton()

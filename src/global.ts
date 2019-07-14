@@ -63,11 +63,8 @@ export const RemoteDomains = [
 export const Global: MajsoulPlus.Global = {
   version: '2.0.0',
   ServerPort: 8887,
-  // PIPE_PORT: 8888,
   XOR_KEY: 73,
   EXTEND_RES_KEYWORD: 'extendRes',
-  RemoteDomain: 'https://majsoul.union-game.com/',
-  HttpRemoteDomain: 'http://majsoul.union-game.com/',
   ResourcePackConfigPath: '',
   ExtensionConfigPath: '',
   ExecutesConfigPath: '',
@@ -82,7 +79,7 @@ export const Global: MajsoulPlus.Global = {
     resizable: true,
     backgroundColor: '#000000',
     webPreferences: {
-      webSecurity: false
+      // webSecurity: false
       // nodeIntegration: false
       // plugins: true
     },
@@ -99,8 +96,8 @@ export const Global: MajsoulPlus.Global = {
     resizable: false,
     backgroundColor: '#FFFFFF',
     webPreferences: {
-      webSecurity: false,
-      allowRunningInsecureContent: true
+      webSecurity: false
+      // allowRunningInsecureContent: true
     },
     title: '雀魂Plus',
     autoHideMenuBar: true,
