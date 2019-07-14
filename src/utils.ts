@@ -41,11 +41,19 @@ export function updateObject(toUpdate: {}, latest: {}): {} {
 export function fillObject(toFill: {}, latest: {}): {} {
   for (const key in latest) {
     if (typeof toFill[key] === 'object' && typeof latest[key] === 'object') {
-      fillObject(toFill[key], latest[key])
+      // 不对数组作填充处理
+      if (!Array.isArray(toFill[key])) {
+        fillObject(toFill[key], latest[key])
+      }
     } else if (toFill[key] === undefined) {
       if (typeof latest[key] === 'object') {
-        toFill[key] = {}
-        updateObject(toFill[key], latest[key])
+        if (Array.isArray(latest[key])) {
+          // FIXME: Array 的深拷贝
+          toFill[key] = [...latest[key]]
+        } else {
+          toFill[key] = {}
+          updateObject(toFill[key], latest[key])
+        }
       } else {
         toFill[key] = latest[key]
       }

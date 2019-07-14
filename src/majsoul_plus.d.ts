@@ -107,8 +107,9 @@ declare namespace MajsoulPlus {
    */
   export interface Extension extends Metadata {
     dependencies?: { [key: string]: string }
-    entry: string | string[]
+    entry?: string | string[]
     loadBeforeGame?: boolean
+    applyServer?: number[]
     executePreferences?: ExtensionPreferences
   }
 
@@ -120,27 +121,6 @@ declare namespace MajsoulPlus {
     WebSocket?: boolean
     writeableWindowObject?: boolean
   }
-
-  export interface ExtensionLibraries {
-    path: Object | undefined
-    fs: Object | undefined
-  }
-
-  export interface ExtensionContext {
-    instance: Extension
-    libraries: ExtensionLibraries
-    require: (toRequire: string) => Object | undefined
-  }
-
-  export type ExtensionMiddleware = (
-    context: ExtensionContext,
-    next: () => Promise<any>
-  ) => any
-
-  export type ComposedExtensionMiddleware = (
-    context: ExtensionContext,
-    next?: () => Promise<any>
-  ) => Promise<void>
 
   /**
    * 工具(Tools)

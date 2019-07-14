@@ -23,6 +23,9 @@
     "description": {
       "type": "string"
     },
+    "preview": {
+      "type": "string"
+    },
     "dependencies": {
       "type": "object",
       "patternProperties": {
@@ -31,15 +34,21 @@
         }
       }
     },
-    "preview": {
-      "type": "string"
-    },
     "entry": {
       "type": ["string", "array"],
       "pattern": "^(.+)\\.js$",
       "items": {
         "type": "string",
         "pattern": "^(.+)\\.js$"
+      }
+    },
+    "loadBeforeGame": {
+      "type": "boolean"
+    },
+    "applyServer": {
+      "type": "array",
+      "items": {
+        "type": "number"
       }
     }
   },

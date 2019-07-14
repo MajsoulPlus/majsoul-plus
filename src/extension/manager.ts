@@ -29,6 +29,7 @@ export const defaultExtension: MajsoulPlus.Extension = {
   preview: 'preview.png',
   entry: 'script.js',
   loadBeforeGame: false,
+  applyServer: [0, 1, 2],
   executePreferences: defaultExtensionPermission
 }
 
@@ -95,6 +96,7 @@ class MajsoulPlusExtensionManager {
     if (!valid) {
       console.error(`failed to load extension ${ext}: json schema failed`)
       console.error(validate.errors)
+      console.log(extension)
       return this
     }
 
@@ -223,48 +225,53 @@ class MajsoulPlusExtensionManager {
       let prefix = '',
         postfix = ''
       if (path.basename(originalUrl) === 'code.js') {
-        if (this.codejs !== '') {
-          ctx.res.statusCode = 200
-          ctx.body = this.codejs
-          return
-        }
-
-        const code = await getRemoteOrCachedFile(ctx.request.originalUrl, false)
-
-        // TODO: 将 Yo 插件化
-        // 针对非国服的 Yo 对象处理
-        if (UserConfigs.userData.serverToPlay !== 0) {
-          const yo = await fetchAnySite(
-            'https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js',
-            'utf-8'
+        if (this.codejs === '') {
+          const code = await getRemoteOrCachedFile(
+            ctx.request.originalUrl,
+            false
           )
 
-          prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n`
-        }
+          // TODO: 将 Yo 插件化
+          // 针对非国服的 Yo 对象处理
+          if (UserConfigs.userData.serverToPlay !== 0) {
+            const yo = await fetchAnySite(
+              'https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js',
+              'utf-8'
+            )
 
-        this.extensionScripts.forEach((scripts, ext) => {
-          const extension = this.loadedExtensionDetails[ext].extension
-          const extCode = `/**
+            prefix = `// inject https://passport.mahjongsoul.com/js/yo_acc.prod_ja.js\n${yo}\n`
+          }
+
+          this.extensionScripts.forEach((scripts, ext) => {
+            const extension = this.loadedExtensionDetails[ext].extension
+            if (
+              extension.applyServer.includes(UserConfigs.userData.serverToPlay)
+            ) {
+              const extCode = `/**
  * Extension： ${extension.id}
  * Author: ${extension.author}
  * Version: ${extension.version}
  */
 ${scripts.join('\n')}\n\n`
-          if (extension.loadBeforeGame) {
-            prefix += extCode
-          } else {
-            postfix += extCode
-          }
-        })
+              if (extension.loadBeforeGame) {
+                prefix += extCode
+              } else {
+                postfix += extCode
+              }
+            }
+          })
+
+          this.codejs =
+            prefix +
+            '\n\n\n' +
+            '// code.js\n' +
+            code.data.toString('utf-8') +
+            '\n\n\n' +
+            postfix
+        }
 
         ctx.res.statusCode = 200
-        ctx.body =
-          prefix +
-          '\n\n\n' +
-          '// code.js\n' +
-          code.data.toString('utf-8') +
-          '\n\n\n' +
-          postfix
+        ctx.body = this.codejs
       } else {
         await next()
       }
