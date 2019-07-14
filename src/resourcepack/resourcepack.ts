@@ -16,7 +16,7 @@ export function LoadResourcePack() {
   enabled.forEach(resourcepack => ResourcePackmanager.use(resourcepack))
 
   ipcMain.on('get-resourcepack-details', (event: Electron.Event) => {
-    event.returnValue = {}
+    event.returnValue = ResourcePackmanager.getDetails()
   })
 
   ipcMain.on('zip-resourcepack', (event: Electron.Event) => {

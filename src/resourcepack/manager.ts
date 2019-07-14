@@ -26,6 +26,12 @@ Object.freeze(defaultResourcePack)
 
 class ResourcePackManager {
   private resourcePacks: Map<string, MajsoulPlus.ResourcePack> = new Map()
+  private loadedResourcePackDetails: {
+    [extension: string]: {
+      enabled: boolean
+      metadata: MajsoulPlus.ResourcePack
+    }
+  } = {}
 
   constructor() {
     this.resourcePacks.set('majsoul_plus', defaultResourcePack)
@@ -64,6 +70,11 @@ class ResourcePackManager {
 
     // fill default value
     fillObject(resourcepack, defaultResourcePack)
+
+    this.loadedResourcePackDetails[id] = {
+      enabled: false,
+      metadata: resourcepack
+    }
 
     // JSON Schema
     const ajv = new Ajv()
@@ -173,6 +184,7 @@ class ResourcePackManager {
 
     // all error checks are ok
     this.resourcePacks.set(id, resourcepack)
+    this.loadedResourcePackDetails[id].enabled = true
     return this
   }
 
@@ -255,6 +267,12 @@ class ResourcePackManager {
         ctx.body = JSON.stringify(resMap, null, 2)
       }
     })
+  }
+
+  getDetails() {
+    const details = { ...this.loadedResourcePackDetails }
+    delete details['majsoul_plus']
+    return details
   }
 }
 
