@@ -1,11 +1,11 @@
 import i18n from '../../i18n'
 import { CardList } from '../ui/CardList'
 
-class Extension extends CardList {
+class ResourcePack extends CardList {
   protected getExportInfo() {
     return {
-      extend: 'mspe',
-      typeText: i18n.text.manager.fileTypeMSPE()
+      extend: 'mspr',
+      typeText: i18n.text.manager.fileTypeMSPM()
     }
   }
 
@@ -14,4 +14,4 @@ class Extension extends CardList {
   }
 }
 
-export default new Extension()
+export default new ResourcePack()

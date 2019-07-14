@@ -6,15 +6,15 @@ const about = require('./pages/About').default
 
 const {
   ipcRenderer,
-  remote: { dialog, app }
+  remote: { dialog }
 } = require('electron')
 const AdmZip = require('adm-zip')
 const path = require('path')
 const os = require('os')
 
-const { Extensions } = require('./pages/Extensions')
-const Executes = require('./Executes')
-const { Tools } = require('./pages/Tools')
+const ResourcePacks = require('./pages/ResourcePacks').default
+const Extensions = require('./pages/Extensions').default
+const Tools = require('./pages/Tools').default
 
 const { appDataDir, Global, GlobalPath } = require('..//global')
 const i18n = require('../i18n').default
@@ -22,16 +22,16 @@ const i18n = require('../i18n').default
 class Manager {
   constructor(options) {
     this.options = options
-    this.extensions = null
-    this.executes = null
-    this.tools = null
+    this.resourcepacks = ResourcePacks
+    this.extensions = Extensions
+    this.tools = Tools
     this._extends = []
 
     this._update = new Update(this.options.update)
     this._addEventListener = this._addEventListener.bind(this)
     this._import = this._import.bind(this)
-    this._changeModEditable = this._changeExtensionEditable.bind(this)
-    this._changeExecuteEditable = this._changeExecuteEditable.bind(this)
+    this._changeModEditable = this._changeResourcePackEditable.bind(this)
+    this._changeExecuteEditable = this._changeExtensionEditable.bind(this)
     this._changeToolEditable = this._changeToolEditable.bind(this)
     this._loadCards = this._loadCards.bind(this)
     this._saveSettings = this._saveSettings.bind(this)
@@ -43,17 +43,17 @@ class Manager {
 
   _saveSettings() {
     setting.save()
-    // this.extensions.save()
-    // this.executes.save()
-    // this.tools.save()
+    this.resourcepacks.save()
+    this.extensions.save()
+    this.tools.save()
+  }
+
+  _changeResourcePackEditable() {
+    this.resourcepacks.changeEditable()
   }
 
   _changeExtensionEditable() {
     this.extensions.changeEditable()
-  }
-
-  _changeExecuteEditable() {
-    this.executes.changeEditable()
   }
 
   _changeToolEditable() {
@@ -124,17 +124,17 @@ class Manager {
   }
 
   _addEventListener() {
-    const installMod = document.getElementById('installMod')
-    const installExecute = document.getElementById('installExecute')
+    const installResourcePack = document.getElementById('installResourcePack')
+    const installExtension = document.getElementById('installExtension')
     const installTool = document.getElementById('installTool')
-    installMod.addEventListener('click', this._import)
-    installExecute.addEventListener('click', this._import)
+    installResourcePack.addEventListener('click', this._import)
+    installExtension.addEventListener('click', this._import)
     installTool.addEventListener('click', this._import)
 
-    const editMod = document.getElementById('editMod')
-    editMod.addEventListener('click', this._changeExtensionEditable)
-    const editExecute = document.getElementById('editExecute')
-    editExecute.addEventListener('click', this._changeExecuteEditable)
+    const editResourcePack = document.getElementById('editResourcePack')
+    editResourcePack.addEventListener('click', this._changeResourcePackEditable)
+    const editExtension = document.getElementById('editExtension')
+    editExtension.addEventListener('click', this._changeExtensionEditable)
     const editTool = document.getElementById('editTool')
     editTool.addEventListener('click', this._changeToolEditable)
 
@@ -143,11 +143,11 @@ class Manager {
       document.body.classList.remove('blur')
     )
 
-    const refreshMod = document.getElementById('refreshMod')
-    const refreshExecute = document.getElementById('refreshExecute')
+    const refreshResourcePack = document.getElementById('refreshResourcePack')
+    const refreshExtension = document.getElementById('refreshExtension')
     const refreshTool = document.getElementById('refreshTool')
-    refreshMod.addEventListener('click', this._loadCards)
-    refreshExecute.addEventListener('click', this._loadCards)
+    refreshResourcePack.addEventListener('click', this._loadCards)
+    refreshExtension.addEventListener('click', this._loadCards)
     refreshTool.addEventListener('click', this._loadCards)
 
     const launch = document.getElementById('launch')
@@ -166,16 +166,8 @@ class Manager {
   }
 
   _loadCards() {
-    const {
-      extensionRootDir,
-      executeRootDir,
-      toolRootDir
-    } = this._getRootDirs()
-    this.extensions = new Extensions({ rootDir: extensionRootDir })
-    this.executes = new Executes({ rootDir: executeRootDir })
-    this.tools = new Tools({ rootDir: toolRootDir })
+    this.resourcepacks.load()
     this.extensions.load()
-    this.executes.load()
     this.tools.load()
   }
 

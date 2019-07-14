@@ -15,21 +15,20 @@ const defaultOptions = {
 }
 
 export class Card {
-  options: MajsoulPlus_Manager.CardConstructorOptions
+  options: MajsoulPlus_Manager.CardMetadata
   protected listener: Listener
   protected dom: HTMLElement
-  protected isCardEditable: boolean
+  protected editable: boolean
 
-  constructor(options: MajsoulPlus_Manager.CardConstructorOptions) {
+  constructor(options: MajsoulPlus_Manager.CardMetadata) {
     this.options = { ...defaultOptions, ...options }
     this.listener = new Listener()
     this.dom = this.createDOM()
-    this.isCardEditable = false
+    this.editable = false
   }
 
   protected getPreviewPath(): string {
-    const { preview, filesDir } = this.options
-    return path.join(filesDir, preview)
+    return path.join('filesDir', this.options.preview)
   }
 
   protected getRandomId(): string {
@@ -71,7 +70,7 @@ export class Card {
 
   protected createAddressElement() {
     const address = document.createElement('address')
-    address.innerText = this.options.author
+    address.innerText = this.options.author.toString()
     return address
   }
 
@@ -137,16 +136,16 @@ export class Card {
     return article
   }
 
-  get DOM(): HTMLElement {
+  get DOM() {
     return this.dom
   }
 
-  get editable(): boolean {
-    return this.isCardEditable
+  isEditable = () => {
+    return this.editable
   }
 
-  set editable(value) {
-    this.isCardEditable = value
+  setEditable = (value: boolean) => {
+    this.editable = value
     this.dom.className = value ? 'edit' : ''
   }
 

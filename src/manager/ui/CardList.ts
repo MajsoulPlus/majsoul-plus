@@ -1,184 +1,118 @@
 import { ipcRenderer, remote } from 'electron'
-import * as fs from 'fs'
-import * as os from 'os'
-import * as path from 'path'
 import i18n from '../../i18n'
 import { Card } from './Card'
 import { CheckedboxCard } from './CheckedboxCard'
 
 const dialog = remote.dialog
 
-interface CardListItem {
-  key: string
+interface CardListItem extends MajsoulPlus_Manager.CardMetadataWithEnable {
+  id: string
   card: Card | CheckedboxCard
 }
 
-interface ExportInfo {
-  extend?: string
-  typeText?: string
-}
-
-const defaultOptions = {
-  rootDir: '',
-  config: '',
-  checkedKeys: [],
-  renderTarget: ''
-}
-
 export class CardList {
-  cardList: CardListItem[] = []
-  options: MajsoulPlus_Manager.CardListConstructorOptions
+  name: string
+  cardListItemMap: Map<string, CardListItem> = new Map()
 
-  constructor(options: MajsoulPlus_Manager.CardListConstructorOptions) {
-    this.options = options
-
-    // TODO: Remove the following after refactor
-    this.getCardInfo = this.getCardInfo.bind(this)
-    this.getCards = this.getCards.bind(this)
-    this.getCard = this.getCard.bind(this)
-    this.renderCards = this.renderCards.bind(this)
+  constructor() {
+    this.name = this.constructor.name
   }
 
-  protected getCardInfo = (dir: string) => {
-    const { rootDir, config } = this.options
-    const dirPath = path.join(rootDir, dir)
-    const stat = fs.statSync(dirPath)
-    if (stat.isDirectory()) {
-      try {
-        const data = fs.readFileSync(path.join(dirPath, config), {
-          encoding: 'utf-8'
-        })
-        const info = JSON.parse(data)
-        info.filesDir = dirPath
-        return info
-      } catch (error) {
-        return null
-      }
-    } else {
-      return null
+  protected getCardDetails = (): MajsoulPlus_Manager.GetDetailMetadataResponse => {
+    const details = ipcRenderer.sendSync(
+      `get-${this.name.toLowerCase()}-details`
+    )
+    console.log(this.name, details)
+    return details
+  }
+
+  protected generateCardsFromDetails = (
+    details: MajsoulPlus_Manager.GetDetailMetadataResponse
+  ) => {
+    for (const id of Object.keys(details)) {
+      this.generateCardFromMetadata(details[id])
     }
-  }
-
-  protected async getCardInfos() {
-    const { rootDir } = this.options
-    const dirs = fs.readdirSync(rootDir)
-    const list = await Promise.all(dirs.map(this.getCardInfo))
-    return list.filter(item => !!item)
-  }
-
-  protected getCards = (cardInfos = []) => {
-    const cards = cardInfos.map(this.getCard)
-    this.cardList = cards
-    return Promise.resolve(cards)
-  }
-
-  protected getCard(
-    cardInfo: MajsoulPlus_Manager.CardConstructorOptions
-  ): CardListItem {
-    const card = new CheckedboxCard(cardInfo)
-    const key = `${cardInfo.name}|${cardInfo.author}`
-    if (this.options.checkedKeys) {
-      card.checked = this.options.checkedKeys.includes(key)
-    }
-    card.on('change', () => this.handleCheckedChange(key))
-    card.on('export', () => this.handleExport(key))
-    card.on('remove', () => this.handleRemove(key))
-    return {
-      key,
-      card
-    }
-  }
-
-  protected handleCheckedChange(key: string) {
-    const { card } = this.cardList.find(item => item.key === key)
-    if (card['checked'] && !this.options.checkedKeys.includes(key)) {
-      this.options.checkedKeys.push(key)
-    } else if (
-      card['checked'] !== undefined &&
-      !card['checked'] &&
-      this.options.checkedKeys.includes(key)
-    ) {
-      const index = this.options.checkedKeys.indexOf(key)
-      this.options.checkedKeys.splice(index, 1)
-    }
-  }
-
-  protected getExportInfo(): ExportInfo {
-    return {}
-  }
-
-  protected handleExport(key: string) {
-    const {
-      card: {
-        options: { name, author, filesDir }
-      }
-    } = this.cardList.find(item => item.key === key)
-    const { extend, typeText } = this.getExportInfo()
-    const tempZipName = `${name}-${author}.${extend}`
-    const tempZipPath = path.join(os.tmpdir(), tempZipName)
-    ipcRenderer.sendSync('zip-dir', filesDir, tempZipPath)
-    const userChosenPath = dialog.showSaveDialog({
-      title: i18n.text.manager.exportTo(),
-      filters: [
-        {
-          name: typeText,
-          extensions: [extend]
-        },
-        {
-          name: i18n.text.manager.fileTypeAllfiles(),
-          extensions: ['*']
-        }
-      ],
-      defaultPath: tempZipName
-    })
-    if (userChosenPath) {
-      fs.copyFile(tempZipPath, userChosenPath, err => {
-        if (err) {
-          alert(i18n.text.manager.exportExtendResourcesFailed(err))
-        } else {
-          alert(i18n.text.manager.exportExtendResourcesSucceeded())
-        }
-      })
-    }
-  }
-
-  protected handleRemove(key: string) {
-    const { card } = this.cardList.find(item => item.key === key)
-    card.DOM.remove()
-    const { filesDir } = card.options
-    ipcRenderer.sendSync('remove-dir', filesDir)
-    this.load()
   }
 
   protected renderCards = () => {
-    const { renderTarget } = this.options
-    const target = document.getElementById(renderTarget)
+    const target = document.querySelector(`#${this.name}Infos`)
     target.innerHTML = ''
-    this.cardList.forEach(({ card }) => {
+    this.cardListItemMap.forEach(({ card }) => {
       const { DOM } = card
       target.appendChild(DOM)
     })
   }
 
+  protected generateCardFromMetadata(
+    info: MajsoulPlus_Manager.CardMetadataWithEnable
+  ) {
+    const card = new CheckedboxCard(info.metadata, info.enabled)
+    const id = info.metadata.id
+    this.cardListItemMap.set(id, { ...info, id, card })
+
+    card.on('change', () => this.handleCheckedChange(id))
+    card.on('export', () => this.handleExport(id))
+    card.on('remove', () => this.handleRemove(id))
+  }
+
+  protected handleCheckedChange = (id: string) => {
+    const cardItem = this.cardListItemMap.get(id)
+    if (cardItem.card['checked']) {
+      this.cardListItemMap.get(id).enabled = cardItem['checked']
+    }
+  }
+
+  protected handleExport(id: string) {
+    const { extend, typeText } = this.getExportInfo()
+
+    // 向主进程请求打包
+    const fileName = ipcRenderer.sendSync(`zip-${this.name.toLowerCase()}`, id)
+
+    const pathToSave = dialog.showSaveDialog({
+      title: i18n.text.manager.exportTo(),
+      filters: [
+        {
+          name: typeText,
+          extensions: [extend]
+        }
+      ],
+      defaultPath: fileName
+    })
+
+    if (pathToSave) {
+      // TODO: 通知主进程复制
+      const err = ipcRenderer.sendSync('copy-todo')
+      if (err) {
+        alert(i18n.text.manager.exportExtendResourcesFailed(err))
+      } else {
+        alert(i18n.text.manager.exportExtendResourcesSucceeded())
+      }
+    }
+  }
+
+  protected handleRemove = (id: string) => {
+    const cardItem = this.cardListItemMap.get(id)
+    cardItem.card.DOM.remove()
+    ipcRenderer.sendSync(`remove-${this.name.toLowerCase()}`, id)
+    this.renderCards()
+  }
+
+  protected getExportInfo(): MajsoulPlus_Manager.ExportInfo {
+    return undefined
+  }
+
   load() {
-    return this.getCardInfos()
-      .then(this.getCards)
-      .then(this.renderCards)
+    this.generateCardsFromDetails(this.getCardDetails())
+    this.renderCards()
   }
 
   save() {
-    const { checkedKeys, settingFilePath } = this.options
-    const launchedCards = this.cardList
-      .filter(item => checkedKeys.includes(item.key))
-      .map(item => item.card.options)
-    fs.writeFileSync(settingFilePath, JSON.stringify(launchedCards), {
-      encoding: 'utf-8'
-    })
+    // TODO: 通知主进程保存
   }
 
   changeEditable() {
-    this.cardList.forEach(item => {
-      item.card.editable = !item.card.editable
+    this.cardListItemMap.forEach(cardItem => {
+      cardItem.card.setEditable(!cardItem.card.isEditable)
     })
   }
 }

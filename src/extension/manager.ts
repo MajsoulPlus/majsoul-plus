@@ -41,7 +41,7 @@ class MajsoulPlusExtensionManager {
   private loadedExtensionDetails: {
     [extension: string]: {
       enabled: boolean
-      extension: MajsoulPlus.Extension
+      metadata: MajsoulPlus.Extension
     }
   } = {}
   private extensionScripts: Map<string, string[]> = new Map()
@@ -53,7 +53,7 @@ class MajsoulPlusExtensionManager {
     this.loadedExtensions['majsoul_plus'] = semver.parse(Global.version)
     this.loadedExtensionDetails['majsoul_plus'] = {
       enabled: true,
-      extension: defaultExtension
+      metadata: defaultExtension
     }
   }
 
@@ -117,7 +117,7 @@ class MajsoulPlusExtensionManager {
     // 加载到这一步时可以显示在 Manager 内
     this.loadedExtensionDetails[ext] = {
       enabled: false,
-      extension
+      metadata: extension
     }
 
     // 检查扩展的 version 字段是否合法
@@ -276,7 +276,7 @@ class MajsoulPlusExtensionManager {
           )
 
           this.extensionScripts.forEach((scripts, ext) => {
-            const extension = this.loadedExtensionDetails[ext].extension
+            const extension = this.loadedExtensionDetails[ext].metadata
             if (
               extension.applyServer.includes(UserConfigs.userData.serverToPlay)
             ) {
@@ -312,7 +312,9 @@ ${scripts.join('\n')}\n\n`
   }
 
   getDetails() {
-    return { ...this.loadedExtensionDetails }
+    const details = { ...this.loadedExtensionDetails }
+    delete details['majsoul_plus']
+    return details
   }
 }
 

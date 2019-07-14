@@ -1,9 +1,9 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import * as path from 'path'
 import * as fs from 'fs'
-import { ManagerWindow } from './manager'
-import { Global, appDataDir } from '../global'
+import * as path from 'path'
+import { appDataDir, Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
+import { ManagerWindow } from './manager'
 
 class ToolWindow {
   private window: BrowserWindow
@@ -96,4 +96,8 @@ export function initToolManager() {
       ToolManager.start(config.id)
     }
   )
+
+  ipcMain.on('get-tool-details', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
 }

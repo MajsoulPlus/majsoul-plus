@@ -1,18 +1,26 @@
 declare namespace MajsoulPlus_Manager {
-  export interface CardConstructorOptions {
-    name?: string
-    author?: string
-    description?: string
-    preview?: string
-    filesDir: string
+  export interface GetDetailMetadataResponse {
+    [id: string]: CardMetadataWithEnable
   }
 
-  export interface CardListConstructorOptions {
-    rootDir: string
-    config: string
-    checkedKeys: string[]
-    renderTarget: string
-    settingFilePath: string
+  export interface CardMetadata {
+    id: string
+    version: string
+    name?: string
+    author?: string | string[]
+    description?: string
+    preview?: string
+  }
+
+  export interface CardMetadataWithEnable {
+    enabled: boolean
+    metadata: CardMetadata
+  }
+
+  // 导出包的信息
+  export interface ExportInfo {
+    extend: string
+    typeText: string
   }
 
   /**

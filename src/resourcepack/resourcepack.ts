@@ -1,3 +1,4 @@
+import { ipcMain } from 'electron'
 import * as fs from 'fs'
 import { Global } from '../global'
 import ResourcePackmanager from './manager'
@@ -13,4 +14,8 @@ export function LoadResourcePack() {
     })
   )
   enabled.forEach(resourcepack => ResourcePackmanager.use(resourcepack))
+
+  ipcMain.on('get-resourcepack-details', (event: Electron.Event) => {
+    event.returnValue = {}
+  })
 }

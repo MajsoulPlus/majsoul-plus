@@ -1,37 +1,22 @@
 import { ipcRenderer } from 'electron'
-import * as path from 'path'
-import { Global, GlobalPath } from '../../global'
 import i18n from '../../i18n'
 import { ButtonCard } from '../ui/ButtonCard'
 import { CardList } from '../ui/CardList'
 
-const defaultOptions = {
-  settingFilePath: Global.ToolWindowConfig,
-  rootDir: path.join(__dirname, '../', GlobalPath.ToolsDir),
-  config: 'tool.json',
-  renderTarget: 'toolInfos'
-}
-
-export class Tools extends CardList {
-  constructor(options) {
-    super({ ...defaultOptions, ...options })
+class Tool extends CardList {
+  handleCardClick(id: string) {
+    const cardItem = this.cardListItemMap.get(id)
+    ipcRenderer.send('start-tool', cardItem.card.options)
   }
 
-  handleCardClick(key: string) {
-    const { card } = this.cardList.find(item => item.key === key)
-    ipcRenderer.send('start-tool', card.options)
-  }
+  generateCardFromMetadata(info: MajsoulPlus_Manager.CardMetadataWithEnable) {
+    const card = new ButtonCard(info.metadata)
+    const id = info.metadata.id
+    this.cardListItemMap.set(id, { ...info, id, card })
 
-  getCard(cardInfo: MajsoulPlus_Manager.CardConstructorOptions) {
-    const card = new ButtonCard(cardInfo)
-    const key = `${cardInfo.name}|${cardInfo.author}`
-    card.on('click', () => this.handleCardClick(key))
-    card.on('export', () => this.handleExport(key))
-    card.on('remove', () => this.handleRemove(key))
-    return {
-      key,
-      card
-    }
+    card.on('change', () => this.handleCheckedChange(id))
+    card.on('export', () => this.handleExport(id))
+    card.on('remove', () => this.handleRemove(id))
   }
 
   getExportInfo() {
@@ -43,3 +28,5 @@ export class Tools extends CardList {
 
   save() {}
 }
+
+export default new Tool()

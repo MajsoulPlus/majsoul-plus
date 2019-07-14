@@ -1,9 +1,10 @@
 import { Card } from './Card'
 
 export class CheckedboxCard extends Card {
-  checked = false
-  constructor(options: MajsoulPlus_Manager.CardConstructorOptions) {
+  checked: boolean
+  constructor(options: MajsoulPlus_Manager.CardMetadata, checked = false) {
     super(options)
+    this.checked = checked
   }
 
   protected createInputElements() {

@@ -18,11 +18,7 @@ export function LoadExtension() {
   enabled.forEach(extension => ExtensionManager.use(extension))
 
   // Register ipcMain
-  ipcMain.on('extension-list', (event: Event) => {
-    event.returnValue = []
-  })
-
-  ipcMain.on('extension-detail', (event: Event) => {
+  ipcMain.on('get-extension-details', (event: Event) => {
     event.returnValue = ExtensionManager.getDetails()
   })
 }
