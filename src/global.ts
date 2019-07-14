@@ -1,11 +1,8 @@
-import * as electron from 'electron'
+import { app } from 'electron'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { MajsoulPlus } from './majsoul_plus'
-
-// 提供 app模块
-const app = electron.app ? electron.app : electron.remote.app
 
 /**
  * 应用保存数据的路径
@@ -48,8 +45,7 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
   LocalDir: '/static',
   ResourcePackDir: 'resourcepack',
   ExtensionDir: 'extension',
-  ToolsDir: 'tool',
-  ExecutesDir: 'execute'
+  ToolsDir: 'tool'
 }
 
 // tslint:disable-next-line
@@ -67,7 +63,6 @@ export const Global: MajsoulPlus.Global = {
   EXTEND_RES_KEYWORD: 'extendRes',
   ResourcePackConfigPath: '',
   ExtensionConfigPath: '',
-  ExecutesConfigPath: '',
   ToolConfigPath: '',
   UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
   LocalCachePath: path.join(appDataDir, GlobalPath.LocalDir),
@@ -131,12 +126,10 @@ export function InitGlobal() {
   [
     Global.ResourcePackConfigPath,
     Global.ExtensionConfigPath,
-    Global.ExecutesConfigPath,
     Global.ToolConfigPath
   ] = [
     GlobalPath.ResourcePackDir,
     GlobalPath.ExtensionDir,
-    GlobalPath.ExecutesDir,
     GlobalPath.ToolsDir
   ].map(dir => {
     const folder = path.join(appDataDir, dir)

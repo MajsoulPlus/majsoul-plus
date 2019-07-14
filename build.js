@@ -58,7 +58,6 @@ function copyDesktopCreatorFonts() {
 copy('assets', '')
 copy('manager')
 copy('i18n')
-copyA('execute')
 copyA('resourcepack')
 copyA('extension')
 copyA('tool', 'bin', copyDesktopCreatorFonts)

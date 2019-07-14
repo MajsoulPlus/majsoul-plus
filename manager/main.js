@@ -1,4 +1,4 @@
-const { LeftPanel: panel } = require('./ui/Panel')
+const panel = require('./ui/Panel').default
 const { Ping } = require('./utils/Ping')
 const Update = require('./Update')
 const setting = require('./pages/Setting').default
@@ -16,7 +16,13 @@ const ResourcePacks = require('./pages/ResourcePacks').default
 const Extensions = require('./pages/Extensions').default
 const Tools = require('./pages/Tools').default
 
-const { appDataDir, Global, GlobalPath } = require('..//global')
+const {
+  appDataDir,
+  UserConfigPath,
+  ResourcePackDir,
+  ExtensionDir,
+  ToolsDir
+} = require('./global').default
 const i18n = require('../i18n').default
 
 class Manager {
@@ -61,31 +67,23 @@ class Manager {
   }
 
   _getRootDirs() {
-    const {
-      userConfig: {
-        userData: { useAppdataLibrary }
-      },
-      extensionRootDirs,
-      executeRootDirs,
-      toolRootDirs
-    } = this.options
-    const index = Number(!!useAppdataLibrary)
+    const { resourcepackRootDir, extensionRootDir, toolRootDir } = this.options
     return {
-      extensionRootDir: extensionRootDirs[index],
-      executeRootDir: executeRootDirs[index],
-      toolRootDir: toolRootDirs[index]
+      resourcepackRootDir,
+      extensionRootDir,
+      toolRootDir
     }
   }
 
   _getInstallDirByExtname(extname) {
     const {
+      resourcepackRootDir,
       extensionRootDir,
-      executeRootDir,
       toolRootDir
     } = this._getRootDirs()
     const map = {
-      '.mspm': extensionRootDir,
-      '.mspe': executeRootDir,
+      '.mspm': resourcepackRootDir,
+      '.mspe': extensionRootDir,
       '.mspt': toolRootDir
     }
     return map[extname]
@@ -215,26 +213,20 @@ class Manager {
   }
 }
 
-const userDataPaths = [appDataDir]
-
 const springFestivalExtend = require('./extra/springFestivalTheme')
 const darkMode = require('./extra/darkMode')
 
 const options = {
   userConfig: (() => {
     try {
-      return require(Global.UserConfigPath)
+      return require(UserConfigPath)
     } catch (error) {
       return require('../Configs-user.json')
     }
   })(),
-  extensionRootDirs: userDataPaths.map(root =>
-    path.join(root, GlobalPath.ExtensionDir)
-  ),
-  executeRootDirs: userDataPaths.map(root =>
-    path.join(root, GlobalPath.ExecutesDir)
-  ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ToolsDir))
+  resourcepackRootDir: path.join(appDataDir, ResourcePackDir),
+  extensionRootDir: path.join(appDataDir, ExtensionDir),
+  toolRootDir: path.join(appDataDir, ToolsDir)
 }
 
 const manager = new Manager(options)

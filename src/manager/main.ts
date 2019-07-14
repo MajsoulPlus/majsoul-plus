@@ -1,10 +1,10 @@
-import { Global, GlobalPath, appDataDir } from '../global'
 import * as path from 'path'
 import * as fs from 'fs'
 import { Ping } from './utils/Ping'
-import { LeftPanel } from './ui/Panel'
+import LeftPanel from './ui/Panel'
 import setting from './pages/Setting'
 import about from './pages/About'
+import Global from './global'
 
 class Manager {
   private options: {}
@@ -24,10 +24,6 @@ class Manager {
   }
 }
 
-// 此处只留下一个路径
-// 原目录下的各目录/工具应在初始化时拷贝到对应目录
-const userDataPaths = [appDataDir]
-
 const managerOptions = {
   userConfig: (() => {
     if (fs.existsSync(Global.UserConfigPath)) {
@@ -36,13 +32,9 @@ const managerOptions = {
       return require('../Configs-user.json')
     }
   })(),
-  executeRootDirs: userDataPaths.map(root =>
-    path.join(root, GlobalPath.ExecutesDir)
-  ),
-  extensionRootDirs: userDataPaths.map(root =>
-    path.join(root, GlobalPath.ExtensionDir)
-  ),
-  toolRootDirs: userDataPaths.map(root => path.join(root, GlobalPath.ToolsDir))
+  resourcepackRootDir: path.join(Global.appDataDir, Global.ResourcePackDir),
+  extensionRootDir: path.join(Global.appDataDir, Global.ExtensionDir),
+  toolRootDir: path.join(Global.appDataDir, Global.ToolsDir)
 }
 
 const manager = new Manager(managerOptions)

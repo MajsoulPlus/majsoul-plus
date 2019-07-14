@@ -4,6 +4,7 @@ declare namespace MajsoulPlus_Manager {
   }
 
   export interface CardMetadata {
+    type: string
     id: string
     version: string
     name?: string

@@ -48,7 +48,6 @@ declare namespace MajsoulPlus {
     EXTEND_RES_KEYWORD: string
     ResourcePackConfigPath: string
     ExtensionConfigPath: string
-    ExecutesConfigPath: string
     ToolConfigPath: string
     UserConfigPath: string
     LocalCachePath: string
@@ -71,7 +70,6 @@ declare namespace MajsoulPlus {
     ResourcePackDir: string
     ExtensionDir: string
     ToolsDir: string
-    ExecutesDir: string
   }
 
   /**

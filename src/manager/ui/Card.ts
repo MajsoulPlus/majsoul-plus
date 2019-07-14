@@ -1,6 +1,6 @@
 import * as path from 'path'
-import i18n from '../../i18n'
 import { Listener } from './Listener'
+import Global from '../global'
 
 interface InputElement {
   input?: HTMLElement
@@ -19,7 +19,12 @@ export class Card {
   }
 
   protected getPreviewPath(): string {
-    return path.join('filesDir', this.options.preview)
+    return path.join(
+      Global.appDataDir,
+      this.options.type.toLowerCase(),
+      this.options.id,
+      this.options.preview
+    )
   }
 
   protected getRandomId(): string {

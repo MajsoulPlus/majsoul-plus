@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
-import { Global } from '../../global'
+import Global from '../global'
 import i18n from '../../i18n'
 import { MajsoulPlus } from '../../majsoul_plus'
 

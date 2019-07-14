@@ -31,4 +31,4 @@ class Panel {
 }
 
 // tslint:disable-next-line
-export const LeftPanel = new Panel()
+export default new Panel()

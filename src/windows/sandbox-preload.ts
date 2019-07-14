@@ -30,8 +30,7 @@ MajsoulPlus.globalPath = {
   LocalDir: '/static',
   ResourcePackDir: 'resourcepack',
   ExtensionDir: 'extension',
-  ToolsDir: 'tool',
-  ExecutesDir: 'execute'
+  ToolsDir: 'tool'
 }
 
 // fs
