@@ -1,6 +1,6 @@
-import { Card } from './Card'
+import Card from './Card'
 
-export class CheckedboxCard extends Card {
+export default class CheckedboxCard extends Card {
   checked: boolean
   constructor(options: MajsoulPlus_Manager.CardMetadata, checked = false) {
     super(options)

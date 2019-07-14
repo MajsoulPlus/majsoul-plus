@@ -1,4 +1,4 @@
-import { remote, shell, ipcRenderer } from 'electron'
+import { ipcRenderer, remote, shell } from 'electron'
 import i18n from '../../i18n'
 const { app } = remote
 

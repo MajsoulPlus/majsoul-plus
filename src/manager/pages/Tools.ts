@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 import i18n from '../../i18n'
-import { ButtonCard } from '../ui/ButtonCard'
-import { CardList } from '../ui/CardList'
+import ButtonCard from '../ui/ButtonCard'
+import CardList from '../ui/CardList'
 
 class Tool extends CardList {
   handleCardClick(id: string) {

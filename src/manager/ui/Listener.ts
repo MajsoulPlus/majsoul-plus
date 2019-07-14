@@ -3,7 +3,7 @@ interface HandlerItem {
   handle: Function
 }
 
-export class Listener {
+export default class Listener {
   private handles: HandlerItem[] = []
 
   on(event: string, handle: Function) {

@@ -1,4 +1,4 @@
-import { Network } from './Network'
+import Network from './Network'
 import * as tcpPing from 'tcp-ping'
 import i18n from '../../i18n'
 

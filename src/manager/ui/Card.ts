@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { Listener } from './Listener'
+import Listener from './Listener'
 import Global from '../global'
 
 interface InputElement {
@@ -7,7 +7,7 @@ interface InputElement {
   label?: HTMLElement
 }
 
-export class Card {
+export default class Card {
   options: MajsoulPlus_Manager.CardMetadata
   protected listener: Listener = new Listener()
   protected dom: HTMLElement

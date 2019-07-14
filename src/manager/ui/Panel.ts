@@ -30,5 +30,4 @@ class Panel {
   }
 }
 
-// tslint:disable-next-line
 export default new Panel()

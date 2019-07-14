@@ -1,6 +1,6 @@
-import { Card } from './Card'
+import Card from './Card'
 
-export class ButtonCard extends Card {
+export default class ButtonCard extends Card {
   protected createInputElements() {
     const input = document.createElement('input')
     const label = document.createElement('label')

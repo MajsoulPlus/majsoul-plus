@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from 'electron'
 import i18n from '../../i18n'
-import { Card } from './Card'
-import { CheckedboxCard } from './CheckedboxCard'
+import Card from './Card'
+import CheckedboxCard from './CheckedboxCard'
 
 const dialog = remote.dialog
 
@@ -10,7 +10,7 @@ interface CardListItem extends MajsoulPlus_Manager.CardMetadataWithEnable {
   card: Card | CheckedboxCard
 }
 
-export class CardList {
+export default class CardList {
   name: string
   cardListItemMap: Map<string, CardListItem> = new Map()
 

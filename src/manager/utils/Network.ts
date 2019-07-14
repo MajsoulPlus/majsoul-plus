@@ -1,6 +1,6 @@
 import i18n from '../../i18n'
 
-export class Network {
+export default class Network {
   static getJson(input: RequestInfo, init?: RequestInit) {
     return new Promise((resolve, reject) => {
       (function timeout() {

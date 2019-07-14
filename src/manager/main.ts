@@ -4,6 +4,7 @@ import Ping from './utils/Ping'
 import i18n from '../i18n'
 import Global from './global'
 
+import Update from './ui/Update'
 import LeftPanel from './ui/Panel'
 import ResourcePacks from './pages/ResourcePacks'
 import Extensions from './pages/Extensions'
@@ -14,9 +15,10 @@ import About from './pages/About'
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
 import { ipcRenderer } from 'electron'
+import { MajsoulPlus } from '../majsoul_plus'
 
 class ResourceManager {
-  private static userConfig
+  private static userConfig: MajsoulPlus.UserConfig
   private static readonly extends: Function[] = []
 
   private static readonly resourcepackRootDir = path.join(
@@ -46,7 +48,7 @@ class ResourceManager {
       ResourceManager.userConfig = require('../Configs-user.json')
     }
 
-    // this._update.checkUpdate()
+    new Update(ResourceManager.userConfig.update.prerelease).checkUpdate()
     // TODO: support more server types
     new Ping('zh').init()
     LeftPanel.init()
