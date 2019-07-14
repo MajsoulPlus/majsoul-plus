@@ -6,7 +6,7 @@ import CardList from '../ui/CardList'
 class Tool extends CardList {
   handleCardClick(id: string) {
     const cardItem = this.cardListItemMap.get(id)
-    ipcRenderer.send('start-tool', cardItem.card.options)
+    ipcRenderer.send('start-tool', cardItem.card.options.id)
   }
 
   generateCardFromMetadata = (
@@ -19,6 +19,7 @@ class Tool extends CardList {
     card.on('change', () => this.handleCheckedChange(id))
     card.on('export', () => this.handleExport(id))
     card.on('remove', () => this.handleRemove(id))
+    card.on('click', () => this.handleCardClick(id))
   }
 
   getExportInfo() {

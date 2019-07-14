@@ -1,9 +1,10 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
-import { appDataDir, Global } from '../global'
+import { appDataDir, Global, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { ManagerWindow } from './manager'
+import { fillObject } from '../utils'
 
 class ToolWindow {
   private window: BrowserWindow
@@ -90,15 +91,53 @@ export let ToolManager: Tool
 export function initToolManager() {
   ToolManager = new Tool()
 
-  ipcMain.on(
-    'start-tool',
-    (event: Electron.Event, config: MajsoulPlus.ToolConfig) => {
-      ToolManager.start(config.id)
+  const defaultTool: MajsoulPlus.ToolConfig = {
+    id: 'default',
+    version: '1.0.0',
+    name: '未命名',
+    author: '未知作者',
+    description: '无描述',
+    index: 'index.html',
+    preview: 'preview.png',
+    windowOptions: {}
+  }
+
+  const toolsMap: {
+    [extension: string]: {
+      enabled: boolean
+      metadata: MajsoulPlus.ToolConfig
     }
+  } = {}
+
+  // 读取本地 Tool 列表
+  const tools: { [tool: string]: boolean } = JSON.parse(
+    fs.readFileSync(Global.ToolConfigPath, {
+      encoding: 'utf-8'
+    })
   )
 
+  Object.keys(tools).forEach(tool => {
+    // TODO: 类似 ResourcePack 和 Extension 的加载流程
+    const folder = path.resolve(appDataDir, GlobalPath.ToolsDir, tool)
+    const cfg = path.resolve(folder, 'tool.json')
+    const config = JSON.parse(
+      fs.readFileSync(cfg, {
+        encoding: 'utf-8'
+      })
+    )
+    fillObject(config, defaultTool)
+    toolsMap[tool] = {
+      enabled: tools[tool],
+      metadata: config
+    }
+  })
+
+  ipcMain.on('start-tool', (event: Electron.Event, id: string) => {
+    ToolManager.start(id)
+  })
+
   ipcMain.on('get-tool-details', (event: Electron.Event) => {
-    event.returnValue = {}
+    event.returnValue = { ...toolsMap }
   })
 
   ipcMain.on('zip-tool', (event: Electron.Event) => {

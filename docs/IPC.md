@@ -12,7 +12,7 @@
 | 02  | sandbox       | sandbox-appdata-request | 无          | 返回当前的 `appDataDir`                          |
 | 03  | ManagerWindow | start-game              | 无          | 启动游戏。                                       |
 | 04  | screenshot    | take-screenshot         | `buffer`    | 对截屏进行保存。                                 |
-| 05  | ManagerWindow | start-tool              | `config`    | 启动 config 对应的工具。                         |
+| 05  | ManagerWindow | start-tool              | `id`        | 启动 `id` 对应的工具。                           |
 | 06  | ManagerWindow | close-manager           | 无          | 关闭 Manager 窗口。                              |
 | 07  | ManagerWindow | clear-cache             | 无          | 清理缓存（`appDataDir/static/`）                 |
 | 08  | ManagerWindow | remove-dir              | `dir`       | 删除 `dir` 目录                                  |
