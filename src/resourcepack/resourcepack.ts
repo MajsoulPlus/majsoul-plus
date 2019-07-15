@@ -1,5 +1,4 @@
 import { ipcMain } from 'electron'
-import * as fs from 'fs'
 import { Global } from '../global'
 import { getFoldersSync } from '../utils'
 import manager from './manager'

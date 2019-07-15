@@ -6,7 +6,7 @@ import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
 import { UserConfigs } from './config'
-import ExtensionManager from './extension/manager'
+import { ExtensionManager } from './extension/extension'
 import { ResourcePackManager } from './resourcepack/resourcepack'
 import { getRemoteOrCachedFile, isPath } from './utils'
 

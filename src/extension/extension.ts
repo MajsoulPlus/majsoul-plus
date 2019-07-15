@@ -1,21 +1,19 @@
-import * as fs from 'fs'
 import { Global } from '../global'
-import ExtensionManager from './manager'
+import manager from './manager'
 import { ipcMain, Event } from 'electron'
+import { getFoldersSync } from '../utils'
+
+// tslint:disable-next-line
+export let ExtensionManager: manager
 
 export function LoadExtension() {
-  // Load from config file
+  // 初始化 manager
+  ExtensionManager = new manager(Global.ExtensionConfigPath)
 
-  // Config file should only save extension folder name
-  // Detailed setting should be read from dedicated files
-
-  // TODO: Toposort for extension dependencies
-  const enabled: string[] = JSON.parse(
-    fs.readFileSync(Global.ExtensionConfigPath, {
-      encoding: 'utf-8'
-    })
-  )
-  enabled.forEach(extension => ExtensionManager.use(extension))
+  const extension: string[] = getFoldersSync(Global.ExtensionFolderPath)
+  extension.forEach(extension => ExtensionManager.load(extension))
+  ExtensionManager.enableFromConfig()
+  ExtensionManager.save()
 
   // Register ipcMain
   ipcMain.on('get-extension-details', (event: Event) => {
@@ -23,14 +21,15 @@ export function LoadExtension() {
   })
 
   ipcMain.on('save-extension-enabled', (event: Electron.Event) => {
-    // TODO
+    ExtensionManager.save()
     event.returnValue = ''
   })
 
   ipcMain.on(
     'change-extension-enability',
     (event: Electron.Event, id: string, enabled: boolean) => {
-      // TODO
+      enabled ? ExtensionManager.enable(id) : ExtensionManager.disable(id)
+      ExtensionManager.save()
       event.returnValue = ExtensionManager.getDetails()
     }
   )

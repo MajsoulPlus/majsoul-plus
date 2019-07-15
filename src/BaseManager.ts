@@ -8,7 +8,7 @@ import { appDataDir, GlobalPath, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { fillObject } from './utils'
 
-export default class BaseManager {
+export default abstract class BaseManager {
   protected name: string
   protected configPath: string
   protected defaultObject: MajsoulPlus.Metadata
@@ -47,7 +47,7 @@ export default class BaseManager {
       return this
     }
 
-    const folder = path.resolve(appDataDir, GlobalPath.ResourcePackDir, id)
+    const folder = path.resolve(appDataDir, this.name, id)
     const cfg = path.resolve(folder, `${this.name}.json`)
 
     // 资源包目录存在性
@@ -83,17 +83,17 @@ export default class BaseManager {
     // id 唯一性检查
     // 理论上应该不存在，因为是按照目录名的
     if (this.loadedMap.has(pack.id)) {
-      Logger.debug(`resourcepack already loaded or duplicated id: ${id}`)
+      Logger.debug(`${this.name} already loaded or duplicated id: ${id}`)
       return this
     }
 
     // JSON Schema
     const ajv = new Ajv()
     const valid = ajv
-      .addSchema(this.schema, 'resourcepack')
-      .validate('resourcepack', pack)
+      .addSchema(this.schema, this.name)
+      .validate(this.name, pack)
     if (!valid) {
-      Logger.debug(`failed to load resourcepack ${id}: json schema failed`)
+      Logger.debug(`failed to load ${this.name} ${id}: json schema failed`)
       Logger.debug(JSON.stringify(ajv.errors, null, 2))
       return this
     }
@@ -101,7 +101,7 @@ export default class BaseManager {
     // version validate
     if (!semver.valid(pack.version)) {
       Logger.debug(
-        `failed to load resourcepack ${id}: broken version ${pack.version}`
+        `failed to load ${this.name} ${id}: broken version ${pack.version}`
       )
       return this
     }
@@ -112,7 +112,7 @@ export default class BaseManager {
         // 依赖版本表示不合法
         if (semver.validRange(pack.dependencies[dep]) === null) {
           Logger.debug(
-            `failed to load resourcepack ${id}: broken dependency version ${
+            `failed to load ${this.name} ${id}: broken dependency version ${
               pack.dependencies[dep]
             }`
           )
