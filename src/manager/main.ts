@@ -83,6 +83,13 @@ class ResourceManager {
     Tools.load()
   }
 
+  private static refreshCard(type: string) {
+    return () =>
+      [ResourcePacks, Extensions, Tools]
+        .filter(t => t.name === type)[0]
+        .refresh()
+  }
+
   private static addEventListener() {
     [ResourcePacks, Extensions, Tools].forEach(ext => {
       // 导入
@@ -101,7 +108,7 @@ class ResourceManager {
 
       // 刷新
       const refresh = document.querySelector(`#refresh${ext.name}`)
-      refresh.addEventListener('click', ResourceManager.loadCards)
+      refresh.addEventListener('click', ResourceManager.refreshCard(ext.name))
     })
 
     window.addEventListener('blur', () => document.body.classList.add('blur'))

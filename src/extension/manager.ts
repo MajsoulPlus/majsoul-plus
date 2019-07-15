@@ -51,6 +51,13 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
     })
   }
 
+  clear() {
+    super.clear()
+    this.extensionScripts = new Map()
+    this.codejs = ''
+    this.useScriptPromises = []
+  }
+
   addScript(id: string, script: string) {
     const scripts = this.extensionScripts.get(id) || []
     scripts.push(script)

@@ -36,7 +36,6 @@ export default abstract class BaseManager {
     this.defaultObject = defaultObj
     this.schema = schema
     this.loadedMap.set('majsoul_plus', defaultObj)
-    this.enabled = this.loadEnabled()
 
     ipcMain.on(`get-${name}-details`, (event: Electron.Event) => {
       event.returnValue = this.getDetails()
@@ -71,8 +70,10 @@ export default abstract class BaseManager {
     })
   }
 
-  protected loadEnabled() {
-    return JSON.parse(fs.readFileSync(this.configPath, { encoding: 'utf-8' }))
+  loadEnabled() {
+    this.enabled = JSON.parse(
+      fs.readFileSync(this.configPath, { encoding: 'utf-8' })
+    )
   }
 
   use(id: string, callback: (pack: MajsoulPlus.Metadata) => void = () => {}) {
@@ -266,6 +267,12 @@ export default abstract class BaseManager {
         this.loadedDetails[id].errors = []
       }
     }
+  }
+
+  clear() {
+    this.loadedMap = new Map()
+    this.loadedDetails = {}
+    this.enabled = []
   }
 
   save() {

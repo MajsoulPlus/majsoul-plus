@@ -1,3 +1,4 @@
+import { ipcMain } from 'electron'
 import { Global } from '../global'
 import { getFoldersSync } from '../utils'
 import manager from './manager'
@@ -9,7 +10,17 @@ export function LoadTool() {
   // 初始化 manager
   ToolManager = new manager(Global.ToolConfigPath)
 
-  const tools: string[] = getFoldersSync(Global.ToolFolderPath)
-  tools.forEach(tool => ToolManager.use(tool))
-  ToolManager.enableAll()
+  function load() {
+    const tools: string[] = getFoldersSync(Global.ToolFolderPath)
+    tools.forEach(tool => ToolManager.use(tool))
+    ToolManager.enableAll()
+  }
+
+  load()
+
+  ipcMain.on('refresh-tool', (event: Electron.Event) => {
+    ToolManager.clear()
+    load()
+    event.returnValue = ToolManager.getDetails()
+  })
 }

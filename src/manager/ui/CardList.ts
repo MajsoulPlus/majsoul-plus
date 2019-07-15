@@ -113,6 +113,11 @@ export default class CardList {
     this.renderCards()
   }
 
+  refresh() {
+    const details = ipcRenderer.sendSync(`refresh-${this.name.toLowerCase()}`)
+    this.load(details)
+  }
+
   save() {
     ipcRenderer.sendSync(`save-${this.name.toLowerCase()}-enabled`)
   }
