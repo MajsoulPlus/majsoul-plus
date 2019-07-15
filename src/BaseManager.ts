@@ -1,10 +1,11 @@
 import * as Ajv from 'ajv'
+import { ipcMain } from 'electron'
 import * as fs from 'fs'
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
 import * as semver from 'semver'
-import { appDataDir, GlobalPath, Logger } from './global'
+import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { fillObject } from './utils'
 
@@ -35,12 +36,42 @@ export default abstract class BaseManager {
     this.defaultObject = defaultObj
     this.schema = schema
     this.loadedMap.set('majsoul_plus', defaultObj)
-    this.enabled = JSON.parse(
-      fs.readFileSync(configPath, { encoding: 'utf-8' })
+    this.enabled = this.loadEnabled()
+
+    ipcMain.on(`get-${name}-details`, (event: Electron.Event) => {
+      event.returnValue = this.getDetails()
+    })
+
+    ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {
+      this.save()
+      event.returnValue = ''
+    })
+
+    ipcMain.on(
+      `change-${name}-enability`,
+      (event: Electron.Event, id: string, enabled: boolean) => {
+        enabled ? this.enable(id) : this.disable(id)
+        this.save()
+        event.returnValue = this.getDetails()
+      }
     )
+
+    ipcMain.on(`zip-${name}`, (event: Electron.Event) => {
+      // TODO
+      event.returnValue = {}
+    })
+
+    ipcMain.on(`remove-${name}`, (event: Electron.Event) => {
+      // TODO
+      event.returnValue = {}
+    })
   }
 
-  use(id: string, callback: (pack: MajsoulPlus.Metadata) => void) {
+  protected loadEnabled() {
+    return JSON.parse(fs.readFileSync(this.configPath, { encoding: 'utf-8' }))
+  }
+
+  use(id: string, callback: (pack: MajsoulPlus.Metadata) => void = () => {}) {
     // 资源包 ID 检查
     if (!id.match(/^[_a-zA-Z0-9]+$/)) {
       Logger.debug(`invalid ${this.name} id： ${id}`)
@@ -218,6 +249,15 @@ export default abstract class BaseManager {
     this.loadedDetails[id].errors = []
     this.enabled.push(id)
     this.enableFromConfig()
+  }
+
+  enableAll() {
+    for (const id in this.loadedDetails) {
+      if (this.loadedDetails[id]) {
+        this.loadedDetails[id].enabled = true
+        this.loadedDetails[id].errors = []
+      }
+    }
   }
 
   save() {

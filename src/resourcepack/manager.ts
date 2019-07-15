@@ -1,12 +1,12 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
+import BaseManager from '../BaseManager.js'
 import { appDataDir, GlobalPath } from '../global.js'
 import { MajsoulPlus } from '../majsoul_plus'
 import { getRemoteSource } from '../utils'
 import { isEncryptRes, readFile, XOR } from '../utils.js'
 import * as schema from './schema.json'
-import BaseManager from '../BaseManager.js'
 
 const defaultResourcePack: MajsoulPlus.ResourcePack = {
   id: 'majsoul_plus',

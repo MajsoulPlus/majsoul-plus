@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "extension",
+  "description": "MajsoulPlus Extension describe file schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[_a-zA-Z0-9]+$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "author": {
+      "type": ["string", "array"],
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "preview": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "string"
+        }
+      }
+    },
+    "index": {
+      "type": "string"
+    },
+    "windowOptions": {
+      "type": "object"
+    }
+  },
+  "required": ["id", "version"]
+}

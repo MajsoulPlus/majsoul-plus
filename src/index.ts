@@ -5,6 +5,7 @@ import { LoadExtension } from './extension/extension'
 import { Global, InitGlobal } from './global'
 import { LoadResourcePack } from './resourcepack/resourcepack'
 import { httpServer, httpsServer, LoadServer } from './server'
+import { LoadTool } from './tool/tool'
 import bossKey from './utilities/bossKey'
 import sandbox from './utilities/sandbox'
 import screenshot from './utilities/screenshot'
@@ -20,6 +21,9 @@ LoadResourcePack()
 
 // 加载扩展
 LoadExtension()
+
+// 加载工具
+LoadTool()
 
 // 代理设置
 if (UserConfigs.chromium.proxyUrl !== '') {

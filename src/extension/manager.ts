@@ -2,13 +2,12 @@ import * as fs from 'fs'
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
-import * as semver from 'semver'
+import BaseManager from '../BaseManager'
 import { UserConfigs } from '../config'
 import { appDataDir, GlobalPath } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { fetchAnySite, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
-import BaseManager from '../BaseManager'
 
 export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
   nodeRequire: false,
