@@ -7,7 +7,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject } from './utils'
+import { fillObject, removeDirSync } from './utils'
 import { ManagerWindow } from './windows/manager'
 
 export default abstract class BaseManager {
@@ -36,7 +36,6 @@ export default abstract class BaseManager {
     this.configPath = configPath
     this.defaultObject = defaultObj
     this.schema = schema
-    this.loadedMap.set('majsoul_plus', defaultObj)
 
     ipcMain.on(`get-${name}-details`, (event: Electron.Event) => {
       ManagerWindow.webContents.send(
@@ -61,20 +60,25 @@ export default abstract class BaseManager {
 
     ipcMain.on(`import-${name}`, (event: Electron.Event) => {
       // TODO
+      event.returnValue = 0
     })
 
     ipcMain.on(`zip-${name}`, (event: Electron.Event) => {
       // TODO
-      event.returnValue = {}
+      event.returnValue = 0
     })
 
-    ipcMain.on(`remove-${name}`, (event: Electron.Event) => {
-      // TODO
-      event.returnValue = {}
+    ipcMain.on(`remove-${name}`, (event: Electron.Event, id: string) => {
+      removeDirSync(path.resolve(appDataDir, this.name, id))
+      this.enabled = this.enabled.filter(pack => pack !== id)
+      this.save()
+      this.clear()
+      event.returnValue = 0
     })
   }
 
   loadEnabled() {
+    this.loadedMap.set('majsoul_plus', this.defaultObject)
     this.enabled = JSON.parse(
       fs.readFileSync(this.configPath, { encoding: 'utf-8' })
     )

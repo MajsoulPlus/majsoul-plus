@@ -74,7 +74,7 @@ export default class CardList {
         id,
         cardItem.card['checked']
       )
-      this.load(details)
+      this.load(Promise.resolve(details))
     }
   }
 
@@ -110,7 +110,7 @@ export default class CardList {
     const cardItem = this.cardListItemMap.get(id)
     cardItem.card.DOM.remove()
     ipcRenderer.sendSync(`remove-${this.name.toLowerCase()}`, id)
-    this.renderCards()
+    this.refresh()
   }
 
   protected getExportInfo(): MajsoulPlus_Manager.ExportInfo {
@@ -118,6 +118,7 @@ export default class CardList {
   }
 
   load(details = this.getCardDetails()) {
+    this.cardListItemMap.clear()
     details.then(details => {
       console.log(this.name, details)
       this.generateCardsFromDetails(details)
@@ -127,7 +128,7 @@ export default class CardList {
 
   refresh() {
     const details = ipcRenderer.sendSync(`refresh-${this.name.toLowerCase()}`)
-    this.load(details)
+    this.load(Promise.resolve(details))
   }
 
   save() {
