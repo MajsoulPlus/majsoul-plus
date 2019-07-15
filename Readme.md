@@ -11,7 +11,7 @@
 - 本地缓存机制，可有效提高游戏加载速度
 - 适配 OBS 等视频采集软件，方便播主直播使用
 - 易于自定义的本地缓存
-- 为额外功能提供插件接口支持
+- 为额外功能提供扩展接口支持
 
 [稳定版： ![VersionLatest](https://img.shields.io/github/release/MajsoulPlus/majsoul-plus-client.svg)
 ![DownloadsLatest](https://img.shields.io/github/downloads/iamapig120/majsoul-plus-client/latest/total.svg)](https://github.com/iamapig120/majsoul-plus-client/releases/latest)
@@ -101,3 +101,9 @@ sudo pacman -S gconf
 ![License AGPL-3.0](https://img.shields.io/github/license/iamapig120/majsoul-plus-client.svg)
 
 注：软件图标、图像、SVG 矢量图形均不遵循以上协议，您不可以将这些内容用于雀魂 Plus 以外的内容
+
+## 参与讨论
+
+使用答疑，资源分享，约战交流 QQ 群 [660996459](https://jq.qq.com/?_wv=1027&k=5PMNS8D)
+
+开发问题，技术疑问，批判一番 QQ 群 [106475557](https://jq.qq.com/?_wv=1027&k=5iayYP5)

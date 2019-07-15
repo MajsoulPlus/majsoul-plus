@@ -75,7 +75,7 @@
   },
   "homepage": "https://github.com/iamapig120/majsoul-custorm-server#readme",
   "dependencies": {
-    "adm-zip": "^0.4.13",
+    "adm-zip": "git+https://github.com/cthackers/adm-zip.git",
     "ajv": "^6.10.0",
     "chalk": "^2.4.2",
     "comma-separated-values": "^3.6.4",
