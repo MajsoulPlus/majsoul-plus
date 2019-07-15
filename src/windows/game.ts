@@ -31,7 +31,6 @@ export function initGameWindow() {
     frame: !UserConfigs.window.isNoBorder
   }
 
-  // TODO: 等待新设置系统 UI 设计和功能实现
   if (UserConfigs.window.gameWindowSize !== '') {
     const windowSize: number[] = UserConfigs.window.gameWindowSize
       .split(',')

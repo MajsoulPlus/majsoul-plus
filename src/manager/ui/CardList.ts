@@ -99,7 +99,9 @@ export default class CardList {
         pathToSave
       )
       if (resp.err) {
-        alert(i18n.text.manager.exportExtendResourcesFailed(resp.err))
+        alert(
+          i18n.text.manager.exportExtendResourcesFailed(resp.err.toString())
+        )
       } else {
         alert(i18n.text.manager.exportExtendResourcesSucceeded())
       }

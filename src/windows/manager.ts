@@ -8,7 +8,7 @@ import * as path from 'path'
 import { SaveConfigJson, UserConfigs } from '../config'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { removeDirSync, updateObject, zipDir } from '../utils'
+import { removeDirSync, updateObject } from '../utils'
 
 // tslint:disable-next-line
 export let ManagerWindow: BrowserWindow

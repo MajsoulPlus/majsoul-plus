@@ -7,7 +7,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject, removeDirSync } from './utils'
+import { fillObject, removeDirSync, zipDir } from './utils'
 import { ManagerWindow } from './windows/manager'
 
 export default abstract class BaseManager {
@@ -63,10 +63,18 @@ export default abstract class BaseManager {
       event.returnValue = 0
     })
 
-    ipcMain.on(`zip-${name}`, (event: Electron.Event) => {
-      // TODO
-      event.returnValue = 0
-    })
+    ipcMain.on(
+      `zip-${name}`,
+      (event: Electron.Event, id: string, pathToSave: string) => {
+        const resp = { err: '' }
+        try {
+          zipDir(path.resolve(appDataDir, this.name, id), pathToSave)
+        } catch (e) {
+          resp.err = (e as Error).message
+        }
+        event.returnValue = resp
+      }
+    )
 
     ipcMain.on(`remove-${name}`, (event: Electron.Event, id: string) => {
       removeDirSync(path.resolve(appDataDir, this.name, id))

@@ -4,7 +4,6 @@ import i18n from '../../i18n'
 import { MajsoulPlus } from '../../majsoul_plus'
 
 class Setting {
-  // TODO: IPC 获得 UserConfig
   userConfig: MajsoulPlus.UserConfig = require(Global.UserConfigPath)
 
   init() {

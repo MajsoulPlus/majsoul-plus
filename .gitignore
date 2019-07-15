@@ -72,3 +72,8 @@ assets/manager/**/*.css
 
 # portable data
 data/
+
+# exported files
+*.mspm
+*.mspe
+*.mspt
