@@ -368,3 +368,13 @@ export function copyFolderSync(source: string, target: string) {
     })
   }
 }
+
+export function getFoldersSync(folder: string): string[] {
+  const folders = []
+  fs.readdirSync(folder).forEach(file => {
+    if (fs.statSync(path.join(folder, file)).isDirectory()) {
+      folders.push(file)
+    }
+  })
+  return folders
+}

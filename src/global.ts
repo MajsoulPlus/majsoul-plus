@@ -2,7 +2,11 @@ import { app } from 'electron'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import { ConsoleLogger } from './logger'
 import { MajsoulPlus } from './majsoul_plus'
+
+// tslint:disable-next-line
+export const Logger = new ConsoleLogger('Majsoul_Plus')
 
 /**
  * 应用保存数据的路径
@@ -57,7 +61,7 @@ export const RemoteDomains = [
 
 // tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
-  version: '2.0.0',
+  version: app.getVersion(),
   ServerPort: 8887,
   XOR_KEY: 73,
   EXTEND_RES_KEYWORD: 'extendRes',
@@ -66,6 +70,9 @@ export const Global: MajsoulPlus.Global = {
   ToolConfigPath: '',
   UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
   LocalCachePath: path.join(appDataDir, GlobalPath.LocalDir),
+  ResourceFolderPath: path.join(appDataDir, GlobalPath.ResourcePackDir),
+  ExtensionFolderPath: path.join(appDataDir, GlobalPath.ExtensionDir),
+  ToolFolderPath: path.join(appDataDir, GlobalPath.ToolsDir),
 
   GameWindowConfig: {
     width: 1280 + 16,

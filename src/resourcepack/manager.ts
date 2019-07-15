@@ -4,7 +4,8 @@ import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
 import * as semver from 'semver'
-import { appDataDir, GlobalPath } from '../global.js'
+import * as toposort from 'toposort'
+import { appDataDir, GlobalPath, Logger } from '../global.js'
 import { MajsoulPlus } from '../majsoul_plus'
 import { getRemoteSource } from '../utils'
 import { fillObject, isEncryptRes, readFile, XOR } from '../utils.js'
@@ -29,6 +30,8 @@ class ResourcePackManager {
   private loadedResourcePackDetails: {
     [extension: string]: {
       enabled: boolean
+      sequence: number
+      errors: Array<string | string[]>
       metadata: MajsoulPlus.ResourcePack
     }
   } = {}
@@ -38,42 +41,59 @@ class ResourcePackManager {
   }
 
   use(id: string) {
-    // resourcepack id check
+    // 资源包 ID 检查
     if (!id.match(/^[_a-zA-Z]+$/)) {
-      console.error(
-        `failed to load resourcepack ${id}: invalid resourcepack id `
-      )
+      Logger.debug(`invalid resourcepack id： ${id}`)
       return this
     }
 
     const folder = path.resolve(appDataDir, GlobalPath.ResourcePackDir, id)
     const cfg = path.resolve(folder, 'resourcepack.json')
 
-    // folder
+    // 资源包目录存在性
     if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-      console.error(`failed to load resourcepack ${id}: ${folder} not found`)
+      Logger.debug(`${id} folder not found: ${folder}`)
       return this
     }
 
-    // configuration file
+    // 资源包配置文件存在性
     if (!fs.existsSync(cfg) || !fs.statSync(cfg).isFile()) {
-      console.error(`failed to load resourcepack ${id}: ${cfg} not found`)
+      Logger.debug(`${id} configuration file not found: ${cfg}`)
       return this
     }
 
-    // get resourcepack
+    // 获得资源包
     const resourcepack: MajsoulPlus.ResourcePack = JSON.parse(
       fs.readFileSync(cfg, {
         encoding: 'utf-8'
       })
     )
 
-    // fill default value
+    // 填入默认数据
     fillObject(resourcepack, defaultResourcePack)
 
+    // ID 与目录名必须保持一致
+    if (resourcepack.id !== id) {
+      Logger.debug(
+        `folder name & id mismatch: folder name is ${id}, but id is ${
+          resourcepack.id
+        }`
+      )
+    }
+
+    // id 唯一性检查
+    // 理论上应该不存在，因为是按照目录名的
+    if (this.resourcePacks.has(resourcepack.id)) {
+      Logger.debug(`resourcepack already loaded or duplicated id: ${id}`)
+      return this
+    }
+
+    // 这一步开始分配内容
     this.loadedResourcePackDetails[id] = {
       enabled: false,
-      metadata: resourcepack
+      metadata: resourcepack,
+      sequence: 0,
+      errors: []
     }
 
     // JSON Schema
@@ -82,109 +102,75 @@ class ResourcePackManager {
       .addSchema(schema, 'resourcepack')
       .validate('resourcepack', resourcepack)
     if (!valid) {
-      console.error(`failed to load resourcepack ${id}: json schema failed`)
-      console.error(ajv.errors)
-      return this
-    }
-
-    // id uniqueness check
-    if (this.resourcePacks.has(resourcepack.id)) {
-      console.error(
-        `failed to load resourcepack ${id}: resourcepack already loaded`
-      )
-      return this
+      Logger.debug(`failed to load resourcepack ${id}: json schema failed`)
+      Logger.debug(JSON.stringify(ajv.errors, null, 2))
+      this.loadedResourcePackDetails[id].errors.push('jsonSchemaError')
     }
 
     // version validate
     if (!semver.valid(resourcepack.version)) {
-      console.error(
+      Logger.debug(
         `failed to load resourcepack ${id}: broken version ${
           resourcepack.version
         }`
       )
+      this.loadedResourcePackDetails[id].errors.push('semverInvalid')
       return this
     }
 
-    // check dependencies
+    // 检查依赖
     if (resourcepack.dependencies) {
       for (const dep in resourcepack.dependencies) {
-        // dependency not found
-        if (!this.resourcePacks.has(dep)) {
-          console.error(
-            `failed to load resourcepack ${id}: dependency ${dep} not found`
+        // 依赖版本表示不合法
+        if (semver.validRange(resourcepack.dependencies[dep]) === null) {
+          Logger.debug(
+            `failed to load resourcepack ${id}: broken dependency version ${
+              resourcepack.dependencies[dep]
+            }`
           )
-          return this
-        } else {
-          // invalid range
-          if (semver.validRange(resourcepack.dependencies[dep]) === null) {
-            console.error(
-              `failed to load resourcepack ${id}: broken dependency version ${
-                resourcepack.dependencies[dep]
-              }`
-            )
-            return this
-          }
-
-          // parse version range
-          const range = new semver.Range(resourcepack.dependencies[dep])
-
-          // check dependency version range
-          if (!semver.satisfies(this.resourcePacks.get(dep).version, range)) {
-            console.error(
-              `failed to load resourcepack ${id}: the version of ${dep} loaded is ${
-                this.resourcePacks.get(dep).version
-              }, but required ${resourcepack.dependencies[dep]}`
-            )
-            return this
-          }
+          this.loadedResourcePackDetails[id].errors.push(
+            'dependencySemverInvalid'
+          )
         }
       }
     }
 
-    /**
-     * Warnings
-     */
-    // resourcepack id & folder name mismatch
-    if (resourcepack.id !== id) {
-      console.warn(
-        `warning on loading resourcepack ${id}: folder name & id mismatch`
-      )
-    }
+    // 未找到预览图片（此步暂时省略）
+    // if (
+    //   !fs.existsSync(path.resolve(folder, resourcepack.preview)) ||
+    //   !fs.statSync(path.resolve(folder, resourcepack.preview)).isFile()
+    // ) {
+    //   console.warn(
+    //     `warning on loading resourcepack ${id}: preview image not found`
+    //   )
+    // }
 
-    // preview image not found
-    if (
-      !fs.existsSync(path.resolve(folder, resourcepack.preview)) ||
-      !fs.statSync(path.resolve(folder, resourcepack.preview)).isFile()
-    ) {
-      console.warn(
-        `warning on loading resourcepack ${id}: preview image not found`
-      )
-    }
-
-    // 将所有 replace 都转换为 Object 形式
-    // 并对其中原 string 的部分开启强制外服兼容
-    resourcepack.replace.forEach((rep, index) => {
-      if (typeof rep === 'string') {
-        resourcepack.replace[index] = {
-          from: [rep, 'jp/' + rep, 'en/' + rep],
-          to: rep,
-          'all-servers': true
+    // 无错误
+    if (this.loadedResourcePackDetails[id].errors.length === 0) {
+      // 将所有 replace 都转换为 Object 形式
+      // 并对其中原 string 的部分开启强制外服兼容
+      resourcepack.replace.forEach((rep, index) => {
+        if (typeof rep === 'string') {
+          resourcepack.replace[index] = {
+            from: [rep, 'jp/' + rep, 'en/' + rep],
+            to: rep,
+            'all-servers': true
+          }
+        } else if (rep['all-servers']) {
+          const all = []
+          if (typeof rep.from === 'string') {
+            rep.from = [rep.from]
+          }
+          rep.from.forEach(key => {
+            all.push(key, 'jp/' + key, 'en/' + key)
+          })
+          rep.from = all
         }
-      } else if (rep['all-servers']) {
-        const all = []
-        if (typeof rep.from === 'string') {
-          rep.from = [rep.from]
-        }
-        rep.from.forEach(key => {
-          all.push(key, 'jp/' + key, 'en/' + key)
-        })
-        rep.from = all
-      }
-    })
+      })
 
-    // all error checks are ok
-    this.resourcePacks.set(id, resourcepack)
-    this.loadedResourcePackDetails[id].enabled = true
+      this.resourcePacks.set(id, resourcepack)
+      this.loadedResourcePackDetails[id].enabled = true
+    }
     return this
   }
 
@@ -267,6 +253,69 @@ class ResourcePackManager {
         ctx.body = JSON.stringify(resMap, null, 2)
       }
     })
+  }
+
+  sort() {
+    const graph = []
+    for (const id in this.loadedResourcePackDetails) {
+      if (this.loadedResourcePackDetails[id]) {
+        const value = this.loadedResourcePackDetails[id]
+        const resourcepack = value.metadata
+        // 之前已经存在错误则跳过
+        if (!value.enabled) continue
+
+        for (const dep in resourcepack.dependencies) {
+          // 依赖未找到
+          if (!this.resourcePacks.has(dep)) {
+            Logger.debug(`dependency of ${id} not found: ${dep}`)
+            value.errors.push(['dependencyNotFound', dep])
+          } else {
+            // 解析依赖版本范围
+            const range = new semver.Range(resourcepack.dependencies[dep])
+            // 检查依赖版本
+            if (!semver.satisfies(this.resourcePacks.get(dep).version, range)) {
+              Logger.debug(
+                `dependency version of ${id} mismatch: loaded ${dep}:${
+                  this.resourcePacks.get(dep).version
+                }, but required ${dep}:${resourcepack.dependencies[dep]}`
+              )
+              value.errors.push([
+                'dependencyVersionMismatch',
+                resourcepack.dependencies[dep],
+                this.resourcePacks.get(dep).version
+              ])
+            }
+          }
+        }
+
+        if (value.errors.length > 0) continue
+
+        // 构建拓扑排序的数组
+        if (
+          resourcepack.dependencies &&
+          Object.keys(resourcepack.dependencies).length > 0
+        ) {
+          for (const dep in resourcepack.dependencies) {
+            if (resourcepack.dependencies[dep]) {
+              graph.push([resourcepack.id, dep])
+            }
+          }
+        } else {
+          graph.push([resourcepack.id, 'majsoul_plus'])
+        }
+      }
+    }
+    try {
+      const sequence: string[] = toposort(graph).reverse()
+      sequence.forEach((id, index) => {
+        if (index === 0) return
+        this.loadedResourcePackDetails[id].sequence = index
+      })
+      Logger.debug(JSON.stringify(sequence.slice(1)))
+      return sequence.slice(1)
+    } catch (e) {
+      return []
+    }
   }
 
   getDetails() {

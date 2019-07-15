@@ -15,6 +15,8 @@ declare namespace MajsoulPlus_Manager {
 
   export interface CardMetadataWithEnable {
     enabled: boolean
+    sequence: number
+    errors: Array<string | string[]>
     metadata: CardMetadata
   }
 
