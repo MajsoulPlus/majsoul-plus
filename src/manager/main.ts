@@ -41,12 +41,7 @@ class ResourceManager {
   }
 
   static init() {
-    // TODO: IPC 获得 UserConfig
-    try {
-      ResourceManager.userConfig = require(Global.UserConfigPath)
-    } catch (error) {
-      ResourceManager.userConfig = require('../Configs-user.json')
-    }
+    ResourceManager.userConfig = Setting.userConfig
 
     new Update(ResourceManager.userConfig.update.prerelease).checkUpdate()
     // TODO: 支持日服/美服的 Ping

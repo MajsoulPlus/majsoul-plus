@@ -16,6 +16,7 @@
   "useAppdataLibrary": "使用 AppData 存储扩展资源",
   "useHttpServer": "使用 http 服务器（不存在证书错误）",
   "serverToPlay": "游戏服务器（0为国服，1为日服，2为美服）",
+  "proxyUrl": "代理服务器地址（留空为不使用代理）",
   "userLibPath": "用户库目录",
   "localVersion": "版本",
   "isManagerHide": "退出游戏后回到管理器界面",

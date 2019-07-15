@@ -455,10 +455,34 @@ h1 {
             margin: 0;
           }
         }
+        & > input[type='text'] {
+          height: 20px;
+          margin-top: 4px;
+          margin-left: 2px;
+          line-height: 20px;
+          font-size: 14px;
+          width: max-content;
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0;
+          }
+        }
         & > input[type='checkbox'] {
           display: none;
         }
         & > input[type='number'] + label {
+          width: max-content;
+          height: 20px;
+          margin-top: 4px;
+          line-height: 20px;
+          font-size: 14px;
+          cursor: pointer;
+          outline: none !important;
+          padding-left: 10px;
+          color: var(--light-text);
+        }
+        & > input[type='text'] + label {
           width: max-content;
           height: 20px;
           margin-top: 4px;
