@@ -8,6 +8,7 @@ import * as semver from 'semver'
 import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import { fillObject } from './utils'
+import { ManagerWindow } from './windows/manager'
 
 export default abstract class BaseManager {
   protected name: string
@@ -38,7 +39,10 @@ export default abstract class BaseManager {
     this.loadedMap.set('majsoul_plus', defaultObj)
 
     ipcMain.on(`get-${name}-details`, (event: Electron.Event) => {
-      event.returnValue = this.getDetails()
+      ManagerWindow.webContents.send(
+        `get-${name}-details-response`,
+        this.getDetails()
+      )
     })
 
     ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {

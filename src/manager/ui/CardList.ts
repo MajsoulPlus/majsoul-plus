@@ -18,11 +18,21 @@ export default class CardList {
     this.name = this.constructor.name
   }
 
-  protected getCardDetails = (): MajsoulPlus_Manager.GetDetailMetadataResponse => {
-    const details = ipcRenderer.sendSync(
-      `get-${this.name.toLowerCase()}-details`
-    )
-    return details
+  protected getCardDetails = (): Promise<
+    MajsoulPlus_Manager.GetDetailMetadataResponse
+  > => {
+    ipcRenderer.send(`get-${this.name.toLowerCase()}-details`)
+    return new Promise(resolve => {
+      ipcRenderer.on(
+        `get-${this.name.toLowerCase()}-details-response`,
+        (
+          event: Electron.Event,
+          detail: MajsoulPlus_Manager.GetDetailMetadataResponse
+        ) => {
+          resolve(detail)
+        }
+      )
+    })
   }
 
   protected generateCardsFromDetails = (
@@ -108,9 +118,11 @@ export default class CardList {
   }
 
   load(details = this.getCardDetails()) {
-    console.log(this.name, details)
-    this.generateCardsFromDetails(details)
-    this.renderCards()
+    details.then(details => {
+      console.log(this.name, details)
+      this.generateCardsFromDetails(details)
+      this.renderCards()
+    })
   }
 
   refresh() {

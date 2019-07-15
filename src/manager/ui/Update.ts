@@ -2,15 +2,17 @@ import Network from '../utils/Network'
 import { remote, shell } from 'electron'
 import { gt } from 'semver'
 
-export default class Update {
+class Update {
   static readonly release =
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases/latest'
   static readonly preRelease =
     'https://api.github.com/repos/iamapig120/majsoul-plus-client/releases'
 
   private usePreRelease: boolean
-  constructor(prerelease: boolean) {
+
+  setUsePrerelease(prerelease: boolean) {
     this.usePreRelease = prerelease
+    return this
   }
 
   private getLocalVersion() {
@@ -71,3 +73,5 @@ export default class Update {
     // TODO: 在线更新
   }
 }
+
+export default new Update()

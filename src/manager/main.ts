@@ -15,10 +15,9 @@ import About from './pages/About'
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
 import { ipcRenderer, remote } from 'electron'
-import { MajsoulPlus } from '../majsoul_plus'
 
 class ResourceManager {
-  private static userConfig: MajsoulPlus.UserConfig
+  private static userConfig = Setting.userConfig
   private static readonly extends: Function[] = []
 
   private static readonly resourcepackRootDir = path.join(
@@ -41,11 +40,12 @@ class ResourceManager {
   }
 
   static init() {
-    ResourceManager.userConfig = Setting.userConfig
+    Update.setUsePrerelease(
+      ResourceManager.userConfig.update.prerelease
+    ).checkUpdate()
 
-    new Update(ResourceManager.userConfig.update.prerelease).checkUpdate()
     // TODO: 支持日服/美服的 Ping
-    new Ping('zh').init()
+    // new Ping('zh').init()
     LeftPanel.init()
     Setting.init()
     ResourceManager.initRPC()
