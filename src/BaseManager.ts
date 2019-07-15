@@ -222,6 +222,10 @@ export default abstract class BaseManager {
 
   register(server: Koa, router: Router) {}
 
+  getDetail(id: string) {
+    return { ...this.loadedDetails[id].metadata }
+  }
+
   getDetails() {
     return { ...this.loadedDetails }
   }

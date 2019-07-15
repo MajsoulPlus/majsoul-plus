@@ -71,9 +71,6 @@ export default class CardList {
   protected handleExport(id: string) {
     const { extend, typeText } = this.getExportInfo()
 
-    // 向主进程请求打包
-    const fileName = ipcRenderer.sendSync(`zip-${this.name.toLowerCase()}`, id)
-
     const pathToSave = dialog.showSaveDialog({
       title: i18n.text.manager.exportTo(),
       filters: [
@@ -81,15 +78,18 @@ export default class CardList {
           name: typeText,
           extensions: [extend]
         }
-      ],
-      defaultPath: fileName
+      ]
     })
 
     if (pathToSave) {
-      // TODO: 通知主进程复制
-      const err = ipcRenderer.sendSync('copy-todo')
-      if (err) {
-        alert(i18n.text.manager.exportExtendResourcesFailed(err))
+      // 向主进程请求打包
+      const resp: { err: string | undefined } = ipcRenderer.sendSync(
+        `zip-${this.name.toLowerCase()}`,
+        id,
+        pathToSave
+      )
+      if (resp.err) {
+        alert(i18n.text.manager.exportExtendResourcesFailed(resp.err))
       } else {
         alert(i18n.text.manager.exportExtendResourcesSucceeded())
       }
@@ -119,7 +119,7 @@ export default class CardList {
 
   changeEditable() {
     this.cardListItemMap.forEach(cardItem => {
-      cardItem.card.setEditable(!cardItem.card.isEditable)
+      cardItem.card.setEditable(!cardItem.card.isEditable())
     })
   }
 }

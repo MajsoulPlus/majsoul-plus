@@ -29,10 +29,7 @@ export const appDataDir: string = ((): string => {
   }
 })()
 
-/**
- * 应用图标
- * //TODO: 修改图标路径 减少目录层级
- */
+// 应用图标
 export const appIcon: string = (() => {
   switch (os.platform()) {
     case 'win32':

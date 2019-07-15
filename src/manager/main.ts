@@ -49,7 +49,7 @@ class ResourceManager {
     }
 
     new Update(ResourceManager.userConfig.update.prerelease).checkUpdate()
-    // TODO: support more server types
+    // TODO: 支持日服/美服的 Ping
     new Ping('zh').init()
     LeftPanel.init()
     Setting.init()

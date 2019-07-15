@@ -1,22 +1,15 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import * as fs from 'fs'
 import * as path from 'path'
-import { appDataDir, Global } from '../global'
+import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
+import { ToolManager } from '../tool/tool'
 import { ManagerWindow } from './manager'
 
 class ToolWindow {
   private window: BrowserWindow
 
-  constructor(toolName: string) {
-    const toolFolder = path.join(appDataDir, 'tool', toolName)
-
-    // TODO: JSON Schema
-    const localConfig: MajsoulPlus.ToolConfig = JSON.parse(
-      fs.readFileSync(path.join(toolFolder, 'tool.json'), {
-        encoding: 'utf-8'
-      })
-    )
+  constructor(id: string) {
+    const localConfig = ToolManager.getDetail(id) as MajsoulPlus.ToolConfig
     const toolWindowConfig = {
       ...Global.ToolWindowConfig,
       ...localConfig.windowOptions,
@@ -31,18 +24,21 @@ class ToolWindow {
     }
 
     this.window = new BrowserWindow(toolWindowConfig)
+
     if (process.env.NODE_ENV === 'development') {
       this.window.webContents.openDevTools({
         mode: 'detach'
       })
     }
+
     this.window.loadURL(
-      'file://' + path.join(toolFolder, localConfig.index || 'index.html')
+      'file://' +
+        path.join(Global.ToolFolderPath, id, localConfig.index || 'index.html')
     )
 
     this.window.on('close', event => {
-      this.hide()
       event.preventDefault()
+      this.hide()
     })
   }
 
@@ -59,38 +55,29 @@ class ToolWindow {
   }
 }
 
-class Tool {
+class ToolMapManager {
   private toolWindows: Map<string, ToolWindow> = new Map()
 
-  constructor() {
-    if (!ManagerWindow) {
-      console.error(`cannot initialize ToolManager before ManagerWindow`)
-    }
-  }
-
-  private load(toolName: string) {
-    const toolWindow = new ToolWindow(toolName)
-    this.toolWindows.set(toolName, toolWindow)
+  private load(id: string) {
+    const toolWindow = new ToolWindow(id)
+    this.toolWindows.set(id, toolWindow)
     if (process.env.NODE_ENV === 'development') {
       toolWindow.openDevTools()
     }
   }
 
-  start(toolName: string) {
-    if (!this.toolWindows.has(toolName)) {
-      this.load(toolName)
+  start(id: string) {
+    if (!this.toolWindows.has(id)) {
+      this.load(id)
     }
-    this.toolWindows.get(toolName).show()
+    this.toolWindows.get(id).show()
   }
 }
 
-// tslint:disable-next-line
-export let ToolManager: Tool
-
 export function initToolManager() {
-  ToolManager = new Tool()
+  const manager = new ToolMapManager()
 
   ipcMain.on('start-tool', (event: Electron.Event, id: string) => {
-    ToolManager.start(id)
+    manager.start(id)
   })
 }

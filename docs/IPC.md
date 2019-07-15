@@ -22,14 +22,14 @@
 
 对每个雀魂 Plus 功能（资源包、扩展、工具，下表中用 `${name}` 表示），存在一些通用请求，如下表所示：
 
-| ID  | 名称                       | 参数            | 说明                                          |
-| --- | -------------------------- | --------------- | --------------------------------------------- |
-| 01  | `get-${name}-details`      | 无              | 获取 `${name}` 的加载情况                     |
-| 02  | `zip-${name}`              | `id`            | 对 `id` 指定的 `${name}` 进行打包             |
-| 03  | `import-${name}`           | `filePath`      | 从 `filePath` 加载打包的 `${name}`            |
-| 04  | `remove-${name}`           | `id`            | 删除 `id` 对应的 `${name}`                    |
-| 05  | `save-${name}-enabled`     | 无              | 保存 `${name}` 的加载情况                     |
-| 06  | `change-${name}-enability` | `id`, `enabled` | 修改 `${name}` 中 `id` 的加载情况为 `enabled` |
+| ID  | 名称                       | 参数             | 说明                                                 | 返回                          |
+| --- | -------------------------- | ---------------- | ---------------------------------------------------- | ----------------------------- |
+| 01  | `get-${name}-details`      | 无               | 获取 `${name}` 的加载情况                            | `GetDetailMetadataResponse`   |
+| 02  | `zip-${name}`              | `id`, `filePath` | 对 `id` 指定的 `${name}` 进行打包，保存到 `filePath` | `{ err: string | undefined }` |
+| 03  | `import-${name}`           | `filePath`       | 从 `filePath` 加载打包的 `${name}`                   |                               |
+| 04  | `remove-${name}`           | `id`             | 删除 `id` 对应的 `${name}`                           |                               |
+| 05  | `save-${name}-enabled`     | 无               | 保存 `${name}` 的加载情况                            | 无                            |
+| 06  | `change-${name}-enability` | `id`, `enabled`  | 修改 `${name}` 中 `id` 的加载情况为 `enabled`        | `GetDetailMetadataResponse`   |
 
 ## ipcRenderer
 

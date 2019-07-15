@@ -243,7 +243,6 @@ GameWindowMenu.append(
 )
 
 // 获取窗口标题，有 0.5% 概率显示为喵喵喵
-// TODO: 此处 i18n 适配有问题
 function getGameWindowTitle(): string {
   // 彩蛋标题
   const titles = [
