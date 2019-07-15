@@ -56,6 +56,10 @@ export default abstract class BaseManager {
       }
     )
 
+    ipcMain.on(`import-${name}`, (event: Electron.Event) => {
+      // TODO
+    })
+
     ipcMain.on(`zip-${name}`, (event: Electron.Event) => {
       // TODO
       event.returnValue = {}

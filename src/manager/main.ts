@@ -14,7 +14,7 @@ import About from './pages/About'
 
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 import { MajsoulPlus } from '../majsoul_plus'
 
 class ResourceManager {
@@ -87,7 +87,10 @@ class ResourceManager {
     [ResourcePacks, Extensions, Tools].forEach(ext => {
       // 导入
       const importMSP = document.querySelector(`#install${ext.name}`)
-      importMSP.addEventListener('click', ResourceManager.importMSP)
+      importMSP.addEventListener(
+        'click',
+        ResourceManager.importMSP(ext.name.toLowerCase())
+      )
 
       // 修改
       const changeEditable = document.querySelector(`#edit${ext.name}`)
@@ -143,42 +146,42 @@ class ResourceManager {
   }
 
   // 从 MSP* 导入资源包 / 扩展 / 工具
-  private static importMSP() {
-    const map = {
-      '.mspm': ResourceManager.resourcepackRootDir,
-      '.mspe': ResourceManager.extensionRootDir,
-      '.mspt': ResourceManager.toolRootDir
+  private static importMSP(type: string) {
+    return () => {
+      remote.dialog.showOpenDialog(
+        {
+          title: i18n.text.manager.installFrom(),
+          filters: [
+            {
+              name: i18n.text.manager.fileTypeMSPM(),
+              extensions: ['mspm']
+            },
+            {
+              name: i18n.text.manager.fileTypeMSPE(),
+              extensions: ['mspe']
+            },
+            {
+              name: i18n.text.manager.fileTypeMSPT(),
+              extensions: ['mspt']
+            }
+          ].filter(
+            ext =>
+              ext.extensions[0] ===
+              {
+                resourcepack: 'mspm',
+                extension: 'mspe',
+                tool: 'mspt'
+              }[type]
+          ),
+          properties: ['openFile', 'multiSelections']
+        },
+        files => {
+          (files || []).forEach(file => {
+            ipcRenderer.sendSync(`import-${type}`, file)
+          })
+        }
+      )
     }
-    // FIXME
-    // dialog.showOpenDialog(
-    //   {
-    //     title: i18n.text.manager.installFrom(),
-    //     filters: [
-    //       {
-    //         name: i18n.text.manager.fileTypeMajsoulPlusExtendResourcesPack(),
-    //         extensions: ['mspm', 'mspe', 'mspt']
-    //       }
-    //     ],
-    //     properties: ['openFile', 'multiSelections']
-    //   },
-    //   filenames => {
-    //     if (filenames && filenames.length) {
-    //       filenames.forEach(filename => {
-    //         const unzip = new AdmZip(filename)
-    //         const extname = path.extname(filename)
-    //         const installDir = this._getInstallDirByExtname(extname)
-    //         unzip.extractAllToAsync(installDir, true, err => {
-    //           if (err) {
-    //             alert(i18n.text.manager.installExtendResourcesFailed(err))
-    //           } else {
-    //             alert(i18n.text.manager.installExtendResourcesSucceeded())
-    //             this._loadCards()
-    //           }
-    //         })
-    //       })
-    //     }
-    //   }
-    // )
   }
 
   // 修改 Editable

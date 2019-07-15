@@ -76,15 +76,6 @@ export function initManagerWindow() {
     event.returnValue = 0
   })
 
-  ipcMain.on('remove-dir', (event: Electron.Event, dir: string) => {
-    removeDirSync(dir)
-    event.returnValue = 0
-  })
-
-  ipcMain.on('zip-dir', (event: Electron.Event, dir: string, to: string) => {
-    event.returnValue = zipDir(dir, to)
-  })
-
   ipcMain.on(
     'update-user-config',
     (event: Electron.Event, config: MajsoulPlus.UserConfig) => {
