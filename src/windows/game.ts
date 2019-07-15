@@ -45,22 +45,6 @@ export function initGameWindow() {
   // 阻止标题更改
   GameWindow.on('page-title-updated', event => event.preventDefault())
 
-  // 监听 console 信息并转发至主进程
-  GameWindow.webContents.on('console-message', (_, level, msg) => {
-    switch (level) {
-      case 'warn':
-        console.warn(msg)
-        break
-      case 'error':
-        console.error(msg)
-        break
-      case 'log':
-        console.log(msg)
-        break
-      default:
-    }
-  })
-
   // 监听到崩溃事件，输出 console
   GameWindow.webContents.on('crashed', () =>
     console.warn(i18n.text.main.webContentsCrashed())

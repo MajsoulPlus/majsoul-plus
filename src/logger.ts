@@ -56,7 +56,7 @@ export class ConsoleLogger extends Logger {
     console.warn(chalk.yellow(`[${this.logMain}][WARN] ${message}`))
   }
 
-  error(message: string, exit: boolean) {
+  error(message: string, exit = false) {
     console.info(chalk.red(`[${this.logMain}][ERROR] ${message}`))
     if (exit) {
       process.exit()
