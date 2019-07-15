@@ -1,10 +1,9 @@
 import { BrowserWindow, ipcMain } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
-import { appDataDir, Global, GlobalPath } from '../global'
+import { appDataDir, Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { ManagerWindow } from './manager'
-import { fillObject } from '../utils'
 
 class ToolWindow {
   private window: BrowserWindow
