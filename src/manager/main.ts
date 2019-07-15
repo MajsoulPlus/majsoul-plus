@@ -89,10 +89,7 @@ class ResourceManager {
     [ResourcePacks, Extensions, Tools].forEach(ext => {
       // 导入
       const importMSP = document.querySelector(`#install${ext.name}`)
-      importMSP.addEventListener(
-        'click',
-        ResourceManager.importMSP(ext.name.toLowerCase())
-      )
+      importMSP.addEventListener('click', ResourceManager.importMSP(ext.name))
 
       // 修改
       const changeEditable = document.querySelector(`#edit${ext.name}`)
@@ -130,7 +127,7 @@ class ResourceManager {
 
   // 加载扩展 Manager 主题
   private static runExtends() {
-    ResourceManager.extends.forEach(theme => theme(this.userConfig))
+    ResourceManager.extends.forEach(theme => theme(ResourceManager.userConfig))
   }
 
   // 游戏启动
@@ -170,17 +167,18 @@ class ResourceManager {
             ext =>
               ext.extensions[0] ===
               {
-                resourcepack: 'mspm',
-                extension: 'mspe',
-                tool: 'mspt'
+                ResourcePack: 'mspm',
+                Extension: 'mspe',
+                Tool: 'mspt'
               }[type]
           ),
           properties: ['openFile', 'multiSelections']
         },
         files => {
           (files || []).forEach(file => {
-            ipcRenderer.sendSync(`import-${type}`, file)
+            ipcRenderer.sendSync(`import-${type.toLowerCase()}`, file)
           })
+          ResourceManager.refreshCard(type)()
         }
       )
     }
@@ -188,20 +186,10 @@ class ResourceManager {
 
   // 修改 Editable
   private static changeEditable(type: string) {
-    return () => {
-      switch (type) {
-        case 'ResourcePack':
-          ResourcePacks.changeEditable()
-          break
-        case 'Extension':
-          Extensions.changeEditable()
-          break
-        case 'Tool':
-          Tools.changeEditable()
-          break
-        default:
-      }
-    }
+    return () =>
+      [ResourcePacks, Extensions, Tools]
+        .filter(t => t.name === type)[0]
+        .changeEditable()
   }
 }
 

@@ -307,9 +307,7 @@ export function encodeData(
   }
 }
 
-/**
- * 同步删除文件夹
- */
+// 同步删除文件夹
 export function removeDirSync(dir: string) {
   let command = ''
   if (process.platform === 'win32') {
@@ -320,15 +318,18 @@ export function removeDirSync(dir: string) {
   childProcess.execSync(command)
 }
 
-/**
- * 选取一个路径和目标，生成一个压缩文件，返回生成的压缩文件路径
- * @param from 要被打包的文件夹
- * @param to 打包到的路径
- */
+// 压缩目录至 to
 export function zipDir(from: string, to: string) {
   const zip = new AdmZip()
   zip.addLocalFolder(from, path.basename(from))
   zip.writeZip(to)
+  return to
+}
+
+// 解压压缩文件至 to
+export function unzipDir(file: string, to: string) {
+  const zip = new AdmZip(file)
+  zip.extractAllTo(to)
   return to
 }
 

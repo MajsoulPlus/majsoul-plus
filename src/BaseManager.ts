@@ -7,7 +7,7 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject, removeDirSync, zipDir } from './utils'
+import { fillObject, removeDirSync, unzipDir, zipDir } from './utils'
 import { ManagerWindow } from './windows/manager'
 
 export default abstract class BaseManager {
@@ -58,8 +58,8 @@ export default abstract class BaseManager {
       }
     )
 
-    ipcMain.on(`import-${name}`, (event: Electron.Event) => {
-      // TODO
+    ipcMain.on(`import-${name}`, (event: Electron.Event, file: string) => {
+      unzipDir(file, path.resolve(appDataDir, this.name))
       event.returnValue = 0
     })
 
