@@ -48,7 +48,7 @@ export default class ResourcePackManager {
 
   use(id: string) {
     // 资源包 ID 检查
-    if (!id.match(/^[_a-zA-Z]+$/)) {
+    if (!id.match(/^[_a-zA-Z0-9]+$/)) {
       Logger.debug(`invalid resourcepack id： ${id}`)
       return this
     }

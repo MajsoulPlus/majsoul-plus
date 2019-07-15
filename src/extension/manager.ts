@@ -59,7 +59,7 @@ class MajsoulPlusExtensionManager {
 
   use(ext: string) {
     // 检查目录 ID 是否合法
-    if (!ext.match(/^[_a-zA-Z]+$/)) {
+    if (!ext.match(/^[_a-zA-Z0-9]+$/)) {
       console.error(
         `failed to load extension folder ${ext}: invalid folder path `
       )
