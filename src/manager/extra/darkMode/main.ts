@@ -1,4 +1,5 @@
 import { remote } from 'electron'
+import { MajsoulPlus } from '../../../majsoul_plus'
 
 function changeTheme(mode: string) {
   const extraCss = document.querySelector('#extraCss')
@@ -7,18 +8,19 @@ function changeTheme(mode: string) {
   }
 }
 
-export default function darkMode() {
+export default function darkMode(userConfig: MajsoulPlus.UserConfig) {
   if (process.platform === 'darwin') {
     const { systemPreferences } = remote
 
     const setOSTheme = () => {
-      const mode = systemPreferences.isDarkMode() ? 'dark' : 'light'
-      changeTheme(mode)
+      changeTheme(systemPreferences.isDarkMode() ? 'dark' : 'light')
     }
 
     systemPreferences.subscribeLocalNotification(
       'AppleInterfaceThemeChangeNotification',
       setOSTheme
     )
+  } else {
+    changeTheme(userConfig.window.OSTheme)
   }
 }

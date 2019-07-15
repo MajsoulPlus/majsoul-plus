@@ -130,7 +130,7 @@ class ResourceManager {
 
   // 加载扩展 Manager 主题
   private static runExtends() {
-    ResourceManager.extends.forEach(theme => theme())
+    ResourceManager.extends.forEach(theme => theme(this.userConfig))
   }
 
   // 游戏启动
