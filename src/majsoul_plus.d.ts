@@ -85,13 +85,13 @@ declare namespace MajsoulPlus {
     author?: string | string[]
     description?: string
     preview?: string
+    dependencies?: { [key: string]: string }
   }
 
   /**
    * 资源包(Resource Pack)
    */
   export interface ResourcePack extends Metadata {
-    dependencies?: { [key: string]: string }
     replace: Array<string | ResourcePackReplaceEntry>
   }
 
@@ -105,7 +105,6 @@ declare namespace MajsoulPlus {
    * 扩展(Extension)
    */
   export interface Extension extends Metadata {
-    dependencies?: { [key: string]: string }
     entry?: string | string[]
     loadBeforeGame?: boolean
     applyServer?: number[]

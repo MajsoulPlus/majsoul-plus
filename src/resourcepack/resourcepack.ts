@@ -13,7 +13,7 @@ export function LoadResourcePack() {
 
   // 扫描目录
   const resourcepacks: string[] = getFoldersSync(Global.ResourceFolderPath)
-  resourcepacks.forEach(resourcepack => ResourcePackManager.use(resourcepack))
+  resourcepacks.forEach(resourcepack => ResourcePackManager.load(resourcepack))
   ResourcePackManager.enableFromConfig()
   ResourcePackManager.save()
 
