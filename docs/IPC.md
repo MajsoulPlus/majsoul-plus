@@ -45,10 +45,10 @@
 
 ### ManagerWindow
 
-| ID  | 名称          | 参数                    | 说明                                                                       |
-| --- | ------------- | ----------------------- | -------------------------------------------------------------------------- |
-| 01  | change-config | `{mainkey, key, value}` | 修改 `options.userConfig` 中参数（目前只用到了修改 GameWindow 窗口大小）。 |
-| 02  | save-config   | 无                      | 保存 Manager 窗口中的各项设定。                                            |
+| ID  | 名称                           | 参数             | 说明                                     |
+| --- | ------------------------------ | ---------------- | ---------------------------------------- |
+| 01  | change-config-game-window-size | `gameWindowSize` | 修改 `userConfigs.window.gameWindowSize` |
+| 02  | save-config                    | 无               | 保存 Manager 窗口中的各项设定。          |
 
 ### AudioPlayer
 

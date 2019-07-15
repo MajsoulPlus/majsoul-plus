@@ -53,13 +53,11 @@ export function initGameWindow() {
   // 监听尺寸更改事件，用于正确得到截图所需要的窗口尺寸
   GameWindow.on('resize', () => {
     UserConfigs.window.gameWindowSize = GameWindow.getSize().toString()
-    const newConfig = {
-      mainKey: 'window',
-      key: 'gameWindowSize',
-      value: UserConfigs.window.gameWindowSize
-    }
     if (ManagerWindow) {
-      ManagerWindow.webContents.send('change-config', newConfig)
+      ManagerWindow.webContents.send(
+        'change-config-game-window-size',
+        UserConfigs.window.gameWindowSize
+      )
     }
     // 将窗口尺寸信息发送给渲染进程用于截图
     GameWindow.webContents.send('window-resize', GameWindow.getBounds())

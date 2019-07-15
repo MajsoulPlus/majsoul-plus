@@ -58,14 +58,14 @@ class ResourceManager {
 
   // 注册与主进程通讯的内容
   private static initRPC() {
-    ipcRenderer.on('change-config', (event: Electron.Event, data) => {
-      const obj = data
-      // FIXME
-      // ResourceManager.options.userConfig[obj.mainKey][obj.key] = obj.value
-    })
+    ipcRenderer.on(
+      'change-config-game-window-size',
+      (event: Electron.Event, gameWindowSize: string) => {
+        ResourceManager.userConfig.window.gameWindowSize = gameWindowSize
+      }
+    )
 
     ipcRenderer.on('save-config', () => {
-      // TODO: 修改配置保存逻辑，统一在主进程保存
       ResourceManager.saveSettings()
       ipcRenderer.send('close-manager')
     })
