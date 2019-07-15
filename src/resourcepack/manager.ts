@@ -25,7 +25,8 @@ const defaultResourcePack: MajsoulPlus.ResourcePack = {
 
 Object.freeze(defaultResourcePack)
 
-class ResourcePackManager {
+export default class ResourcePackManager {
+  private static configPath: string
   private resourcePacks: Map<string, MajsoulPlus.ResourcePack> = new Map()
   private loadedResourcePackDetails: {
     [extension: string]: {
@@ -35,9 +36,14 @@ class ResourcePackManager {
       metadata: MajsoulPlus.ResourcePack
     }
   } = {}
+  private enabled: string[]
 
-  constructor() {
+  constructor(configPath: string) {
+    ResourcePackManager.configPath = configPath
     this.resourcePacks.set('majsoul_plus', defaultResourcePack)
+    this.enabled = JSON.parse(
+      fs.readFileSync(configPath, { encoding: 'utf-8' })
+    )
   }
 
   use(id: string) {
@@ -169,7 +175,7 @@ class ResourcePackManager {
       })
 
       this.resourcePacks.set(id, resourcepack)
-      this.loadedResourcePackDetails[id].enabled = true
+      this.loadedResourcePackDetails[id].enabled = this.enabled.includes(id)
     }
     return this
   }
@@ -239,16 +245,26 @@ class ResourcePackManager {
         const resMap = JSON.parse(remote.data.toString('utf-8'))
 
         this.resourcePacks.forEach(pack => {
-          pack.replace.forEach((rep: MajsoulPlus.ResourcePackReplaceEntry) => {
-            const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-            const from = typeof repo.from === 'string' ? [repo.from] : repo.from
+          if (
+            pack.id !== 'majsoul_plus' &&
+            this.loadedResourcePackDetails[pack.id].enabled
+          ) {
+            pack.replace.forEach(
+              (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
+                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+                const from =
+                  typeof repo.from === 'string' ? [repo.from] : repo.from
 
-            from.forEach(rep => {
-              if (resMap.res[rep] !== undefined) {
-                resMap.res[rep].prefix = `majsoul_plus/resourcepack/${pack.id}`
+                from.forEach(rep => {
+                  if (resMap.res[rep] !== undefined) {
+                    resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
+                      pack.id
+                    }`
+                  }
+                })
               }
-            })
-          })
+            )
+          }
         })
         ctx.body = JSON.stringify(resMap, null, 2)
       }
@@ -288,7 +304,10 @@ class ResourcePackManager {
           }
         }
 
-        if (value.errors.length > 0) continue
+        if (value.errors.length > 0) {
+          value.enabled = false
+          continue
+        }
 
         // 构建拓扑排序的数组
         if (
@@ -312,10 +331,11 @@ class ResourcePackManager {
         this.loadedResourcePackDetails[id].sequence = index
       })
       Logger.debug(JSON.stringify(sequence.slice(1)))
-      return sequence.slice(1)
+      this.enabled = sequence.slice(1)
     } catch (e) {
-      return []
+      this.enabled = []
     }
+    return this.enabled
   }
 
   getDetails() {
@@ -323,6 +343,18 @@ class ResourcePackManager {
     delete details['majsoul_plus']
     return details
   }
-}
 
-export default new ResourcePackManager()
+  getPack(id: string) {
+    return this.loadedResourcePackDetails[id]
+  }
+
+  save() {
+    fs.writeFileSync(
+      ResourcePackManager.configPath,
+      JSON.stringify(this.sort(), null, 2),
+      {
+        encoding: 'utf-8'
+      }
+    )
+  }
+}

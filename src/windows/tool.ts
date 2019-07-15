@@ -140,6 +140,24 @@ export function initToolManager() {
     event.returnValue = { ...toolsMap }
   })
 
+  ipcMain.on('save-tool-enabled', (event: Electron.Event) => {
+    // TODO
+    event.returnValue = ''
+  })
+
+  ipcMain.on(
+    'change-tool-enability',
+    (event: Electron.Event, id: string, enabled: boolean) => {
+      // TODO
+      event.returnValue = { ...toolsMap }
+    }
+  )
+
+  ipcMain.on('save-tool-enabled', (event: Electron.Event) => {
+    // TODO
+    event.returnValue = ''
+  })
+
   ipcMain.on('zip-tool', (event: Electron.Event) => {
     // TODO
     event.returnValue = {}

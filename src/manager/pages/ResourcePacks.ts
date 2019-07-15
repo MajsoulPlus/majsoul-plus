@@ -8,10 +8,6 @@ class ResourcePack extends CardList {
       typeText: i18n.text.manager.fileTypeMSPM()
     }
   }
-
-  protected handleCheckedChange = (key: string) => {
-    // TODO
-  }
 }
 
 export default new ResourcePack()

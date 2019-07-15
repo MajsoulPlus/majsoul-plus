@@ -58,8 +58,13 @@ export default class CardList {
 
   protected handleCheckedChange = (id: string) => {
     const cardItem = this.cardListItemMap.get(id)
-    if (cardItem.card['checked']) {
-      this.cardListItemMap.get(id).enabled = cardItem['checked']
+    if (cardItem.card['checked'] !== undefined) {
+      const details = ipcRenderer.sendSync(
+        `change-${this.name.toLowerCase()}-enability`,
+        id,
+        cardItem.card['checked']
+      )
+      this.load(details)
     }
   }
 
@@ -102,13 +107,13 @@ export default class CardList {
     return undefined
   }
 
-  load() {
-    this.generateCardsFromDetails(this.getCardDetails())
+  load(details = this.getCardDetails()) {
+    this.generateCardsFromDetails(details)
     this.renderCards()
   }
 
   save() {
-    // TODO: 通知主进程保存
+    ipcRenderer.sendSync(`save-${this.name.toLowerCase()}-enabled`)
   }
 
   changeEditable() {

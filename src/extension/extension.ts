@@ -22,6 +22,19 @@ export function LoadExtension() {
     event.returnValue = ExtensionManager.getDetails()
   })
 
+  ipcMain.on('save-extension-enabled', (event: Electron.Event) => {
+    // TODO
+    event.returnValue = ''
+  })
+
+  ipcMain.on(
+    'change-extension-enability',
+    (event: Electron.Event, id: string, enabled: boolean) => {
+      // TODO
+      event.returnValue = ExtensionManager.getDetails()
+    }
+  )
+
   ipcMain.on('zip-extension', (event: Electron.Event) => {
     // TODO
     event.returnValue = {}

@@ -7,7 +7,7 @@ import * as Router from 'koa-router'
 import * as path from 'path'
 import { UserConfigs } from './config'
 import ExtensionManager from './extension/manager'
-import ResourcePackManager from './resourcepack/manager'
+import { ResourcePackManager } from './resourcepack/resourcepack'
 import { getRemoteOrCachedFile, isPath } from './utils'
 
 const serverOptions: ServerOptions = {

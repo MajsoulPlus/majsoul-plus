@@ -2,28 +2,37 @@ import { ipcMain } from 'electron'
 import * as fs from 'fs'
 import { Global } from '../global'
 import { getFoldersSync } from '../utils'
-import ResourcePackmanager from './manager'
+import manager from './manager'
+
+// tslint:disable-next-line
+export let ResourcePackManager: manager
 
 export function LoadResourcePack() {
-  // 从配置文件(active.json) 加载资源包
-  // 配置文件中只存储需要加载的资源包的 ID
-  // 详细的数据保存在各资源包的 resourcepack.json 内
+  // 初始化 manager
+  ResourcePackManager = new manager(Global.ResourcePackConfigPath)
 
-  // FIXME: 这里应该扫描整个目录
+  // 扫描目录
   const resourcepacks: string[] = getFoldersSync(Global.ResourceFolderPath)
-  resourcepacks.forEach(resourcepack => ResourcePackmanager.use(resourcepack))
-  const enabled = ResourcePackmanager.sort()
-  fs.writeFileSync(
-    Global.ResourcePackConfigPath,
-    JSON.stringify(enabled, null, 2),
-    {
-      encoding: 'utf-8'
-    }
-  )
+  resourcepacks.forEach(resourcepack => ResourcePackManager.use(resourcepack))
+  ResourcePackManager.sort()
 
   ipcMain.on('get-resourcepack-details', (event: Electron.Event) => {
-    event.returnValue = ResourcePackmanager.getDetails()
+    event.returnValue = ResourcePackManager.getDetails()
   })
+
+  ipcMain.on('save-resourcepack-enabled', (event: Electron.Event) => {
+    ResourcePackManager.save()
+    event.returnValue = ''
+  })
+
+  ipcMain.on(
+    'change-resourcepack-enability',
+    (event: Electron.Event, id: string, enabled: boolean) => {
+      ResourcePackManager.getPack(id).enabled = enabled
+      ResourcePackManager.save()
+      event.returnValue = ResourcePackManager.getDetails()
+    }
+  )
 
   ipcMain.on('zip-resourcepack', (event: Electron.Event) => {
     // TODO

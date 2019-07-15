@@ -8,10 +8,6 @@ class Extension extends CardList {
       typeText: i18n.text.manager.fileTypeMSPE()
     }
   }
-
-  protected handleCheckedChange = (key: string) => {
-    // TODO
-  }
 }
 
 export default new Extension()

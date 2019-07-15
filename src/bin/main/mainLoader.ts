@@ -1,9 +1,15 @@
 import { ipcRenderer, screen as electronScreen } from 'electron'
 import i18n from '../../i18n'
-import { Global, RemoteDomains } from '../../global'
+import Global from '../../manager/global'
 import { MajsoulPlus } from '../../majsoul_plus'
 
 const userConfigs: MajsoulPlus.UserConfig = require(Global.UserConfigPath)
+
+const remoteDomains = [
+  { id: 0, name: 'zh', domain: 'https://majsoul.union-game.com/0/' },
+  { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com/' },
+  { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com/' }
+]
 
 const mainWindow: Electron.WebviewTag = document.querySelector('#mainWindow')
 const mainWindowBox: HTMLDivElement = document.querySelector('#mainWindowBox')
@@ -91,9 +97,9 @@ let serverInfo: {
 
 function isVanillaGameUrl(url: string) {
   return (
-    url.startsWith(RemoteDomains[0].domain) ||
-    url.startsWith(RemoteDomains[1].domain) ||
-    url.startsWith(RemoteDomains[2].domain)
+    url.startsWith(remoteDomains[0].domain) ||
+    url.startsWith(remoteDomains[1].domain) ||
+    url.startsWith(remoteDomains[2].domain)
   )
 }
 
