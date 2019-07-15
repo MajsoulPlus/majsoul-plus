@@ -85,6 +85,7 @@ export default class ResourcePackManager {
           resourcepack.id
         }`
       )
+      return this
     }
 
     // id 唯一性检查
@@ -92,14 +93,6 @@ export default class ResourcePackManager {
     if (this.resourcePacks.has(resourcepack.id)) {
       Logger.debug(`resourcepack already loaded or duplicated id: ${id}`)
       return this
-    }
-
-    // 这一步开始分配内容
-    this.loadedResourcePackDetails[id] = {
-      enabled: false,
-      metadata: resourcepack,
-      sequence: 0,
-      errors: []
     }
 
     // JSON Schema
@@ -110,7 +103,7 @@ export default class ResourcePackManager {
     if (!valid) {
       Logger.debug(`failed to load resourcepack ${id}: json schema failed`)
       Logger.debug(JSON.stringify(ajv.errors, null, 2))
-      this.loadedResourcePackDetails[id].errors.push('jsonSchemaError')
+      return this
     }
 
     // version validate
@@ -120,7 +113,6 @@ export default class ResourcePackManager {
           resourcepack.version
         }`
       )
-      this.loadedResourcePackDetails[id].errors.push('semverInvalid')
       return this
     }
 
@@ -134,50 +126,96 @@ export default class ResourcePackManager {
               resourcepack.dependencies[dep]
             }`
           )
-          this.loadedResourcePackDetails[id].errors.push(
-            'dependencySemverInvalid'
-          )
+          return this
         }
       }
     }
 
-    // 未找到预览图片（此步暂时省略）
-    // if (
-    //   !fs.existsSync(path.resolve(folder, resourcepack.preview)) ||
-    //   !fs.statSync(path.resolve(folder, resourcepack.preview)).isFile()
-    // ) {
-    //   console.warn(
-    //     `warning on loading resourcepack ${id}: preview image not found`
-    //   )
-    // }
-
     // 无错误
-    if (this.loadedResourcePackDetails[id].errors.length === 0) {
-      // 将所有 replace 都转换为 Object 形式
-      // 并对其中原 string 的部分开启强制外服兼容
-      resourcepack.replace.forEach((rep, index) => {
-        if (typeof rep === 'string') {
-          resourcepack.replace[index] = {
-            from: [rep, 'jp/' + rep, 'en/' + rep],
-            to: rep,
-            'all-servers': true
-          }
-        } else if (rep['all-servers']) {
-          const all = []
-          if (typeof rep.from === 'string') {
-            rep.from = [rep.from]
-          }
-          rep.from.forEach(key => {
-            all.push(key, 'jp/' + key, 'en/' + key)
-          })
-          rep.from = all
+    // 将所有 replace 都转换为 Object 形式
+    // 并对其中原 string 的部分开启强制外服兼容
+    resourcepack.replace.forEach((rep, index) => {
+      if (typeof rep === 'string') {
+        resourcepack.replace[index] = {
+          from: [rep, 'jp/' + rep, 'en/' + rep],
+          to: rep,
+          'all-servers': true
         }
-      })
+      } else if (rep['all-servers']) {
+        const all = []
+        if (typeof rep.from === 'string') {
+          rep.from = [rep.from]
+        }
+        rep.from.forEach(key => {
+          all.push(key, 'jp/' + key, 'en/' + key)
+        })
+        rep.from = all
+      }
+    })
 
-      this.resourcePacks.set(id, resourcepack)
-      this.loadedResourcePackDetails[id].enabled = this.enabled.includes(id)
+    this.resourcePacks.set(id, resourcepack)
+    this.loadedResourcePackDetails[id] = {
+      enabled: false,
+      metadata: resourcepack,
+      sequence: 0,
+      errors: []
     }
+
     return this
+  }
+
+  enableFromConfig() {
+    const validatedEnabled = []
+    this.enabled.forEach(id => {
+      const value = this.loadedResourcePackDetails[id]
+      const resourcepack = value.metadata
+
+      if (value.enabled) {
+        validatedEnabled.push(id)
+        return
+      }
+
+      for (const dep in resourcepack.dependencies) {
+        // 依赖未找到
+        if (!this.resourcePacks.has(dep)) {
+          Logger.debug(`dependency of ${id} not found: ${dep}`)
+          value.errors.push(['dependencyNotFound', dep])
+        } else if (
+          dep !== 'majsoul_plus' &&
+          !this.loadedResourcePackDetails[dep].enabled
+        ) {
+          Logger.debug(`dependency of ${id} not enabled: ${dep}`)
+          value.errors.push(['dependencyNotEnabled', dep])
+        } else {
+          // 解析依赖版本范围
+          const range = new semver.Range(resourcepack.dependencies[dep])
+          // 检查依赖版本
+          if (!semver.satisfies(this.resourcePacks.get(dep).version, range)) {
+            Logger.debug(
+              `dependency version of ${id} mismatch: loaded ${dep}:${
+                this.resourcePacks.get(dep).version
+              }, but required ${dep}:${resourcepack.dependencies[dep]}`
+            )
+            value.errors.push([
+              'dependencyVersionMismatch',
+              resourcepack.dependencies[dep],
+              this.resourcePacks.get(dep).version
+            ])
+          }
+        }
+      }
+
+      if (value.errors.length === 0) {
+        validatedEnabled.push(id)
+        this.loadedResourcePackDetails[id].enabled = true
+      }
+    })
+
+    // 确定顺序
+    validatedEnabled.forEach((id, index) => {
+      this.loadedResourcePackDetails[id].sequence = index + 1
+    })
+    this.enabled = validatedEnabled
   }
 
   register(server: Koa, router: Router) {
@@ -271,87 +309,43 @@ export default class ResourcePackManager {
     })
   }
 
-  sort() {
-    const graph = []
+  getDetails() {
+    return { ...this.loadedResourcePackDetails }
+  }
+
+  disable(id: string) {
+    const toDisable = this.loadedResourcePackDetails[id]
+    if (toDisable.enabled) {
+      const dependents = Object.values(this.loadedResourcePackDetails).filter(
+        pack => (pack.enabled ? !!pack.metadata.dependencies[id] : false)
+      )
+      dependents.forEach(dep => this.disable(dep.metadata.id))
+    }
+    toDisable.sequence = 0
+    toDisable.enabled = false
+    this.enabled = this.enabled.filter(item => item !== id)
+  }
+
+  disableAll() {
     for (const id in this.loadedResourcePackDetails) {
       if (this.loadedResourcePackDetails[id]) {
-        const value = this.loadedResourcePackDetails[id]
-        const resourcepack = value.metadata
-        // 之前已经存在错误则跳过
-        if (!value.enabled) continue
-
-        for (const dep in resourcepack.dependencies) {
-          // 依赖未找到
-          if (!this.resourcePacks.has(dep)) {
-            Logger.debug(`dependency of ${id} not found: ${dep}`)
-            value.errors.push(['dependencyNotFound', dep])
-          } else {
-            // 解析依赖版本范围
-            const range = new semver.Range(resourcepack.dependencies[dep])
-            // 检查依赖版本
-            if (!semver.satisfies(this.resourcePacks.get(dep).version, range)) {
-              Logger.debug(
-                `dependency version of ${id} mismatch: loaded ${dep}:${
-                  this.resourcePacks.get(dep).version
-                }, but required ${dep}:${resourcepack.dependencies[dep]}`
-              )
-              value.errors.push([
-                'dependencyVersionMismatch',
-                resourcepack.dependencies[dep],
-                this.resourcePacks.get(dep).version
-              ])
-            }
-          }
-        }
-
-        if (value.errors.length > 0) {
-          value.enabled = false
-          continue
-        }
-
-        // 构建拓扑排序的数组
-        if (
-          resourcepack.dependencies &&
-          Object.keys(resourcepack.dependencies).length > 0
-        ) {
-          for (const dep in resourcepack.dependencies) {
-            if (resourcepack.dependencies[dep]) {
-              graph.push([resourcepack.id, dep])
-            }
-          }
-        } else {
-          graph.push([resourcepack.id, 'majsoul_plus'])
-        }
+        this.loadedResourcePackDetails[id].enabled = false
+        this.loadedResourcePackDetails[id].errors = []
       }
     }
-    try {
-      const sequence: string[] = toposort(graph).reverse()
-      sequence.forEach((id, index) => {
-        if (index === 0) return
-        this.loadedResourcePackDetails[id].sequence = index
-      })
-      Logger.debug(JSON.stringify(sequence.slice(1)))
-      this.enabled = sequence.slice(1)
-    } catch (e) {
-      this.enabled = []
-    }
-    return this.enabled
+    this.enabled = []
   }
 
-  getDetails() {
-    const details = { ...this.loadedResourcePackDetails }
-    delete details['majsoul_plus']
-    return details
-  }
-
-  getPack(id: string) {
-    return this.loadedResourcePackDetails[id]
+  enable(id: string) {
+    this.loadedResourcePackDetails[id].errors = []
+    this.enabled.push(id)
+    this.enableFromConfig()
   }
 
   save() {
     fs.writeFileSync(
       ResourcePackManager.configPath,
-      JSON.stringify(this.sort(), null, 2),
+      JSON.stringify(this.enabled, null, 2),
       {
         encoding: 'utf-8'
       }

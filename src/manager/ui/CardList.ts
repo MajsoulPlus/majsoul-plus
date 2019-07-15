@@ -22,7 +22,6 @@ export default class CardList {
     const details = ipcRenderer.sendSync(
       `get-${this.name.toLowerCase()}-details`
     )
-    console.log(this.name, details)
     return details
   }
 
@@ -30,6 +29,7 @@ export default class CardList {
     details: MajsoulPlus_Manager.GetDetailMetadataResponse
   ) => {
     for (const id of Object.keys(details)) {
+      // TODO: 渲染 errors
       details[id].metadata.type = this.name
       this.generateCardFromMetadata(details[id])
     }
@@ -108,6 +108,7 @@ export default class CardList {
   }
 
   load(details = this.getCardDetails()) {
+    console.log(this.name, details)
     this.generateCardsFromDetails(details)
     this.renderCards()
   }

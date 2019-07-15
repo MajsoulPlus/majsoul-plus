@@ -14,7 +14,8 @@ export function LoadResourcePack() {
   // 扫描目录
   const resourcepacks: string[] = getFoldersSync(Global.ResourceFolderPath)
   resourcepacks.forEach(resourcepack => ResourcePackManager.use(resourcepack))
-  ResourcePackManager.sort()
+  ResourcePackManager.enableFromConfig()
+  ResourcePackManager.save()
 
   ipcMain.on('get-resourcepack-details', (event: Electron.Event) => {
     event.returnValue = ResourcePackManager.getDetails()
@@ -28,7 +29,7 @@ export function LoadResourcePack() {
   ipcMain.on(
     'change-resourcepack-enability',
     (event: Electron.Event, id: string, enabled: boolean) => {
-      ResourcePackManager.getPack(id).enabled = enabled
+      enabled ? ResourcePackManager.enable(id) : ResourcePackManager.disable(id)
       ResourcePackManager.save()
       event.returnValue = ResourcePackManager.getDetails()
     }
