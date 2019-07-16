@@ -115,16 +115,7 @@ declare namespace MajsoulPlus {
     entry?: string | string[]
     loadBeforeGame?: boolean
     applyServer?: number[]
-    executePreferences?: ExtensionPreferences
-  }
-
-  export interface ExtensionPreferences {
-    nodeRequire?: boolean
-    document?: boolean
-    localStorage?: boolean
-    XMLHttpRequest?: boolean
-    WebSocket?: boolean
-    writeableWindowObject?: boolean
+    resourcepack?: Array<string | ResourcePackReplaceEntry>
   }
 
   /**

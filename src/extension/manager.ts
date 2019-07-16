@@ -8,32 +8,24 @@ import { appDataDir, GlobalPath, RemoteDomains } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { fetchAnySite, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
+import { ResourcePackManager } from '../resourcepack/resourcepack'
 
-export const defaultExtensionPermission: MajsoulPlus.ExtensionPreferences = {
-  nodeRequire: false,
-  document: false,
-  localStorage: false,
-  XMLHttpRequest: false,
-  WebSocket: false,
-  writeableWindowObject: false
-}
-
-export const defaultExtension: MajsoulPlus.Extension = {
+const defaultExtension: MajsoulPlus.Extension = {
   id: 'majsoul_plus',
   version: '2.0.0',
-  name: 'Majsoul Plus',
-  author: 'Majsoul Plus Team',
-  description: 'No description provided.',
-  dependencies: {},
+  name: '未命名',
+  author: '未知作者',
+  description: '无描述',
   preview: 'preview.png',
+  dependencies: {},
+
   entry: 'script.js',
   loadBeforeGame: false,
   applyServer: [0, 1, 2],
-  executePreferences: defaultExtensionPermission
+  resourcepack: []
 }
 
 Object.freeze(defaultExtension)
-Object.freeze(defaultExtensionPermission)
 
 export default class MajsoulPlusExtensionManager extends BaseManager {
   private extensionScripts: Map<string, string[]> = new Map()
@@ -48,11 +40,13 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
   load(id: string) {
     this.use(id, (pack: MajsoulPlus.Extension) => {
       this.useScriptPromises.push(this.useScript(pack.id, pack))
+      ResourcePackManager.loadExtensionPack(pack)
     })
   }
 
   clear() {
     super.clear()
+    ResourcePackManager.clearExtensionPack()
     this.extensionScripts = new Map()
     this.codejs = ''
     this.useScriptPromises = []

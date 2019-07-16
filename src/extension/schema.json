@@ -50,6 +50,36 @@
       "items": {
         "type": "number"
       }
+    },
+    "resourcepack": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "oneOf": [
+                  { "type": "string" },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "to": {
+                "type": "string"
+              },
+              "all-servers": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
     }
   },
   "required": ["id", "version"]

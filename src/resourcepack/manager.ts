@@ -22,30 +22,51 @@ const defaultResourcePack: MajsoulPlus.ResourcePack = {
 Object.freeze(defaultResourcePack)
 
 export default class ResourcePackManager extends BaseManager {
+  private extensionMap: Map<string, MajsoulPlus.ResourcePack> = new Map()
+
   constructor(configPath: string) {
     super('resourcepack', configPath, defaultResourcePack, schema)
   }
 
   load(id: string) {
-    this.use(id, (pack: MajsoulPlus.ResourcePack) => {
-      pack.replace.forEach((rep, index) => {
-        if (typeof rep === 'string') {
-          pack.replace[index] = {
-            from: [rep, 'jp/' + rep, 'en/' + rep],
-            to: rep,
-            'all-servers': true
-          }
-        } else if (rep['all-servers']) {
-          const all = []
-          if (typeof rep.from === 'string') {
-            rep.from = [rep.from]
-          }
-          rep.from.forEach(key => {
-            all.push(key, 'jp/' + key, 'en/' + key)
-          })
-          rep.from = all
+    this.use(id, (pack: MajsoulPlus.ResourcePack) =>
+      this.preprocessReplaceString(pack)
+    )
+  }
+
+  loadExtensionPack(ext: MajsoulPlus.Extension) {
+    if (ext.resourcepack && ext.resourcepack.length > 0) {
+      const res = {
+        ...ext,
+        replace: ext.resourcepack
+      }
+      this.preprocessReplaceString(res)
+      this.extensionMap.set(res.id, res)
+    }
+  }
+
+  clearExtensionPack() {
+    this.extensionMap.clear()
+  }
+
+  preprocessReplaceString(pack: MajsoulPlus.ResourcePack) {
+    pack.replace.forEach((rep, index) => {
+      if (typeof rep === 'string') {
+        pack.replace[index] = {
+          from: [rep, 'jp/' + rep, 'en/' + rep],
+          to: rep,
+          'all-servers': true
         }
-      })
+      } else if (rep['all-servers']) {
+        const all = []
+        if (typeof rep.from === 'string') {
+          rep.from = [rep.from]
+        }
+        rep.from.forEach(key => {
+          all.push(key, 'jp/' + key, 'en/' + key)
+        })
+        rep.from = all
+      }
     })
   }
 
@@ -59,43 +80,75 @@ export default class ResourcePackManager extends BaseManager {
     })
 
     // 为每一个资源包分配一个路径
-    this.loadedMap.forEach((pack: MajsoulPlus.ResourcePack, packName) => {
-      router.get(
-        `/majsoul_plus/resourcepack/${packName}/*`,
-        async (ctx, next) => {
-          let queryPath = ctx.path.substr(
-            `/majsoul_plus/resourcepack/${packName}/`.length
-          )
-          const encrypted = isEncryptRes(queryPath)
+    this.loadedMap.forEach((pack: MajsoulPlus.ResourcePack, id) => {
+      router.get(`/majsoul_plus/resourcepack/${id}/*`, async (ctx, next) => {
+        let queryPath = ctx.path.substr(
+          `/majsoul_plus/resourcepack/${id}/`.length
+        )
+        const encrypted = isEncryptRes(queryPath)
 
-          // 检测 from 中是否存在 queryPath
-          // 有则重定向到对应的 to
-          for (let rep of pack.replace) {
-            rep = rep as MajsoulPlus.ResourcePackReplaceEntry
-            if ((rep.from as string[]).includes(queryPath)) {
-              queryPath = rep.to
-              break
-            }
-          }
-
-          try {
-            const content = await readFile(
-              path.resolve(
-                appDataDir,
-                GlobalPath.ResourcePackDir,
-                packName,
-                'assets',
-                queryPath
-              )
-            )
-            ctx.response.status = 200
-            ctx.body = encrypted ? XOR(content as Buffer) : content
-          } catch (e) {
-            ctx.response.status = 404
-            ctx.body = undefined
+        // 检测 from 中是否存在 queryPath
+        // 有则重定向到对应的 to
+        for (let rep of pack.replace) {
+          rep = rep as MajsoulPlus.ResourcePackReplaceEntry
+          if ((rep.from as string[]).includes(queryPath)) {
+            queryPath = rep.to
+            break
           }
         }
-      )
+
+        try {
+          const content = await readFile(
+            path.resolve(
+              appDataDir,
+              GlobalPath.ResourcePackDir,
+              id,
+              'assets',
+              queryPath
+            )
+          )
+          ctx.response.status = 200
+          ctx.body = encrypted ? XOR(content as Buffer) : content
+        } catch (e) {
+          ctx.response.status = 404
+          ctx.body = undefined
+        }
+      })
+    })
+
+    // 为每一个扩展分配一个路径
+    this.extensionMap.forEach((pack: MajsoulPlus.ResourcePack, id) => {
+      router.get(`/majsoul_plus/extension/${id}/*`, async (ctx, next) => {
+        let queryPath = ctx.path.substr(`/majsoul_plus/extension/${id}/`.length)
+        const encrypted = isEncryptRes(queryPath)
+
+        // 检测 from 中是否存在 queryPath
+        // 有则重定向到对应的 to
+        for (let rep of pack.replace) {
+          rep = rep as MajsoulPlus.ResourcePackReplaceEntry
+          if ((rep.from as string[]).includes(queryPath)) {
+            queryPath = rep.to
+            break
+          }
+        }
+
+        try {
+          const content = await readFile(
+            path.resolve(
+              appDataDir,
+              GlobalPath.ExtensionDir,
+              id,
+              'assets',
+              queryPath
+            )
+          )
+          ctx.response.status = 200
+          ctx.body = encrypted ? XOR(content as Buffer) : content
+        } catch (e) {
+          ctx.response.status = 404
+          ctx.body = undefined
+        }
+      })
     })
 
     // 修改资源映射表
@@ -129,6 +182,27 @@ export default class ResourcePackManager extends BaseManager {
                     resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
                       pack.id
                     }`
+                  }
+                })
+              }
+            )
+          }
+        })
+
+        this.extensionMap.forEach((pack: MajsoulPlus.ResourcePack) => {
+          if (
+            pack.id !== 'majsoul_plus' &&
+            this.loadedDetails[pack.id].enabled
+          ) {
+            pack.replace.forEach(
+              (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
+                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+                const from =
+                  typeof repo.from === 'string' ? [repo.from] : repo.from
+
+                from.forEach(rep => {
+                  if (resMap.res[rep] !== undefined) {
+                    resMap.res[rep].prefix = `majsoul_plus/extension/${pack.id}`
                   }
                 })
               }
