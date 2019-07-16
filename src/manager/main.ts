@@ -44,8 +44,6 @@ class ResourceManager {
       ResourceManager.userConfig.update.prerelease
     ).checkUpdate()
 
-    // TODO: 支持日服/美服的 Ping
-    // new Ping('zh').init()
     LeftPanel.init()
     Setting.init()
     ResourceManager.initRPC()
@@ -54,6 +52,7 @@ class ResourceManager {
     ResourceManager.runExtends()
     About.render()
     i18n.parseAllElementsText(document.documentElement)
+    Ping.setServer(ResourceManager.userConfig.userData.serverToPlay).init()
   }
 
   // 注册与主进程通讯的内容

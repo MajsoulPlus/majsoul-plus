@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron'
 import Global from '../global'
 import i18n from '../../i18n'
 import { MajsoulPlus } from '../../majsoul_plus'
+import Ping from '../utils/Ping'
 
 class Setting {
   userConfig: MajsoulPlus.UserConfig = require(Global.UserConfigPath)
@@ -145,6 +146,7 @@ class Setting {
   private handleSaveConfigClick = () => {
     this.save()
     alert(i18n.text.manager.saveSucceeded())
+    Ping.setServer(this.userConfig.userData.serverToPlay)
   }
 
   private addSaveListener = () => {

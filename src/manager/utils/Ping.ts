@@ -2,34 +2,70 @@ import Network from './Network'
 import * as tcpPing from 'tcp-ping'
 import i18n from '../../i18n'
 
-export default class Ping {
-  server: string
-  services: MajsoulPlus_Manager.RegionUrls
-  currentService = null
-  serviceList = []
-  interval = null
+export const remoteDomains = [
+  { id: 0, name: 'zh', domain: 'https://majsoul.union-game.com/0' },
+  { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com' },
+  { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com' }
+]
 
-  constructor(server: 'zh' | 'jp' | 'en') {
+class Ping {
+  private server: number
+  private services: MajsoulPlus_Manager.RegionUrls
+  private currentService = null
+  private serviceList = []
+  private interval = null
+
+  setServer(server: number) {
     this.server = server
+
+    const serverInfoTitleDom = document.querySelector('#serverInfoTitle')
+    i18n.text['main'][`server${remoteDomains[this.server].name}`].renderAsText(
+      serverInfoTitleDom
+    )
+    this.initPing()
+    return this
   }
 
-  private getRandomUrl(url: string) {
+  initPing = () => {
+    this.getServices()
+      .then(this.getService)
+      .then(this.renderService)
+      .then(this.getChildService)
+      .then(this.ping)
+      .catch(this.renderPingFail)
+  }
+
+  init() {
+    const serverInfoDom = document.querySelector('#serverInfo')
+    serverInfoDom.addEventListener('click', this.changeService)
+  }
+
+  getServices() {
+    return this.getVersion()
+      .then(this.getResVersion)
+      .then(this.getConfig)
+      .then(this.saveServices)
+  }
+
+  private getRandomUrl = (url: string) => {
     return `${url}?randv=${Math.random()
       .toString()
       .substring(2, 17)
       .padStart(16, '0')}`
   }
 
-  getVersion = async () => {
+  private getVersion = async () => {
     const url = this.getRandomUrl(
-      'https://majsoul.union-game.com/0/version.json'
+      `${remoteDomains[this.server].domain}/version.json`
     )
     const res = (await Network.getJson(url)) as MajsoulPlus_Manager.VersionJson
     return res.version
   }
 
-  getResVersion = async (version: string) => {
-    const originUrl = `https://majsoul.union-game.com/0/resversion${version}.json`
+  private getResVersion = async (version: string) => {
+    const originUrl = `${
+      remoteDomains[this.server].domain
+    }/resversion${version}.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(
       url
@@ -37,26 +73,21 @@ export default class Ping {
     return res.res['config.json'].prefix
   }
 
-  getConfig = async (prefix: string) => {
-    const originUrl = `https://majsoul.union-game.com/0/${prefix}/config.json`
+  private getConfig = async (prefix: string) => {
+    const originUrl = `${
+      remoteDomains[this.server].domain
+    }/${prefix}/config.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(url)) as MajsoulPlus_Manager.ConfigJson
     return res.ip
   }
 
-  saveServices = (ips: MajsoulPlus_Manager.ConfigJsonItem[]) => {
+  private saveServices = (ips: MajsoulPlus_Manager.ConfigJsonItem[]) => {
     this.services = ips[0].region_urls
     this.serviceList = Object.keys(this.services)
   }
 
-  getServices = () => {
-    return this.getVersion()
-      .then(this.getResVersion)
-      .then(this.getConfig)
-      .then(this.saveServices)
-  }
-
-  getService = () => {
+  private getService = () => {
     if (!this.services) return Promise.reject(new Error('services is null'))
     const choseService = window.localStorage.getItem('choseService')
     if (choseService) {
@@ -69,13 +100,7 @@ export default class Ping {
     return Promise.resolve()
   }
 
-  getServiceName = (service: string) => {
-    // FIXME: 日服/国际服后 mainland 意义发生改变
-    // 日服也使用 mainland
-    return i18n.text.servers[service]
-  }
-
-  getChildService = () => {
+  private getChildService = () => {
     return new Promise((resolve, reject) => {
       if (this.services) {
         const originUrl = `${this.services[this.currentService]}`
@@ -93,22 +118,14 @@ export default class Ping {
     })
   }
 
-  // 这个函数没有被使用
-  renderError = (err: Error) => {
-    console.error(err)
-    const serverTextDom = document.querySelector('#serverText')
-    serverTextDom.textContent = '加载失败'
-    // serverTextDom.innerText = '加载失败'
-  }
-
-  renderService = () => {
+  private renderService = () => {
     const serverTextDom = document.querySelector('#serverText')
     const pingInfoDom = document.querySelector('#pingInfo')
     const pingTextDom = document.querySelector('#pingText')
     pingInfoDom.className = 'offline'
     pingTextDom.textContent = '--'
     i18n.unbindElement(serverTextDom)
-    this.getServiceName(this.currentService).renderAsText(serverTextDom)
+    i18n.text.servers[this.currentService].renderAsText(serverTextDom)
     return Promise.resolve()
   }
 
@@ -146,15 +163,6 @@ export default class Ping {
     })
   }
 
-  initPing = () => {
-    this.getServices()
-      .then(this.getService)
-      .then(this.renderService)
-      .then(this.getChildService)
-      .then(this.ping)
-      .catch(this.renderPingFail)
-  }
-
   getNextService = () => {
     let index = this.serviceList.indexOf(this.currentService)
     index = index + 1 >= this.serviceList.length ? 0 : index + 1
@@ -164,35 +172,21 @@ export default class Ping {
   }
 
   changeService = () => {
-    this.getNextService()
-      .then(this.renderService)
-      .then(this.getChildService)
-      .then(this.iPing)
-      .catch(this.renderPingFail)
-  }
-
-  addEventListener = () => {
-    const serverInfoDom = document.querySelector('#serverInfo')
-    serverInfoDom.addEventListener('click', this.changeService)
-  }
-
-  refresh = () => {
-    this.getService()
-      .then(this.renderService)
-      .then(this.getChildService)
-      .then(this.iPing)
-      .catch(console.error)
+    if (this.serviceList.length > 1) {
+      this.getNextService()
+        .then(this.renderService)
+        .then(this.getChildService)
+        .then(this.iPing)
+        .catch(this.renderPingFail)
+    }
   }
 
   ping = (service: string) => {
     clearInterval(this.interval)
     this.interval = setInterval(() => {
       this.iPing(service).then(this.renderPing)
-    }, 5000)
-  }
-
-  init = () => {
-    this.initPing()
-    this.addEventListener()
+    }, 10000)
   }
 }
+
+export default new Ping()
