@@ -94,7 +94,7 @@ export default class CardList {
     if (pathToSave) {
       // 向主进程请求打包
       const resp: { err: string | undefined } = ipcRenderer.sendSync(
-        `zip-${this.name.toLowerCase()}`,
+        `export-${this.name.toLowerCase()}`,
         id,
         pathToSave
       )

@@ -44,11 +44,6 @@ export default abstract class BaseManager {
       )
     })
 
-    ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {
-      this.save()
-      event.returnValue = ''
-    })
-
     ipcMain.on(
       `change-${name}-enability`,
       (event: Electron.Event, id: string, enabled: boolean) => {
@@ -58,13 +53,18 @@ export default abstract class BaseManager {
       }
     )
 
+    ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {
+      this.save()
+      event.returnValue = 0
+    })
+
     ipcMain.on(`import-${name}`, (event: Electron.Event, file: string) => {
       unzipDir(file, path.resolve(appDataDir, this.name))
       event.returnValue = 0
     })
 
     ipcMain.on(
-      `zip-${name}`,
+      `export-${name}`,
       (event: Electron.Event, id: string, pathToSave: string) => {
         const resp = { err: '' }
         try {
