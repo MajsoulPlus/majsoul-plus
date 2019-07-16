@@ -42,3 +42,6 @@ needNotToUpdate,无需更新,必要なアップデート情報はありません
 XMLHttpRequestFailed,AJAX 请求失败，状态码: $0,"AJAX通信に失敗しました, ステータスコード：$0"
 downloadFinished,下载完毕,ダウンロード完了
 downloadFinishedInfo,更新已下载完毕，是否安装并重启？,更新プログラムのダウンロードが完了しました、インストールをするため再起動を行いますか？
+dependencyNotFound,依赖 $0 未找到！,依存関係が見つかりません：$0
+dependencyNotEnabled,请先启用依赖 $0！,まず $0 を有効にしてください
+dependencyVersionMismatch,依赖版本不符！依赖 $0:$1，安装了 $2,依存バージョンが一致しません！依存 $0:$1、インストール済み $2

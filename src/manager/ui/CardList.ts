@@ -39,7 +39,6 @@ export default class CardList {
     details: MajsoulPlus_Manager.GetDetailMetadataResponse
   ) => {
     for (const id of Object.keys(details)) {
-      // TODO: 渲染 errors
       details[id].metadata.type = this.name
       this.generateCardFromMetadata(details[id])
     }
@@ -57,7 +56,7 @@ export default class CardList {
   protected generateCardFromMetadata = (
     info: MajsoulPlus_Manager.CardMetadataWithEnable
   ) => {
-    const card = new CheckedboxCard(info.metadata, info.enabled)
+    const card = new CheckedboxCard(info.metadata, info.enabled, info.sequence)
     const id = info.metadata.id
     this.cardListItemMap.set(id, { ...info, id, card })
 
@@ -69,12 +68,27 @@ export default class CardList {
   protected handleCheckedChange = (id: string) => {
     const cardItem = this.cardListItemMap.get(id)
     if (cardItem.card['checked'] !== undefined) {
-      const details = ipcRenderer.sendSync(
+      const details: MajsoulPlus_Manager.GetDetailMetadataResponse = ipcRenderer.sendSync(
         `change-${this.name.toLowerCase()}-enability`,
         id,
         cardItem.card['checked']
       )
       this.load(Promise.resolve(details))
+
+      if (details[id].errors.length > 0) {
+        const err = details[id].errors[0]
+        switch (err[0]) {
+          case 'dependencyVersionMismatch':
+            alert(i18n.text.manager[err[0]](err[1], err[2], err[3]))
+            break
+          case 'dependencyNotFound':
+          case 'dependencyNotEnabled':
+            alert(i18n.text.manager[err[0]](err[1]))
+            break
+          default:
+            break
+        }
+      }
     }
   }
 

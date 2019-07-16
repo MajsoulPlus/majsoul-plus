@@ -46,5 +46,9 @@
   "needNotToUpdate": "No update",
   "XMLHttpRequestFailed": "A ajax call failed, Code: $0",
   "downloadFinished": "Download Finished",
-  "downloadFinishedInfo": "A new version has been downloaded, update and relaunch now?"
+  "downloadFinishedInfo": "A new version has been downloaded, update and relaunch now?",
+
+  "dependencyNotFound": "Dependency $0 not found!",
+  "dependencyNotEnabled": "Please enable dependency $0 first!",
+  "dependencyVersionMismatch": "Dependency version mismatch! Requires $0:$1, but enabled $2"
 }

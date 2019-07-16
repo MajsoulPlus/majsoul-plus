@@ -217,6 +217,7 @@ export default abstract class BaseManager {
             )
             value.errors.push([
               'dependencyVersionMismatch',
+              dep,
               meta.dependencies[dep],
               this.loadedMap.get(dep).version
             ])

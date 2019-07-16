@@ -2,9 +2,16 @@ import Card from './Card'
 
 export default class CheckedboxCard extends Card {
   checked: boolean
-  constructor(options: MajsoulPlus_Manager.CardMetadata, checked = false) {
+  // TODO: 渲染加载顺序
+  private sequence: number
+  constructor(
+    options: MajsoulPlus_Manager.CardMetadata,
+    checked = false,
+    sequence = 0
+  ) {
     super(options)
     this.checked = checked
+    this.sequence = sequence
   }
 
   protected createInputElements() {

@@ -49,5 +49,9 @@
   "XMLHttpRequestFailed": "AJAX 请求失败，状态码: $0",
 
   "downloadFinished": "下载完毕",
-  "downloadFinishedInfo": "更新已下载完毕，是否安装并重启？"
+  "downloadFinishedInfo": "更新已下载完毕，是否安装并重启？",
+
+  "dependencyNotFound": "依赖 $0 未找到！",
+  "dependencyNotEnabled": "请先启用依赖 $0！",
+  "dependencyVersionMismatch": "依赖版本不符！依赖 $0:$1，安装了 $2"
 }
