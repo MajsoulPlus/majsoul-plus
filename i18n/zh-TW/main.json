@@ -8,7 +8,6 @@
   "setting": "\u63a7\u5236\u53f0",
   "about": "\u95dc\u65bc",
   "community": "\u793e\u5340",
-  "server": "\u4f3a\u670d\u5668",
   "delay": "\u5ef6\u9072",
   "launch": "\u5553\u52d5\u6e38\u6232",
   "loading": "\u52a0\u8f09\u4e2d",
@@ -19,5 +18,9 @@
   "httpsGetFileRedirect": "\u8a2a\u554f $0 \u88ab\u91cd\u5b9a\u5411\uff0c\u72c0\u614b\u78bc $1",
   "portInUse": "\u57e0 \u88ab\u5360\u7528\uff0c\u91cd\u8a66\u4e2d\u2026\u2026",
   "consoleMessage": "\u63a7\u5236\u53f0\u6d88\u606f",
-  "webContentsCrashed": "\u6e38\u6232\u5bbf\u4e3b\u7a97\u53e3\u5d29\u6f70"
+  "webContentsCrashed": "\u6e38\u6232\u5bbf\u4e3b\u7a97\u53e3\u5d29\u6f70",
+  "server": "\u4f3a\u670d\u5668",
+  "serverzh": "\u570b\u4f3a",
+  "serverjp": "\u65e5\u4f3a",
+  "serveren": "\u7f8e\u4f3a"
 }

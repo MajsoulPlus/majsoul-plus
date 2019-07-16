@@ -8,7 +8,6 @@
   "setting": "Settings",
   "about": "About",
   "community": "Community",
-  "server": "Server",
   "delay": "Delay",
   "launch": "Launch Game",
   "loading": "Loading",
@@ -19,5 +18,10 @@
   "httpsGetFileRedirect": "$0 is redirected, Code: $1",
   "portInUse": "Port in use, Retrying...",
   "consoleMessage": "ConsoleMsg",
-  "webContentsCrashed": "Web Contents Crashed"
+  "webContentsCrashed": "Web Contents Crashed",
+
+  "server": "Server",
+  "serverzh": "ZH Server",
+  "serverjp": "JP Server",
+  "serveren": "EN Server"
 }
