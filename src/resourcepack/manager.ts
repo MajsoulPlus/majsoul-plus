@@ -166,29 +166,7 @@ export default class ResourcePackManager extends BaseManager {
         ctx.res.statusCode = remote.code
         const resMap = JSON.parse(remote.data.toString('utf-8'))
 
-        this.loadedMap.forEach((pack: MajsoulPlus.ResourcePack) => {
-          if (
-            pack.id !== 'majsoul_plus' &&
-            this.loadedDetails[pack.id].enabled
-          ) {
-            pack.replace.forEach(
-              (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
-                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-                const from =
-                  typeof repo.from === 'string' ? [repo.from] : repo.from
-
-                from.forEach(rep => {
-                  if (resMap.res[rep] !== undefined) {
-                    resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
-                      pack.id
-                    }`
-                  }
-                })
-              }
-            )
-          }
-        })
-
+        // 先加载扩展的资源
         this.extensionMap.forEach((pack: MajsoulPlus.ResourcePack) => {
           if (
             pack.id !== 'majsoul_plus' &&
@@ -209,6 +187,38 @@ export default class ResourcePackManager extends BaseManager {
             )
           }
         })
+
+        // 后加载资源包的资源，资源包可覆盖扩展的替换
+        // 资源包的资源替换顺序即为加载顺序
+        Object.values(this.loadedDetails)
+          .sort((a, b) => {
+            if (b.sequence === 0) return -1
+            return a.sequence - b.sequence
+          })
+          .forEach(detail => {
+            const pack = detail.metadata as MajsoulPlus.ResourcePack
+            if (
+              pack.id !== 'majsoul_plus' &&
+              this.loadedDetails[pack.id].enabled
+            ) {
+              pack.replace.forEach(
+                (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
+                  const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+                  const from =
+                    typeof repo.from === 'string' ? [repo.from] : repo.from
+
+                  from.forEach(rep => {
+                    if (resMap.res[rep] !== undefined) {
+                      resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
+                        pack.id
+                      }`
+                    }
+                  })
+                }
+              )
+            }
+          })
+
         ctx.body = JSON.stringify(resMap, null, 2)
       }
     })
