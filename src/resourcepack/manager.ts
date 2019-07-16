@@ -191,10 +191,8 @@ export default class ResourcePackManager extends BaseManager {
         // 后加载资源包的资源，资源包可覆盖扩展的替换
         // 资源包的资源替换顺序即为加载顺序
         Object.values(this.loadedDetails)
-          .sort((a, b) => {
-            if (b.sequence === 0) return -1
-            return a.sequence - b.sequence
-          })
+          .filter(detail => detail.sequence > 0)
+          .sort((a, b) => a.sequence - b.sequence)
           .forEach(detail => {
             const pack = detail.metadata as MajsoulPlus.ResourcePack
             if (

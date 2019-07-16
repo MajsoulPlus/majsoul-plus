@@ -138,28 +138,40 @@ userLocalStorage.forEach(arr => localStorage.setItem(arr[0], arr[1]))
 console.log('[Majsoul_Plus] 登录信息注入成功')
 `
 
-          this.extensionScripts.forEach((scripts, id) => {
-            // 当未加载时跳出
-            if (!this.loadedDetails[id].enabled) return
+          Array.from(this.extensionScripts.entries())
+            .filter(entry => this.loadedDetails[entry[0]].sequence > 0)
+            .sort(
+              (a, b) =>
+                this.loadedDetails[a[0]].sequence -
+                this.loadedDetails[b[0]].sequence
+            )
+            .forEach(entries => {
+              const id = entries[0],
+                scripts = entries[1]
 
-            const extension: MajsoulPlus.Extension = this.loadedDetails[id]
-              .metadata
-            if (
-              extension.applyServer.includes(UserConfigs.userData.serverToPlay)
-            ) {
-              const extCode = `/**
+              // 当未加载时跳出
+              if (!this.loadedDetails[id].enabled) return
+
+              const extension: MajsoulPlus.Extension = this.loadedDetails[id]
+                .metadata
+              if (
+                extension.applyServer.includes(
+                  UserConfigs.userData.serverToPlay
+                )
+              ) {
+                const extCode = `/**
  * Extension： ${extension.id}
  * Author: ${extension.author}
  * Version: ${extension.version}
  */
 ${scripts.join('\n')}\n\n`
-              if (extension.loadBeforeGame) {
-                prefix += extCode
-              } else {
-                postfix += extCode
+                if (extension.loadBeforeGame) {
+                  prefix += extCode
+                } else {
+                  postfix += extCode
+                }
               }
-            }
-          })
+            })
 
           this.codejs =
             loginScript +
