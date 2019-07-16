@@ -166,3 +166,14 @@ ipcRenderer.on(
     mainWindowBox.style.transform = 'none'
   }
 )
+
+ipcRenderer.on('get-local-storage', () => {
+  mainWindow.executeJavaScript(
+    'Object.entries(localStorage)',
+    false,
+    result => {
+      console.log(result)
+      ipcRenderer.send('save-local-storage', result)
+    }
+  )
+})

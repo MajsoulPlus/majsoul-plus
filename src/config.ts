@@ -33,12 +33,19 @@ const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   serverToPlay: 0
 }
 
+const defaultLocalStorageConfig: MajsoulPlus.UserLocalStorageConfig = {
+  zh: [],
+  jp: [],
+  en: []
+}
+
 // tslint:disable-next-line
 export const DefaultConfig: MajsoulPlus.UserConfig = {
   window: defaultWindowConfig,
   update: defaultUpdateConfig,
   chromium: defaultChromiumConfig,
-  userData: defaultUserDataConfig
+  userData: defaultUserDataConfig,
+  localStorage: defaultLocalStorageConfig
 }
 
 /**
@@ -48,6 +55,7 @@ Object.freeze(defaultWindowConfig)
 Object.freeze(defaultUpdateConfig)
 Object.freeze(defaultChromiumConfig)
 Object.freeze(defaultUserDataConfig)
+Object.freeze(defaultLocalStorageConfig)
 Object.freeze(DefaultConfig)
 
 /**

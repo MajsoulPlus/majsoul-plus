@@ -65,7 +65,7 @@ export const Global: MajsoulPlus.Global = {
   ResourcePackConfigPath: '',
   ExtensionConfigPath: '',
   ToolConfigPath: '',
-  UserConfigPath: path.join(appDataDir, 'Configs-user.json'),
+  UserConfigPath: path.join(appDataDir, 'configs-user.json'),
   LocalCachePath: path.join(appDataDir, GlobalPath.LocalDir),
   ResourceFolderPath: path.join(appDataDir, GlobalPath.ResourcePackDir),
   ExtensionFolderPath: path.join(appDataDir, GlobalPath.ExtensionDir),

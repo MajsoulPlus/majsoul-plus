@@ -8,8 +8,8 @@ import {
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
-import { UserConfigs } from '../config'
-import { Global } from '../global'
+import { UserConfigs, SaveConfigJson } from '../config'
+import { Global, RemoteDomains } from '../global'
 import i18n from '../i18n'
 import { MajsoulPlus } from '../majsoul_plus'
 import { httpServer, httpsServer } from '../server'
@@ -52,7 +52,7 @@ export function initGameWindow() {
   // 监听尺寸更改事件，用于正确得到截图所需要的窗口尺寸
   GameWindow.on('resize', () => {
     UserConfigs.window.gameWindowSize = GameWindow.getSize().toString()
-    if (ManagerWindow) {
+    if (!ManagerWindow.isDestroyed()) {
       ManagerWindow.webContents.send(
         'change-config-game-window-size',
         UserConfigs.window.gameWindowSize
@@ -99,6 +99,22 @@ export function initGameWindow() {
     }://localhost:${port}/`
     GameWindow.webContents.send('load-url', url, port, http)
   })
+
+  GameWindow.on('minimize', () => {
+    GameWindow.webContents.send('get-local-storage')
+  })
+  GameWindow.on('maximize', () => {
+    GameWindow.webContents.send('get-local-storage')
+  })
+  ipcMain.on(
+    'save-local-storage',
+    (event: Electron.Event, localStorage: string[][]) => {
+      UserConfigs.localStorage[
+        RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
+      ] = localStorage.filter(arr => arr[1] !== '' && arr[1] !== 'FKU!!!')
+      SaveConfigJson(UserConfigs)
+    }
+  )
 
   GameWindow.once('ready-to-show', () => {
     // 设置页面缩放比例为 1 来防止缩放比例异常

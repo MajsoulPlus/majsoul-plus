@@ -4,7 +4,7 @@ import * as Router from 'koa-router'
 import * as path from 'path'
 import BaseManager from '../BaseManager'
 import { UserConfigs } from '../config'
-import { appDataDir, GlobalPath } from '../global'
+import { appDataDir, GlobalPath, RemoteDomains } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { fetchAnySite, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
@@ -133,6 +133,17 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
                 : data
           )
 
+          // 设置 localStorage 供用户登录
+          const loginScript = `// 注入登录脚本
+const userLocalStorage = JSON.parse('${JSON.stringify(
+            UserConfigs.localStorage[
+              RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
+            ]
+          )}')
+userLocalStorage.forEach(arr => localStorage.setItem(arr[0], arr[1]))
+console.log('[Majsoul_Plus] 登录信息注入成功')
+`
+
           this.extensionScripts.forEach((scripts, id) => {
             // 当未加载时跳出
             if (!this.loadedDetails[id].enabled) return
@@ -157,6 +168,8 @@ ${scripts.join('\n')}\n\n`
           })
 
           this.codejs =
+            loginScript +
+            '\n\n\n' +
             prefix +
             '\n\n\n' +
             '// code.js\n' +

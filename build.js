@@ -60,6 +60,5 @@ copy('i18n')
 copyA('resourcepack')
 copyA('extension')
 copyA('tool', 'bin', copyDesktopCreatorFonts)
-copy('configs-user.json')
 
 simpleBrowserify('windows/sandbox-preload.js')

@@ -14,9 +14,14 @@ class Setting {
   private render = () => {
     const settingInner = document.querySelector('#settingInner')
     settingInner.innerHTML = ''
-    Object.entries(this.userConfig).forEach(([section, data]) => {
-      this.renderSection(settingInner, section, data)
-    })
+    Object.entries(this.userConfig)
+      .filter(([section]) => {
+        // 设置不渲染的 section
+        return !['localStorage'].includes(section)
+      })
+      .forEach(([section, data]) => {
+        this.renderSection(settingInner, section, data)
+      })
   }
 
   private renderSection = (settingInner: Element, section: string, data) => {
