@@ -39,13 +39,12 @@ const defaultLocalStorageConfig: MajsoulPlus.UserLocalStorageConfig = {
   en: []
 }
 
-// tslint:disable-next-line
-export const DefaultConfig: MajsoulPlus.UserConfig = {
-  window: defaultWindowConfig,
-  update: defaultUpdateConfig,
+const defaultConfig: MajsoulPlus.UserConfig = {
   chromium: defaultChromiumConfig,
+  localStorage: defaultLocalStorageConfig,
+  update: defaultUpdateConfig,
   userData: defaultUserDataConfig,
-  localStorage: defaultLocalStorageConfig
+  window: defaultWindowConfig
 }
 
 /**
@@ -56,13 +55,14 @@ Object.freeze(defaultUpdateConfig)
 Object.freeze(defaultChromiumConfig)
 Object.freeze(defaultUserDataConfig)
 Object.freeze(defaultLocalStorageConfig)
-Object.freeze(DefaultConfig)
+Object.freeze(defaultConfig)
 
 /**
  * 加载配置文件 json
  */
 export function LoadConfigJson(): MajsoulPlus.UserConfig {
   let config: MajsoulPlus.UserConfig
+  if (!fs.existsSync(Global.UserConfigPath)) SaveConfigJson(defaultConfig)
   try {
     config = JSON.parse(
       fs.readFileSync(Global.UserConfigPath, {
@@ -72,7 +72,7 @@ export function LoadConfigJson(): MajsoulPlus.UserConfig {
   } catch (e) {
     config = {} as MajsoulPlus.UserConfig
   }
-  config = fillObject(config, DefaultConfig) as MajsoulPlus.UserConfig
+  config = fillObject(config, defaultConfig) as MajsoulPlus.UserConfig
   SaveConfigJson(config)
   return config
 }
