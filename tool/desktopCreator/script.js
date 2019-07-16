@@ -110,8 +110,8 @@ saveAndInstall.addEventListener('click', event => {
   }
 
   const dirPath = path.join(resDir, id)
-  if (!id.match(/^[_a-zA-Z]+$/)) {
-    alert('资源包 ID 格式只能含有大小写字母和下划线！')
+  if (!id.match(/^[_a-zA-Z0-9]+$/)) {
+    alert('资源包 ID 格式只能含有大小写字母、数字和下划线！')
     return
   }
   if (name.length === 0) {

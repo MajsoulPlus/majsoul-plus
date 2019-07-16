@@ -28,7 +28,6 @@ const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
 }
 
 const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
-  useAppdataLibrary: false,
   useHttpServer: false,
   serverToPlay: 0
 }
