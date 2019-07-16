@@ -1,0 +1,31 @@
+{
+  "programName": "雀魂Plus",
+  "resourcepack": "资源包",
+  "extension": "扩展",
+  "tool": "工具",
+  "setting": "设置",
+  "about": "关于",
+  "community": "社区",
+  "delay": "延迟",
+  "launch": "启动游戏",
+  "loading": "加载中",
+  "millisecond": "毫秒",
+
+  "nya": "喵喵喵！",
+
+  "getRemoteSourceFailed": "从远端服务器请求 $0 失败，状态码为 $1",
+  "httpsGetFileFailed": "尝试下载资源 $0 失败，状态码为 $1`",
+  "httpsGetFileRedirect": "访问 $0 被重定向，状态码为 $1",
+
+  "portInUse": "端口被占用，重试中……",
+  "consoleMessage": "控制台消息",
+  "webContentsCrashed": "游戏宿主窗口崩溃",
+
+  "screenshotSaved": "截图已保存",
+  "screenshotsSaved": "已保存 $0 张截图",
+
+  "server": "服务器",
+  "serverzh": "国服",
+  "serverjp": "日服",
+  "serveren": "美服"
+}

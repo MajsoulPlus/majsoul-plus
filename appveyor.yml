@@ -1,20 +1,19 @@
+cache:
+  - node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+  - '%USERPROFILE%\AppData\Local\Yarn\cache'
+
 install:
   - ps: Install-Product node 10
-  - choco install 7zip
-  - npm install
-  - npm update
-build_script:
-  - npm run build-win32
-after_build:
-  - ps: .\pack.ps1
+  - yarn
+  - node --version
+
 artifacts:
+  - name: zips
+    path: build\*.zip
   - name: releases
-    path: build\packed\*.zip
-deploy:
-  - provider: GitHub
-    auth_token: $(GITHUB_TOKEN)
-    artifacts: releases
-    description: ''
-    on:
-      branch: master
-      APPVEYOR_REPO_TAG: true
+    path: build\*.exe
+
+build_script:
+  - yarn dist

@@ -7,6 +7,7 @@ language: node_js
   - 10
 cache:
   - apt: true
+  - yarn: true
   - directories:
       - node_modules
       - $HOME/.electron
@@ -16,21 +17,9 @@ addons:
   homebrew:
     packages: zip
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm i --save-dev node@8.15.0; fi
+  - nvm install 10
+  - npm install -g yarn
 install:
-  - npm install
-  - npm update
+  - yarn
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build-linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run build-darwin; fi
-after_success: if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash pack.sh; fi
-deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file: './build/packed/*.{zip,dmg}'
-  file_glob: true
-  skip_cleanup: true
-  on:
-    branch: master
-    tags: true
-    all_branches: true
+  - yarn dist

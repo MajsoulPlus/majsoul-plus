@@ -64,4 +64,16 @@ typings/
 package-lock.json
 static/
 build/
-manager/**/*.css
+dist/
+assets/manager/**/*.css
+
+# vscode
+.vscode/
+
+# portable data
+data/
+
+# exported files
+*.mspm
+*.mspe
+*.mspt

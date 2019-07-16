@@ -24,12 +24,12 @@
 
 @font-face {
   font-family: '思源黑体 CN';
-  src: url('../../manager/SourceHanSansCN-Light.otf') format('opentype');
+  src: url('./SourceHanSansCN-Light.otf') format('opentype');
   font-weight: 300;
 }
 @font-face {
   font-family: '思源黑体 CN';
-  src: url('../../manager/SourceHanSansCN-Normal.otf') format('opentype');
+  src: url('./SourceHanSansCN-Normal.otf') format('opentype');
   font-weight: 400;
 }
 
@@ -45,6 +45,7 @@
 body {
   height: 360px;
   width: 640px;
+  padding: 12px;
   overflow: hidden;
   background-color: var(--section-color);
 }

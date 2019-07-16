@@ -1,0 +1,27 @@
+{
+  "screenshotSaved": "Screenshot saved",
+  "screenshotsSaved": "$0 screenshots saved",
+  "programName": "Majsoul Plus",
+  "resourcepack": "Resource Packs",
+  "extension": "Extensions",
+  "tool": "Tools",
+  "setting": "Settings",
+  "about": "About",
+  "community": "Community",
+  "delay": "Delay",
+  "launch": "Launch Game",
+  "loading": "Loading",
+  "millisecond": "ms",
+  "nya": "nya nya nya!",
+  "getRemoteSourceFailed": "Get $0 from remote failed, Code: $1",
+  "httpsGetFileFailed": "Get $0 failed, Code: $1",
+  "httpsGetFileRedirect": "$0 is redirected, Code: $1",
+  "portInUse": "Port in use, Retrying...",
+  "consoleMessage": "ConsoleMsg",
+  "webContentsCrashed": "Web Contents Crashed",
+
+  "server": "Server",
+  "serverzh": "ZH Server",
+  "serverjp": "JP Server",
+  "serveren": "EN Server"
+}

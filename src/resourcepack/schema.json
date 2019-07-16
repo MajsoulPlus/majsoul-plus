@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "resourcepack",
+  "description": "MajsoulPlus Resource Pack describe file schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[_a-zA-Z0-9]+$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "author": {
+      "type": ["string", "array"],
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "preview": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "string"
+        }
+      }
+    },
+    "replace": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "from": {
+                "oneOf": [
+                  { "type": "string" },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "to": {
+                "type": "string"
+              },
+              "all-servers": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "required": ["id", "version"]
+}
