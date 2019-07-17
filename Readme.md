@@ -35,12 +35,13 @@
 
 ### 社区维护源
 
-| 平台                  | 维护者                                                                       | 安装命令                                                               |
-| --------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew cask install majsoul-plus`                                       |
-| Arch User Repository  | [@BruceZhang1993](https://github.com/BruceZhang1993)                         | [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus-bin) |
+| 平台                  | 维护者                                                                       | 安装命令                                                                           |
+| --------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew cask install majsoul-plus`                                                   |
+| Arch User Repository  | [@BruceZhang1993](https://github.com/BruceZhang1993)                         | (1.x) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus-bin)       |
+| Arch User Repository  | [@Yesterday17](https://github.com/Yesterday17)                               | (2.x) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus-beta-bin/) |
 
-祝您玩的开心！
+为了防止 `1.x` 用户不慎升级到 `2.x` 后大量模组插件无法使用，`2.x` 版本专门发布了一个 AUR 包。祝您玩的开心！
 
 ## 从源码启动
 
