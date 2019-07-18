@@ -14,6 +14,7 @@ import About from './pages/About'
 
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
+import prayForKyoani from './extra/prayForKyoani/main'
 import { ipcRenderer, remote } from 'electron'
 
 class ResourceManager {
@@ -194,4 +195,5 @@ class ResourceManager {
 
 ResourceManager.extend(darkModeTheme)
   .extend(springFestivalTheme)
+  .extend(prayForKyoani)
   .init()
