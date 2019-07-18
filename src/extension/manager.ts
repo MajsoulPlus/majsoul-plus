@@ -167,7 +167,10 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
  * Author: ${extension.author}
  * Version: ${extension.version}
  */
-${scripts.join('\n')}\n\n`
+Majsoul_Plus.${extension.id} = {};
+((context) => {
+${scripts.join('\n')}
+})(Majsoul_Plus.${extension.id});\n\n`
                 if (extension.loadBeforeGame) {
                   prefix += extCode
                 } else {
@@ -177,6 +180,7 @@ ${scripts.join('\n')}\n\n`
             })
 
           this.codejs =
+            'const Majsoul_Plus = {}\n' +
             loginScript +
             '\n\n\n' +
             prefix +
