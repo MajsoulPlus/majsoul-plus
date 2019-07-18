@@ -23,6 +23,14 @@ Object.freeze(defaultResourcePack)
 
 export default class ResourcePackManager extends BaseManager {
   private extensionMap: Map<string, MajsoulPlus.ResourcePack> = new Map()
+  private loadedExtensions: {
+    [extension: string]: {
+      enabled: boolean
+      sequence: number
+      errors: Array<string | string[]>
+      metadata: MajsoulPlus.Extension
+    }
+  } = {}
 
   constructor(configPath: string) {
     super('resourcepack', configPath, defaultResourcePack, schema)
@@ -45,8 +53,27 @@ export default class ResourcePackManager extends BaseManager {
     }
   }
 
+  removeExtensionPack(id: string) {
+    this.extensionMap.delete(id)
+  }
+
+  setLoadedExtensions(loaded: {
+    [extension: string]: {
+      enabled: boolean
+      sequence: number
+      errors: Array<string | string[]>
+      metadata: MajsoulPlus.Extension
+    }
+  }) {
+    Object.values(loaded).forEach(pack => {
+      pack.metadata['replace'] = pack.metadata.resourcepack
+    })
+    this.loadedExtensions = loaded
+  }
+
   clearExtensionPack() {
     this.extensionMap.clear()
+    this.loadedExtensions = {}
   }
 
   preprocessReplaceString(pack: MajsoulPlus.ResourcePack) {
@@ -166,56 +193,37 @@ export default class ResourcePackManager extends BaseManager {
         ctx.res.statusCode = remote.code
         const resMap = JSON.parse(remote.data.toString('utf-8'))
 
-        // 先加载扩展的资源
-        this.extensionMap.forEach((pack: MajsoulPlus.ResourcePack) => {
-          if (
-            pack.id !== 'majsoul_plus' &&
-            this.loadedDetails[pack.id].enabled
-          ) {
-            pack.replace.forEach(
-              (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
-                const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-                const from =
-                  typeof repo.from === 'string' ? [repo.from] : repo.from
+          // 先加载扩展的资源
+          // 后加载资源包的资源，资源包可覆盖扩展的替换
+          // 资源包的资源替换顺序即为加载顺序
+        ;[
+          { list: this.loadedExtensions, name: 'extension' },
+          { list: this.loadedDetails, name: 'resourcepack' }
+        ].forEach(item => {
+          Object.values(item.list)
+            .filter(detail => detail.sequence > 0)
+            .sort((a, b) => a.sequence - b.sequence)
+            .forEach(detail => {
+              const pack = detail.metadata as MajsoulPlus.ResourcePack
+              if (pack.id !== 'majsoul_plus' && item.list[pack.id].enabled) {
+                pack.replace.forEach(
+                  (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
+                    const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
+                    const from =
+                      typeof repo.from === 'string' ? [repo.from] : repo.from
 
-                from.forEach(rep => {
-                  if (resMap.res[rep] !== undefined) {
-                    resMap.res[rep].prefix = `majsoul_plus/extension/${pack.id}`
+                    from.forEach(rep => {
+                      if (resMap.res[rep] !== undefined) {
+                        resMap.res[rep].prefix = `majsoul_plus/${item.name}/${
+                          pack.id
+                        }`
+                      }
+                    })
                   }
-                })
+                )
               }
-            )
-          }
+            })
         })
-
-        // 后加载资源包的资源，资源包可覆盖扩展的替换
-        // 资源包的资源替换顺序即为加载顺序
-        Object.values(this.loadedDetails)
-          .filter(detail => detail.sequence > 0)
-          .sort((a, b) => a.sequence - b.sequence)
-          .forEach(detail => {
-            const pack = detail.metadata as MajsoulPlus.ResourcePack
-            if (
-              pack.id !== 'majsoul_plus' &&
-              this.loadedDetails[pack.id].enabled
-            ) {
-              pack.replace.forEach(
-                (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
-                  const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-                  const from =
-                    typeof repo.from === 'string' ? [repo.from] : repo.from
-
-                  from.forEach(rep => {
-                    if (resMap.res[rep] !== undefined) {
-                      resMap.res[rep].prefix = `majsoul_plus/resourcepack/${
-                        pack.id
-                      }`
-                    }
-                  })
-                }
-              )
-            }
-          })
 
         ctx.body = JSON.stringify(resMap, null, 2)
       }

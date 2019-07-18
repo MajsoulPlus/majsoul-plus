@@ -44,6 +44,11 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
     })
   }
 
+  enableFromConfig() {
+    super.enableFromConfig()
+    ResourcePackManager.setLoadedExtensions(this.getDetails())
+  }
+
   clear() {
     super.clear()
     ResourcePackManager.clearExtensionPack()
@@ -197,5 +202,15 @@ ${scripts.join('\n')}
         await next()
       }
     })
+  }
+
+  changeEnable(event: Electron.Event, id: string, enabled: boolean) {
+    super.changeEnable(event, id, enabled)
+    ResourcePackManager.setLoadedExtensions(this.loadedDetails)
+  }
+
+  removePack(event: Electron.Event, id: string) {
+    super.removePack(event, id)
+    ResourcePackManager.setLoadedExtensions(this.loadedDetails)
   }
 }

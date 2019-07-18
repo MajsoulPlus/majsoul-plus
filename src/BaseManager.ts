@@ -17,7 +17,7 @@ export default abstract class BaseManager {
   protected schema: {}
   protected loadedMap: Map<string, MajsoulPlus.Metadata> = new Map()
   protected loadedDetails: {
-    [extension: string]: {
+    [pack: string]: {
       enabled: boolean
       sequence: number
       errors: Array<string | string[]>
@@ -46,11 +46,8 @@ export default abstract class BaseManager {
 
     ipcMain.on(
       `change-${name}-enability`,
-      (event: Electron.Event, id: string, enabled: boolean) => {
-        enabled ? this.enable(id) : this.disable(id)
-        this.save()
-        event.returnValue = this.getDetails()
-      }
+      (event: Electron.Event, id: string, enabled: boolean) =>
+        this.changeEnable(event, id, enabled)
     )
 
     ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {
@@ -76,13 +73,9 @@ export default abstract class BaseManager {
       }
     )
 
-    ipcMain.on(`remove-${name}`, (event: Electron.Event, id: string) => {
-      removeDirSync(path.resolve(appDataDir, this.name, id))
-      this.enabled = this.enabled.filter(pack => pack !== id)
-      this.save()
-      this.clear()
-      event.returnValue = 0
-    })
+    ipcMain.on(`remove-${name}`, (event: Electron.Event, id: string) =>
+      this.removePack(event, id)
+    )
   }
 
   loadEnabled() {
@@ -296,5 +289,19 @@ export default abstract class BaseManager {
     fs.writeFileSync(this.configPath, JSON.stringify(this.enabled, null, 2), {
       encoding: 'utf-8'
     })
+  }
+
+  changeEnable(event: Electron.Event, id: string, enabled: boolean) {
+    enabled ? this.enable(id) : this.disable(id)
+    this.save()
+    event.returnValue = this.getDetails()
+  }
+
+  removePack(event: Electron.Event, id: string) {
+    this.disable(id)
+    removeDirSync(path.resolve(appDataDir, this.name, id))
+    this.save()
+    this.clear()
+    event.returnValue = 0
   }
 }
