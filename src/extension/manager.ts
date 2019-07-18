@@ -129,11 +129,14 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
 
           // 设置 localStorage 供用户登录
           const loginScript = `// 注入登录脚本
-const userLocalStorage = JSON.parse('${JSON.stringify(
+let userLocalStorage = JSON.parse('${JSON.stringify(
             UserConfigs.localStorage[
               RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
             ]
           )}')
+// TODO: 找到这里需要做适配的原因
+if (!Array.isArray(userLocalStorage)) 
+  userLocalStorage = []
 userLocalStorage.forEach(arr => localStorage.setItem(arr[0], arr[1]))
 console.log('[Majsoul_Plus] 登录信息注入成功')
 `
