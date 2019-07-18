@@ -131,6 +131,19 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
                   )
                 : data
           )
+          // 注入修改过的 console
+          const extensionConsole = `const extensionConsole = id => {
+return new Proxy(
+  {},
+  {
+    get: (target, name) => {
+      return typeof console[name] === 'function'
+        ? (...args) => console[name].apply(this, [\`[\${id}]\`, ...args])
+        : () => undefined
+    }
+  }
+)
+}\n\n`
 
           // 设置 localStorage 供用户登录
           const loginScript = `// 注入登录脚本
@@ -173,9 +186,9 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
  * Version: ${extension.version}
  */
 Majsoul_Plus.${extension.id} = {};
-((context) => {
+((context, console) => {
 ${scripts.join('\n')}
-})(Majsoul_Plus.${extension.id});\n\n`
+})(Majsoul_Plus.${extension.id}, extensionConsole('${extension.id}'));\n\n`
                 if (extension.loadBeforeGame) {
                   prefix += extCode
                 } else {
@@ -186,6 +199,7 @@ ${scripts.join('\n')}
 
           this.codejs =
             'const Majsoul_Plus = {}\n' +
+            extensionConsole +
             loginScript +
             '\n\n\n' +
             prefix +
