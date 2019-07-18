@@ -80,9 +80,14 @@ export default abstract class BaseManager {
 
   loadEnabled() {
     this.loadedMap.set('majsoul_plus', this.defaultObject)
-    this.enabled = JSON.parse(
-      fs.readFileSync(this.configPath, { encoding: 'utf-8' })
-    )
+    try {
+      this.enabled = JSON.parse(
+        fs.readFileSync(this.configPath, { encoding: 'utf-8' })
+      )
+    } catch (e) {
+      Logger.error(e)
+      this.enabled = []
+    }
   }
 
   use(id: string, callback: (pack: MajsoulPlus.Metadata) => void = () => {}) {
@@ -108,11 +113,17 @@ export default abstract class BaseManager {
     }
 
     // 获得资源包
-    const pack: MajsoulPlus.Metadata = JSON.parse(
-      fs.readFileSync(cfg, {
-        encoding: 'utf-8'
-      })
-    )
+    let pack: MajsoulPlus.Metadata
+    try {
+      pack = JSON.parse(
+        fs.readFileSync(cfg, {
+          encoding: 'utf-8'
+        })
+      )
+    } catch (e) {
+      Logger.error(e)
+      return this
+    }
 
     // 填入默认数据
     fillObject(pack, this.defaultObject)
