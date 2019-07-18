@@ -145,6 +145,15 @@ return new Proxy(
 )
 }\n\n`
 
+          const extensionFetch = `const extensionFetch = id => {
+  return (input, init) => {
+    if (typeof input !== 'string') {
+      return
+    }
+    return fetch(\`majsoul_plus/extension/\${id}/\${input}\`, init)
+  }
+}\n\n`
+
           // 设置 localStorage 供用户登录
           const loginScript = `// 注入登录脚本
 let userLocalStorage = JSON.parse('${JSON.stringify(
@@ -186,9 +195,13 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
  * Version: ${extension.version}
  */
 Majsoul_Plus.${extension.id} = {};
-((context, console) => {
+((context, console, fetchSelf) => {
 ${scripts.join('\n')}
-})(Majsoul_Plus.${extension.id}, extensionConsole('${extension.id}'));\n\n`
+})(
+  Majsoul_Plus.${extension.id},
+  extensionConsole('${extension.id}'),
+  extensionFetch('${extension.id}')
+);\n\n`
                 if (extension.loadBeforeGame) {
                   prefix += extCode
                 } else {
@@ -200,6 +213,7 @@ ${scripts.join('\n')}
           this.codejs =
             'const Majsoul_Plus = {}\n' +
             extensionConsole +
+            extensionFetch +
             loginScript +
             '\n\n\n' +
             prefix +
