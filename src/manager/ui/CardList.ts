@@ -94,6 +94,8 @@ export default class CardList {
 
   protected handleExport(id: string) {
     const { extend, typeText } = this.getExportInfo()
+    const exp = this.cardListItemMap.get(id)
+    if (!exp) return
 
     const pathToSave = dialog.showSaveDialog({
       title: i18n.text.manager.exportTo(),
@@ -102,7 +104,10 @@ export default class CardList {
           name: typeText,
           extensions: [extend]
         }
-      ]
+      ],
+      defaultPath: `${exp.metadata.name}(${id}) - ${
+        exp.metadata.author
+      }.${extend}`
     })
 
     if (pathToSave) {
