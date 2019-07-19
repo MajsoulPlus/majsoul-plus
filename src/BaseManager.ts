@@ -194,12 +194,18 @@ export default abstract class BaseManager {
     const validatedEnabled = []
     this.enabled.forEach(id => {
       const value = this.loadedDetails[id]
-      const meta = value.metadata
+
+      // active.json 中数据出错
+      if (!value) {
+        return
+      }
 
       if (value.enabled) {
         validatedEnabled.push(id)
         return
       }
+
+      const meta = value.metadata
 
       for (const dep in meta.dependencies) {
         // 依赖未找到
