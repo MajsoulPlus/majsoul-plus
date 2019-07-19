@@ -195,5 +195,5 @@ class ResourceManager {
 
 ResourceManager.extend(darkModeTheme)
   .extend(springFestivalTheme)
-  .extend(prayForKyoani)
+  // .extend(prayForKyoani)
   .init()
