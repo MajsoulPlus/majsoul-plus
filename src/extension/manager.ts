@@ -39,7 +39,6 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
 
   load(id: string) {
     this.use(id, (pack: MajsoulPlus.Extension) => {
-      this.useScriptPromises.push(this.useScript(pack.id, pack))
       ResourcePackManager.loadExtensionPack(pack)
     })
   }
@@ -47,6 +46,21 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
   enableFromConfig() {
     super.enableFromConfig()
     ResourcePackManager.setLoadedExtensions(this.getDetails())
+    for (const key in this.loadedDetails) {
+      if (this.loadedDetails[key]) {
+        const pack = this.loadedDetails[key]
+        if (
+          pack.enabled &&
+          (pack.metadata as MajsoulPlus.Extension).applyServer.includes(
+            UserConfigs.userData.serverToPlay
+          )
+        ) {
+          this.useScriptPromises.push(
+            this.useScript(pack.metadata.id, pack.metadata)
+          )
+        }
+      }
+    }
   }
 
   clear() {
@@ -109,6 +123,14 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
   }
 
   register(server: Koa, router: Router) {
+    // 获取扩展基本信息
+    router.get(`/majsoul_plus/extension/:id`, async (ctx, next) => {
+      ctx.response.status = this.loadedMap.has(ctx.params.id) ? 200 : 404
+      ctx.body = this.loadedMap.has(ctx.params.id)
+        ? JSON.stringify(this.loadedMap.get(ctx.params.id), null, 2)
+        : 'Not Found'
+    })
+
     server.use(async (ctx, next) => {
       // 等待所有脚本加载完成
       await Promise.all(this.useScriptPromises)
