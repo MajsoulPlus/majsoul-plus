@@ -1,3 +1,5 @@
+import { Logger } from '../global'
+
 class Utility {
   protected name: string
 
@@ -7,7 +9,7 @@ class Utility {
     try {
       this.execute()
     } catch (e) {
-      console.error(`Failed to register utility: ${this.name}`)
+      Logger.error(`Failed to register utility: ${this.name}`)
     }
   }
 }

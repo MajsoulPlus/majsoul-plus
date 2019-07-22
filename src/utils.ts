@@ -4,7 +4,7 @@ import fetch from 'electron-fetch'
 import * as fs from 'fs'
 import * as path from 'path'
 import { UserConfigs } from './config'
-import { appDataDir, Global, GlobalPath, RemoteDomains } from './global'
+import { appDataDir, Global, GlobalPath, RemoteDomains, Logger } from './global'
 
 /**
  * 以 latest 对象中的内容更新 toUpdate 对象
@@ -128,7 +128,7 @@ export async function getRemoteSource(
     return getRemoteSource(resp.headers['location'], encrypt)
   } else {
     if (statusCode < 200 || statusCode >= 400) {
-      console.warn(
+      Logger.warning(
         `从远端服务器请求 ${remoteUrl} 失败, statusCode = ${statusCode}`
       )
     }

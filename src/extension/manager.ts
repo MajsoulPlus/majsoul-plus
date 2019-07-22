@@ -4,7 +4,7 @@ import * as Router from 'koa-router'
 import * as path from 'path'
 import BaseManager from '../BaseManager'
 import { UserConfigs } from '../config'
-import { appDataDir, GlobalPath, RemoteDomains } from '../global'
+import { appDataDir, GlobalPath, RemoteDomains, Logger } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { fetchAnySite, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
@@ -100,7 +100,7 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
           entry
         )
         if (!fs.existsSync(p)) {
-          console.error(`extension entry ${entry} not found!`)
+          Logger.error(`extension entry ${entry} not found!`)
           return
         }
 
@@ -108,7 +108,7 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
           const script = fs.readFileSync(p, { encoding: 'utf-8' })
           this.addScript(extension.id, script)
         } catch (e) {
-          console.error(
+          Logger.error(
             `failed to load extension ${extension.name} from ${p}: ${e}`
           )
           this.addScript(

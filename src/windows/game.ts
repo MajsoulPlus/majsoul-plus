@@ -9,7 +9,7 @@ import {
 import { AddressInfo } from 'net'
 import * as path from 'path'
 import { UserConfigs, SaveConfigJson } from '../config'
-import { Global, RemoteDomains } from '../global'
+import { Global, RemoteDomains, Logger } from '../global'
 import i18n from '../i18n'
 import { MajsoulPlus } from '../majsoul_plus'
 import { httpServer, httpsServer } from '../server'
@@ -46,7 +46,7 @@ export function initGameWindow() {
 
   // 监听到崩溃事件，输出 console
   GameWindow.webContents.on('crashed', () =>
-    console.warn(i18n.text.main.webContentsCrashed())
+    Logger.warning(i18n.text.main.webContentsCrashed())
   )
 
   // 监听尺寸更改事件，用于正确得到截图所需要的窗口尺寸

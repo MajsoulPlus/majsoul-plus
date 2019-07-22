@@ -2,7 +2,7 @@ import { app, ipcMain } from 'electron'
 import * as os from 'os'
 import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
-import { Global, InitGlobal } from './global'
+import { Global, InitGlobal, Logger } from './global'
 import { LoadResourcePack } from './resourcepack/resourcepack'
 import { httpServer, httpsServer, LoadServer } from './server'
 import { LoadTool } from './tool/tool'
@@ -12,6 +12,7 @@ import screenshot from './utilities/screenshot'
 import { initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
+import { initPlayer } from './windows/audioPlayer'
 
 // 初始化全局变量
 InitGlobal()
@@ -116,8 +117,13 @@ app.on('ready', () => {
       })
     }
 
-    // 初始化游戏窗口
-    initGameWindow()
+    if (!process.env.SERVER_ONLY) {
+      // 初始化游戏窗口
+      initGameWindow()
+    } else {
+      // 通过 audioPlayer 窗口阻止程序退出
+      initPlayer()
+    }
 
     // 根据设置决定销毁 / 隐藏 Manager 窗口
     if (UserConfigs.window.isManagerHide) {
@@ -138,10 +144,10 @@ app.on('ready', () => {
 
 // 监听 GPU 进程崩溃事件
 app.on('gpu-process-crashed', (event, killed) => {
-  console.error(`gpu-process-crashed: ${killed}`)
+  Logger.error(`gpu-process-crashed: ${killed}`)
 })
 
 // uncaught exception
 process.on('uncaughtException', err => {
-  console.error(err)
+  Logger.error(err.message)
 })
