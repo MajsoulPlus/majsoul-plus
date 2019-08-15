@@ -33,13 +33,13 @@
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     },
     "mac": {
-      "icon": "assets/bin/icons/icon.icns",
+      "icon": "assets/bin/icon.png",
       "asar": true,
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}",
       "darkModeSupport": true
     },
     "win": {
-      "icon": "assets/bin/icons/icon.ico",
+      "icon": "assets/bin/icon.png",
       "asar": true,
       "target": [
         "nsis",
@@ -48,7 +48,7 @@
       ]
     },
     "linux": {
-      "icon": "assets/bin/icons",
+      "icon": "assets/bin/icon.png",
       "category": "Game",
       "asar": true,
       "target": [
@@ -58,19 +58,13 @@
     },
     "fileAssociations": [
       {
-        "ext": "mspr",
-        "description": "Majsoul Plus Resource Pack",
-        "perMachine": true
-      },
-      {
-        "ext": "mspe",
-        "description": "Majsoul Plus Extension",
-        "perMachine": true
-      },
-      {
-        "ext": "mspt",
-        "description": "Majsoul Plus Tool",
-        "perMachine": true
+        "ext": [
+          "mspr",
+          "mspe",
+          "mspt"
+        ],
+        "description": "Majsoul Plus ResourcePack/Extension/Tool",
+        "icon": "assets/bin/icon.png"
       }
     ]
   },
