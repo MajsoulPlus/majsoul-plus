@@ -55,7 +55,24 @@
         "tar.gz",
         "AppImage"
       ]
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": "mspr",
+        "description": "Majsoul Plus Resource Pack",
+        "perMachine": true
+      },
+      {
+        "ext": "mspe",
+        "description": "Majsoul Plus Extension",
+        "perMachine": true
+      },
+      {
+        "ext": "mspt",
+        "description": "Majsoul Plus Tool",
+        "perMachine": true
+      }
+    ]
   },
   "pre-commit": [
     "lint"

@@ -7,6 +7,7 @@ import { LoadResourcePack } from './resourcepack/resourcepack'
 import { httpServer, httpsServer, LoadServer } from './server'
 import { LoadTool } from './tool/tool'
 import bossKey from './utilities/bossKey'
+import openFile from './utilities/openFile'
 import sandbox from './utilities/sandbox'
 import screenshot from './utilities/screenshot'
 import { initGameWindow } from './windows/game'
@@ -89,6 +90,15 @@ app.on(
   }
 )
 
+app.on('will-finish-launching', () => {
+  // macOS open-file
+  app.on('open-file', (event, path) => {
+    event.preventDefault()
+    openFile.setPath(path)
+    openFile.register()
+  })
+})
+
 app.on('ready', () => {
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
@@ -136,6 +146,10 @@ app.on('ready', () => {
   bossKey.register() // 注册老板键功能
   screenshot.register() // 注册截图功能
   sandbox.register() // 注册工具窗口的沙盒功能
+
+  if (process.platform !== 'darwin') {
+    openFile.register() // 注册文件打开导入拓展功能
+  }
 
   // 初始化扩展资源管理器窗口
   initManagerWindow()

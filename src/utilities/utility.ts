@@ -10,6 +10,7 @@ class Utility {
       this.execute()
     } catch (e) {
       Logger.error(`Failed to register utility: ${this.name}`)
+      Logger.error(e)
     }
   }
 }
