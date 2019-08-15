@@ -74,6 +74,6 @@ assets/manager/**/*.css
 data/
 
 # exported files
-*.mspm
+*.mspr
 *.mspe
 *.mspt

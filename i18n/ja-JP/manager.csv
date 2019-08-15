@@ -26,8 +26,8 @@ saveFailed,保存失败！\n$0,保存失敗！\n$0
 selectExtendResources,选取扩展资源包……,拡張リソースバンドルを選択してください......
 majsoulPlusExtendResources,雀魂Plus扩展,雀魂Plus拡張
 fileTypeAllfiles,所有文件,全ファイル
-fileTypeMSPM,雀魂Plus模组,雀魂Plusモジュール
-fileTypeMSPE,雀魂Plus插件,雀魂Plusプラグイン
+fileTypeMSPR,雀魂Plus资源包,雀魂Plusリソースパック
+fileTypeMSPE,雀魂Plus插件,雀魂Plusエクステンション 
 fileTypeMSPT,雀魂Plus工具,雀魂Plusツール
 fileTypeMajsoulPlusExtendResourcesPack,雀魂Plus扩展,雀魂Plus拡張
 exportTo,导出到……,エクスポート先......

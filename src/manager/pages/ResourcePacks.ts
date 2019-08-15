@@ -5,7 +5,7 @@ class ResourcePack extends CardList {
   protected getExportInfo() {
     return {
       extend: 'mspr',
-      typeText: i18n.text.manager.fileTypeMSPM()
+      typeText: i18n.text.manager.fileTypeMSPR()
     }
   }
 }

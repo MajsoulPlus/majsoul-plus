@@ -152,8 +152,8 @@ class ResourceManager {
           title: i18n.text.manager.installFrom(),
           filters: [
             {
-              name: i18n.text.manager.fileTypeMSPM(),
-              extensions: ['mspm']
+              name: i18n.text.manager.fileTypeMSPR(),
+              extensions: ['mspr']
             },
             {
               name: i18n.text.manager.fileTypeMSPE(),
@@ -167,7 +167,7 @@ class ResourceManager {
             ext =>
               ext.extensions[0] ===
               {
-                ResourcePack: 'mspm',
+                ResourcePack: 'mspr',
                 Extension: 'mspe',
                 Tool: 'mspt'
               }[type]
