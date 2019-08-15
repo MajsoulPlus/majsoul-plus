@@ -61,7 +61,7 @@ export default abstract class BaseManager {
           event.returnValue = 0
         })
         .catch(err => {
-          Logger.error(err)
+          Logger.error(`Failed to import ${name}: ${err}`)
           event.returnValue = 0
         })
     })
@@ -91,7 +91,7 @@ export default abstract class BaseManager {
         fs.readFileSync(this.configPath, { encoding: 'utf-8' })
       )
     } catch (e) {
-      Logger.error(e)
+      Logger.error(`Failed to load enabled ${this.name}: ${e}`)
       this.enabled = []
     }
   }
@@ -127,7 +127,7 @@ export default abstract class BaseManager {
         })
       )
     } catch (e) {
-      Logger.error(e)
+      Logger.error(`Failed to parse json file ${cfg}: ${e}`)
       return this
     }
 

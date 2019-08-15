@@ -54,6 +54,12 @@ class ResourceManager {
     About.render()
     i18n.parseAllElementsText(document.documentElement)
     Ping.setServer(ResourceManager.userConfig.userData.serverToPlay).init()
+
+    ipcRenderer.on('refresh-all', () => {
+      Extensions.refresh()
+      ResourcePacks.refresh()
+      Tools.refresh()
+    })
   }
 
   // 注册与主进程通讯的内容

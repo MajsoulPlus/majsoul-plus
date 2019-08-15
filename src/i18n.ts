@@ -196,8 +196,7 @@ class I18n {
     const {
       directory = path.join(__dirname, 'i18n'),
       actives = [],
-      defaultLocale = 'en-US',
-      autoReload = false
+      defaultLocale = 'en-US'
     } = arg
     // 如果文件夹参数不是文件夹，报错
     if (!fs.statSync(directory).isDirectory) {
@@ -286,45 +285,6 @@ class I18n {
         }
       )
     })()
-
-    // 如果设置了自动更新翻译
-    if (autoReload) {
-      const calledList: string[] = []
-      const recursiveDir = (filePath, callback) => {
-        fs.stat(filePath, (error, stat) => {
-          if (error) {
-            throw error
-          }
-          if (stat.isDirectory()) {
-            if (!calledList.includes(filePath)) {
-              callback.call(this, filePath)
-              calledList.push(filePath)
-            }
-            fs.readdir(filePath, (err, files) => {
-              if (err) {
-                throw err
-              }
-              files.forEach(file => {
-                recursiveDir(path.join(filePath, file), callback)
-              })
-            })
-          }
-        })
-      }
-      const dirWatcher = (dirPath: string) => {
-        fs.watch(dirPath, eventType => {
-          if (eventType === 'change') {
-            // 重新载入所有翻译文本
-            this.pLocals = readLangDir(directory)
-            // 如果出现新文件夹，自动监听
-            recursiveDir(dirPath, dirWatcher)
-            // 更新绑定的翻译
-            this._updateLocales()
-          }
-        })
-      }
-      recursiveDir(directory, dirWatcher)
-    }
   }
 
   /**
@@ -448,6 +408,5 @@ class I18n {
 }
 
 export default new I18n({
-  autoReload: process.env.NODE_ENV === 'development',
   actives: [(app || remote.app).getLocale()]
 })

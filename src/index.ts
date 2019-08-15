@@ -1,5 +1,6 @@
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, dialog } from 'electron'
 import * as os from 'os'
+import * as path from 'path'
 import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
 import { Global, InitGlobal, Logger } from './global'
@@ -10,10 +11,11 @@ import bossKey from './utilities/bossKey'
 import openFile from './utilities/openFile'
 import sandbox from './utilities/sandbox'
 import screenshot from './utilities/screenshot'
-import { initGameWindow } from './windows/game'
+import { initGameWindow, GameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
 import { initPlayer } from './windows/audioPlayer'
+import i18n from './i18n'
 
 // 初始化全局变量
 InitGlobal()
@@ -90,6 +92,36 @@ app.on(
   }
 )
 
+const shouldQuit = app.makeSingleInstance((argv, directory) => {
+  if (ManagerWindow && !ManagerWindow.isDestroyed()) {
+    // ManagerWindow Mode
+    if (argv.length > 2 + Number(process.env.NODE_ENV === 'development')) {
+      const upath = path.resolve(
+        process.argv[1 + Number(process.env.NODE_ENV === 'development')]
+      )
+      openFile.setPath(upath)
+      openFile.register()
+      ManagerWindow.webContents.send('refresh-all')
+    }
+  } else {
+    // GameWindow Mode
+    if (argv.length > 2 + Number(process.env.NODE_ENV === 'development')) {
+      dialog.showMessageBox(GameWindow, {
+        type: 'info',
+        title: i18n.text.main.programName(),
+        // TODO: i18n
+        message: '游戏界面中无法导入雀魂 Plus 拓展!',
+        buttons: ['OK']
+      })
+    }
+  }
+})
+
+if (shouldQuit) {
+  app.quit()
+  process.exit(0)
+}
+
 app.on('will-finish-launching', () => {
   // macOS open-file
   app.on('open-file', (event, path) => {
@@ -163,5 +195,5 @@ app.on('gpu-process-crashed', (event, killed) => {
 
 // uncaught exception
 process.on('uncaughtException', err => {
-  Logger.error(err.message)
+  Logger.error(`uncaughtException ${err.name}: ${err.message}`)
 })
