@@ -103,6 +103,30 @@ class ResourceManager {
       refresh.addEventListener('click', ResourceManager.refreshCard(ext.name))
     })
 
+    // 原生文件拖放
+    const section = document.querySelector('.show')
+    section['ondragover'] = () => false
+    section['ondragleave'] = () => false
+    section['ondragend'] = () => false
+    section['ondrop'] = event => {
+      event.preventDefault()
+      for (const file of event.dataTransfer.files) {
+        const filePath = file.path
+        const ext = path.extname(filePath)
+        const type = {
+          '.mspr': 'resourcepack',
+          '.mspe': 'extension',
+          '.mspt': 'tool'
+        }[ext]
+        if (type) {
+          ipcRenderer.sendSync(`import-${type}`, filePath)
+        }
+      }
+      Extensions.refresh()
+      ResourcePacks.refresh()
+      Tools.refresh()
+    }
+
     window.addEventListener('blur', () => document.body.classList.add('blur'))
     window.addEventListener('focus', () =>
       document.body.classList.remove('blur')
@@ -195,5 +219,5 @@ class ResourceManager {
 
 ResourceManager.extend(darkModeTheme)
   .extend(springFestivalTheme)
-  // .extend(prayForKyoani)
+  .extend(prayForKyoani)
   .init()

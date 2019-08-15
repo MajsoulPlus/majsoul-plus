@@ -57,7 +57,13 @@ export default abstract class BaseManager {
 
     ipcMain.on(`import-${name}`, (event: Electron.Event, file: string) => {
       unzipDir(file, path.resolve(appDataDir, this.name))
-      event.returnValue = 0
+        .then(() => {
+          event.returnValue = 0
+        })
+        .catch(err => {
+          Logger.error(err)
+          event.returnValue = 0
+        })
     })
 
     ipcMain.on(
