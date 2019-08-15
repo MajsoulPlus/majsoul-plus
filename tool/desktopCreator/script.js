@@ -96,7 +96,7 @@ saveAndInstall.addEventListener('click', event => {
   const description = document.getElementById('description').value
   const resDir = path.join(
     MajsoulPlus.__appdata,
-    MajsoulPlus.globalPath.ResourcePackDir
+    MajsoulPlus.globalPath.ExtensionDir
   )
   const stat_dir = (() => {
     try {
@@ -111,11 +111,11 @@ saveAndInstall.addEventListener('click', event => {
 
   const dirPath = path.join(resDir, id)
   if (!id.match(/^[_a-zA-Z0-9]+$/)) {
-    alert('资源包 ID 格式只能含有大小写字母、数字和下划线！')
+    alert('扩展 ID 格式只能含有大小写字母、数字和下划线！')
     return
   }
   if (name.length === 0) {
-    alert('资源包名称不能为空')
+    alert('扩展名称不能为空')
     return
   }
   const stat = (() => {
@@ -139,7 +139,7 @@ saveAndInstall.addEventListener('click', event => {
     description,
     preview: 'assets/preview.jpg',
 
-    replace: [
+    resourcepack: [
       {
         from:
           'scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg',
@@ -159,8 +159,19 @@ saveAndInstall.addEventListener('click', event => {
     ]
   }
   fs.writeFileSync(
-    path.join(dirPath, 'resourcepack.json'),
+    path.join(dirPath, 'extension.json'),
     JSON.stringify(respInfo)
+  )
+  fs.writeFileSync(
+    path.join(dirPath, 'script.js'),
+    `const intervalId = setInterval(() => {
+  if (cfg.item_definition.item) {
+    const item = cfg.item_definition.item.get('305044')
+    item.name_chs = '${name}'
+    item.desc_chs = '${description}'
+    clearInterval(intervalId)
+  }
+}, 1000)`
   )
   const desktopData = canvas
     .toDataURL('image/jpeg', 1)
@@ -196,6 +207,6 @@ saveAndInstall.addEventListener('click', event => {
       )
     )
   ]).then(() => {
-    alert('已保存！\n请刷新资源包列表后启用')
+    alert('已保存！\n请刷新扩展列表后启用')
   })
 })
