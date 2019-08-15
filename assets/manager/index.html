@@ -15,23 +15,15 @@
       <!-- 左侧选单 -->
       <div class="left-panel" id="leftPanel">
         <ul>
+          <li data-target="extensionPage" data-i18n="main.extension">扩展</li>
           <li data-target="resourcepackPage" data-i18n="main.resourcepack">
             资源包
           </li>
-          <li data-target="extensionPage" data-i18n="main.extension">扩展</li>
           <li data-target="toolPage" data-i18n="main.tool">工具箱</li>
           <li data-target="settingPage" data-i18n="main.setting">设置</li>
           <li data-target="aboutPage" data-i18n="main.about">关于</li>
         </ul>
       </div>
-
-      <!-- 资源包页面 -->
-      <section data-name="resourcepackPage">
-        <button id="refreshResourcePack" class="big-btn refresh-btn"></button>
-        <button id="installResourcePack" class="big-btn install-btn"></button>
-        <button id="editResourcePack" class="big-btn edit-btn"></button>
-        <div id="ResourcePackInfos" class="info-cards"></div>
-      </section>
 
       <!-- 扩展页面 -->
       <section data-name="extensionPage">
@@ -39,6 +31,14 @@
         <button id="installExtension" class="big-btn install-btn"></button>
         <button id="editExtension" class="big-btn edit-btn"></button>
         <div id="ExtensionInfos" class="info-cards"></div>
+      </section>
+
+      <!-- 资源包页面 -->
+      <section data-name="resourcepackPage">
+        <button id="refreshResourcePack" class="big-btn refresh-btn"></button>
+        <button id="installResourcePack" class="big-btn install-btn"></button>
+        <button id="editResourcePack" class="big-btn edit-btn"></button>
+        <div id="ResourcePackInfos" class="info-cards"></div>
       </section>
 
       <!-- 工具页面 -->
