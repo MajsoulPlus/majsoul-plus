@@ -150,6 +150,11 @@ saveAndInstall.addEventListener('click', event => {
         from: 'myres2/tablecloth/tablecloth_default/preview.jpg',
         to: 'preview.jpg',
         'all-servers': true
+      },
+      {
+        from: 'extendRes/items/tablecloth_navy.jpg',
+        to: 'preview.jpg',
+        'all-servers': true
       }
     ]
   }
