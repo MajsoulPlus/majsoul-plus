@@ -29,18 +29,25 @@
     "files": [
       "dist/**/*"
     ],
+    "fileAssociations": {
+      "ext": [
+        "mspr",
+        "mspe",
+        "mspt"
+      ],
+      "description": "Majsoul Plus ResourcePack/Extension/Tool",
+      "icon": "assets/bin/icon.png"
+    },
     "dmg": {
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
     },
     "mac": {
       "icon": "assets/bin/icon.png",
-      "asar": true,
       "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}",
       "darkModeSupport": true
     },
     "win": {
       "icon": "assets/bin/icon.png",
-      "asar": true,
       "target": [
         "nsis",
         "portable",
@@ -50,23 +57,28 @@
     "linux": {
       "icon": "assets/bin/icon.png",
       "category": "Game",
-      "asar": true,
       "target": [
         "tar.gz",
         "AppImage"
+      ],
+      "fileAssociations": [
+        {
+          "ext": "mspr",
+          "description": "Majsoul Plus ResourcePack/Extension/Tool",
+          "icon": "assets/bin/icon.png"
+        },
+        {
+          "ext": "mspe",
+          "description": "Majsoul Plus ResourcePack/Extension/Tool",
+          "icon": "assets/bin/icon.png"
+        },
+        {
+          "ext": "mspt",
+          "description": "Majsoul Plus ResourcePack/Extension/Tool",
+          "icon": "assets/bin/icon.png"
+        }
       ]
-    },
-    "fileAssociations": [
-      {
-        "ext": [
-          "mspr",
-          "mspe",
-          "mspt"
-        ],
-        "description": "Majsoul Plus ResourcePack/Extension/Tool",
-        "icon": "assets/bin/icon.png"
-      }
-    ]
+    }
   },
   "pre-commit": [
     "lint"
