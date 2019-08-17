@@ -15,48 +15,24 @@ declare function Locale(
 ): string
 
 interface Locale {
-  /**
-   * 格式化该键对应的翻译文本并返回
-   */
-  (
-    /**
-     * 若干个字符串，依次填充到 $1、$2
-     */
-    ...params: string[]
-  ): string
+  // 格式化该键对应的翻译文本并返回
+  (...params: string[]): string
 
-  /**
-   * 绑定该条翻译到指定DOM元素的 innerText
-   * @param htmlElement 要绑定的 HTMLElement 元素
-   * @param params 格式化参数，会自动替换文本中的 $1、$2
-   */
-  renderAsText(
-    /**
-     * 必须是标准的 HTMLElement DOM 元素
-     */
+  // 绑定该条翻译到指定DOM元素的 innerText
+  renderAsText: (
+    // 标准的 HTMLElement DOM 元素
     htmlElement: HTMLElement,
-    /**
-     * 若干个字符串，依次填充到 $1、$2
-     */
+    // 若干个字符串，依次填充到 $1、$2
     ...params: string[]
-  ): void
-  /**
-   * 绑定该条翻译到指定DOM元素的 innerHTML
-   * @param htmlElement 要绑定的 HTMLElement 元素
-   * @param params 格式化参数，会自动替换文本中的 $1、$2
-   */
-  renderAsHTML(
-    /**
-     * 必须是标准的 HTMLElement DOM 元素
-     */
-    htmlElement: HTMLElement,
-    /**
-     * 若干个字符串，依次填充到 $1、$2
-     */
-    ...params: string[]
-  ): void
+  ) => void
 
-  // [key: string]: string;
+  // 绑定该条翻译到指定DOM元素的 innerHTML
+  renderAsHTML: (
+    // 标准的 HTMLElement DOM 元素
+    htmlElement: HTMLElement,
+    // 若干个字符串，依次填充到 $1、$2
+    ...params: string[]
+  ) => void
 }
 
 interface StringPack {
@@ -70,29 +46,7 @@ interface BindElement {
   args: string[]
 }
 
-interface I18nInitConfig {
-  /**
-   * 翻译文件所在的文件夹路径
-   */
-  directory?: string
-  /**
-   * 语言偏好列表，越靠前越优先
-   */
-  actives?: string[]
-  /**
-   * 在找不到翻译文本时的默认语言
-   */
-  defaultLocale?: string
-  /**
-   * 是否监听文件修改，以自动更新翻译
-   */
-  autoReload?: boolean
-}
-
-/**
- * 自动地判断并读取一个js或者是json
- * @param filePath Path
- */
+// 读取各种类型的语言文件
 function readLangFile(filePath: string): StringPack {
   switch (path.extname(filePath)) {
     case '.js':
@@ -114,16 +68,8 @@ function readLangFile(filePath: string): StringPack {
   }
 }
 
-/**
- * 读取一个文件夹以及内部所有类JSON文件
- * @param dirPath Path
- * @returns
- * {
- *  'filename': {
- *     'key': 'value'
- *   }
- * }
- */
+// 读取一个目录中所有的语言文件
+// 返回 filename: {key :value} 形式
 function readLangDir(dirPath: string): StringPack {
   const lang = {}
   const files = fs.readdirSync(dirPath)
@@ -144,17 +90,8 @@ function readLangDir(dirPath: string): StringPack {
   return lang
 }
 
-export interface I18nConstructor {
-  directory?: string
-  actives?: string[]
-  defaultLocale?: string
-  autoReload?: boolean
-}
-
 class I18n {
-  /**
-   * 获取翻译文本
-   */
+  // 获取翻译文本
   get text() {
     return this.pText
   }
@@ -165,16 +102,12 @@ class I18n {
     return this.text
   }
 
-  /**
-   * 已经加载的翻译文本
-   */
+  // 已经加载的翻译文本
   get locals() {
     return this.pLocals
   }
 
-  /**
-   * 活动的语言列表的拷贝
-   */
+  // 活动的语言列表的拷贝
   get actives(): string[] {
     const copy = this.pActives.concat()
     copy.pop()
@@ -183,21 +116,20 @@ class I18n {
 
   set actives(localTags: string[]) {
     this.pActives = localTags.concat(this.defaultLocale)
-    this._updateLocales()
+    this.updateLocales()
   }
 
   defaultLocale: string
-  private pActives
+  private pActives: string[]
   private pLocals: StringPack
   private pBindElementList: BindElement[]
-  private pText
+  private pText: { [key: string]: { [key: string]: Locale } }
 
-  constructor(arg: I18nConstructor) {
-    const {
-      directory = path.join(__dirname, 'i18n'),
-      actives = [],
-      defaultLocale = 'en-US'
-    } = arg
+  constructor({
+    directory = path.join(__dirname, 'i18n'),
+    actives = [],
+    defaultLocale = 'en-US'
+  }) {
     // 如果文件夹参数不是文件夹，报错
     if (!fs.statSync(directory).isDirectory) {
       throw new Error('param directory is not a directory')
@@ -278,10 +210,7 @@ class I18n {
       this.pText = new Proxy(
         {},
         {
-          get: (target, key) => {
-            const arr: string[] = []
-            return createProxy(arr.concat(key as string))
-          }
+          get: (target, key: string) => createProxy([key])
         }
       )
     })()
@@ -292,7 +221,7 @@ class I18n {
    * @param Element Element
    */
   unbindElement(htmlElement: Element) {
-    // FIXME: 完成该函数
+    // TODO: 完成该函数
     // htmlElementTest 是假的
     // this._bindElementList = this._bindElementList.filter(
     //   ({ htmlElementTest }) => {
@@ -301,65 +230,40 @@ class I18n {
     // );
   }
 
-  /**
-   * 绑定一条翻译到指定DOM元素的 innerText
-   * @param locale 一个locale函数对象
-   * @param htmlElement HTMLElement
-   * @param args locale参数
-   */
+  // 绑定一条翻译到指定DOM元素的 innerText
   bindElementText(locale: Locale, htmlElement: HTMLElement, ...args: string[]) {
-    return this._bindElement(locale, htmlElement, 'text', ...args)
+    return this.bindElement(locale, htmlElement, 'text', ...args)
   }
 
-  /**
-   * 绑定一条翻译到指定DOM元素的 innerHTML
-   * @param locale 一个locale函数对象
-   * @param htmlElement HTMLElement
-   * @param args locale参数
-   */
+  // 绑定一条翻译到指定 DOM 元素的 innerHTML
   bindElementHTML(locale: Locale, htmlElement: HTMLElement, ...args: string[]) {
-    return this._bindElement(locale, htmlElement, 'html', ...args)
+    return this.bindElement(locale, htmlElement, 'html', ...args)
   }
 
-  /**
-   * 根据 dataset.i18n 绑定翻译到DOM元素树 Text
-   * @param htmlElement HTMLElement
-   */
+  // 根据 dataset.i18n 绑定翻译到 DOM 元素树 Text
   parseAllElementsText(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, 'text')
+    return this.parseAllElements(htmlElement, 'text')
   }
 
-  /**
-   * 根据 dataset.i18n 绑定翻译到DOM元素树 HTML
-   * @param htmlElement HTMLElement
-   */
+  // 根据 dataset.i18n 绑定翻译到 DOM 元素树 HTML
   parseAllElementsHTML(htmlElement: HTMLElement) {
-    return this._parseAllElements(htmlElement, 'html')
+    return this.parseAllElements(htmlElement, 'html')
   }
 
-  /**
-   * 更新所有绑定翻译的内容
-   */
-  private _updateLocales() {
+  // 更新所有绑定翻译的内容
+  private updateLocales() {
     this.pBindElementList.forEach(({ locale, htmlElement, type, args }) => {
       const text = locale(...args)
       if (type === 'text') {
         htmlElement.innerText = text
       } else {
-        // 'html'
         htmlElement.innerHTML = text
       }
     })
   }
 
-  /**
-   * 绑定一条翻译到指定DOM元素
-   * @param locale 一个locale函数对象
-   * @param htmlElement HTMLElement
-   * @param type 绑定到的类型
-   * @param args locale参数
-   */
-  private _bindElement(
+  //  绑定一条翻译到指定DOM元素
+  private bindElement(
     locale: Locale,
     htmlElement: HTMLElement,
     type: 'text' | 'html',
@@ -371,34 +275,22 @@ class I18n {
       type,
       args
     })
-    this._updateLocales()
+    this.updateLocales()
   }
 
-  /**
-   * 根据 dataset.i18n 绑定翻译到DOM元素树
-   * @param htmlElement HTMLElement
-   * @param type 绑定到的类型
-   * @param args locale参数
-   */
-  private _parseAllElements(
+  // 根据 dataset.i18n 绑定翻译到 DOM 元素树
+  private parseAllElements(
     htmlElement: HTMLElement,
     type: 'text' | 'html',
     ...args: string[]
   ) {
-    /**
-     * 渲染翻译
-     * @param element
-     */
+    // 渲染翻译
     const renderElement = (element: HTMLElement) => {
       const i18nLocaleKeyChain = element.dataset.i18n.split('.')
-      const i18nLocaleElement = (() => {
-        let selectedElement = this.text
-        i18nLocaleKeyChain.forEach(i18nLocaleKey => {
-          selectedElement = selectedElement[i18nLocaleKey]
-        })
-        return selectedElement
-      })()
-      this._bindElement(i18nLocaleElement, element, type, ...args)
+      const i18nLocaleElement = this.text[i18nLocaleKeyChain[0]][
+        i18nLocaleKeyChain[1]
+      ]
+      this.bindElement(i18nLocaleElement, element, type, ...args)
     }
     if (htmlElement.getAttribute('data-i18n')) {
       renderElement(htmlElement)

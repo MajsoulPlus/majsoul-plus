@@ -66,9 +66,6 @@ if (UserConfigs.chromium.isHardwareAccelerationDisable) {
 // Disable certificate validation TLS connections
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-// 忽略证书错误
-// app.commandLine.appendSwitch('ignore-certificate-errors')
-
 // 允许自动播放音视频
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
@@ -190,7 +187,7 @@ app.on('ready', () => {
 
 // 监听 GPU 进程崩溃事件
 app.on('gpu-process-crashed', (event, killed) => {
-  Logger.error(`gpu-process-crashed: ${killed}`)
+  Logger.error(`gpu-process-crashed, killed: ${killed}`)
 })
 
 // uncaught exception

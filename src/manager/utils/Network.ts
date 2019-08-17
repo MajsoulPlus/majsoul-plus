@@ -21,7 +21,9 @@ function _checkStatus(response: Response) {
   if (response.ok && response.status >= 200 && response.status < 400) {
     return response
   }
-  throw new Error(i18n.text.manager.XMLHttpRequestFailed(response.status))
+  throw new Error(
+    i18n.text.manager.XMLHttpRequestFailed(String(response.status))
+  )
 }
 
 function _processJson(response: Response) {

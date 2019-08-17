@@ -18,7 +18,9 @@ class Ping {
   setServer(server: number) {
     this.server = server
 
-    const serverInfoTitleDom = document.querySelector('#serverInfoTitle')
+    const serverInfoTitleDom = document.querySelector(
+      '#serverInfoTitle'
+    ) as HTMLElement
     i18n.text['main'][`server${remoteDomains[this.server].name}`].renderAsText(
       serverInfoTitleDom
     )
@@ -119,7 +121,7 @@ class Ping {
   }
 
   private renderService = () => {
-    const serverTextDom = document.querySelector('#serverText')
+    const serverTextDom = document.querySelector('#serverText') as HTMLElement
     const pingInfoDom = document.querySelector('#pingInfo')
     const pingTextDom = document.querySelector('#pingText')
     pingInfoDom.className = 'offline'
@@ -137,7 +139,7 @@ class Ping {
   }
 
   renderPingFail = () => {
-    const serverTextDom = document.querySelector('#serverText')
+    const serverTextDom = document.querySelector('#serverText') as HTMLElement
     i18n.unbindElement(serverTextDom)
     i18n.text.manager.loadFailed.renderAsText(serverTextDom)
   }

@@ -32,7 +32,7 @@ function showScreenshotLabel(src: string) {
   )
   screenshotImage.src = src
   screenshotText.innerText = screenshotCounter++
-    ? i18n.text.main.screenshotsSaved(screenshotCounter)
+    ? i18n.text.main.screenshotsSaved(String(screenshotCounter))
     : i18n.text.main.screenshotSaved()
   screenshotLabel.classList.remove('hide')
   screenshotLabel.classList.add('show')
