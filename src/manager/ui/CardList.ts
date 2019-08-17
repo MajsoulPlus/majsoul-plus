@@ -102,7 +102,7 @@ export default class CardList {
       filters: [
         {
           name: typeText,
-          extensions: [extend]
+          extensions: extend
         }
       ],
       defaultPath: `${exp.metadata.name}(${id}) - ${

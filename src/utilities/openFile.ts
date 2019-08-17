@@ -28,6 +28,7 @@ class OpenFile extends Utility {
       const type = {
         '.mspr': 'resourcepack',
         '.mspe': 'extension',
+        '.mspm': 'extension',
         '.mspt': 'tool'
       }[ext]
       if (type) {

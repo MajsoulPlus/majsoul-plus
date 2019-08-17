@@ -76,4 +76,5 @@ data/
 # exported files
 *.mspr
 *.mspe
+*.mspm
 *.mspt

@@ -4,7 +4,7 @@ import CardList from '../ui/CardList'
 class Extension extends CardList {
   protected getExportInfo() {
     return {
-      extend: 'mspe',
+      extend: ['mspe', 'mspm'],
       typeText: i18n.text.manager.fileTypeMSPE()
     }
   }

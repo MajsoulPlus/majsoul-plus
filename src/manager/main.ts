@@ -123,6 +123,7 @@ class ResourceManager {
           const type = {
             '.mspr': 'resourcepack',
             '.mspe': 'extension',
+            '.mspm': 'extension',
             '.mspt': 'tool'
           }[ext]
           if (type) {
@@ -189,21 +190,19 @@ class ResourceManager {
             },
             {
               name: i18n.text.manager.fileTypeMSPE(),
-              extensions: ['mspe']
+              extensions: ['mspe', 'mspm']
             },
             {
               name: i18n.text.manager.fileTypeMSPT(),
               extensions: ['mspt']
             }
-          ].filter(
-            ext =>
-              ext.extensions[0] ===
-              {
-                ResourcePack: 'mspr',
-                Extension: 'mspe',
-                Tool: 'mspt'
-              }[type]
-          ),
+          ].filter(ext => {
+            return {
+              ResourcePack: ['mspr'],
+              Extension: ['mspe', 'mspm'],
+              Tool: ['mspt']
+            }[type].includes(ext.extensions[0])
+          }),
           properties: ['openFile', 'multiSelections']
         },
         files => {

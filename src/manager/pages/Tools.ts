@@ -24,7 +24,7 @@ class Tool extends CardList {
 
   getExportInfo() {
     return {
-      extend: 'mspt',
+      extend: ['mspt'],
       typeText: i18n.text.manager.fileTypeMSPT()
     }
   }

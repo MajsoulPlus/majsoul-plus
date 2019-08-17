@@ -4,7 +4,7 @@ import CardList from '../ui/CardList'
 class ResourcePack extends CardList {
   protected getExportInfo() {
     return {
-      extend: 'mspr',
+      extend: ['mspr'],
       typeText: i18n.text.manager.fileTypeMSPR()
     }
   }

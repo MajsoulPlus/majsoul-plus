@@ -22,7 +22,7 @@ declare namespace MajsoulPlus_Manager {
 
   // 导出包的信息
   export interface ExportInfo {
-    extend: string
+    extend: string[]
     typeText: string
   }
 
