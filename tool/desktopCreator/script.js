@@ -165,13 +165,13 @@ saveAndInstall.addEventListener('click', event => {
   fs.writeFileSync(
     path.join(dirPath, 'script.js'),
     `const intervalId = setInterval(() => {
-  if (cfg.item_definition.item) {
+  if (cfg && cfg.item_definition && cfg.item_definition.item) {
     const item = cfg.item_definition.item.get('305044')
     item.name_chs = '${name}'
     item.desc_chs = '${description}'
     clearInterval(intervalId)
   }
-}, 1000)`
+}, 2000)`
   )
   const desktopData = canvas
     .toDataURL('image/jpeg', 1)
