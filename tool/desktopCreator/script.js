@@ -129,11 +129,11 @@ saveAndInstall.addEventListener('click', event => {
     replace: [
       {
         from:
-          '/0/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg',
+          '/1/[^/]+/scene/Assets/Resource/tablecloth/tablecloth_default/Table_Dif.jpg',
         to: '/Table_Dif.jpg'
       },
       {
-        from: '/0/[^/]+/myres2/tablecloth/tablecloth_default/preview.jpg',
+        from: '/1/[^/]+/myres2/tablecloth/tablecloth_default/preview.jpg',
         to: '/preview.jpg'
       }
     ]

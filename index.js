@@ -35,7 +35,7 @@ try {
 }
 
 // 同步 configs-user.json
-function jsonKeyUpdate (ja, jb) {
+function jsonKeyUpdate(ja, jb) {
   Object.keys(ja).forEach(key => {
     if (typeof ja[key] === 'object' && typeof jb[key] === 'object') {
       jsonKeyUpdate(ja[key], jb[key])
@@ -127,7 +127,8 @@ electronApp.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
     if (
-      certificate.fingerprint === 'sha256/UMNIGcBbbIcru/0L2e1idl+aQS7PUHqsZDcrETqdMsc='
+      certificate.fingerprint ===
+      'sha256/UMNIGcBbbIcru/0L2e1idl+aQS7PUHqsZDcrETqdMsc='
     ) {
       event.preventDefault()
       callback(true) // eslint-disable-line standard/no-callback-literal
@@ -499,7 +500,9 @@ const windowControl = {
             break
           }
           case 'update-user-config': {
-            userConfigs = JSON.parse(fs.readFileSync(configs.USER_CONFIG_PATH))
+            userConfigs = JSON.parse(
+              fs.readFileSync(configs.USER_CONFIG_PATH, { encoding: 'utf-8' })
+            )
             windowControl.windowMap['manager'].setContentSize(
               configs.MANAGER_WINDOW_CONFIG.width *
                 userConfigs.window.zoomFactor,
@@ -584,7 +587,7 @@ const windowControl = {
             } else {
               windowControl.windowMap['game'].webContents.send(
                 'load-url',
-                `https://localhost:${sererHttps.address().port}/0/`
+                `https://localhost:${sererHttps.address().port}/1/`
               )
             }
             break
@@ -594,7 +597,7 @@ const windowControl = {
               {
                 properties: ['openFile', 'openDirectory']
               },
-              function (files) {
+              function(files) {
                 if (files) evt.sender.send('selected-directory', files)
               }
             )
@@ -607,7 +610,7 @@ const windowControl = {
     })
   },
 
-  addAccelerator () {
+  addAccelerator() {
     const addBossKey = () => {
       const windowsStatus = {
         gameWindowVisible: false,
@@ -616,7 +619,7 @@ const windowControl = {
         managerWindowMuted: false,
         bosskeyActive: false
       }
-      globalShortcut.register('Alt+X', function () {
+      globalShortcut.register('Alt+X', function() {
         /**
          * @type {Electron.BrowserWindow}
          */

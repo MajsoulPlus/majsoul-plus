@@ -65,3 +65,4 @@ package-lock.json
 static/
 build/
 manager/**/*.css
+yarn.lock

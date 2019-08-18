@@ -31,7 +31,7 @@ const Util = {
    * @param {Buffer} buffer
    * @returns {Buffer}
    */
-  XOR (buffer) {
+  XOR(buffer) {
     let array = []
     for (let index = 0; index < buffer.length; index++) {
       const byte = buffer.readUInt8(index)
@@ -45,7 +45,7 @@ const Util = {
    * @param {string} originalUrl 原始请求的相对路径
    * @returns {boolean}
    */
-  isEncryptRes (originalUrl) {
+  isEncryptRes(originalUrl) {
     return originalUrl.includes(configs.EXTEND_RES_KEYWORD)
   },
 
@@ -54,7 +54,7 @@ const Util = {
    * @param {string} originalUrl
    * @return {boolean}
    */
-  isPath (originalUrl) {
+  isPath(originalUrl) {
     return (
       originalUrl.endsWith('\\') ||
       originalUrl.endsWith('/') ||
@@ -69,7 +69,7 @@ const Util = {
    * @param {string} dirname 文件夹路径
    * @returns {Promise<void>}
    */
-  mkdirs (dirname) {
+  mkdirs(dirname) {
     return new Promise(resolve => {
       fs.stat(dirname, err => {
         if (!err) {
@@ -90,7 +90,7 @@ const Util = {
    * @param {string} dirname 文件夹路径
    * @returns {void}
    */
-  mkdirsSync (dirname) {
+  mkdirsSync(dirname) {
     try {
       fs.statSync(dirname)
     } catch (error) {
@@ -104,7 +104,7 @@ const Util = {
    * @param {string} originalUrl
    * @returns {string}
    */
-  getRemoteUrl (originalUrl) {
+  getRemoteUrl(originalUrl) {
     return configs.REMOTE_DOMAIN + originalUrl
   },
 
@@ -115,7 +115,7 @@ const Util = {
    * @param {string} encoding 请求的数据格式，默认是binary
    * @returns {Promise<{statusCode: number,data:Buffer | string}>}
    */
-  getRemoteSource (originalUrl, encrypt, encoding = 'binary') {
+  getRemoteSource(originalUrl, encrypt, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       const remoteUrl = this.getRemoteUrl(originalUrl)
       https.get(
@@ -196,7 +196,7 @@ const Util = {
    * @param {string} encoding 编码格式
    * @param {Function} dataCallback 当获取到数据时候的callback
    */
-  httpsGetFile (URI, encoding = 'binary', dataCallback) {
+  httpsGetFile(URI, encoding = 'binary', dataCallback) {
     return new Promise((resolve, reject) => {
       https.get(
         {
@@ -276,7 +276,7 @@ const Util = {
    * @param {boolean} isPath
    * @return {string}
    */
-  getLocalURI (
+  getLocalURI(
     originalUrl,
     isPath,
     dirBase = path.join(__dirname, configs.LOCAL_DIR)
@@ -297,7 +297,7 @@ const Util = {
    * @param {string} encoding 默认是'binary'
    * @return {Promise<void>}
    */
-  writeFile (pathToWrite, data, encoding = 'binary') {
+  writeFile(pathToWrite, data, encoding = 'binary') {
     return new Promise((resolve, reject) => {
       this.mkdirs(path.dirname(pathToWrite)).then(() => {
         fs.writeFile(pathToWrite, data, encoding, err => {
@@ -315,7 +315,7 @@ const Util = {
    * @param {string} filepath
    * @return {Promise<Buffer | string>}
    */
-  readFile (filepath) {
+  readFile(filepath) {
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, (err, data) => {
         if (err) {
@@ -330,7 +330,7 @@ const Util = {
    * @param {Buffer | string} data
    * @param {string} encoding
    */
-  encodeData (data, encoding = 'binary') {
+  encodeData(data, encoding = 'binary') {
     return Buffer.from(data, encoding)
   },
 
@@ -340,7 +340,7 @@ const Util = {
    * @param {express.Response} res Response对象
    * @param {express.NextFunction} next NextFunction对象
    */
-  processRequest (req, res) {
+  processRequest(req, res) {
     if (!mods) {
       this.loadMods()
     }
@@ -418,6 +418,7 @@ const Util = {
           if (encrypt) {
             sendData = this.XOR(sendData)
           }
+          if (isPath) res.setHeader('Content-Type', 'text/html')
           res.end(sendData)
         },
         data => {
@@ -431,7 +432,7 @@ const Util = {
   /**
    * 加载Mod
    */
-  loadMods () {
+  loadMods() {
     // Mod文件根目录
     // const modRootDir = path.join(__dirname, configs.MODS_DIR)
     // 所有已在目录中的Mod目录
@@ -449,7 +450,7 @@ const Util = {
    * 同步删除文件夹
    * @param {string} dir 要删除的目录
    */
-  removeDirSync (dir) {
+  removeDirSync(dir) {
     let command = ''
     if (process.platform === 'win32') {
       command = `rmdir /s/q "${dir}"`
@@ -463,7 +464,7 @@ const Util = {
    * 截取屏幕画面
    * @param {Electron.WebContents} webContents
    */
-  takeScreenshot (webContents) {
+  takeScreenshot(webContents) {
     audioPlayer.webContents.send(
       'audio-play',
       path.join(__dirname, 'bin/audio/screenshot.mp3')
@@ -473,7 +474,7 @@ const Util = {
   /**
    * 初始化音频播放器
    */
-  initPlayer () {
+  initPlayer() {
     audioPlayer = new electron.BrowserWindow({
       show: false
     })
@@ -484,7 +485,7 @@ const Util = {
   /**
    * 退出播放器窗口
    */
-  shutoffPlayer () {
+  shutoffPlayer() {
     audioPlayer.close()
   },
   /**
@@ -492,7 +493,7 @@ const Util = {
    * @param {string} from 要被打包的文件夹
    * @param {string} to 打包到的路径
    */
-  zipDir (from, to) {
+  zipDir(from, to) {
     const zip = new AdmZip()
     zip.addLocalFolder(from, path.basename(from))
     zip.writeZip(to, true)
@@ -504,7 +505,7 @@ const Util = {
    * @param {string} tagb B标签，类似 v1.2.3
    * @return {number} 返回0，则版本相同，1为需要完整下载版本如引用新依赖，2为新小功能版本，3为小版本修复，4为开发版本更新
    */
-  compareVersion (taga, tagb) {
+  compareVersion(taga, tagb) {
     let tagaArr = taga.substring(1).split('-')
     let tagbArr = tagb.substring(1).split('-')
     let tagaDev = false
