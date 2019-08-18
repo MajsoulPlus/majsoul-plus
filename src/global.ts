@@ -51,7 +51,7 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
 
 // tslint:disable-next-line
 export const RemoteDomains = [
-  { id: 0, name: 'zh', domain: 'https://majsoul.union-game.com/0/' },
+  { id: 0, name: 'zh', domain: 'https://www.majsoul.com/1/' },
   { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com/' },
   { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com/' }
 ]
@@ -65,7 +65,7 @@ export const Global: MajsoulPlus.Global = {
   ResourcePackConfigPath: '',
   ExtensionConfigPath: '',
   ToolConfigPath: '',
-  UserConfigPath: path.join(appDataDir, 'configs-user.json'),
+  UserConfigPath: path.join(appDataDir, 'user-config.json'),
   LocalCachePath: path.join(appDataDir, GlobalPath.LocalDir),
   ResourceFolderPath: path.join(appDataDir, GlobalPath.ResourcePackDir),
   ExtensionFolderPath: path.join(appDataDir, GlobalPath.ExtensionDir),
@@ -77,11 +77,6 @@ export const Global: MajsoulPlus.Global = {
     frame: true,
     resizable: true,
     backgroundColor: '#000000',
-    webPreferences: {
-      // webSecurity: false
-      // nodeIntegration: false
-      // plugins: true
-    },
     autoHideMenuBar: true,
     // useContentSize: true,
     icon: appIcon,
@@ -96,7 +91,6 @@ export const Global: MajsoulPlus.Global = {
     backgroundColor: '#FFFFFF',
     webPreferences: {
       webSecurity: false
-      // allowRunningInsecureContent: true
     },
     title: '雀魂Plus',
     autoHideMenuBar: true,

@@ -3,7 +3,7 @@ import * as tcpPing from 'tcp-ping'
 import i18n from '../../i18n'
 
 export const remoteDomains = [
-  { id: 0, name: 'zh', domain: 'https://majsoul.union-game.com/0' },
+  { id: 0, name: 'zh', domain: 'https://www.majsoul.com/1' },
   { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com' },
   { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com' }
 ]

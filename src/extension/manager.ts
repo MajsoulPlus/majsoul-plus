@@ -136,7 +136,7 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
       await Promise.all(this.useScriptPromises)
 
       // 针对 code.js 进行特殊处理 注入扩展
-      const originalUrl = ctx.request.originalUrl.replace(/^\/0\//g, '')
+      const originalUrl = ctx.request.originalUrl.replace(/^\/\d\//g, '')
       let prefix = '',
         postfix = ''
       if (path.basename(originalUrl) === 'code.js') {

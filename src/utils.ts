@@ -207,7 +207,7 @@ export async function getRemoteOrCachedFile(
   encode = true,
   callback: (data: Buffer) => Buffer = data => data
 ): Promise<{ code: number; data: Buffer | string }> {
-  const originalUrl = url.replace(/^\/0\//g, '')
+  const originalUrl = url.replace(/^\/\d\//g, '')
   const isEncrypted = isEncryptRes(originalUrl)
   const isRoutePath = isPath(originalUrl)
   const localPath = getLocalURI(originalUrl)

@@ -5,7 +5,7 @@ export default {
   appDataDir: ipcRenderer.sendSync('sandbox-appdata-request'),
   UserConfigPath: path.join(
     ipcRenderer.sendSync('sandbox-appdata-request'),
-    'configs-user.json'
+    'user-config.json'
   ),
   ResourcePackDir: path.join(
     ipcRenderer.sendSync('sandbox-appdata-request'),
