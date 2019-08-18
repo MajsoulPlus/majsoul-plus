@@ -105,9 +105,7 @@ export default class CardList {
           extensions: extend
         }
       ],
-      defaultPath: `${exp.metadata.name}(${id}) - ${
-        exp.metadata.author
-      }.${extend}`
+      defaultPath: `${exp.metadata.name}(${id}) - ${exp.metadata.author}`
     })
 
     if (pathToSave) {
