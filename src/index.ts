@@ -31,7 +31,11 @@ LoadTool()
 
 // 代理设置
 if (UserConfigs.chromium.proxyUrl !== '') {
-  app.commandLine.appendSwitch('proxy-server', UserConfigs.chromium.proxyUrl)
+  if (UserConfigs.chromium.proxyUrl !== 'system-proxy') {
+    app.commandLine.appendSwitch('proxy-server', UserConfigs.chromium.proxyUrl)
+  }
+} else {
+  app.commandLine.appendArgument('no-proxy-server')
 }
 
 // 禁用/启用进程内 GPU 处理
