@@ -218,12 +218,16 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
  */
 Majsoul_Plus.${extension.id} = {};
 ((context, console, fetchSelf) => {
-  try {
-${scripts.join('\n')}
+${scripts
+  .map(
+    script => `  try {
+${script}
   } catch(e) {
-    console.error('Majsoul Plus has captured an exception. Please contact the author of this extension to catch it in the extension itself!')
-    console.error(e)
-  }
+    console.error('Majsoul Plus has captured an exception. Please contact the author of this extension to catch it in the extension itself!');
+    console.error(e);
+  }`
+  )
+  .join('\n')}
 })(
   Majsoul_Plus.${extension.id},
   extensionConsole('${extension.id}'),
