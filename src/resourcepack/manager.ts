@@ -213,11 +213,13 @@ export default class ResourcePackManager extends BaseManager {
                       typeof repo.from === 'string' ? [repo.from] : repo.from
 
                     from.forEach(rep => {
-                      if (resMap.res[rep] !== undefined) {
-                        resMap.res[rep].prefix = `majsoul_plus/${item.name}/${
-                          pack.id
-                        }`
+                      if (resMap.res[rep] === undefined) {
+                        resMap.res[rep] = { prefix: '' }
                       }
+
+                      resMap.res[rep].prefix = `majsoul_plus/${item.name}/${
+                        pack.id
+                      }`
                     })
                   }
                 )
