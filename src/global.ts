@@ -134,6 +134,7 @@ export function InitGlobal() {
     // 通过 require 避免在 renderer 中引入 utils
     // utils 存在只能在主进程调用的方法
     if (!fs.existsSync(folder) && app) {
+      // TODO: 比较版本
       require('./utils').copyFolderSync(
         path.join(__dirname, 'bin', dir),
         appDataDir
