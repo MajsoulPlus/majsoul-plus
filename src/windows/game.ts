@@ -1,6 +1,7 @@
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  dialog,
   ipcMain,
   Menu,
   MenuItem,
@@ -8,8 +9,8 @@ import {
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
-import { UserConfigs, SaveConfigJson } from '../config'
-import { Global, RemoteDomains, Logger } from '../global'
+import { SaveConfigJson, UserConfigs } from '../config'
+import { Global, Logger, RemoteDomains } from '../global'
 import i18n from '../i18n'
 import { MajsoulPlus } from '../majsoul_plus'
 import { httpServer, httpsServer } from '../server'
@@ -100,12 +101,6 @@ export function initGameWindow() {
     GameWindow.webContents.send('load-url', url, port, http)
   })
 
-  GameWindow.on('minimize', () => {
-    GameWindow.webContents.send('get-local-storage')
-  })
-  GameWindow.on('maximize', () => {
-    GameWindow.webContents.send('get-local-storage')
-  })
   ipcMain.on(
     'save-local-storage',
     (event: Electron.Event, localStorage: string[][]) => {
@@ -113,6 +108,13 @@ export function initGameWindow() {
         RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
       ] = localStorage.filter(arr => arr[1] !== '' && arr[1] !== 'FKU!!!')
       SaveConfigJson(UserConfigs)
+      dialog.showMessageBox(GameWindow, {
+        type: 'info',
+        title: i18n.text.main.programName(),
+        // TODO: i18n
+        message: '保存帐号信息成功!',
+        buttons: ['OK']
+      })
     }
   )
 
@@ -159,6 +161,13 @@ GameWindowMenu.append(
         visible: false,
         click: (menuItem, browserWindow) => {
           takeScreenshot(browserWindow.webContents)
+        }
+      },
+      {
+        label: '写入帐号信息',
+        accelerator: 'CmdOrCtrl+Y',
+        click: (menuItem, browserWindow) => {
+          GameWindow.webContents.send('get-local-storage')
         }
       },
       {
