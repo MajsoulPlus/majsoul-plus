@@ -46,21 +46,6 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
   enableFromConfig() {
     super.enableFromConfig()
     ResourcePackManager.setLoadedExtensions(this.getDetails())
-    for (const key in this.loadedDetails) {
-      if (this.loadedDetails[key]) {
-        const pack = this.loadedDetails[key]
-        if (
-          pack.enabled &&
-          (pack.metadata as MajsoulPlus.Extension).applyServer.includes(
-            UserConfigs.userData.serverToPlay
-          )
-        ) {
-          this.useScriptPromises.push(
-            this.useScript(pack.metadata.id, pack.metadata)
-          )
-        }
-      }
-    }
   }
 
   clear() {
@@ -123,6 +108,23 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
   }
 
   register(server: Koa, router: Router) {
+    // 加载扩展脚本
+    for (const key in this.loadedDetails) {
+      if (this.loadedDetails[key]) {
+        const pack = this.loadedDetails[key]
+        if (
+          pack.enabled &&
+          (pack.metadata as MajsoulPlus.Extension).applyServer.includes(
+            UserConfigs.userData.serverToPlay
+          )
+        ) {
+          this.useScriptPromises.push(
+            this.useScript(pack.metadata.id, pack.metadata)
+          )
+        }
+      }
+    }
+
     // 获取扩展基本信息
     router.get(`/majsoul_plus/extension/:id`, async (ctx, next) => {
       ctx.response.status = this.loadedMap.has(ctx.params.id) ? 200 : 404
@@ -198,8 +200,8 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                 this.loadedDetails[b[0]].sequence
             )
             .forEach(entries => {
-              const id = entries[0]
-              let scripts = entries[1]
+              const id = entries[0],
+                scripts = entries[1]
 
               // 当未加载时跳出
               if (!this.loadedDetails[id].enabled) return
@@ -211,11 +213,6 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                   UserConfigs.userData.serverToPlay
                 )
               ) {
-                // 给 scripts 数组去重
-                // TODO: 搞清楚为什么 scripts 会出现重复
-                scripts = scripts.filter(
-                  (item, index) => scripts.indexOf(item) === index
-                )
                 const extCode = `/**
  * Extension： ${extension.id}
  * Author: ${extension.author}
