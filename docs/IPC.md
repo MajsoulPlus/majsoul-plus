@@ -16,7 +16,7 @@
 | 06  | GameWindow    | main-loader-ready       | 无       | 游戏宿主窗口已创建并初始化完毕，需要加载端口信息 |
 | 07  | sandbox       | sandbox-dirname-request | 无       | 返回当前的 `dirname`。                           |
 | 08  | sandbox       | sandbox-appdata-request | 无       | 返回当前的 `appDataDir`                          |
-| 09  | screenshot    | take-screenshot         | `buffer` | 对截屏进行保存。                                 |
+| 09  | screenshot    | save-screenshot         | `buffer` | 对截屏进行保存。                                 |
 
 ### 通用请求
 
@@ -36,13 +36,12 @@
 
 ### GameWindow(mainLoader)
 
-| ID  | 名称             | 参数                       | 说明                     |
-| --- | ---------------- | -------------------------- | ------------------------ |
-| 01  | load-url         | `url`, `port`, `http`      | 加载服务器对应网页       |
-| 02  | window-resize    | `rect: Electron.Rectangle` | 更新游戏窗口的 Rectangle |
-| 03  | take-screenshot  | 无                         | 截图                     |
-| 04  | screenshot-saved | `filePath`                 | 表示截图保存成功         |
-| 05  | open-devtools    | 无                         | 打开开发者工具           |
+| ID  | 名称             | 参数                  | 说明               |
+| --- | ---------------- | --------------------- | ------------------ |
+| 01  | load-url         | `url`, `port`, `http` | 加载服务器对应网页 |
+| 02  | take-screenshot  | `scaleFactor: number` | 截图               |
+| 03  | screenshot-saved | `filePath`            | 表示截图保存成功   |
+| 04  | open-devtools    | 无                    | 打开开发者工具     |
 
 ### ManagerWindow
 

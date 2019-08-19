@@ -5,6 +5,7 @@ import {
   ipcMain,
   Menu,
   MenuItem,
+  screen,
   WebContents
 } from 'electron'
 import { AddressInfo } from 'net'
@@ -59,15 +60,6 @@ export function initGameWindow() {
         UserConfigs.window.gameWindowSize
       )
     }
-    // 将窗口尺寸信息发送给渲染进程用于截图
-    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
-  })
-  // 监听移动事件，用途同上
-  GameWindow.on('move', () => {
-    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
-  })
-  GameWindow.on('moved', () => {
-    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
   })
 
   GameWindow.on('closed', () => {
@@ -123,8 +115,6 @@ export function initGameWindow() {
     // 但这样会造成截图提示悬浮窗尺寸不合适
     GameWindow.webContents.setZoomFactor(1)
     GameWindow.show()
-    // 窗口展示后，通知渲染窗口实际尺寸以便截图
-    GameWindow.webContents.send('window-resize', GameWindow.getBounds())
   })
 
   // 载入本地启动器
@@ -305,5 +295,13 @@ export function takeScreenshot(webContents: WebContents) {
     'audio-play',
     path.join(__dirname, 'bin/audio/screenshot.mp3')
   )
-  webContents.send('take-screenshot')
+
+  const rect = GameWindow.getBounds()
+  const display = screen.getDisplayMatching({
+    x: Math.floor(rect.x),
+    y: Math.floor(rect.y),
+    width: Math.floor(rect.width),
+    height: Math.floor(rect.height)
+  })
+  webContents.send('take-screenshot', display.scaleFactor)
 }

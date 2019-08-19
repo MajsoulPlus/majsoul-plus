@@ -11,7 +11,7 @@ class ScreenShot extends Utility {
   }
 
   protected execute() {
-    ipcMain.on('take-screenshot', (buf: Buffer) => {
+    ipcMain.on('save-screenshot', (event, buf: Buffer) => {
       // 接收到的截图 Buffer
       const buffer: Buffer = buf
       // 由主进程进行保存

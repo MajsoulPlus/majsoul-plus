@@ -16,72 +16,52 @@ const mainWindowBox: HTMLDivElement = document.querySelector('#mainWindowBox')
 const scalePercent = userConfigs.window.renderingMultiple
 
 let webContents: Electron.webContents
-let clientRect: Electron.Rectangle
 
 let screenshotCounter = 0
 let screenshotTimer: NodeJS.Timeout
 function showScreenshotLabel(src: string) {
-  const screenshotImage: HTMLImageElement = document.querySelector(
-    '#screenshotImage'
-  )
-  const screenshotText: HTMLParagraphElement = document.querySelector(
-    '#screenshotText'
-  )
-  const screenshotLabel: HTMLDivElement = document.querySelector(
-    '#screenshotLabel'
-  )
-  screenshotImage.src = src
-  screenshotText.innerText = screenshotCounter++
+  const image = document.querySelector('#screenshotImage') as HTMLImageElement
+  image.src = src
+
+  const text = document.querySelector('#screenshotText') as HTMLParagraphElement
+  text.innerText = screenshotCounter++
     ? i18n.text.main.screenshotsSaved(String(screenshotCounter))
     : i18n.text.main.screenshotSaved()
-  screenshotLabel.classList.remove('hide')
-  screenshotLabel.classList.add('show')
+
+  const label = document.querySelector('#screenshotLabel') as HTMLDivElement
+  label.classList.remove('hide')
+  label.classList.add('show')
+
   clearTimeout(screenshotTimer)
   screenshotTimer = setTimeout(() => {
-    screenshotLabel.classList.remove('show')
+    label.classList.remove('show')
     clearTimeout(screenshotTimer)
     screenshotTimer = setTimeout(() => {
-      screenshotLabel.classList.add('hide')
+      label.classList.add('hide')
       screenshotCounter = 0
     }, 300)
   }, 8000)
 }
 
-ipcRenderer.on('window-resize', (event, rect: Electron.Rectangle) => {
-  clientRect = rect
-})
-
-ipcRenderer.on('take-screenshot', () => {
+ipcRenderer.on('take-screenshot', (event, scaleFactor: number) => {
   if (webContents) {
-    // 回调函数
-    const callbackFunction = (image: Electron.NativeImage) => {
-      ipcRenderer.send('take-screenshot', image.toPNG())
-    }
-    const rect = clientRect
-    const display = electronScreen.getDisplayMatching({
-      x: Math.floor(rect.x),
-      y: Math.floor(rect.y),
-      width: Math.floor(rect.width),
-      height: Math.floor(rect.height)
-    })
     webContents.capturePage(
       {
         x: 0,
         y: 0,
-        width: Math.floor(mainWindow.clientWidth * display.scaleFactor),
-        height: Math.floor(mainWindow.clientHeight * display.scaleFactor)
+        width: Math.floor(mainWindow.clientWidth * scaleFactor),
+        height: Math.floor(mainWindow.clientHeight * scaleFactor)
       },
-      callbackFunction
+      image => {
+        ipcRenderer.send('save-screenshot', image.toPNG())
+      }
     )
   }
 })
 
-ipcRenderer.on(
-  'screenshot-saved',
-  (event: Electron.Event, filePath: string) => {
-    showScreenshotLabel('file://' + filePath)
-  }
-)
+ipcRenderer.on('screenshot-saved', (event, filePath: string) => {
+  showScreenshotLabel('file://' + filePath)
+})
 
 ipcRenderer.on('open-devtools', () => {
   if (webContents) {
@@ -156,7 +136,7 @@ mainWindow.addEventListener('dom-ready', () => {
 
 ipcRenderer.on(
   'load-url',
-  (event: Electron.Event, url: string, port: number, http: boolean) => {
+  (event, url: string, port: number, http: boolean) => {
     serverInfo = { url, port, http }
     console.log('[Majsoul Plus] LoadURL', serverInfo)
 
