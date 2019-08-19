@@ -198,8 +198,8 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                 this.loadedDetails[b[0]].sequence
             )
             .forEach(entries => {
-              const id = entries[0],
-                scripts = entries[1]
+              const id = entries[0]
+              let scripts = entries[1]
 
               // 当未加载时跳出
               if (!this.loadedDetails[id].enabled) return
@@ -211,6 +211,11 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                   UserConfigs.userData.serverToPlay
                 )
               ) {
+                // 给 scripts 数组去重
+                // TODO: 搞清楚为什么 scripts 会出现重复
+                scripts = scripts.filter(
+                  (item, index) => scripts.indexOf(item) === index
+                )
                 const extCode = `/**
  * Extension： ${extension.id}
  * Author: ${extension.author}
