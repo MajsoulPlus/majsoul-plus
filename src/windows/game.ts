@@ -293,7 +293,7 @@ function getGameWindowTitle(): string {
 export function takeScreenshot(webContents: WebContents) {
   AudioPlayer.webContents.send(
     'audio-play',
-    path.join(__dirname, 'bin/audio/screenshot.mp3')
+    path.join(__dirname, '../bin/audio/screenshot.mp3')
   )
 
   const rect = GameWindow.getBounds()

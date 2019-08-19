@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron'
 import * as path from 'path'
 
 // tslint:disable-next-line
-export let AudioPlayer: BrowserWindow;
+export let AudioPlayer: BrowserWindow
 
 /**
  * 初始化音频播放器
@@ -12,7 +12,7 @@ export function initPlayer() {
     show: false
   })
   AudioPlayer.loadURL(
-    'file://' + path.join(__dirname, 'bin/audio/player.html')
+    'file://' + path.join(__dirname, '../bin/audio/player.html')
   )
 }
 /**
