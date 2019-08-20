@@ -4,9 +4,7 @@ import {
   dialog,
   ipcMain,
   Menu,
-  MenuItem,
-  screen,
-  WebContents
+  screen
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
@@ -15,12 +13,13 @@ import { Global, Logger, RemoteDomains } from '../global'
 import i18n from '../i18n'
 import { MajsoulPlus } from '../majsoul_plus'
 import {
+  CloseServer,
   httpServer,
   httpsServer,
-  LoadServer,
-  CloseServer,
-  ListenServer
+  ListenServer,
+  LoadServer
 } from '../server'
+import { ToolManager } from '../tool/tool'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
 
@@ -82,7 +81,7 @@ export function initGameWindow() {
   })
 
   initPlayer()
-  Menu.setApplicationMenu(gameWindowMenu)
+  Menu.setApplicationMenu(getGameWindowMenu())
 
   ipcMain.on('main-loader-ready', () => {
     // 加载本地服务器地址
@@ -133,105 +132,134 @@ export function initGameWindow() {
   }
 }
 
-const gameWindowMenu = new Menu()
-
-gameWindowMenu.append(
-  new MenuItem({
-    label: '游戏',
-    role: 'services',
-    submenu: [
-      ...['F12', 'CmdOrCtrl+P'].map((acc, index) => {
-        return {
-          label: '截图',
-          accelerator: acc,
-          visible: index === 0,
-          click: () => {
-            takeScreenshot()
+function getGameWindowMenu() {
+  const template = [
+    ...(process.platform === 'darwin'
+      ? [
+          {
+            label: i18n.text.main.programName(),
+            submenu: [
+              { role: 'about' },
+              { type: 'separator' as 'separator' },
+              { role: 'services' },
+              { type: 'separator' as 'separator' },
+              { role: 'hide' },
+              { role: 'hideothers' },
+              { role: 'unhide' },
+              { type: 'separator' as 'separator' },
+              { role: 'quit' }
+            ]
           }
-        }
-      }),
-      {
-        label: '写入帐号信息',
-        accelerator: 'CmdOrCtrl+Y',
-        click: () => {
-          GameWindow.webContents.send('get-local-storage')
-        }
-      },
-      {
-        label: '退出游戏',
-        accelerator: 'Alt+F4',
-        click: () => {
-          GameWindow.close()
-        }
-      }
-    ]
-  })
-)
-
-gameWindowMenu.append(
-  new MenuItem({
-    label: '窗口',
-    role: 'window',
-    submenu: [
-      {
-        label: '置顶',
-        accelerator: 'CmdOrCtrl+T',
-        click: () => {
-          GameWindow.setAlwaysOnTop(!GameWindow.isAlwaysOnTop())
-        }
-      },
-      ...['F11', 'F5'].map((acc, index) => {
-        return {
-          label: '全屏',
-          accelerator: acc,
-          visible: index === 0,
-          click: () => {
-            if (!UserConfigs.window.isKioskModeOn) {
-              GameWindow.setFullScreen(!GameWindow.isFullScreen())
-            } else {
-              GameWindow.setKiosk(!GameWindow.isKiosk())
+        ]
+      : []),
+    {
+      label: '游戏',
+      role: 'services',
+      submenu: [
+        ...['F12', 'CmdOrCtrl+P'].map((acc, index) => {
+          return {
+            label: '截图',
+            accelerator: acc,
+            visible: index === 0,
+            click: () => {
+              takeScreenshot()
             }
+          }
+        }),
+        {
+          label: '写入帐号信息',
+          accelerator: 'CmdOrCtrl+Y',
+          click: () => {
+            GameWindow.webContents.send('get-local-storage')
+          }
+        },
+        ...(process.platform === 'darwin'
+          ? []
+          : [
+              {
+                label: '退出游戏',
+                accelerator: 'Alt+F4',
+                click: () => {
+                  GameWindow.close()
+                }
+              }
+            ])
+      ]
+    },
+    {
+      label: '窗口',
+      role: 'window',
+      submenu: [
+        {
+          label: '置顶',
+          accelerator: 'CmdOrCtrl+T',
+          click: () => {
+            GameWindow.setAlwaysOnTop(!GameWindow.isAlwaysOnTop())
+          }
+        },
+        ...['F11', 'F5'].map((acc, index) => {
+          return {
+            label: '全屏',
+            accelerator: acc,
+            visible: index === 0,
+            click: () => {
+              if (!UserConfigs.window.isKioskModeOn) {
+                GameWindow.setFullScreen(!GameWindow.isFullScreen())
+              } else {
+                GameWindow.setKiosk(!GameWindow.isKiosk())
+              }
+            }
+          }
+        })
+      ]
+    },
+    {
+      label: '编辑',
+      role: 'editMenu'
+    },
+    {
+      label: '工具',
+      role: 'tool',
+      submenu: Object.entries(ToolManager.getDetails()).map(([id, tool]) => {
+        return {
+          label: tool.metadata.name,
+          click: () => {
+            ipcMain.emit('start-tool', {}, id)
           }
         }
       })
-    ]
-  })
-)
-
-gameWindowMenu.append(
-  new MenuItem({
-    label: '编辑',
-    role: 'editMenu'
-  })
-)
-
-gameWindowMenu.append(
-  new MenuItem({
-    label: '更多',
-    submenu: [
-      {
-        label: '重新载入',
-        accelerator: 'CmdOrCtrl+R',
-        click: (_, browserWindow) => {
-          CloseServer()
-          ipcMain.emit('refresh-resourcepack', {})
-          ipcMain.emit('refresh-extension', {})
-          LoadServer()
-          ListenServer(Global.ServerPort)
-          browserWindow.reload()
+    },
+    {
+      label: '开发',
+      submenu: [
+        {
+          label: '重新载入',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => {
+            CloseServer()
+            ipcMain.emit('refresh-resourcepack', {})
+            ipcMain.emit('refresh-extension', {})
+            LoadServer()
+            ListenServer(Global.ServerPort)
+            GameWindow.reload()
+          }
+        },
+        {
+          label: '开发者工具',
+          accelerator: 'CmdOrCtrl+I',
+          click: () => {
+            if (process.env.NODE_ENV === 'development') {
+              GameWindow.webContents.openDevTools({ mode: 'detach' })
+            }
+            GameWindow.webContents.send('open-devtools')
+          }
         }
-      },
-      {
-        label: '开发者工具',
-        accelerator: 'CmdOrCtrl+I',
-        click: (menuItem, browserWindow) => {
-          browserWindow.webContents.openDevTools({ mode: 'detach' })
-          browserWindow.webContents.send('open-devtools')
-        }
-      }
-    ]
-  })
-)
+      ]
+    }
+  ]
+
+  return Menu.buildFromTemplate(template)
+}
 
 // 获取窗口标题，有 0.5% 概率显示为喵喵喵
 function getGameWindowTitle(): string {
