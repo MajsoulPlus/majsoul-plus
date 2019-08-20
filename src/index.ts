@@ -5,7 +5,7 @@ import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
 import { Global, InitGlobal, Logger } from './global'
 import { LoadResourcePack } from './resourcepack/resourcepack'
-import { httpServer, httpsServer, LoadServer } from './server'
+import { LoadServer, ListenServer } from './server'
 import { LoadTool } from './tool/tool'
 import bossKey from './utilities/bossKey'
 import openFile from './utilities/openFile'
@@ -138,27 +138,8 @@ app.on('ready', () => {
     // 加载服务器路由规则
     LoadServer()
 
-    // 初始化本地镜像服务器，当端口被占用时会随机占用另一个端口
-    if (UserConfigs.userData.useHttpServer) {
-      httpServer.listen(Global.ServerPort)
-      httpServer.on('error', err => {
-        // TODO: 验证 http 端口冲突时的提示信息是否是下面的内容
-        if (err.name === 'EADDRINUSE') {
-          httpServer.close()
-          // 随机监听一个空闲端口
-          httpServer.listen(0)
-        }
-      })
-    } else {
-      httpsServer.listen(Global.ServerPort)
-      httpsServer.on('error', err => {
-        if (err.code === 'EADDRINUSE') {
-          httpsServer.close()
-          // 随机监听一个空闲端口
-          httpsServer.listen(0)
-        }
-      })
-    }
+    // 启动服务器
+    ListenServer(Global.ServerPort)
 
     if (!process.env.SERVER_ONLY) {
       // 初始化游戏窗口

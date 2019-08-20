@@ -14,7 +14,13 @@ import { SaveConfigJson, UserConfigs } from '../config'
 import { Global, Logger, RemoteDomains } from '../global'
 import i18n from '../i18n'
 import { MajsoulPlus } from '../majsoul_plus'
-import { httpServer, httpsServer } from '../server'
+import {
+  httpServer,
+  httpsServer,
+  LoadServer,
+  CloseServer,
+  ListenServer
+} from '../server'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
 
@@ -66,9 +72,7 @@ export function initGameWindow() {
     // 关闭后台音频播放器
     shutoffPlayer()
     // 关闭本地镜像服务器
-    UserConfigs.userData.useHttpServer
-      ? httpServer.close()
-      : httpsServer.close()
+    CloseServer()
     // 依据用户设置显示被隐藏的管理器窗口
     if (UserConfigs.window.isManagerHide) {
       if (ManagerWindow) {
@@ -164,6 +168,11 @@ GameWindowMenu.append(
         label: '重新载入',
         accelerator: 'CmdOrCtrl+R',
         click: (menuItem, browserWindow) => {
+          CloseServer()
+          ipcMain.emit('refresh-resourcepack', {})
+          ipcMain.emit('refresh-extension', {})
+          LoadServer()
+          ListenServer(Global.ServerPort)
           browserWindow.reload()
         }
       },
