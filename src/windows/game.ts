@@ -82,7 +82,7 @@ export function initGameWindow() {
   })
 
   initPlayer()
-  Menu.setApplicationMenu(GameWindowMenu)
+  Menu.setApplicationMenu(gameWindowMenu)
 
   ipcMain.on('main-loader-ready', () => {
     // 加载本地服务器地址
@@ -133,41 +133,86 @@ export function initGameWindow() {
   }
 }
 
-// tslint:disable-next-line
-export const GameWindowMenu: Menu = new Menu()
+const gameWindowMenu = new Menu()
 
-GameWindowMenu.append(
+gameWindowMenu.append(
   new MenuItem({
     label: '游戏',
     role: 'services',
     submenu: [
-      {
-        label: '截图',
-        accelerator: 'F12',
-        click: (menuItem, browserWindow) => {
-          takeScreenshot(browserWindow.webContents)
+      ...['F12', 'CmdOrCtrl+P'].map((acc, index) => {
+        return {
+          label: '截图',
+          accelerator: acc,
+          visible: index === 0,
+          click: () => {
+            takeScreenshot()
+          }
         }
-      },
-      {
-        label: '截图',
-        accelerator: 'CmdOrCtrl+P',
-        enabled: true,
-        visible: false,
-        click: (menuItem, browserWindow) => {
-          takeScreenshot(browserWindow.webContents)
-        }
-      },
+      }),
       {
         label: '写入帐号信息',
         accelerator: 'CmdOrCtrl+Y',
-        click: (menuItem, browserWindow) => {
+        click: () => {
           GameWindow.webContents.send('get-local-storage')
         }
       },
       {
+        label: '退出游戏',
+        accelerator: 'Alt+F4',
+        click: () => {
+          GameWindow.close()
+        }
+      }
+    ]
+  })
+)
+
+gameWindowMenu.append(
+  new MenuItem({
+    label: '窗口',
+    role: 'window',
+    submenu: [
+      {
+        label: '置顶',
+        accelerator: 'CmdOrCtrl+T',
+        click: () => {
+          GameWindow.setAlwaysOnTop(!GameWindow.isAlwaysOnTop())
+        }
+      },
+      ...['F11', 'F5'].map((acc, index) => {
+        return {
+          label: '全屏',
+          accelerator: acc,
+          visible: index === 0,
+          click: () => {
+            if (!UserConfigs.window.isKioskModeOn) {
+              GameWindow.setFullScreen(!GameWindow.isFullScreen())
+            } else {
+              GameWindow.setKiosk(!GameWindow.isKiosk())
+            }
+          }
+        }
+      })
+    ]
+  })
+)
+
+gameWindowMenu.append(
+  new MenuItem({
+    label: '编辑',
+    role: 'editMenu'
+  })
+)
+
+gameWindowMenu.append(
+  new MenuItem({
+    label: '更多',
+    submenu: [
+      {
         label: '重新载入',
         accelerator: 'CmdOrCtrl+R',
-        click: (menuItem, browserWindow) => {
+        click: (_, browserWindow) => {
           CloseServer()
           ipcMain.emit('refresh-resourcepack', {})
           ipcMain.emit('refresh-extension', {})
@@ -176,81 +221,6 @@ GameWindowMenu.append(
           browserWindow.reload()
         }
       },
-      {
-        label: '退出游戏',
-        accelerator: 'Alt+F4',
-        click: (menuItem, browserWindow) => {
-          browserWindow.close()
-        }
-      }
-    ]
-  })
-)
-
-GameWindowMenu.append(
-  new MenuItem({
-    label: '窗口',
-    role: 'window',
-    submenu: [
-      {
-        label: '置顶',
-        accelerator: 'CmdOrCtrl+T',
-        click: (menuItem, browserWindow) => {
-          browserWindow.setAlwaysOnTop(!browserWindow.isAlwaysOnTop())
-        }
-      },
-      {
-        label: '全屏',
-        accelerator: 'F11',
-        click: (menuItem, browserWindow) => {
-          if (!UserConfigs.window.isKioskModeOn) {
-            browserWindow.setFullScreen(!browserWindow.isFullScreen())
-          } else {
-            browserWindow.setKiosk(!browserWindow.isKiosk())
-          }
-        }
-      },
-      {
-        label: '全屏',
-        accelerator: 'F5',
-        enabled: true,
-        visible: false,
-        click: (menuItem, browserWindow) => {
-          if (!UserConfigs.window.isKioskModeOn) {
-            browserWindow.setFullScreen(!browserWindow.isFullScreen())
-          } else {
-            browserWindow.setKiosk(!browserWindow.isKiosk())
-          }
-        }
-      },
-      {
-        label: '退出全屏',
-        accelerator: 'Esc',
-        click: (menuItem, browserWindow) => {
-          if (browserWindow.isFullScreen()) {
-            browserWindow.setFullScreen(false)
-            return
-          }
-          if (browserWindow.isKiosk()) {
-            browserWindow.setKiosk(false)
-          }
-        }
-      }
-    ]
-  })
-)
-
-GameWindowMenu.append(
-  new MenuItem({
-    label: '编辑',
-    role: 'editMenu'
-  })
-)
-
-GameWindowMenu.append(
-  new MenuItem({
-    label: '更多',
-    submenu: [
       {
         label: '开发者工具',
         accelerator: 'CmdOrCtrl+I',
@@ -295,11 +265,8 @@ function getGameWindowTitle(): string {
   return titles[index].text
 }
 
-/**
- * 截取屏幕画面
- * @param webContents
- */
-export function takeScreenshot(webContents: WebContents) {
+// 截取屏幕画面
+function takeScreenshot() {
   AudioPlayer.webContents.send(
     'audio-play',
     path.join(__dirname, '../bin/audio/screenshot.mp3')
@@ -312,5 +279,5 @@ export function takeScreenshot(webContents: WebContents) {
     width: Math.floor(rect.width),
     height: Math.floor(rect.height)
   })
-  webContents.send('take-screenshot', display.scaleFactor)
+  GameWindow.webContents.send('take-screenshot', display.scaleFactor)
 }
