@@ -18,7 +18,7 @@ function showWindow(window: BrowserWindow) {
 }
 
 class BossKey extends Utility {
-  private isActive = false
+  private isActive = true
 
   constructor() {
     super()
@@ -36,6 +36,7 @@ class BossKey extends Utility {
         showWindow(ManagerWindow)
         GameWindows.forEach(window => showWindow(window))
       }
+      this.isActive = !this.isActive
     })
   }
 }
