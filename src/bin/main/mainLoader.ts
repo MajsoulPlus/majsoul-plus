@@ -1,4 +1,4 @@
-import { ipcRenderer, screen as electronScreen } from 'electron'
+import { ipcRenderer } from 'electron'
 import i18n from '../../i18n'
 import Global from '../../manager/global'
 import { MajsoulPlus } from '../../majsoul_plus'
@@ -43,21 +43,24 @@ function showScreenshotLabel(src: string) {
   }, 8000)
 }
 
-ipcRenderer.on('take-screenshot', (event, scaleFactor: number) => {
-  if (webContents) {
-    webContents.capturePage(
-      {
-        x: 0,
-        y: 0,
-        width: Math.floor(mainWindow.clientWidth * scaleFactor),
-        height: Math.floor(mainWindow.clientHeight * scaleFactor)
-      },
-      image => {
-        ipcRenderer.send('save-screenshot', image.toPNG())
-      }
-    )
+ipcRenderer.on(
+  'take-screenshot',
+  (event, index: number, scaleFactor: number) => {
+    if (webContents) {
+      webContents.capturePage(
+        {
+          x: 0,
+          y: 0,
+          width: Math.floor(mainWindow.clientWidth * scaleFactor),
+          height: Math.floor(mainWindow.clientHeight * scaleFactor)
+        },
+        image => {
+          ipcRenderer.send('save-screenshot', index, image.toPNG())
+        }
+      )
+    }
   }
-})
+)
 
 ipcRenderer.on('screenshot-saved', (event, filePath: string) => {
   showScreenshotLabel('file://' + filePath)
@@ -112,7 +115,6 @@ mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
     webContents = mainWindow.getWebContents()
     webContents.setZoomFactor(1)
-    ipcRenderer.send('main-loader-ready')
 
     webContents.on('will-navigate', (event, url) => {
       if (isVanillaGameUrl(url)) {
@@ -136,11 +138,14 @@ mainWindow.addEventListener('dom-ready', () => {
 
 ipcRenderer.on(
   'load-url',
-  (event, url: string, port: number, http: boolean) => {
+  (event, url: string, port: number, http: boolean, partition?: string) => {
     serverInfo = { url, port, http }
     console.log('[Majsoul Plus] LoadURL', serverInfo)
 
-    mainWindow.loadURL(url)
+    if (partition) {
+      mainWindow.partition = partition
+    }
+    mainWindow.src = url
     mainWindowBox.style.width = '100vw'
     mainWindowBox.style.height = '100vh'
     mainWindowBox.style.transform = 'none'
@@ -152,7 +157,6 @@ ipcRenderer.on('get-local-storage', () => {
     'Object.entries(localStorage)',
     false,
     result => {
-      console.log(result)
       ipcRenderer.send('save-local-storage', result)
     }
   )

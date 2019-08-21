@@ -6,17 +6,16 @@
 
 下表列出了主进程接收到的请求：
 
-| ID  | 接收者        | 名称                    | 参数     | 说明                                             |
-| --- | ------------- | ----------------------- | -------- | ------------------------------------------------ |
-| 01  | ManagerWindow | start-game              | 无       | 启动游戏。                                       |
-| 02  | ManagerWindow | start-tool              | `id`     | 启动 `id` 对应的工具。                           |
-| 03  | ManagerWindow | close-manager           | 无       | 关闭 Manager 窗口。                              |
-| 04  | ManagerWindow | clear-cache             | 无       | 清理缓存（`appDataDir/static/`）                 |
-| 05  | ManagerWindow | update-user-config      | `config` | 更新主进程中的 `config` 并保存。                 |
-| 06  | GameWindow    | main-loader-ready       | 无       | 游戏宿主窗口已创建并初始化完毕，需要加载端口信息 |
-| 07  | sandbox       | sandbox-dirname-request | 无       | 返回当前的 `dirname`。                           |
-| 08  | sandbox       | sandbox-appdata-request | 无       | 返回当前的 `appDataDir`                          |
-| 09  | screenshot    | save-screenshot         | `buffer` | 对截屏进行保存。                                 |
+| ID  | 接收者        | 名称                    | 参数     | 说明                             |
+| --- | ------------- | ----------------------- | -------- | -------------------------------- |
+| 01  | ManagerWindow | start-game              | 无       | 启动游戏。                       |
+| 02  | ManagerWindow | start-tool              | `id`     | 启动 `id` 对应的工具。           |
+| 03  | ManagerWindow | close-manager           | 无       | 关闭 Manager 窗口。              |
+| 04  | ManagerWindow | clear-cache             | 无       | 清理缓存（`appDataDir/static/`） |
+| 05  | ManagerWindow | update-user-config      | `config` | 更新主进程中的 `config` 并保存。 |
+| 06  | sandbox       | sandbox-dirname-request | 无       | 返回当前的 `dirname`。           |
+| 07  | sandbox       | sandbox-appdata-request | 无       | 返回当前的 `appDataDir`          |
+| 08  | screenshot    | save-screenshot         | `buffer` | 对截屏进行保存。                 |
 
 ### 通用请求
 

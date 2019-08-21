@@ -187,7 +187,7 @@ export function mkdirsSync(dirname: string) {
 export function getRemoteUrl(originalUrl: string): string {
   return (
     RemoteDomains[UserConfigs.userData.serverToPlay].domain +
-    originalUrl.replace(/^\/(0\/)?/g, '')
+    originalUrl.replace(/^\/\d\/?/g, '')
   )
 }
 

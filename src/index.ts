@@ -1,21 +1,21 @@
-import { app, ipcMain, dialog } from 'electron'
+import { app, dialog, ipcMain } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
 import { LoadExtension } from './extension/extension'
 import { Global, InitGlobal, Logger } from './global'
+import i18n from './i18n'
 import { LoadResourcePack } from './resourcepack/resourcepack'
-import { LoadServer, ListenServer } from './server'
+import { ListenServer, LoadServer } from './server'
 import { LoadTool } from './tool/tool'
 import bossKey from './utilities/bossKey'
 import openFile from './utilities/openFile'
 import sandbox from './utilities/sandbox'
 import screenshot from './utilities/screenshot'
-import { initGameWindow, GameWindow } from './windows/game'
+import { initPlayer, AudioPlayer } from './windows/audioPlayer'
+import { GameWindows, initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
-import { initPlayer } from './windows/audioPlayer'
-import i18n from './i18n'
 
 // 初始化全局变量
 InitGlobal()
@@ -107,7 +107,7 @@ const shouldQuit = app.makeSingleInstance((argv, directory) => {
   } else {
     // GameWindow Mode
     if (argv.length > 2 + Number(process.env.NODE_ENV === 'development')) {
-      dialog.showMessageBox(GameWindow, {
+      dialog.showMessageBox(AudioPlayer, {
         type: 'info',
         title: i18n.text.main.programName(),
         // TODO: i18n
@@ -144,6 +144,7 @@ app.on('ready', () => {
     if (!process.env.SERVER_ONLY) {
       // 初始化游戏窗口
       initGameWindow()
+      GameWindows.newWindow()
     } else {
       // 通过 audioPlayer 窗口阻止程序退出
       initPlayer()

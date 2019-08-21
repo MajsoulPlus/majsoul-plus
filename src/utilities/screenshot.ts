@@ -1,8 +1,8 @@
-import Utility from './utility'
-import { ipcMain, app, clipboard, nativeImage } from 'electron'
+import { app, clipboard, ipcMain, nativeImage } from 'electron'
 import * as path from 'path'
 import { writeFile } from '../utils'
-import { GameWindow } from '../windows/game'
+import { GameWindows } from '../windows/game'
+import Utility from './utility'
 
 class ScreenShot extends Utility {
   constructor() {
@@ -11,7 +11,7 @@ class ScreenShot extends Utility {
   }
 
   protected execute() {
-    ipcMain.on('save-screenshot', (event, buf: Buffer) => {
+    ipcMain.on('save-screenshot', (event, index: number, buf: Buffer) => {
       // 接收到的截图 Buffer
       const buffer: Buffer = buf
       // 由主进程进行保存
@@ -23,7 +23,7 @@ class ScreenShot extends Utility {
       // 写入文件
       writeFile(filePath, buffer).then(() => {
         // 通知渲染进程（游戏宿主窗口）截图已保存，并由渲染进程弹窗
-        GameWindow.webContents.send('screenshot-saved', filePath)
+        GameWindows.get(index).webContents.send('screenshot-saved', filePath)
       })
       // 写入图像到剪切板
       clipboard.writeImage(nativeImage.createFromBuffer(buffer))
