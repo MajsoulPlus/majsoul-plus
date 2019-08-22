@@ -14,7 +14,7 @@
     "start": "yarn pre-build && yarn debug",
     "start:detailed": "yarn pre-build && yarn debug:detailed",
     "dist": "yarn pre-build && electron-builder --x64 --ia32 --publish onTagOrDraft",
-    "build": "yarn pre-build && electron-builder --x64 --ia32",
+    "build": "yarn pre-build && electron-builder",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "check": "gts check",
@@ -118,13 +118,13 @@
     "@types/semver": "^6.0.0",
     "@types/tcp-ping": "^0.1.0",
     "cross-env": "^5.2.0",
-    "electron": "^2.0.13",
+    "electron": "^3.1.13",
     "electron-builder": "^20.40.2",
     "gts": "^0.9.0",
     "ncp": "^2.0.0",
     "node-sass": "^4.12.0",
     "tslint": "^5.15.0",
-    "typescript": "^3.4.1",
+    "typescript": "^3.5.3",
     "yarn": "^1.15.2"
   }
 }

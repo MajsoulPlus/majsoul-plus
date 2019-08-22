@@ -5,7 +5,8 @@ import {
   ipcMain,
   Menu,
   MenuItem,
-  screen
+  screen,
+  MenuItemConstructorOptions
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
@@ -100,9 +101,10 @@ export function newGameWindow(id: number) {
     webPreferences:
       GameWindows.size > 1
         ? {
+            ...Global.GameWindowConfig.webPreferences,
             partition: String(id)
           }
-        : {}
+        : Global.GameWindowConfig.webPreferences
   }
 
   if (UserConfigs.window.gameWindowSize !== '') {
@@ -185,22 +187,22 @@ export function newGameWindow(id: number) {
 }
 
 function getGameWindowMenu(id: number) {
-  const template = [
+  const template: MenuItemConstructorOptions[] = [
     ...(process.platform === 'darwin'
       ? [
           {
             label: i18n.text.main.programName(),
             submenu: [
               { role: 'about' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'services' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'hide' },
               { role: 'hideothers' },
               { role: 'unhide' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'quit' }
-            ]
+            ] as MenuItemConstructorOptions[]
           }
         ]
       : []),
@@ -232,7 +234,7 @@ function getGameWindowMenu(id: number) {
             window.close()
           }
         }
-      ]
+      ] as MenuItemConstructorOptions[]
     },
     {
       label: '窗口',
@@ -269,7 +271,7 @@ function getGameWindowMenu(id: number) {
             }
           }
         })
-      ]
+      ] as MenuItemConstructorOptions[]
     },
     {
       label: '编辑',
@@ -277,7 +279,6 @@ function getGameWindowMenu(id: number) {
     },
     {
       label: '工具',
-      role: 'tool',
       submenu: Object.entries(ToolManager.getDetails()).map(([id, tool]) => {
         return {
           label: tool.metadata.name,
@@ -285,7 +286,7 @@ function getGameWindowMenu(id: number) {
             ipcMain.emit('start-tool', {}, id)
           }
         }
-      })
+      }) as MenuItemConstructorOptions[]
     },
     {
       label: '开发',
@@ -329,7 +330,7 @@ function getGameWindowMenu(id: number) {
             window.webContents.send('open-devtools')
           }
         }
-      ]
+      ] as MenuItemConstructorOptions[]
     }
   ]
 

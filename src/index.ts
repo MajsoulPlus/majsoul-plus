@@ -74,7 +74,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
 // 当全部窗口退出后，结束进程
-app.on('window-all-closed', app.quit)
+app.on('window-all-closed', () => app.quit())
 
 // 阻止证书验证
 app.on(
@@ -93,7 +93,8 @@ app.on(
   }
 )
 
-const shouldQuit = app.makeSingleInstance((argv, directory) => {
+app.requestSingleInstanceLock()
+app.on('second-instance', (event, argv, directory) => {
   if (ManagerWindow && !ManagerWindow.isDestroyed()) {
     // ManagerWindow Mode
     if (argv.length > 2 + Number(process.env.NODE_ENV === 'development')) {
@@ -117,11 +118,6 @@ const shouldQuit = app.makeSingleInstance((argv, directory) => {
     }
   }
 })
-
-if (shouldQuit) {
-  app.quit()
-  process.exit(0)
-}
 
 app.on('will-finish-launching', () => {
   // macOS open-file
