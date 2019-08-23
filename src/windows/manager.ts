@@ -1,8 +1,7 @@
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  ipcMain,
-  Menu
+  ipcMain
 } from 'electron'
 import * as path from 'path'
 import { SaveConfigJson, UserConfigs } from '../config'
@@ -19,9 +18,6 @@ export const ManagerWindowStatus: MajsoulPlus.WindowStatus = {
 }
 
 export function initManagerWindow() {
-  // 清空菜单
-  Menu.setApplicationMenu(null)
-
   const config: BrowserWindowConstructorOptions = {
     ...Global.ManagerWindowConfig
   }
@@ -40,6 +36,9 @@ export function initManagerWindow() {
   config.height *= UserConfigs.window.zoomFactor
 
   ManagerWindow = new BrowserWindow(config)
+
+  // 清空菜单
+  ManagerWindow.removeMenu()
 
   ManagerWindow.once('ready-to-show', () => {
     // 根据资源管理器设置的缩放宽高进行缩放操作

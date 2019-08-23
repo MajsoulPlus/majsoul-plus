@@ -47,17 +47,16 @@ ipcRenderer.on(
   'take-screenshot',
   (event, index: number, scaleFactor: number) => {
     if (webContents) {
-      webContents.capturePage(
-        {
+      webContents
+        .capturePage({
           x: 0,
           y: 0,
           width: Math.floor(mainWindow.clientWidth * scaleFactor),
           height: Math.floor(mainWindow.clientHeight * scaleFactor)
-        },
-        image => {
+        })
+        .then(image => {
           ipcRenderer.send('save-screenshot', index, image.toPNG())
-        }
-      )
+        })
     }
   }
 )

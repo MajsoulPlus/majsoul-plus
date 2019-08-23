@@ -114,6 +114,8 @@ export function newGameWindow(id: number) {
   // 阻止标题更改
   window.on('page-title-updated', event => event.preventDefault())
 
+  window.setMenu(getGameWindowMenu(id))
+
   window.webContents.on('dom-ready', () => {
     // 加载本地服务器地址
     const http = UserConfigs.userData.useHttpServer
@@ -152,8 +154,6 @@ export function newGameWindow(id: number) {
       SaveConfigJson(UserConfigs)
     })
   }
-
-  Menu.setApplicationMenu(getGameWindowMenu(id))
 
   window.once('ready-to-show', () => {
     // 设置页面缩放比例为 1 来防止缩放比例异常
