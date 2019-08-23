@@ -12,13 +12,13 @@ class ToolWindow {
     const toolWindowConfig = {
       ...Global.ToolWindowConfig,
       ...localConfig.windowOptions,
-      ...{
-        show: false,
-        webPreferences: {
-          sandbox: true,
-          preload: path.join(__dirname, 'sandbox-preload.js')
-        }
-      }
+      show: false
+    }
+    toolWindowConfig.webPreferences = {
+      ...Global.ToolWindowConfig.webPreferences,
+      ...localConfig.windowOptions.webPreferences,
+      sandbox: true,
+      preload: path.join(__dirname, 'sandbox-preload.js')
     }
 
     this.window = new BrowserWindow(toolWindowConfig)
@@ -75,7 +75,7 @@ class ToolMapManager {
 export function initToolManager() {
   const manager = new ToolMapManager()
 
-  ipcMain.on('start-tool', (event: Electron.Event, id: string) => {
+  ipcMain.on('start-tool', (event, id: string) => {
     manager.start(id)
   })
 }

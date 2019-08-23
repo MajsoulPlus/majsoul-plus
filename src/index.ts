@@ -93,7 +93,8 @@ app.on(
   }
 )
 
-const shouldQuit = app.makeSingleInstance((argv, directory) => {
+app.requestSingleInstanceLock()
+app.on('second-instance', (event, argv, directory) => {
   if (ManagerWindow && !ManagerWindow.isDestroyed()) {
     // ManagerWindow Mode
     if (argv.length > 2 + Number(process.env.NODE_ENV === 'development')) {
@@ -117,11 +118,6 @@ const shouldQuit = app.makeSingleInstance((argv, directory) => {
     }
   }
 })
-
-if (shouldQuit) {
-  app.quit()
-  process.exit(0)
-}
 
 app.on('will-finish-launching', () => {
   // macOS open-file

@@ -1,5 +1,5 @@
-import * as fs from 'fs'
 import * as electron from 'electron'
+const fs = electron.remote.require('fs')
 const path = electron.remote.require('path')
 
 // tslint:disable-next-line

@@ -25,7 +25,7 @@ export function LoadResourcePack() {
 
   load()
 
-  ipcMain.on('refresh-resourcepack', (event: Electron.Event) => {
+  ipcMain.on('refresh-resourcepack', event => {
     ResourcePackManager.clear()
     load()
     event.returnValue = ResourcePackManager.getDetails()

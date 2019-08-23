@@ -23,7 +23,7 @@ export function LoadExtension() {
 
   load()
 
-  ipcMain.on('refresh-extension', (event: Electron.Event) => {
+  ipcMain.on('refresh-extension', event => {
     ExtensionManager.clear()
     load()
     event.returnValue = ExtensionManager.getDetails()

@@ -5,7 +5,8 @@ import {
   ipcMain,
   Menu,
   MenuItem,
-  screen
+  screen,
+  MenuItemConstructorOptions
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
@@ -69,22 +70,19 @@ export class GameWindows {
 }
 
 export function initGameWindow() {
-  ipcMain.on(
-    'save-local-storage',
-    (event: Electron.Event, localStorage: string[][]) => {
-      UserConfigs.localStorage[
-        RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
-      ] = localStorage.filter(arr => arr[1] !== '' && arr[1] !== 'FKU!!!')
-      SaveConfigJson(UserConfigs)
-      dialog.showMessageBox(AudioPlayer, {
-        type: 'info',
-        title: i18n.text.main.programName(),
-        // TODO: i18n
-        message: '保存帐号信息成功!',
-        buttons: ['OK']
-      })
-    }
-  )
+  ipcMain.on('save-local-storage', (event, localStorage: string[][]) => {
+    UserConfigs.localStorage[
+      RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
+    ] = localStorage.filter(arr => arr[1] !== '' && arr[1] !== 'FKU!!!')
+    SaveConfigJson(UserConfigs)
+    dialog.showMessageBox(AudioPlayer, {
+      type: 'info',
+      title: i18n.text.main.programName(),
+      // TODO: i18n
+      message: '保存帐号信息成功!',
+      buttons: ['OK']
+    })
+  })
 }
 
 export function newGameWindow(id: number) {
@@ -97,9 +95,10 @@ export function newGameWindow(id: number) {
     webPreferences:
       GameWindows.size > 1
         ? {
+            ...Global.GameWindowConfig.webPreferences,
             partition: String(id)
           }
-        : {}
+        : Global.GameWindowConfig.webPreferences
   }
 
   if (UserConfigs.window.gameWindowSize !== '') {
@@ -184,15 +183,15 @@ function getGameWindowMenu(id: number) {
             label: i18n.text.main.programName(),
             submenu: [
               { role: 'about' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'services' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'hide' },
               { role: 'hideothers' },
               { role: 'unhide' },
-              { type: 'separator' as 'separator' },
+              { type: 'separator' },
               { role: 'quit' }
-            ]
+            ] as MenuItemConstructorOptions[]
           }
         ]
       : []),
@@ -224,7 +223,7 @@ function getGameWindowMenu(id: number) {
             window.close()
           }
         }
-      ]
+      ] as MenuItemConstructorOptions[]
     },
     {
       label: '窗口',
@@ -261,7 +260,7 @@ function getGameWindowMenu(id: number) {
             }
           }
         })
-      ]
+      ] as MenuItemConstructorOptions[]
     },
     {
       label: '编辑',
@@ -321,9 +320,9 @@ function getGameWindowMenu(id: number) {
             window.webContents.send('open-devtools')
           }
         }
-      ]
+      ] as MenuItemConstructorOptions[]
     }
-  ]
+  ] as MenuItemConstructorOptions[]
 
   return Menu.buildFromTemplate(template)
 }
