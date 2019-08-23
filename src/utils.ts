@@ -318,6 +318,23 @@ export function removeDirSync(dir: string) {
   childProcess.execSync(command)
 }
 
+export function getExportFileExtension(dir: string) {
+  const extMap = new Map([
+    ['resourcepack.json', 'mspr'],
+    ['tool.json', 'mspt'],
+    ['extension.json', 'mspe'],
+    ['execute.json', 'mspe'],
+    ['mod.json', 'mspm']
+  ])
+
+  let ret = ''
+  extMap.forEach(
+    (ext, filename) =>
+      (ret = fs.existsSync(path.resolve(dir, filename)) ? ext : ret)
+  )
+  return ret
+}
+
 // 压缩目录至 to
 export function zipDir(from: string, to: string) {
   const zip = new AdmZip()

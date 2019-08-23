@@ -7,7 +7,13 @@ import * as path from 'path'
 import * as semver from 'semver'
 import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
-import { fillObject, removeDirSync, unzipDir, zipDir } from './utils'
+import {
+  fillObject,
+  getExportFileExtension,
+  removeDirSync,
+  unzipDir,
+  zipDir
+} from './utils'
 import { ManagerWindow } from './windows/manager'
 
 export default abstract class BaseManager {
@@ -69,7 +75,12 @@ export default abstract class BaseManager {
     ipcMain.on(`export-${name}`, (event, id: string, pathToSave: string) => {
       const resp = { err: '' }
       try {
-        zipDir(path.resolve(appDataDir, this.name, id), pathToSave)
+        const folder = path.resolve(appDataDir, this.name, id)
+
+        zipDir(
+          path.resolve(appDataDir, this.name, id),
+          `${pathToSave}.${getExportFileExtension(folder)}`
+        )
       } catch (e) {
         resp.err = (e as Error).message
       }
