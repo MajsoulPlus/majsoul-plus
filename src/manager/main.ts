@@ -168,8 +168,8 @@ class ResourceManager {
   // 从 MSP* 导入资源包 / 扩展 / 工具
   private static importMSP(type: string) {
     return () => {
-      remote.dialog.showOpenDialog(
-        {
+      remote.dialog
+        .showOpenDialog({
           title: i18n.text.manager.installFrom(),
           filters: [
             {
@@ -192,14 +192,13 @@ class ResourceManager {
             }[type].includes(ext.extensions[0])
           }),
           properties: ['openFile', 'multiSelections']
-        },
-        files => {
-          (files || []).forEach(file => {
+        })
+        .then(files => {
+          files.filePaths.forEach(file => {
             ipcRenderer.sendSync(`import-${type.toLowerCase()}`, file)
           })
           ResourceManager.refreshCard(type)()
-        }
-      )
+        })
     }
   }
 

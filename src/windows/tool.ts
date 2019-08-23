@@ -33,11 +33,6 @@ class ToolWindow {
       'file://' +
         path.join(Global.ToolFolderPath, id, localConfig.index || 'index.html')
     )
-
-    this.window.on('close', event => {
-      event.preventDefault()
-      this.hide()
-    })
   }
 
   show() {

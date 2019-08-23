@@ -89,12 +89,12 @@ export default class CardList {
     }
   }
 
-  protected handleExport(id: string) {
+  protected async handleExport(id: string) {
     const { extend, typeText } = this.getExportInfo()
     const exp = this.cardListItemMap.get(id)
     if (!exp) return
 
-    const pathToSave = dialog.showSaveDialog({
+    const saveReturn = await dialog.showSaveDialog({
       title: i18n.text.manager.exportTo(),
       filters: [
         {
@@ -105,12 +105,12 @@ export default class CardList {
       defaultPath: `${exp.metadata.name}(${id}) - ${exp.metadata.author}`
     })
 
-    if (pathToSave) {
+    if (!saveReturn.canceled) {
       // 向主进程请求打包
       const resp: { err: string | undefined } = ipcRenderer.sendSync(
         `export-${this.name.toLowerCase()}`,
         id,
-        pathToSave
+        saveReturn.filePath
       )
       if (resp.err) {
         alert(
