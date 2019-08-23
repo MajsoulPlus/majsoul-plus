@@ -98,7 +98,6 @@ export const Global: MajsoulPlus.Global = {
       nodeIntegration: true
     },
     title: '雀魂Plus',
-    autoHideMenuBar: true,
     icon: appIcon,
     maximizable: false,
     fullscreenable: false,
