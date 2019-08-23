@@ -242,7 +242,7 @@ function getGameWindowMenu(id: number) {
         {
           label: '置顶',
           accelerator: 'CmdOrCtrl+T',
-          type: 'checkbox' as 'checkbox',
+          type: 'checkbox',
           click: (item: MenuItem, window: BrowserWindow) => {
             window.setAlwaysOnTop(!window.isAlwaysOnTop())
           }
@@ -251,7 +251,7 @@ function getGameWindowMenu(id: number) {
           return {
             label: '全屏',
             accelerator: acc,
-            type: 'checkbox' as 'checkbox',
+            type: 'checkbox',
             enabled: GameWindows.size === 1,
             visible: index === 0,
             click: (item: MenuItem, window: BrowserWindow) => {

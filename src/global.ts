@@ -2,8 +2,10 @@ import { app } from 'electron'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import * as semver from 'semver'
 import { ConsoleLogger } from './logger'
 import { MajsoulPlus } from './majsoul_plus'
+import { copyFolderSync, getFoldersSync, removeDirSync } from './utils'
 
 // tslint:disable-next-line
 export const Logger = new ConsoleLogger('Majsoul_Plus')
@@ -134,16 +136,51 @@ export function InitGlobal() {
     GlobalPath.ExtensionDir,
     GlobalPath.ToolsDir
   ].map(dir => {
-    const folder = path.join(appDataDir, dir)
+    const from = path.join(__dirname, 'bin', dir)
+    const to = path.join(appDataDir, dir)
     // 通过 require 避免在 renderer 中引入 utils
     // utils 存在只能在主进程调用的方法
-    if (!fs.existsSync(folder) && app) {
-      // TODO: 比较版本
-      require('./utils').copyFolderSync(
-        path.join(__dirname, 'bin', dir),
-        appDataDir
-      )
+    if (!fs.existsSync(to) && app) {
+      copyFolderSync(from, appDataDir)
+    } else {
+      // TODO: 更新自带拓展的版本
+      const folders = getFoldersSync(from)
+      folders.forEach(ext => {
+        if (
+          // 首先该拓展需要存在
+          fs.existsSync(path.join(to, ext, `${dir}.json`)) &&
+          (() => {
+            try {
+              const old = JSON.parse(
+                fs.readFileSync(path.join(to, ext, `${dir}.json`), {
+                  encoding: 'utf-8'
+                })
+              )
+              const latest = JSON.parse(
+                fs.readFileSync(path.join(from, ext, `${dir}.json`), {
+                  encoding: 'utf-8'
+                })
+              )
+              if (old.version === undefined) throw new Error('1.x')
+              else {
+                // 版本号合法性检查
+                if (!semver.valid(old.version)) {
+                  throw new Error('invalid version')
+                }
+                // 比对版本号是否是新的大于旧的
+                return semver.gt(latest.version, old.version)
+              }
+            } catch {
+              return true
+            }
+          })()
+        ) {
+          const exactFrom = path.join(from, ext)
+          removeDirSync(path.join(to, ext))
+          copyFolderSync(exactFrom, to)
+        }
+      })
     }
-    return path.join(folder, 'active.json')
+    return path.join(to, 'active.json')
   })
 }

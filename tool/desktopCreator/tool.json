@@ -1,10 +1,12 @@
 {
   "id": "desktopCreator",
   "name": "桌布制作工具",
+  "version": "2.0.0",
   "author": "Handle",
   "description": "简单几步生成桌布资源包，桌布随心换",
-  "index": "index.html",
   "preview": "preview.jpg",
+
+  "index": "index.html",
   "windowOptions": {
     "width": 640,
     "height": 360
