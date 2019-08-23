@@ -18,7 +18,7 @@ export function LoadTool() {
 
   load()
 
-  ipcMain.on('refresh-tool', (event: Electron.Event) => {
+  ipcMain.on('refresh-tool', event => {
     ToolManager.clear()
     load()
     event.returnValue = ToolManager.getDetails()

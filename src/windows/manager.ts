@@ -72,22 +72,19 @@ export function initManagerWindow() {
     ManagerWindow.webContents.openDevTools({ mode: 'detach' })
   }
 
-  ipcMain.on('clear-cache', (event: Electron.Event) => {
+  ipcMain.on('clear-cache', event => {
     removeDirSync(Global.LocalCachePath)
     event.returnValue = 0
   })
 
-  ipcMain.on(
-    'update-user-config',
-    (event: Electron.Event, config: MajsoulPlus.UserConfig) => {
-      updateObject(UserConfigs, config)
-      SaveConfigJson(config)
+  ipcMain.on('update-user-config', (event, config: MajsoulPlus.UserConfig) => {
+    updateObject(UserConfigs, config)
+    SaveConfigJson(config)
 
-      ManagerWindow.setContentSize(
-        Global.ManagerWindowConfig.width * UserConfigs.window.zoomFactor,
-        Global.ManagerWindowConfig.height * UserConfigs.window.zoomFactor
-      )
-      ManagerWindow.webContents.setZoomFactor(UserConfigs.window.zoomFactor)
-    }
-  )
+    ManagerWindow.setContentSize(
+      Global.ManagerWindowConfig.width * UserConfigs.window.zoomFactor,
+      Global.ManagerWindowConfig.height * UserConfigs.window.zoomFactor
+    )
+    ManagerWindow.webContents.setZoomFactor(UserConfigs.window.zoomFactor)
+  })
 }

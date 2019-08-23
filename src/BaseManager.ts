@@ -37,7 +37,7 @@ export default abstract class BaseManager {
     this.defaultObject = defaultObj
     this.schema = schema
 
-    ipcMain.on(`get-${name}-details`, (event: Electron.Event) => {
+    ipcMain.on(`get-${name}-details`, event => {
       ManagerWindow.webContents.send(
         `get-${name}-details-response`,
         this.getDetails()
@@ -46,16 +46,16 @@ export default abstract class BaseManager {
 
     ipcMain.on(
       `change-${name}-enability`,
-      (event: Electron.Event, id: string, enabled: boolean) =>
+      (event, id: string, enabled: boolean) =>
         this.changeEnable(event, id, enabled)
     )
 
-    ipcMain.on(`save-${name}-enabled`, (event: Electron.Event) => {
+    ipcMain.on(`save-${name}-enabled`, event => {
       this.save()
       event.returnValue = 0
     })
 
-    ipcMain.on(`import-${name}`, (event: Electron.Event, file: string) => {
+    ipcMain.on(`import-${name}`, (event, file: string) => {
       unzipDir(file, path.resolve(appDataDir, this.name))
         .then(() => {
           event.returnValue = 0
@@ -66,20 +66,17 @@ export default abstract class BaseManager {
         })
     })
 
-    ipcMain.on(
-      `export-${name}`,
-      (event: Electron.Event, id: string, pathToSave: string) => {
-        const resp = { err: '' }
-        try {
-          zipDir(path.resolve(appDataDir, this.name, id), pathToSave)
-        } catch (e) {
-          resp.err = (e as Error).message
-        }
-        event.returnValue = resp
+    ipcMain.on(`export-${name}`, (event, id: string, pathToSave: string) => {
+      const resp = { err: '' }
+      try {
+        zipDir(path.resolve(appDataDir, this.name, id), pathToSave)
+      } catch (e) {
+        resp.err = (e as Error).message
       }
-    )
+      event.returnValue = resp
+    })
 
-    ipcMain.on(`remove-${name}`, (event: Electron.Event, id: string) =>
+    ipcMain.on(`remove-${name}`, (event, id: string) =>
       this.removePack(event, id)
     )
   }
@@ -91,6 +88,7 @@ export default abstract class BaseManager {
         fs.readFileSync(this.configPath, { encoding: 'utf-8' })
       )
     } catch (e) {
+      Logger.error(this.configPath)
       Logger.error(`Failed to load enabled ${this.name}: ${e}`)
       this.enabled = []
     }
@@ -314,13 +312,13 @@ export default abstract class BaseManager {
     })
   }
 
-  changeEnable(event: Electron.Event, id: string, enabled: boolean) {
+  changeEnable(event, id: string, enabled: boolean) {
     enabled ? this.enable(id) : this.disable(id)
     this.save()
     event.returnValue = this.getDetails()
   }
 
-  removePack(event: Electron.Event, id: string) {
+  removePack(event, id: string) {
     this.disable(id)
     removeDirSync(path.resolve(appDataDir, this.name, id))
     this.save()

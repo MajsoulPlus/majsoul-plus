@@ -10,10 +10,10 @@ class SandBox extends Utility {
   }
 
   protected execute() {
-    ipcMain.on('sandbox-dirname-request', (event: Electron.Event) => {
+    ipcMain.on('sandbox-dirname-request', event => {
       event.returnValue = path.resolve(__dirname, '..')
     })
-    ipcMain.on('sandbox-appdata-request', (event: Electron.Event) => {
+    ipcMain.on('sandbox-appdata-request', event => {
       event.returnValue = appDataDir
     })
   }

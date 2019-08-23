@@ -81,7 +81,11 @@ export const Global: MajsoulPlus.Global = {
     // useContentSize: true,
     icon: appIcon,
     show: true,
-    enableLargerThanScreen: true
+    enableLargerThanScreen: true,
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true
+    }
   },
   ManagerWindowConfig: {
     width: 1280, // + 16,
@@ -90,7 +94,8 @@ export const Global: MajsoulPlus.Global = {
     resizable: false,
     backgroundColor: '#FFFFFF',
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      nodeIntegration: true
     },
     title: '雀魂Plus',
     autoHideMenuBar: true,

@@ -265,12 +265,12 @@ ${script}
     })
   }
 
-  changeEnable(event: Electron.Event, id: string, enabled: boolean) {
+  changeEnable(event, id: string, enabled: boolean) {
     super.changeEnable(event, id, enabled)
     ResourcePackManager.setLoadedExtensions(this.loadedDetails)
   }
 
-  removePack(event: Electron.Event, id: string) {
+  removePack(event, id: string) {
     super.removePack(event, id)
     ResourcePackManager.setLoadedExtensions(this.loadedDetails)
   }

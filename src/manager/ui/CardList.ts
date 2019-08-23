@@ -25,10 +25,7 @@ export default class CardList {
     return new Promise(resolve => {
       ipcRenderer.on(
         `get-${this.name.toLowerCase()}-details-response`,
-        (
-          event: Electron.Event,
-          detail: MajsoulPlus_Manager.GetDetailMetadataResponse
-        ) => {
+        (event, detail: MajsoulPlus_Manager.GetDetailMetadataResponse) => {
           resolve(detail)
         }
       )
