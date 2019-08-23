@@ -4,14 +4,14 @@ import { GameWindows } from '../windows/game'
 import { ManagerWindow } from '../windows/manager'
 
 function hideWindow(window: BrowserWindow) {
-  if (window && !window.isDestroyed()) {
+  if (window) {
     window.hide()
     window.webContents.setAudioMuted(true)
   }
 }
 
 function showWindow(window: BrowserWindow) {
-  if (window && !window.isDestroyed()) {
+  if (window) {
     window.show()
     window.webContents.setAudioMuted(false)
   }

@@ -10,12 +10,11 @@
 | --- | ------------- | ----------------------- | -------- | -------------------------------- |
 | 01  | ManagerWindow | start-game              | 无       | 启动游戏。                       |
 | 02  | ManagerWindow | start-tool              | `id`     | 启动 `id` 对应的工具。           |
-| 03  | ManagerWindow | close-manager           | 无       | 关闭 Manager 窗口。              |
-| 04  | ManagerWindow | clear-cache             | 无       | 清理缓存（`appDataDir/static/`） |
-| 05  | ManagerWindow | update-user-config      | `config` | 更新主进程中的 `config` 并保存。 |
-| 06  | sandbox       | sandbox-dirname-request | 无       | 返回当前的 `dirname`。           |
-| 07  | sandbox       | sandbox-appdata-request | 无       | 返回当前的 `appDataDir`          |
-| 08  | screenshot    | save-screenshot         | `buffer` | 对截屏进行保存。                 |
+| 03  | ManagerWindow | clear-cache             | 无       | 清理缓存（`appDataDir/static/`） |
+| 04  | ManagerWindow | update-user-config      | `config` | 更新主进程中的 `config` 并保存。 |
+| 05  | sandbox       | sandbox-dirname-request | 无       | 返回当前的 `dirname`。           |
+| 06  | sandbox       | sandbox-appdata-request | 无       | 返回当前的 `appDataDir`          |
+| 07  | screenshot    | save-screenshot         | `buffer` | 对截屏进行保存。                 |
 
 ### 通用请求
 
@@ -42,16 +41,8 @@
 | 03  | screenshot-saved | `filePath`            | 表示截图保存成功   |
 | 04  | open-devtools    | 无                    | 打开开发者工具     |
 
-### ManagerWindow
-
-| ID  | 名称                           | 参数             | 说明                                     |
-| --- | ------------------------------ | ---------------- | ---------------------------------------- |
-| 01  | change-config-game-window-size | `gameWindowSize` | 修改 `userConfigs.window.gameWindowSize` |
-| 02  | save-config                    | 无               | 保存 Manager 窗口中的各项设定。          |
-
 ### AudioPlayer
 
-| ID  | 名称         | 参数        | 说明                             |
-| --- | ------------ | ----------- | -------------------------------- |
-| 01  | audio-play   | `audioPath` | 播放指定音乐（目前只有截屏声）。 |
-| 02  | close-window | 无          | 关闭窗口（暂无调用）。           |
+| ID  | 名称       | 参数        | 说明                             |
+| --- | ---------- | ----------- | -------------------------------- |
+| 01  | audio-play | `audioPath` | 播放指定音乐（目前只有截屏声）。 |

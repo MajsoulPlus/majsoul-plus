@@ -50,15 +50,16 @@ export function initManagerWindow() {
   // 阻止页面 title 更改
   ManagerWindow.on('page-title-updated', event => event.preventDefault())
 
-  // 隐藏窗口，发送消息提示储存设置，待返回消息后再真正关闭窗口
-  ManagerWindow.once('close', event => {
-    event.preventDefault()
-    ManagerWindow.hide()
-    ManagerWindow.webContents.send('save-config')
+  // 关闭窗口
+  ManagerWindow.on('close', () => {
+    ipcMain.emit('save-resourcepack-enabled', {})
+    ipcMain.emit('save-extension-enabled', {})
+    ipcMain.emit('save-tool-enabled', {})
+    SaveConfigJson(UserConfigs)
   })
 
-  ipcMain.on('close-manager', () => {
-    ManagerWindow.close()
+  ManagerWindow.once('closed', () => {
+    ManagerWindow = undefined
   })
 
   // 载入本地页面，对于 Linux 系统 file：// 不能省略
