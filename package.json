@@ -1,8 +1,8 @@
 {
-  "name": "majsoul-plus-client",
+  "name": "majsoul-plus",
   "version": "2.0.0-beta.5",
   "productName": "Majsoul Plus",
-  "author": "MajsoulPlus Team",
+  "author": "Majsoul Plus Team",
   "description": "Majsoul Plus",
   "main": "./dist/index.js",
   "scripts": {
@@ -23,6 +23,7 @@
   },
   "build": {
     "productName": "Majsoul Plus",
+    "artifactName": "Majsoul_Plus-${version}-${platform}-${arch}.${ext}",
     "directories": {
       "output": "build/"
     },
@@ -39,28 +40,29 @@
       "description": "Majsoul Plus ResourcePack/Extension/Tool",
       "icon": "assets/bin/icons/icon.ico"
     },
-    "dmg": {
-      "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}"
-    },
-    "mac": {
-      "icon": "assets/bin/icons/icon.icns",
-      "artifactName": "Majsoul_Plus-${platform}-${arch}.${ext}",
-      "darkModeSupport": true
-    },
+    "afterAllArtifactBuild": "afterAllArtifactBuild.js",
     "win": {
       "icon": "assets/bin/icons/icon.ico",
       "target": [
         "nsis",
-        "portable",
         "zip"
+      ]
+    },
+    "nsis": {
+      "artifactName": "Majsoul_Plus-${version}-${platform}-Setup.${ext}"
+    },
+    "mac": {
+      "icon": "assets/bin/icons/icon.icns",
+      "darkModeSupport": true,
+      "target": [
+        "dmg"
       ]
     },
     "linux": {
       "icon": "assets/bin/icons/icon.png",
       "category": "Game",
       "target": [
-        "tar.gz",
-        "AppImage"
+        "tar.gz"
       ],
       "fileAssociations": [
         {
