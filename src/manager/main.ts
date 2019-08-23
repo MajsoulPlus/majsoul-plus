@@ -63,19 +63,7 @@ class ResourceManager {
   }
 
   // 注册与主进程通讯的内容
-  private static initRPC() {
-    ipcRenderer.on(
-      'change-config-game-window-size',
-      (event: Electron.Event, gameWindowSize: string) => {
-        ResourceManager.userConfig.window.gameWindowSize = gameWindowSize
-      }
-    )
-
-    ipcRenderer.on('save-config', () => {
-      ResourceManager.saveSettings()
-      ipcRenderer.send('close-manager')
-    })
-  }
+  private static initRPC() {}
 
   // 加载 Card 资源
   private static loadCards() {

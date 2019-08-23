@@ -3,7 +3,6 @@ import * as path from 'path'
 import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { ToolManager } from '../tool/tool'
-import { ManagerWindow } from './manager'
 
 class ToolWindow {
   private window: BrowserWindow
@@ -15,7 +14,6 @@ class ToolWindow {
       ...localConfig.windowOptions,
       ...{
         show: false,
-        parent: ManagerWindow,
         webPreferences: {
           sandbox: true,
           preload: path.join(__dirname, 'sandbox-preload.js')

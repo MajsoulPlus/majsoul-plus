@@ -48,7 +48,6 @@ export class GameWindows {
   }
 
   static destroyWindow(id: number) {
-    const window = this.windows.get(id)
     this.windows.delete(id)
 
     if (this.windowCount === 1) {
@@ -57,10 +56,8 @@ export class GameWindows {
       // 关闭本地镜像服务器
       CloseServer()
       // 依据用户设置显示被隐藏的管理器窗口
-      if (UserConfigs.window.isManagerHide) {
-        if (ManagerWindow) {
-          ManagerWindow.show()
-        }
+      if (UserConfigs.window.isManagerHide && ManagerWindow) {
+        ManagerWindow.show()
       }
     }
     this.windowCount--
@@ -153,12 +150,7 @@ export function newGameWindow(id: number) {
   if (GameWindows.size === 1) {
     window.on('resize', () => {
       UserConfigs.window.gameWindowSize = window.getSize().toString()
-      if (!ManagerWindow.isDestroyed()) {
-        ManagerWindow.webContents.send(
-          'change-config-game-window-size',
-          UserConfigs.window.gameWindowSize
-        )
-      }
+      SaveConfigJson(UserConfigs)
     })
   }
 
