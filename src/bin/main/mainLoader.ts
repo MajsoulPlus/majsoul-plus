@@ -133,6 +133,8 @@ mainWindow.addEventListener('dom-ready', () => {
   } else {
     scaleWindow(100)
   }
+
+  mainWindow.setUserAgent(navigator.userAgent)
 })
 
 ipcRenderer.on(
