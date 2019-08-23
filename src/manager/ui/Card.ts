@@ -88,6 +88,12 @@ export default class Card {
     return p
   }
 
+  protected createVersionElement() {
+    const s = document.createElement('span')
+    s.innerText = this.options.version
+    return s
+  }
+
   protected createExportButton() {
     const exportButton = document.createElement('button')
     exportButton.className = 'export-btn'
@@ -113,6 +119,9 @@ export default class Card {
 
     const h3 = this.createNameElement()
     if (h3) article.appendChild(h3)
+
+    const span = this.createVersionElement()
+    if (span) article.append(span)
 
     const address = this.createAuthorElement()
     if (address) article.appendChild(address)

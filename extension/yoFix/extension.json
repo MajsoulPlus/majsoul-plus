@@ -1,7 +1,7 @@
 {
   "id": "yoFix",
-  "version": "1.0.0",
-  "name": "修复日服和美服的 Yo is undefined 问题",
+  "version": "1.0.1",
+  "name": "修复外服 Yo",
   "author": "某昨P",
   "description": "这个扩展修复了日服和美服卡在10/10的加载问题！",
   "preview": "preview.jpg",

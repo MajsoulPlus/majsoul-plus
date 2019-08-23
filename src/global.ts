@@ -138,12 +138,9 @@ export function InitGlobal() {
   ].map(dir => {
     const from = path.join(__dirname, 'bin', dir)
     const to = path.join(appDataDir, dir)
-    // 通过 require 避免在 renderer 中引入 utils
-    // utils 存在只能在主进程调用的方法
     if (!fs.existsSync(to) && app) {
       copyFolderSync(from, appDataDir)
     } else {
-      // TODO: 更新自带拓展的版本
       const folders = getFoldersSync(from)
       folders.forEach(ext => {
         if (

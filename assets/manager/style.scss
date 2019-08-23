@@ -284,6 +284,14 @@ h1 {
           line-height: 14px;
           max-width: calc(100% - 20px - 144px);
         }
+        & > span {
+          padding-top: 16px;
+          padding-right: 20px;
+          float: right;
+          font-size: 14px;
+          line-height: 14px;
+          max-width: calc(100% - 20px - 144px);
+        }
         & > p {
           padding-left: 20px;
           padding-top: 6px;
