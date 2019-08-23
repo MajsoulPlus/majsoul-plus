@@ -25,10 +25,8 @@ export function initManagerWindow() {
   if (process.platform === 'darwin') {
     config.frame = false
     config.titleBarStyle = 'hidden'
-    if (Number(process.versions.electron.split('.')[0]) > 2) {
-      config.vibrancy = 'light'
-      config.backgroundColor = 'rgba(0,0,0,0)'
-    }
+    config.vibrancy = 'medium-light'
+    config.backgroundColor = 'rgba(0,0,0,0)'
   }
 
   // 计算资源管理器缩放宽高
