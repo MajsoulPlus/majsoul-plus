@@ -10,7 +10,7 @@
   --title-color: #fddada;
 }
 .main-context {
-  & > section {
+  section {
     // 图像来源 https://pixabay.com/zh/%E7%81%AF%E7%AC%BC-%E5%87%A4%E5%87%B0-%E5%8F%A4%E5%85%B8-%E4%BA%9A%E6%B4%B2-%E4%B8%AD%E5%9B%BD-1043450/
     background-image: url(./background.jpg);
     background-size: 100% 100%;
