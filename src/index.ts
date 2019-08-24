@@ -67,6 +67,10 @@ if (UserConfigs.chromium.isHardwareAccelerationDisable) {
   app.disableHardwareAcceleration()
 }
 
+if (os.platform() === 'win32') {
+  app.commandLine.appendSwitch('disable-direct-composition')
+}
+
 // Disable certificate validation TLS connections
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
