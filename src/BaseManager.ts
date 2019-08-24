@@ -93,7 +93,6 @@ export default abstract class BaseManager {
   }
 
   loadEnabled() {
-    Logger.warning(this.configPath)
     this.loadedMap.set('majsoul_plus', this.defaultObject)
     try {
       this.enabled = JSON.parse(
@@ -107,7 +106,7 @@ export default abstract class BaseManager {
   }
 
   use(id: string, callback: (pack: MajsoulPlus.Metadata) => void = () => {}) {
-    // 资源包 ID 检查
+    // 拓展 ID 检查
     if (!id.match(/^[_a-zA-Z0-9]+$/)) {
       Logger.debug(`invalid ${this.name} id： ${id}`)
       return this
@@ -116,19 +115,19 @@ export default abstract class BaseManager {
     const folder = path.resolve(appDataDir, this.name, id)
     const cfg = path.resolve(folder, `${this.name}.json`)
 
-    // 资源包目录存在性
+    // 拓展目录存在性
     if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
       Logger.debug(`${id} folder not found: ${folder}`)
       return this
     }
 
-    // 资源包配置文件存在性
+    // 拓展配置文件存在性
     if (!fs.existsSync(cfg) || !fs.statSync(cfg).isFile()) {
       Logger.debug(`${id} configuration file not found: ${cfg}`)
       return this
     }
 
-    // 获得资源包
+    // 获得拓展
     let pack: MajsoulPlus.Metadata
     try {
       pack = JSON.parse(
