@@ -1,201 +1,16 @@
-:root {
-  --title-color: #e280ae;
-  --title-text: #ffffff;
+$material-design-icons-font-directory-path: '../material/fonts/';
+$fonts-directory-path: '../fonts/';
+$iconfont-directory-path: '../iconfont/';
 
-  --main-color: #e280ae;
-  --main-dark-color: #cc6699;
-  --white-text: #ffffff;
-  --disabled-color: #808080;
+@import 'color.scss';
+@import 'default.scss';
+@import 'darwin.scss';
+@import 'widgets/titlebar.scss';
 
-  --switch-able-color: #e280ae;
-  --switch-disable-color: #b1b1b1;
-  --switch-ball-color: #fff;
+@import '../fonts/fonts';
+@import '../iconfont/iconfont.scss';
+@import '../material/material-design-icons.scss';
 
-  --light-text: #808080;
-  --bold-text: #303030;
-  --icon-color: #404040;
-
-  --border-color: #d0d0d0;
-
-  --left-panel-color: #f0f0f0;
-  --left-panel-active-color: #e0e0e0;
-  --left-panel-hover-color: #d8d8d8;
-
-  --section-color: #fafafa;
-  --info-card-color: #ffffff;
-  --bottom-panel-color: #fff;
-
-  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
-  --animation-time: 100ms;
-
-  --ping-red: #dd3333;
-  --ping-orange: #ff8800;
-  --ping-green: #33dd33;
-  --ping-offline: #888888;
-
-  --mac-close-btn: #ff4444;
-  --mac-close-btn-border: #dd3333;
-
-  --mac-close-btn-hover: #ff4444;
-  --mac-close-btn-hover-border: #dd3333;
-
-  --main-height: 628px;
-}
-.darwin {
-  --main-height: 634px;
-
-  --left-panel-color: transparent;
-  --left-panel-active-color: rgba(0, 0, 0, 0.067);
-  --left-panel-hover-color: rgba(0, 0, 0, 0.188);
-
-  & h1 {
-    height: 22px;
-    line-height: 22px;
-    font-size: 12px;
-  }
-}
-.blur {
-  --title-color: #fddaea;
-  --title-text: #808080;
-
-  --mac-close-btn: #c0c0c0;
-  --mac-close-btn-border: #a0a0a0;
-}
-
-@font-face {
-  font-family: 'iconfont';
-  src: url('iconfont.eot');
-  src: url('iconfont.eot?#iefix') format('embedded-opentype'),
-    url('iconfont.woff') format('woff'), url('iconfont.ttf') format('truetype');
-}
-@font-face {
-  font-family: '思源黑体 CN';
-  src: url('SourceHanSansCN-Light.otf') format('opentype');
-  font-weight: 300;
-}
-@font-face {
-  font-family: '思源黑体 CN';
-  src: url('SourceHanSansCN-Normal.otf') format('opentype');
-  font-weight: 400;
-}
-.iconfont {
-  font-family: 'iconfont' !important;
-  font-size: 14px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-weight: 400;
-  user-select: none;
-  font-family: '思源黑体 CN', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  zoom: 1;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  &::-webkit-scrollbar-button {
-    height: 0;
-    display: none;
-    background-color: transparent;
-  }
-  &::-webkit-scrollbar-track-piece {
-    background-color: transparent;
-    padding-right: 8px;
-  }
-  &::-webkit-scrollbar-thumb {
-    width: 8px;
-    border-radius: 4px;
-    min-height: 64px;
-    max-height: 128px;
-    height: auto;
-    background-color: rgba(0, 0, 0, 0);
-    transition: background-color var(--animation-time) var(--ease-in-out);
-  }
-  &:hover {
-    &::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(0, 0, 0, 0.15);
-      transition: background-color 0;
-    }
-    &::-webkit-scrollbar-thumb:active {
-      background-color: rgba(0, 0, 0, 0.2);
-      transition: background-color 0;
-    }
-  }
-}
-button {
-  outline: none !important;
-  cursor: pointer;
-}
-body {
-  width: 1280px;
-  height: 720px;
-  overflow: hidden;
-}
-h1 {
-  display: block;
-  width: 1280px;
-  height: 28px;
-  text-align: center;
-  color: var(--title-text);
-  background-color: var(--title-color);
-  font-size: 14px;
-  line-height: 28px;
-  -webkit-app-region: drag;
-}
-.close-btn {
-  &::before {
-    display: block;
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 28px;
-    width: 48px;
-    content: '×';
-    color: var(--title-text);
-    font-weight: 300;
-    background-color: #f000;
-    transition: color var(--animation-time) var(--ease-in-out);
-    transition: background-color var(--animation-time) var(--ease-in-out);
-    -webkit-app-region: no-drag;
-    text-align: center;
-    line-height: 28px;
-  }
-  &:hover::before {
-    background-color: #ff1122;
-    color: var(--white-text);
-  }
-  &.darwin {
-    &::before {
-      cursor: pointer;
-      right: auto;
-      left: 10px;
-      top: 8px;
-      height: 12px;
-      width: 12px;
-      font-size: 12px;
-      font-weight: 400;
-      background-color: var(--mac-close-btn);
-      border-radius: 50%;
-      border: 1px solid var(--mac-close-btn-border);
-      color: #8110;
-      transition: color var(--animation-time) var(--ease-in-out);
-      line-height: 12px;
-    }
-    &:hover::before {
-      color: #811f;
-      background-color: var(--mac-close-btn-hover);
-      border: 1px solid var(--mac-close-btn-hover-border);
-    }
-  }
-}
 .main-context {
   * {
     float: left;
@@ -229,6 +44,9 @@ h1 {
       &::before {
         content: '';
       }
+    }
+    .openfolder-btn {
+      right: 180px;
     }
     .install-btn {
       right: 140px;
@@ -577,7 +395,7 @@ h1 {
       }
     }
   }
-  .left-panel {
+  #left-panel {
     height: var(--main-height);
     width: calc(240px + 1px);
     border-right: 1px solid var(--border-color);
@@ -632,7 +450,7 @@ h1 {
       }
     }
   }
-  .bottom-panel {
+  #bottom-panel {
     height: calc(64px + 1px);
     width: 100%;
     position: relative;

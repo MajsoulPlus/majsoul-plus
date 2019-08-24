@@ -1,0 +1,12 @@
+@font-face {
+  font-family: '思源黑体 CN';
+  src: url($fonts-directory-path+'SourceHanSansCN-Light.otf') format('opentype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: '思源黑体 CN';
+  src: url($fonts-directory-path+'SourceHanSansCN-Normal.otf')
+    format('opentype');
+  font-weight: 400;
+}

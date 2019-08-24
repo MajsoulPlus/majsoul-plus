@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style/style.css" />
     <link rel="stylesheet" id="extraCss" href="" />
     <title data-i18n="main.programName">雀魂Plus</title>
   </head>
   <body>
-    <h1 data-i18n="main.programName">雀魂Plus</h1>
-    <span class="close-btn" id="closeBtn"></span>
+    <div id="titlebar">
+      <h1 data-i18n="main.programName">雀魂Plus</h1>
+      <span class="close-btn" id="closeBtn"></span>
+    </div>
     <div class="main-context">
       <!-- 左侧选单 -->
-      <div class="left-panel" id="leftPanel">
+      <div id="left-panel">
         <ul>
           <li data-target="extensionPage" data-i18n="main.extension">扩展</li>
           <li data-target="resourcepackPage" data-i18n="main.resourcepack">
@@ -28,6 +30,9 @@
       <!-- 扩展页面 -->
       <section data-name="extensionPage">
         <button id="refreshExtension" class="big-btn refresh-btn"></button>
+        <button id="openFolderExtension" class="big-btn openfolder-btn">
+          <i class="material-icons">folder_open</i>
+        </button>
         <button id="installExtension" class="big-btn install-btn"></button>
         <button id="editExtension" class="big-btn edit-btn"></button>
         <div id="ExtensionInfos" class="info-cards"></div>
@@ -36,6 +41,9 @@
       <!-- 资源包页面 -->
       <section data-name="resourcepackPage">
         <button id="refreshResourcePack" class="big-btn refresh-btn"></button>
+        <button id="openFolderResourcePack" class="big-btn openfolder-btn">
+          <i class="material-icons">folder_open</i>
+        </button>
         <button id="installResourcePack" class="big-btn install-btn"></button>
         <button id="editResourcePack" class="big-btn edit-btn"></button>
         <div id="ResourcePackInfos" class="info-cards"></div>
@@ -44,6 +52,9 @@
       <!-- 工具页面 -->
       <section data-name="toolPage">
         <button id="refreshTool" class="big-btn refresh-btn"></button>
+        <button id="openFolderTool" class="big-btn openfolder-btn">
+          <i class="material-icons">folder_open</i>
+        </button>
         <button id="installTool" class="big-btn install-btn"></button>
         <button id="editTool" class="big-btn edit-btn"></button>
         <div id="ToolInfos" class="info-cards"></div>
@@ -74,7 +85,7 @@
       </section>
 
       <!-- 底部面板 -->
-      <div class="bottom-panel">
+      <div id="bottom-panel">
         <span id="serverInfo" data-server-index="0">
           <span id="serverInfoTitle" data-i18n="main.server">服务器</span>
           <span>:&nbsp;</span>

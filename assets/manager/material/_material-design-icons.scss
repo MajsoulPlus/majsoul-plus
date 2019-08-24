@@ -1,0 +1,59 @@
+@import 'variables';
+@import 'mixins';
+
+$material-design-icons-font-directory-path: './fonts/' !default;
+$material-design-icons-font-file-name: 'MaterialIcons-Regular' !default;
+$material-design-icons-font-file-path: $material-design-icons-font-directory-path +
+  $material-design-icons-font-file-name !default;
+$material-design-icons-class-icons-generate-codepoints: true !default;
+$material-design-icons-class-icons-prefix: '' !default;
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('#{$material-design-icons-font-file-path}.eot'); /* For IE6-8 */
+  src: local('☺'),
+    url('#{$material-design-icons-font-file-path}.woff2') format('woff2'),
+    url('#{$material-design-icons-font-file-path}.woff') format('woff'),
+    url('#{$material-design-icons-font-file-path}.ttf') format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+
+  @if $material-design-icons-class-icons-generate-codepoints {
+    @each $name, $codepoint in $material-icons-codepoints {
+      $codepoint: map-get($material-icons-codepoints, $name);
+
+      $class-name: $material-design-icons-class-icons-prefix + $name;
+      $class-name: normalize-class-name($class-name);
+
+      &.#{$class-name} {
+        &:before {
+          content: material-icons-content($codepoint);
+        }
+      }
+    }
+  }
+}

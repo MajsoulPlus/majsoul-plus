@@ -40,14 +40,14 @@ function copyA(from, parent = 'bin', callback = () => {}) {
 function copyDesktopCreatorFonts() {
   // 桌布生成工具的字体
   fs.copyFile(
-    './assets/manager/SourceHanSansCN-Light.otf',
+    './assets/manager/fonts/SourceHanSansCN-Light.otf',
     './dist/bin/tool/desktopCreator/SourceHanSansCN-Light.otf',
     err => {
       if (err) console.error(err)
     }
   )
   fs.copyFile(
-    './assets/manager/SourceHanSansCN-Normal.otf',
+    './assets/manager/fonts/SourceHanSansCN-Normal.otf',
     './dist/bin/tool/desktopCreator/SourceHanSansCN-Normal.otf',
     err => {
       if (err) console.error(err)

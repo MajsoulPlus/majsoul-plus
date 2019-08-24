@@ -1,0 +1,46 @@
+.blur {
+  --title-color: #fddaea;
+  --title-text: #808080;
+
+  --mac-close-btn: #c0c0c0;
+  --mac-close-btn-border: #a0a0a0;
+}
+
+#titlebar {
+  h1 {
+    display: block;
+    width: 1280px;
+    height: 28px;
+    text-align: center;
+    color: var(--title-text);
+    background-color: var(--title-color);
+    font-size: 14px;
+    line-height: 28px;
+    -webkit-app-region: drag;
+  }
+
+  .close-btn {
+    &::before {
+      display: block;
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 28px;
+      width: 48px;
+      content: '×';
+      color: var(--title-text);
+      font-weight: 300;
+      background-color: #f000;
+      transition: color var(--animation-time) var(--ease-in-out);
+      transition: background-color var(--animation-time) var(--ease-in-out);
+      -webkit-app-region: no-drag;
+      text-align: center;
+      line-height: 28px;
+    }
+
+    &:hover::before {
+      background-color: #ff1122;
+      color: var(--white-text);
+    }
+  }
+}

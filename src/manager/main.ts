@@ -15,24 +15,11 @@ import About from './pages/About'
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
 import prayForKyoani from './extra/prayForKyoani/main'
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer, remote, shell } from 'electron'
 
 class ResourceManager {
   private static userConfig = Setting.userConfig
   private static readonly extends: Function[] = []
-
-  private static readonly resourcepackRootDir = path.join(
-    Global.appDataDir,
-    Global.ResourcePackDir
-  )
-  private static readonly extensionRootDir = path.join(
-    Global.appDataDir,
-    Global.ExtensionDir
-  )
-  private static readonly toolRootDir = path.join(
-    Global.appDataDir,
-    Global.ToolsDir
-  )
 
   // 增加扩展样式
   static extend(theme: Function) {
@@ -95,6 +82,13 @@ class ResourceManager {
       // 刷新
       const refresh = document.querySelector(`#refresh${ext.name}`)
       refresh.addEventListener('click', ResourceManager.refreshCard(ext.name))
+
+      // 打开目录
+      const openFolder = document.querySelector(`#openFolder${ext.name}`)
+      openFolder.addEventListener('click', () => {
+        console.log(path.join(Global.appDataDir, ext.name.toLowerCase()))
+        shell.openItem(path.join(Global.appDataDir, ext.name.toLowerCase()))
+      })
     })
 
     // 原生文件拖放

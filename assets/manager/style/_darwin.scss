@@ -1,0 +1,37 @@
+.darwin {
+  --main-height: 634px;
+
+  --left-panel-color: transparent;
+  --left-panel-active-color: rgba(0, 0, 0, 0.067);
+  --left-panel-hover-color: rgba(0, 0, 0, 0.188);
+
+  & h1 {
+    height: 22px;
+    line-height: 22px;
+    font-size: 12px;
+  }
+}
+
+#titlebar > .close-btn > .darwin {
+  &::before {
+    cursor: pointer;
+    right: auto;
+    left: 10px;
+    top: 8px;
+    height: 12px;
+    width: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: var(--mac-close-btn);
+    border-radius: 50%;
+    border: 1px solid var(--mac-close-btn-border);
+    color: #8110;
+    transition: color var(--animation-time) var(--ease-in-out);
+    line-height: 12px;
+  }
+  &:hover::before {
+    color: #811f;
+    background-color: var(--mac-close-btn-hover);
+    border: 1px solid var(--mac-close-btn-hover-border);
+  }
+}
