@@ -4,14 +4,14 @@ const { app } = remote
 
 class AboutPage {
   render = () => {
-    const aboutInner = document.querySelector('#aboutInner')
+    const aboutInner = document.querySelector('#about-inner')
     aboutInner.innerHTML = ''
     this.addToUsers()
     this.addGitHubLink()
   }
 
   private addBlock = ({ title, value }) => {
-    const aboutInner = document.querySelector('#aboutInner')
+    const aboutInner = document.querySelector('#about-inner')
     const h3 = document.createElement('h3')
     const info = document.createElement('p')
     if (typeof value === 'string') {
@@ -44,14 +44,16 @@ class AboutPage {
 
   private getGitHubHTML = () => {
     const info = document.createElement('p')
-    info.innerHTML = `在 PC 上跨平台的雀魂麻将第三方浏览器，提供资源替换和代码注入功能，并对直播环境进行了一定优化
+    info.innerHTML = `在 PC 上跨平台的雀魂麻将第三方浏览器，提供资源替换和代码注入功能，并对直播环境进行了一定优化。
       <br>
+      <br>
+      <span>${i18n.text.manager.localVersion()} ${app.getVersion()}</span>
       <a href="https://github.com/MajsoulPlus/majsoul-plus-client">
-        <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social"></a>
+        <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social">
+      </a>
       <br>
-      <input type="button" value="${i18n.text.manager.clearCache()}">
       <br>
-      ${i18n.text.manager.localVersion()} ${app.getVersion()}`
+      <input type="button" value="${i18n.text.manager.clearCache()}">`
     const alinks = info.querySelectorAll('a')
     this.bindAlink(alinks)
     info

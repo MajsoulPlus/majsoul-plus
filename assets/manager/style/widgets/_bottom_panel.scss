@@ -1,0 +1,75 @@
+#bottom-panel {
+  height: calc(64px + 1px);
+  width: 100%;
+  position: relative;
+  background-color: var(--bottom-panel-color);
+  border-top: 1px solid var(--border-color);
+  margin: 0 auto;
+
+  #serverInfo {
+    font-size: 14px;
+    position: absolute;
+    line-height: 14px;
+    top: 16px;
+    left: 42px;
+    color: var(--light-text);
+    cursor: pointer;
+  }
+
+  #pingInfo {
+    cursor: default;
+    font-size: 14px;
+    position: absolute;
+    line-height: 14px;
+    top: 34px;
+    left: 42px;
+    color: var(--light-text);
+    &::before {
+      display: block;
+      position: absolute;
+      border-radius: 50%;
+      content: ' ';
+      width: 10px;
+      height: 10px;
+      left: -24px;
+      top: -8px;
+    }
+    &.offline::before {
+      background-color: var(--ping-offline);
+    }
+    &.red::before {
+      background-color: var(--ping-red);
+    }
+    &.green::before {
+      background-color: var(--ping-green);
+    }
+    &.orange::before {
+      background-color: var(--ping-orange);
+    }
+  }
+
+  #launch {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    // width: 192px;
+    padding: 0 48px;
+    height: 64px;
+    line-height: 64px;
+    background-color: var(--main-color);
+    color: var(--white-text);
+    text-align: center;
+    font-size: 24px;
+    font-weight: 300;
+    cursor: pointer;
+    border: none;
+    transition: background-color var(--animation-time) var(--ease-in-out);
+    &:hover {
+      background-color: var(--main-dark-color);
+    }
+    &:disabled {
+      cursor: not-allowed;
+      background-color: var(--disabled-color);
+    }
+  }
+}

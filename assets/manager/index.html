@@ -13,7 +13,7 @@
       <h1 data-i18n="main.programName">雀魂Plus</h1>
       <span class="close-btn" id="closeBtn"></span>
     </div>
-    <div class="main-context">
+    <div id="main-context">
       <!-- 左侧选单 -->
       <div id="left-panel">
         <ul>
@@ -62,8 +62,8 @@
 
       <!-- 设置面板 -->
       <section data-name="settingPage">
-        <button id="saveConfigs" class="big-btn save-btn"></button>
-        <div id="settingInner" class="setting-innner">
+        <button id="save-configs" class="big-btn"></button>
+        <div id="setting-inner">
           <h3>窗口</h3>
           <input
             type="checkbox"
@@ -81,7 +81,7 @@
 
       <!-- 关于页面 -->
       <section data-name="aboutPage">
-        <div id="aboutInner" class="about-innner"></div>
+        <div id="about-inner"></div>
       </section>
 
       <!-- 底部面板 -->
@@ -97,14 +97,14 @@
           <span id="pingText">--</span>
           <span data-i18n="main.millisecond">ms</span>
         </span>
-        <button id="launch" class="launch-btn" data-i18n="main.launch">
+        <button id="launch" data-i18n="main.launch">
           启动游戏
         </button>
       </div>
     </div>
 
     <!-- 版本卡标签 -->
-    <div id="updateCard" class="update-card">
+    <div id="update-card" class="update-card">
       <h3 data-i18n="update.newVersionWasFound">发现新版本</h3>
       <p>
         <span data-i18n="update.currentVersion">您的版本</span>
@@ -136,7 +136,7 @@
         下载更新
       </button>
     </div>
-    <div id="downloadCard" class="update-card">
+    <div id="download-card" class="update-card">
       <h3 id="downloadCardTitle" data-i18n="update.downloading">
         正在下载更新
       </h3>

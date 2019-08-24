@@ -1,0 +1,34 @@
+#main-context > section[data-name='aboutPage'] {
+  padding: 40px 0 20px 102px;
+
+  #about-inner {
+    height: 100%;
+    width: calc(100% - 80px);
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+      cursor: default;
+      font-size: 18px;
+      padding-top: 8px;
+      line-height: 22px;
+      color: var(--bold-text);
+    }
+
+    p {
+      margin-top: 4px;
+      padding-bottom: 4px;
+      cursor: default;
+      line-height: 20px;
+      font-size: 14px;
+      padding-left: 16px;
+      color: var(--light-text);
+
+      span {
+        padding-right: 5px;
+      }
+    }
+  }
+}

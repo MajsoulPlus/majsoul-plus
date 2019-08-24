@@ -1,0 +1,65 @@
+@import 'left_panel';
+@import 'bottom_panel';
+
+@import 'info_card';
+@import 'setting_page';
+@import 'about_page';
+
+#main-context {
+  * {
+    float: left;
+  }
+  section {
+    display: none;
+    height: var(--main-height);
+    width: calc(1280px - 241px);
+    background-color: var(--section-color);
+    position: relative;
+    &.show {
+      display: block;
+    }
+
+    .big-btn {
+      font-style: normal;
+      position: absolute;
+      top: 8px;
+      background-color: transparent;
+      border: 0;
+      color: var(--light-text);
+      &:hover {
+        color: var(--bold-text);
+      }
+      &::before {
+        font-size: 24px;
+      }
+    }
+
+    .refresh-btn {
+      left: 102px;
+      &::before {
+        font-family: 'iconfont' !important;
+        content: '';
+      }
+    }
+
+    .openfolder-btn {
+      right: 180px;
+    }
+
+    .install-btn {
+      right: 140px;
+      &::before {
+        font-family: 'iconfont' !important;
+        content: '';
+      }
+    }
+
+    .edit-btn {
+      right: 100px;
+      &::before {
+        font-family: 'iconfont' !important;
+        content: '';
+      }
+    }
+  }
+}

@@ -1,0 +1,172 @@
+#main-context > section > div.info-cards {
+  color: var(--light-text);
+  width: calc(100% - 16px);
+  height: calc(100% - 40px - 20px);
+  position: absolute;
+  top: 40px;
+  overflow-y: auto;
+  padding-left: 102px;
+
+  article {
+    width: 400px;
+    height: 144px;
+    font-size: 14px;
+    position: relative;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+    transition: box-shadow var(--animation-time) var(--ease-in-out);
+    background-color: var(--info-card-color);
+    float: left;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    margin-right: 36px;
+    &:hover {
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    }
+    * {
+      float: left;
+      cursor: default;
+      word-wrap: break-word;
+    }
+    img {
+      width: 144px;
+      height: 144px;
+    }
+    h3 {
+      padding-top: 16px;
+      padding-left: 20px;
+      color: var(--bold-text);
+      font-size: 14px;
+      line-height: 14px;
+      max-width: calc(100% - 20px - 144px);
+    }
+    span {
+      padding-top: 16px;
+      padding-right: 20px;
+      float: right;
+      font-size: 14px;
+      line-height: 14px;
+      max-width: calc(100% - 20px - 144px);
+    }
+    p {
+      padding-left: 20px;
+      padding-top: 6px;
+      padding-right: 20px;
+      width: var(--bold-text);
+      width: calc(400px - 144px);
+      line-height: 18px;
+    }
+    address {
+      font-style: normal;
+      padding-left: 20px;
+      position: absolute;
+      bottom: 14px;
+      left: 144px;
+      &::before {
+        font-family: 'iconfont' !important;
+        font-size: 14px;
+        content: '';
+        padding-right: 4px;
+      }
+    }
+    input {
+      display: none;
+    }
+    input[type='checkbox'] + label {
+      height: 0;
+      width: 0;
+      line-height: 0;
+      font-size: 12px;
+      /* opacity: 0; */
+      position: absolute;
+      bottom: 16px;
+      right: 20px;
+      cursor: pointer;
+      outline: none !important;
+      &::before {
+        content: ' ';
+        display: block;
+        width: 32px;
+        height: 16px;
+        border-radius: 8px;
+        position: relative;
+        right: 32px;
+        bottom: 16px;
+        background-color: var(--switch-disable-color);
+        transition: background-color var(--animation-time) var(--ease-in-out);
+      }
+      &::after {
+        content: ' ';
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+        position: relative;
+        left: calc(-32px + 2px);
+        bottom: calc(12px + 2px + 16px);
+        background-color: var(--switch-ball-color);
+        transition: left var(--animation-time) var(--ease-in-out);
+      }
+    }
+    input[type='checkbox']:checked + label {
+      &::before {
+        background-color: var(--switch-able-color);
+      }
+      &::after {
+        left: calc(-12px - 2px);
+      }
+    }
+    input[type='button'] + label {
+      font-style: normal;
+      position: absolute;
+      bottom: 12px;
+      right: 18px;
+      background-color: transparent;
+      border: 0;
+      color: var(--light-text);
+      cursor: pointer;
+      &:hover {
+        color: var(--bold-text);
+      }
+      &::before {
+        font-family: 'iconfont' !important;
+        font-size: 16px;
+        content: '';
+      }
+    }
+    .remove-btn,
+    .export-btn {
+      font-style: normal;
+      position: absolute;
+      bottom: 14px;
+      right: 38px;
+      background-color: transparent;
+      border: 0;
+      color: var(--light-text);
+      display: none;
+      cursor: pointer;
+      &:hover {
+        color: var(--bold-text);
+      }
+      &::before {
+        font-family: 'iconfont' !important;
+        font-size: 14px;
+        content: '';
+      }
+    }
+    .export-btn {
+      right: 18px;
+      &::before {
+        content: '';
+      }
+    }
+    &.edit {
+      .remove-btn,
+      .export-btn {
+        display: block;
+      }
+      input + label {
+        display: none;
+      }
+    }
+  }
+}

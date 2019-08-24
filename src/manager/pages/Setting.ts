@@ -13,7 +13,7 @@ class Setting {
   }
 
   private render = () => {
-    const settingInner = document.querySelector('#settingInner')
+    const settingInner = document.querySelector('#setting-inner')
     settingInner.innerHTML = ''
     Object.entries(this.userConfig)
       .filter(([section]) => {
@@ -99,8 +99,10 @@ class Setting {
     checkBox.addEventListener('change', () => {
       this.userConfig[section][item] = checkBox.checked
     })
-    settingInner.append(checkBox)
-    settingInner.append(label)
+    const div = document.createElement('div')
+    div.append(checkBox)
+    div.append(label)
+    settingInner.append(div)
   }
 
   private renderNumberSectionItem = ({
@@ -121,9 +123,11 @@ class Setting {
       this.userConfig[section][item] = Number(input.value)
     })
     const br = document.createElement('br')
-    settingInner.append(input)
-    settingInner.append(label)
-    settingInner.append(br)
+    const div = document.createElement('div')
+    div.append(input)
+    div.append(label)
+    div.append(br)
+    settingInner.append(div)
   }
 
   private renderTextSectionItem({ settingInner, section, item, data, index }) {
@@ -138,9 +142,11 @@ class Setting {
       this.userConfig[section][item] = input.value
     })
     const br = document.createElement('br')
-    settingInner.append(input)
-    settingInner.append(label)
-    settingInner.append(br)
+    const div = document.createElement('div')
+    div.append(input)
+    div.append(label)
+    div.append(br)
+    settingInner.append(div)
   }
 
   private handleSaveConfigClick = () => {
@@ -150,7 +156,7 @@ class Setting {
   }
 
   private addSaveListener = () => {
-    const saveBtn = document.querySelector('#saveConfigs')
+    const saveBtn = document.querySelector('#save-configs')
     saveBtn.addEventListener('click', this.handleSaveConfigClick)
   }
 

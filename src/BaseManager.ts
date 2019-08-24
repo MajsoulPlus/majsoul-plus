@@ -93,6 +93,7 @@ export default abstract class BaseManager {
   }
 
   loadEnabled() {
+    Logger.warning(this.configPath)
     this.loadedMap.set('majsoul_plus', this.defaultObject)
     try {
       this.enabled = JSON.parse(
