@@ -132,10 +132,12 @@ class ResourceManager {
     if (os.platform() === 'darwin') {
       closeBtn.className = 'close-btn darwin'
       // hack close bar
-      const body = document.querySelector('body')
-      body.classList.add('darwin')
-      const closeButton = document.querySelector('body > .close-btn.darwin')
-      body.removeChild(closeButton)
+      const titlebar = document.querySelector('#titlebar')
+      titlebar.classList.add('darwin')
+      const closeButton = document.querySelector(
+        'body > div > .close-btn.darwin'
+      )
+      titlebar.removeChild(closeButton)
     }
     closeBtn.addEventListener('click', window.close)
   }
