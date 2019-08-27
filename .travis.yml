@@ -17,7 +17,7 @@ addons:
   homebrew:
     packages: zip
 before_install:
-  - nvm install 10
+  - nvm install 12
   - npm install -g yarn
 install:
   - yarn
