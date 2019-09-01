@@ -2,13 +2,14 @@ import * as fs from 'fs'
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
+import { format } from 'prettier'
 import BaseManager from '../BaseManager'
 import { UserConfigs } from '../config'
-import { appDataDir, GlobalPath, RemoteDomains, Logger } from '../global'
+import { appDataDir, GlobalPath, Logger, RemoteDomains } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
+import { ResourcePackManager } from '../resourcepack/resourcepack'
 import { fetchAnySite, getRemoteOrCachedFile } from '../utils'
 import * as schema from './schema.json'
-import { ResourcePackManager } from '../resourcepack/resourcepack'
 
 const defaultExtension: MajsoulPlus.Extension = {
   id: 'majsoul_plus',
@@ -125,6 +126,80 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
       }
     }
 
+    router.get('/:version/code.js', async (ctx, next) => {
+      if (this.codejs !== '') {
+        ctx.res.statusCode = 200
+        ctx.body = this.codejs
+      }
+
+      const loader = {
+        codeVersion: ctx.params.version,
+        hasLauncher: false,
+        pre: [],
+        post: [],
+        launcher: ''
+      }
+
+      Array.from(this.extensionScripts.keys())
+        .filter(key => this.loadedDetails[key].sequence > 0)
+        .sort(
+          (a, b) =>
+            this.loadedDetails[a].sequence - this.loadedDetails[b].sequence
+        )
+        .forEach(id => {
+          // 当未加载时跳出
+          if (!this.loadedDetails[id].enabled) return
+
+          const extension: MajsoulPlus.Extension = this.loadedDetails[id]
+            .metadata
+          if (
+            extension.applyServer.includes(UserConfigs.userData.serverToPlay)
+          ) {
+            if (!loader.hasLauncher && id.endsWith('_launcher')) {
+              loader.hasLauncher = true
+              loader.launcher = id
+              return
+            } else if (loader.hasLauncher && id.endsWith('_launcher')) {
+              Logger.error(`Multiple launchers, skipping ${id}`)
+              return
+            }
+            if (extension.loadBeforeGame) {
+              loader.pre.push(id)
+            } else {
+              loader.post.push(id)
+            }
+          }
+        })
+
+      this.codejs = `const Majsoul_Plus = {};
+Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
+[...Majsoul_Plus.$.pre, ...Majsoul_Plus.$.post, ...(Majsoul_Plus.$.hasLauncher ? [Majsoul_Plus.$.launcher] : [])].forEach(ext => Majsoul_Plus[ext] = {});
+
+(async ()=>{
+  const $ = Majsoul_Plus.$;
+  const plugins = await Promise.all(['console', 'fetch', 'login'].map(name => fetch(\`/majsoul_plus/plugin/\${name}.js\`).then(data => data.text())))
+  plugins.forEach(code => eval(code))
+
+  eval(await fetch(\`/majsoul_plus/\${$.codeVersion}/code.js\`).then(data => data.text()))
+
+  const pres = await Promise.all($.pre.map(ext => fetch(\`/majsoul_plus/extension/scripts/\${ext}/\`).then(data => data.text())))
+  pres.forEach(code => eval(code))
+
+  if ($.hasLauncher) {
+    eval(await fetch(\`/majsoul_plus/extension/scripts/\${$.launcher}/\`).then(data => data.text()))
+  }
+  else {
+    new GameMgr();
+  }
+
+  const posts = await Promise.all($.post.map(ext => fetch(\`/majsoul_plus/extension/scripts/\${ext}/\`).then(data => data.text())))
+  posts.forEach(code => eval(code))
+})()`
+      ctx.res.statusCode = 200
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = format(this.codejs)
+    })
+
     // 获取扩展基本信息
     router.get(`/majsoul_plus/extension/:id`, async (ctx, next) => {
       ctx.response.status = this.loadedMap.has(ctx.params.id) ? 200 : 404
@@ -133,32 +208,63 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
         : 'Not Found'
     })
 
-    server.use(async (ctx, next) => {
+    router.get(`/majsoul_plus/extension/scripts/:id/`, async (ctx, next) => {
+      if (!this.loadedMap.has(ctx.params.id)) {
+        ctx.res.statusCode = 404
+        return
+      }
+
       // 等待所有脚本加载完成
       await Promise.all(this.useScriptPromises)
 
-      // 针对 code.js 进行特殊处理 注入扩展
-      const originalUrl = ctx.request.originalUrl.replace(/^\/\d\//g, '')
-      let prefix = '',
-        postfix = ''
-      if (path.basename(originalUrl) === 'code.js') {
-        if (this.codejs === '') {
-          let hasLauncher = false
+      const extension = this.loadedMap.get(ctx.params.id)
+      const scripts = this.extensionScripts.get(ctx.params.id)
 
-          const code = (await getRemoteOrCachedFile(
-            ctx.request.originalUrl,
-            false,
-            data =>
-              UserConfigs.userData.serverToPlay === 0
-                ? Buffer.from(
-                    data
-                      .toString('utf-8')
-                      .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
-                  )
-                : data
-          )).data.toString('utf-8')
-          // 注入修改过的 console
-          const extensionConsole = `const extensionConsole = id => {
+      ctx.res.statusCode = 200
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = format(`/**
+* Extension： ${extension.id}
+* Author: ${extension.author}
+* Version: ${extension.version}
+*/
+// Majsoul_Plus.${extension.id} = {};
+((context, console, fetchSelf) => {
+     ${scripts
+       .map(
+         script => `  try {
+     ${script}
+  } catch(e) {
+    console.error('Majsoul Plus has captured an exception. Please contact the author of this extension to catch it in the extension itself!');
+    console.error(e);
+  }`
+       )
+       .join('\n')}
+})(
+  Majsoul_Plus.${extension.id},
+  extensionConsole('${extension.id}'),
+  extensionFetch('${extension.id}')
+);`)
+    })
+
+    router.get(`/majsoul_plus/:version/code.js`, async (ctx, next) => {
+      const url = ctx.request.originalUrl.replace(/^\/majsoul_plus/, '')
+      const code = (await getRemoteOrCachedFile(url, false, data =>
+        UserConfigs.userData.serverToPlay === 0
+          ? Buffer.from(
+              data
+                .toString('utf-8')
+                .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
+            )
+          : data
+      )).data.toString('utf-8')
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = code.substr(0, code.length - 'new GameMgr();'.length + 2)
+    })
+
+    router.get('/majsoul_plus/plugin/console.js', async (ctx, next) => {
+      ctx.res.statusCode = 200
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = `window.extensionConsole = id => {
 return new Proxy(
   {},
   {
@@ -169,105 +275,36 @@ return new Proxy(
     }
   }
 )
-}\n\n`
+}`
+    })
 
-          const extensionFetch = `const extensionFetch = id => {
+    router.get('/majsoul_plus/plugin/fetch.js', async (ctx, next) => {
+      ctx.res.statusCode = 200
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = `window.extensionFetch = id => {
   return (input, init) => {
     if (typeof input !== 'string') {
       return
     }
     return fetch(\`majsoul_plus/extension/\${id}/\${input}\`, init)
   }
-}\n\n`
+}`
+    })
 
-          // 设置 localStorage 供用户登录
-          const loginScript = `// 注入登录脚本
+    router.get('/majsoul_plus/plugin/login.js', async (ctx, next) => {
+      ctx.res.statusCode = 200
+      ctx.res.setHeader('Content-Type', 'application/javascript')
+      ctx.body = `// 注入登录脚本
 let userLocalStorage = JSON.parse('${JSON.stringify(
-            UserConfigs.localStorage[
-              RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
-            ]
-          )}')
+        UserConfigs.localStorage[
+          RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
+        ]
+      )}')
 // TODO: 找到这里需要做适配的原因
 if (!Array.isArray(userLocalStorage)) 
   userLocalStorage = []
 userLocalStorage.forEach(arr => localStorage.setItem(arr[0], arr[1]))
-console.log('[Majsoul_Plus] 登录信息注入成功')
-`
-
-          Array.from(this.extensionScripts.entries())
-            .filter(entry => this.loadedDetails[entry[0]].sequence > 0)
-            .sort(
-              (a, b) =>
-                this.loadedDetails[a[0]].sequence -
-                this.loadedDetails[b[0]].sequence
-            )
-            .forEach(([id, scripts]) => {
-              // 当未加载时跳出
-              if (!this.loadedDetails[id].enabled) return
-
-              const extension: MajsoulPlus.Extension = this.loadedDetails[id]
-                .metadata
-              if (
-                extension.applyServer.includes(
-                  UserConfigs.userData.serverToPlay
-                )
-              ) {
-                if (!hasLauncher && extension.id.endsWith('_launcher')) {
-                  hasLauncher = true
-                } else if (hasLauncher && extension.id.endsWith('_launcher')) {
-                  Logger.error(`Multiple launchers, skipping ${extension.id}`)
-                  return
-                }
-                const extCode = `/**
- * Extension： ${extension.id}
- * Author: ${extension.author}
- * Version: ${extension.version}
- */
-Majsoul_Plus.${extension.id} = {};
-((context, console, fetchSelf) => {
-${scripts
-  .map(
-    script => `  try {
-${script}
-  } catch(e) {
-    console.error('Majsoul Plus has captured an exception. Please contact the author of this extension to catch it in the extension itself!');
-    console.error(e);
-  }`
-  )
-  .join('\n')}
-})(
-  Majsoul_Plus.${extension.id},
-  extensionConsole('${extension.id}'),
-  extensionFetch('${extension.id}')
-);\n\n`
-                if (extension.loadBeforeGame) {
-                  prefix += extCode
-                } else {
-                  postfix += extCode
-                }
-              }
-            })
-
-          this.codejs =
-            'const Majsoul_Plus = {}\n' +
-            extensionConsole +
-            extensionFetch +
-            loginScript +
-            '\n\n\n' +
-            prefix +
-            '\n\n\n' +
-            '// code.js\n' +
-            code.substr(0, code.length - 'new GameMgr();'.length + 2) +
-            '\n\n\n' +
-            postfix +
-            (hasLauncher ? '' : 'new GameMgr();')
-        }
-
-        ctx.res.statusCode = 200
-        ctx.body = this.codejs
-      } else {
-        await next()
-      }
+console.log('[Majsoul_Plus] 登录信息注入成功')`
     })
   }
 
