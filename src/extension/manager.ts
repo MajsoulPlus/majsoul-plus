@@ -143,7 +143,9 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
         postfix = ''
       if (path.basename(originalUrl) === 'code.js') {
         if (this.codejs === '') {
-          const code = await getRemoteOrCachedFile(
+          let hasLauncher = false
+
+          const code = (await getRemoteOrCachedFile(
             ctx.request.originalUrl,
             false,
             data =>
@@ -154,7 +156,7 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
                       .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
                   )
                 : data
-          )
+          )).data.toString('utf-8')
           // 注入修改过的 console
           const extensionConsole = `const extensionConsole = id => {
 return new Proxy(
@@ -199,10 +201,7 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                 this.loadedDetails[a[0]].sequence -
                 this.loadedDetails[b[0]].sequence
             )
-            .forEach(entries => {
-              const id = entries[0],
-                scripts = entries[1]
-
+            .forEach(([id, scripts]) => {
               // 当未加载时跳出
               if (!this.loadedDetails[id].enabled) return
 
@@ -213,6 +212,12 @@ console.log('[Majsoul_Plus] 登录信息注入成功')
                   UserConfigs.userData.serverToPlay
                 )
               ) {
+                if (!hasLauncher && extension.id.endsWith('_launcher')) {
+                  hasLauncher = true
+                } else if (hasLauncher && extension.id.endsWith('_launcher')) {
+                  Logger.error(`Multiple launchers, skipping ${extension.id}`)
+                  return
+                }
                 const extCode = `/**
  * Extension： ${extension.id}
  * Author: ${extension.author}
@@ -252,9 +257,10 @@ ${script}
             prefix +
             '\n\n\n' +
             '// code.js\n' +
-            code.data.toString('utf-8') +
+            code.substr(0, code.length - 'new GameMgr();'.length + 2) +
             '\n\n\n' +
-            postfix
+            postfix +
+            (hasLauncher ? '' : 'new GameMgr();')
         }
 
         ctx.res.statusCode = 200
