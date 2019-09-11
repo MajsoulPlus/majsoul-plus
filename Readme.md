@@ -105,6 +105,9 @@ sudo pacman -S gconf
 
 ## 参与讨论
 
-使用答疑，资源分享，约战交流 QQ 群 [660996459](https://jq.qq.com/?_wv=1027&k=5PMNS8D)
+使用用户 QQ 群① [660996459](//jq.qq.com/?_wv=1027&k=5PMNS8D)
 
-开发问题，技术疑问，批判一番 QQ 群 [106475557](https://jq.qq.com/?_wv=1027&k=5iayYP5)
+使用用户 QQ 群②[734630401](//shang.qq.com/wpa/qunwpa?idkey=ec467f8cc72b65de6d5ee8a469b02f861de82671d9047b9bf274522ea3f92e23)
+
+
+开发相关 QQ 群 [106475557](//jq.qq.com/?_wv=1027&k=5iayYP5)
