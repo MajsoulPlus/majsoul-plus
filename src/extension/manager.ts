@@ -232,15 +232,13 @@ function addScript(url) {
 * Author: ${extension.author}
 * Version: ${extension.version}
 */
-// Majsoul_Plus.${extension.id} = {};
 ((context, console, fetchSelf) => {
      ${scripts
        .map(
          script => `  try {
      ${script}
   } catch(e) {
-    console.error('Majsoul Plus has captured an exception. Please contact the author of this extension to catch it in the extension itself!');
-    console.error(e);
+    console.error('Unresolved Error', e);
   }`
        )
        .join('\n')}

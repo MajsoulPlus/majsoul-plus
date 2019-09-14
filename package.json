@@ -8,9 +8,9 @@
   "scripts": {
     "sass": "node-sass assets/manager/ -o assets/manager/",
     "pre-build": "tsc && yarn sass && node build.js",
-    "debug": "cross-env NODE_ENV=development electron .",
-    "debug:server": "cross-env NODE_ENV=development SERVER_ONLY=1 electron .",
-    "debug:detailed": "cross-env NODE_ENV=development electron . --enable-logging --v=1 --disable-gpu",
+    "debug": "cross-env NODE_ENV=development run-electron .",
+    "debug:server": "cross-env NODE_ENV=development SERVER_ONLY=1 run-electron .",
+    "debug:detailed": "cross-env NODE_ENV=development run-electron . --enable-logging --v=1 --disable-gpu",
     "start": "yarn pre-build && yarn debug",
     "start:detailed": "yarn pre-build && yarn debug:detailed",
     "dist": "yarn pre-build && electron-builder --x64 --ia32 --publish onTagOrDraft",
@@ -107,6 +107,7 @@
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "prettier": "^1.18.2",
+    "run-electron": "^1.0.0",
     "semver": "^6.0.0",
     "tcp-ping": "^0.1.1",
     "toposort": "^2.0.2"
