@@ -151,12 +151,7 @@ app.on('ready', () => {
       initPlayer()
     }
 
-    // 根据设置决定销毁 / 隐藏 Manager 窗口
-    if (UserConfigs.window.isManagerHide) {
-      ManagerWindow.hide()
-    } else {
-      ManagerWindow.close()
-    }
+    ManagerWindow.close()
   })
 
   bossKey.register() // 注册老板键功能

@@ -6,7 +6,8 @@ import {
   Menu,
   MenuItem,
   screen,
-  MenuItemConstructorOptions
+  MenuItemConstructorOptions,
+  app
 } from 'electron'
 import { AddressInfo } from 'net'
 import * as path from 'path'
@@ -56,8 +57,8 @@ export class GameWindows {
       // 关闭本地镜像服务器
       CloseServer()
       // 依据用户设置显示被隐藏的管理器窗口
-      if (UserConfigs.window.isManagerHide && ManagerWindow) {
-        ManagerWindow.show()
+      if (UserConfigs.window.isManagerHide) {
+        app.relaunch()
       }
     }
     this.windowCount--
