@@ -222,7 +222,7 @@ export async function getRemoteOrCachedFile(
     try {
       originData = await readFile(localPath)
     } catch (e) {
-      console.error(e)
+      Logger.error(e)
     }
   }
 

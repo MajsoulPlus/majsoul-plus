@@ -107,10 +107,8 @@
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "prettier": "^1.18.2",
-    "run-electron": "^1.0.0",
     "semver": "^6.0.0",
-    "tcp-ping": "^0.1.1",
-    "toposort": "^2.0.2"
+    "tcp-ping": "^0.1.1"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.4.13",
@@ -128,6 +126,7 @@
     "node-sass": "^4.12.0",
     "tslint": "^5.15.0",
     "typescript": "^3.4.1",
+    "run-electron": "^1.0.0",
     "yarn": ">=1.0.0"
   }
 }
