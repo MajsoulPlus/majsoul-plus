@@ -133,6 +133,9 @@ app.on('will-finish-launching', () => {
 })
 
 app.on('ready', () => {
+  // 初始化游戏窗口
+  initGameWindow()
+
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
     // 加载服务器路由规则
@@ -142,8 +145,6 @@ app.on('ready', () => {
     ListenServer(Global.ServerPort)
 
     if (!process.env.SERVER_ONLY) {
-      // 初始化游戏窗口
-      initGameWindow()
       GameWindows.newWindow()
     } else {
       // 通过 audioPlayer 窗口阻止程序退出
