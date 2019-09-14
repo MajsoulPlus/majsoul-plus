@@ -175,29 +175,33 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
 Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 [...Majsoul_Plus.$.pre, ...Majsoul_Plus.$.post, ...(Majsoul_Plus.$.hasLauncher ? [Majsoul_Plus.$.launcher] : [])].forEach(ext => Majsoul_Plus[ext] = {});
 
-(async ()=>{
+(async () => {
   const $ = Majsoul_Plus.$;
-  const plugins = await Promise.all(['console', 'fetch', 'login'].map(name => fetch(\`/majsoul_plus/plugin/\${name}.js\`).then(data => data.text())))
-  plugins.forEach(code => eval(code))
+  ['console', 'fetch', 'login'].map(name => \`majsoul_plus/plugin/\${name}.js\`).forEach(addScript);
 
-  eval(await fetch(\`/majsoul_plus/\${$.codeVersion}/code.js\`).then(data => data.text()))
+  addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
 
-  const pres = await Promise.all($.pre.map(ext => fetch(\`/majsoul_plus/extension/scripts/\${ext}/\`).then(data => data.text())))
-  pres.forEach(code => eval(code))
+  $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(url => addScript(url));
 
   if ($.hasLauncher) {
-    eval(await fetch(\`/majsoul_plus/extension/scripts/\${$.launcher}/\`).then(data => data.text()))
-  }
-  else {
+    addScript(\`majsoul_plus/extension/scripts/\${$.launcher}/\`)
+  } else {
     new GameMgr();
   }
 
-  const posts = await Promise.all($.post.map(ext => fetch(\`/majsoul_plus/extension/scripts/\${ext}/\`).then(data => data.text())))
-  posts.forEach(code => eval(code))
-})()`
+  $.post.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(addScript);
+})()
+
+function addScript(url) {
+  const tag = document.createElement('script');
+  tag.src = url;
+  tag.async = false;
+  document.head.appendChild(tag);
+}
+`
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = format(this.codejs)
+      ctx.body = format(this.codejs, { parser: 'babel' })
     })
 
     // 获取扩展基本信息
@@ -222,7 +226,8 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = format(`/**
+      ctx.body = format(
+        `/**
 * Extension： ${extension.id}
 * Author: ${extension.author}
 * Version: ${extension.version}
@@ -243,7 +248,9 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
   Majsoul_Plus.${extension.id},
   extensionConsole('${extension.id}'),
   extensionFetch('${extension.id}')
-);`)
+);`,
+        { parser: 'babel' }
+      )
     })
 
     router.get(`/majsoul_plus/:version/code.js`, async (ctx, next) => {
@@ -265,16 +272,16 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
       ctx.body = `window.extensionConsole = id => {
-return new Proxy(
-  {},
-  {
-    get: (target, name) => {
-      return typeof console[name] === 'function'
-        ? (...args) => console[name].apply(this, [\`[\${id}]\`, ...args])
-        : () => undefined
+  return new Proxy(
+    {},
+    {
+      get: (target, name) => {
+        return typeof console[name] === 'function'
+          ? (...args) => console[name].apply(this, [\`[\${id}]\`, ...args])
+          : () => undefined
+      }
     }
-  }
-)
+  )
 }`
     })
 

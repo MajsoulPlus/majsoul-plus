@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain } from 'electron'
+import { app, dialog, ipcMain, session } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
@@ -133,6 +133,24 @@ app.on('will-finish-launching', () => {
 })
 
 app.on('ready', () => {
+  // 修复部分开发者工具的报错
+  // See https://github.com/electron/electron/issues/13008#issuecomment-400261941
+  session.defaultSession.webRequest.onBeforeRequest(
+    { urls: [] },
+    (details, callback) => {
+      if (details.url.indexOf('hack') !== -1) {
+        callback({
+          redirectURL: details.url.replace(
+            '7accc8730b0f99b5e7c0702ea89d1fa7c17bfe33',
+            '57c9d07b416b5a2ea23d28247300e4af36329bdc'
+          )
+        })
+      } else {
+        callback({ cancel: false })
+      }
+    }
+  )
+
   // 初始化游戏窗口
   initGameWindow()
 
