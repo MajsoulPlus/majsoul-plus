@@ -1,7 +1,6 @@
 import { BrowserWindow } from 'electron'
 import * as path from 'path'
 
-// tslint:disable-next-line
 export let AudioPlayer: BrowserWindow
 
 /**

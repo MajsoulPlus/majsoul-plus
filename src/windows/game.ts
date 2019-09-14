@@ -24,7 +24,6 @@ import { ToolManager } from '../tool/tool'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
 
-// tslint:disable-next-line
 export class GameWindows {
   private static windows: Map<number, BrowserWindow> = new Map()
   private static windowIdCount = 0

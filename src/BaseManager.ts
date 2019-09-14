@@ -183,9 +183,7 @@ export default abstract class BaseManager {
         // 依赖版本表示不合法
         if (semver.validRange(pack.dependencies[dep]) === null) {
           Logger.debug(
-            `failed to load ${this.name} ${id}: broken dependency version ${
-              pack.dependencies[dep]
-            }`
+            `failed to load ${this.name} ${id}: broken dependency version ${pack.dependencies[dep]}`
           )
           return this
         }

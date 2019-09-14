@@ -9,9 +9,8 @@ import { Global } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
 import { removeDirSync, updateObject } from '../utils'
 
-// tslint:disable-next-line
 export let ManagerWindow: BrowserWindow
-// tslint:disable-next-line
+
 export const ManagerWindowStatus: MajsoulPlus.WindowStatus = {
   visible: false,
   muted: false

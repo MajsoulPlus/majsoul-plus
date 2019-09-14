@@ -3,7 +3,7 @@ import i18n from '../../i18n'
 export default class Network {
   static getJson(input: RequestInfo, init?: RequestInit) {
     return new Promise((resolve, reject) => {
-      (function timeout() {
+      ;(function timeout() {
         setTimeout(() => {
           reject(new Error('network request timeout'))
         }, 30 * 1000)

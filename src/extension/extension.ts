@@ -3,7 +3,6 @@ import { Global } from '../global'
 import { getFoldersSync } from '../utils'
 import manager from './manager'
 
-// tslint:disable-next-line
 export let ExtensionManager: manager
 
 export function LoadExtension() {

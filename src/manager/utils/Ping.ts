@@ -65,9 +65,7 @@ class Ping {
   }
 
   private getResVersion = async (version: string) => {
-    const originUrl = `${
-      remoteDomains[this.server].domain
-    }/resversion${version}.json`
+    const originUrl = `${remoteDomains[this.server].domain}/resversion${version}.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(
       url
@@ -76,9 +74,7 @@ class Ping {
   }
 
   private getConfig = async (prefix: string) => {
-    const originUrl = `${
-      remoteDomains[this.server].domain
-    }/${prefix}/config.json`
+    const originUrl = `${remoteDomains[this.server].domain}/${prefix}/config.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(url)) as MajsoulPlus_Manager.ConfigJson
     return res.ip

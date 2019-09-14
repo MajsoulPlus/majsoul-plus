@@ -217,9 +217,9 @@ export default class ResourcePackManager extends BaseManager {
                         resMap.res[rep] = { prefix: '' }
                       }
 
-                      resMap.res[rep].prefix = `majsoul_plus/${item.name}/${
-                        pack.id
-                      }`
+                      resMap.res[
+                        rep
+                      ].prefix = `majsoul_plus/${item.name}/${pack.id}`
                     })
                   }
                 )

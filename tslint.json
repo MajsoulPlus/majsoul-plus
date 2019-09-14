@@ -5,11 +5,9 @@
       "options": "single",
       "severity": "error"
     },
-    "semicolon": {
-      "options": "never",
-      "severity": "error"
-    },
+    "semicolon": false,
     "variable-name": {
+      "options": "allow-pascal-case",
       "severity": "warn"
     },
     "no-default-export": {

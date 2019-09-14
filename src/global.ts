@@ -7,7 +7,6 @@ import { ConsoleLogger } from './logger'
 import { MajsoulPlus } from './majsoul_plus'
 import { copyFolderSync, getFoldersSync, removeDirSync } from './utils'
 
-// tslint:disable-next-line
 export const Logger = new ConsoleLogger('Majsoul_Plus')
 
 /**
@@ -43,7 +42,6 @@ export const appIcon: string = (() => {
   }
 })()
 
-// tslint:disable-next-line
 export const GlobalPath: MajsoulPlus.GlobalPath = {
   LocalDir: '/static',
   ResourcePackDir: 'resourcepack',
@@ -51,14 +49,12 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
   ToolsDir: 'tool'
 }
 
-// tslint:disable-next-line
 export const RemoteDomains = [
   { id: 0, name: 'zh', domain: 'https://www.majsoul.com/1' },
   { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com' },
   { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com' }
 ]
 
-// tslint:disable-next-line
 export const Global: MajsoulPlus.Global = {
   version: app.getVersion(),
   ServerPort: 8887,
@@ -127,7 +123,7 @@ export const Global: MajsoulPlus.Global = {
 }
 
 export function InitGlobal() {
-  [
+  ;[
     Global.ResourcePackConfigPath,
     Global.ExtensionConfigPath,
     Global.ToolConfigPath

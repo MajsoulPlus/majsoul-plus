@@ -67,7 +67,7 @@ class ResourceManager {
   }
 
   private static addEventListener() {
-    [ResourcePacks, Extensions, Tools].forEach(ext => {
+    ;[ResourcePacks, Extensions, Tools].forEach(ext => {
       // 导入
       const importMSP = document.querySelector(`#install${ext.name}`)
       importMSP.addEventListener('click', ResourceManager.importMSP(ext.name))

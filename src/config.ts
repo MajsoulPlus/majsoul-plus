@@ -82,5 +82,4 @@ export function SaveConfigJson(config: MajsoulPlus.UserConfig) {
   })
 }
 
-// tslint:disable-next-line
 export const UserConfigs: MajsoulPlus.UserConfig = LoadConfigJson()
