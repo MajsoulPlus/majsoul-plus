@@ -267,20 +267,32 @@ function addScript(url) {
     })
 
     router.get('/majsoul_plus/plugin/console.js', async (ctx, next) => {
+      const result = format(
+        `
+        const extensionConsole = id => {
+          return new Proxy(
+            {},
+            {
+              get: (target, name) => {
+                return typeof console[name] !== 'function'
+                  ? () => undefined
+                  : (...args) => {
+                      if (args.length === 0) return undefined
+                      else if (typeof args[0] === 'string')
+                        args[0] = \`[\${id}] \${args[0]}\`
+                      else args = [\`[\${id}]\`, ...args]
+                      return console[name].apply(this, args)
+                    }
+              }
+            }
+          )
+        }
+      `,
+        { parser: 'babel' }
+      )
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = `window.extensionConsole = id => {
-  return new Proxy(
-    {},
-    {
-      get: (target, name) => {
-        return typeof console[name] === 'function'
-          ? (...args) => console[name].apply(this, [\`[\${id}]\`, ...args])
-          : () => undefined
-      }
-    }
-  )
-}`
+      ctx.body = result
     })
 
     router.get('/majsoul_plus/plugin/fetch.js', async (ctx, next) => {
