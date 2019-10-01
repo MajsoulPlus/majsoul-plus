@@ -35,13 +35,6 @@ declare namespace MajsoulPlus {
     update: UserUpdateConfig
     chromium: UserChromiumConfig
     userData: UserDataConfig
-    localStorage: UserLocalStorageConfig
-  }
-
-  export interface UserLocalStorageConfig {
-    zh: string[][]
-    jp: string[][]
-    en: string[][]
   }
 
   /**

@@ -69,21 +69,7 @@ export class GameWindows {
   }
 }
 
-export function initGameWindow() {
-  ipcMain.on('save-local-storage', (event, localStorage: string[][]) => {
-    UserConfigs.localStorage[
-      RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
-    ] = localStorage.filter(arr => arr[1] !== '' && arr[1] !== 'FKU!!!')
-    SaveConfigJson(UserConfigs)
-    dialog.showMessageBox(AudioPlayer, {
-      type: 'info',
-      title: i18n.text.main.programName(),
-      // TODO: i18n
-      message: '保存帐号信息成功!',
-      buttons: ['OK']
-    })
-  })
-}
+export function initGameWindow() {}
 
 export function newGameWindow(id: number) {
   let window: BrowserWindow
@@ -212,13 +198,6 @@ function getGameWindowMenu(id: number) {
             }
           }
         }),
-        {
-          label: '写入帐号信息',
-          accelerator: 'CmdOrCtrl+Y',
-          click: (item: MenuItem, window: BrowserWindow) => {
-            window.webContents.send('get-local-storage')
-          }
-        },
         {
           label: GameWindows.size > 1 ? '关闭窗口' : '结束游戏',
           accelerator: 'Alt+F4',

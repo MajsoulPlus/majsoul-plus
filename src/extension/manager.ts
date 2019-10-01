@@ -177,7 +177,7 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 
 (async () => {
   const $ = Majsoul_Plus.$;
-  ['console', 'fetch', 'login'].map(name => \`majsoul_plus/plugin/\${name}.js\`).forEach(addScript);
+  ['console', 'fetch'].map(name => \`majsoul_plus/plugin/\${name}.js\`).forEach(addScript);
 
   addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
 
@@ -306,22 +306,6 @@ function addScript(url) {
     return fetch(\`majsoul_plus/extension/\${id}/\${input}\`, init)
   }
 }`
-    })
-
-    router.get('/majsoul_plus/plugin/login.js', async (ctx, next) => {
-      ctx.res.statusCode = 200
-      ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = `// 注入登录脚本
-let userLocalStorage = JSON.parse('${JSON.stringify(
-        UserConfigs.localStorage[
-          RemoteDomains[UserConfigs.userData.serverToPlay.toString()].name
-        ]
-      )}')
-// TODO: 找到这里需要做适配的原因
-if (!Array.isArray(userLocalStorage)) 
-  userLocalStorage = []
-userLocalStorage.forEach(arr => localStorage.setItem(arr[0], arr[1]))
-console.log('[Majsoul_Plus] 登录信息注入成功')`
     })
   }
 

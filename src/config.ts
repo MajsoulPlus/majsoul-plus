@@ -32,15 +32,8 @@ const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   serverToPlay: 0
 }
 
-const defaultLocalStorageConfig: MajsoulPlus.UserLocalStorageConfig = {
-  zh: [],
-  jp: [],
-  en: []
-}
-
 const defaultConfig: MajsoulPlus.UserConfig = {
   chromium: defaultChromiumConfig,
-  localStorage: defaultLocalStorageConfig,
   update: defaultUpdateConfig,
   userData: defaultUserDataConfig,
   window: defaultWindowConfig
@@ -53,7 +46,6 @@ Object.freeze(defaultWindowConfig)
 Object.freeze(defaultUpdateConfig)
 Object.freeze(defaultChromiumConfig)
 Object.freeze(defaultUserDataConfig)
-Object.freeze(defaultLocalStorageConfig)
 Object.freeze(defaultConfig)
 
 /**
