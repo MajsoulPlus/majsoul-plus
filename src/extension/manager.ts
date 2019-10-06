@@ -179,9 +179,9 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
   const $ = Majsoul_Plus.$;
   ['console', 'fetch'].map(name => \`majsoul_plus/plugin/\${name}.js\`).forEach(addScript);
 
-  addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
+  await addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
 
-  $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(url => addScript(url));
+  $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(addScript);
 
   if ($.hasLauncher) {
     addScript(\`majsoul_plus/extension/scripts/\${$.launcher}/\`)
@@ -193,10 +193,14 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 })()
 
 function addScript(url) {
-  const tag = document.createElement('script');
-  tag.src = url;
-  tag.async = false;
-  document.head.appendChild(tag);
+  return new Promise((resolve, reject) => {
+    const tag = document.createElement('script');
+    tag.src = url;
+    tag.async = false;
+    tag.onload = resolve;
+    tag.onerror = reject;
+    document.head.appendChild(tag);
+  });
 }
 `
       ctx.res.statusCode = 200
