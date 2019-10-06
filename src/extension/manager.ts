@@ -177,11 +177,15 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 
 (async () => {
   const $ = Majsoul_Plus.$;
-  ['console', 'fetch'].map(name => \`majsoul_plus/plugin/\${name}.js\`).forEach(addScript);
+  await Promise.all(
+    ['console', 'fetch'].map(name => \`majsoul_plus/plugin/\${name}.js\`).map(addScript)
+  );
 
   await addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
 
-  $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(addScript);
+  await Promise.all(
+    $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).map(addScript)
+  );
 
   if ($.hasLauncher) {
     addScript(\`majsoul_plus/extension/scripts/\${$.launcher}/\`)
@@ -189,7 +193,9 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
     new GameMgr();
   }
 
-  $.post.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).forEach(addScript);
+  await Promise.all(
+    $.post.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).map(addScript)
+  );
 })()
 
 function addScript(url) {
