@@ -178,13 +178,13 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
 (async () => {
   const $ = Majsoul_Plus.$;
   await Promise.all(
-    ['console', 'fetch'].map(name => \`majsoul_plus/plugin/\${name}.js\`).map(addScript)
+    ['console', 'fetch'].map(name => addScript(\`majsoul_plus/plugin/\${name}.js\`))
   );
 
   await addScript(\`majsoul_plus/\${$.codeVersion}/code.js\`);
 
   await Promise.all(
-    $.pre.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).map(addScript)
+    $.pre.map(ext => addScript(\`majsoul_plus/extension/scripts/\${ext}/\`))
   );
 
   if ($.hasLauncher) {
@@ -194,7 +194,7 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
   }
 
   await Promise.all(
-    $.post.map(ext => \`majsoul_plus/extension/scripts/\${ext}/\`).map(addScript)
+    $.post.map(ext => addScript(\`majsoul_plus/extension/scripts/\${ext}/\`))
   );
 })()
 
