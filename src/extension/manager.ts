@@ -188,7 +188,7 @@ Majsoul_Plus.$ = ${JSON.stringify(loader, null, 2)};
   );
 
   if ($.hasLauncher) {
-    addScript(\`majsoul_plus/extension/scripts/\${$.launcher}/\`)
+    await addScript(\`majsoul_plus/extension/scripts/\${$.launcher}/\`)
   } else {
     new GameMgr();
   }
