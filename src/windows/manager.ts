@@ -75,7 +75,14 @@ export function initManagerWindow() {
 
   ipcMain.on('update-user-config', (event, config: MajsoulPlus.UserConfig) => {
     updateObject(UserConfigs, config)
-    SaveConfigJson(config)
+
+    // 缩放比例的上下限
+    if (UserConfigs.window.zoomFactor < 0.2) {
+      UserConfigs.window.zoomFactor = 0.2
+    } else if (UserConfigs.window.zoomFactor > 10) {
+      UserConfigs.window.zoomFactor = 10
+    }
+    SaveConfigJson(UserConfigs)
 
     ManagerWindow.setContentSize(
       Global.ManagerWindowConfig.width * UserConfigs.window.zoomFactor,
