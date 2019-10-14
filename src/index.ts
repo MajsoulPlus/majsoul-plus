@@ -74,6 +74,10 @@ if (os.platform() === 'win32') {
 // Disable certificate validation TLS connections
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
+// 允许不安全的 localhost
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+app.commandLine.appendSwitch('allow-insecure-localhost', 'true')
+
 // 允许自动播放音视频
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
