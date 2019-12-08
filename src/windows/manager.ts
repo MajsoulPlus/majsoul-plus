@@ -39,7 +39,7 @@ export function initManagerWindow() {
 
   ManagerWindow.once('ready-to-show', () => {
     // 根据资源管理器设置的缩放宽高进行缩放操作
-    ManagerWindow.webContents.setZoomFactor(UserConfigs.window.zoomFactor)
+    ManagerWindow.webContents.zoomFactor = UserConfigs.window.zoomFactor
     ManagerWindow.show()
   })
 
@@ -88,6 +88,6 @@ export function initManagerWindow() {
       Global.ManagerWindowConfig.width * UserConfigs.window.zoomFactor,
       Global.ManagerWindowConfig.height * UserConfigs.window.zoomFactor
     )
-    ManagerWindow.webContents.setZoomFactor(UserConfigs.window.zoomFactor)
+    ManagerWindow.webContents.zoomFactor = UserConfigs.window.zoomFactor
   })
 }

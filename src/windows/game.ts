@@ -144,7 +144,7 @@ export function newGameWindow(id: number) {
   window.once('ready-to-show', () => {
     // 设置页面缩放比例为 1 来防止缩放比例异常
     // 但这样会造成截图提示悬浮窗尺寸不合适
-    window.webContents.setZoomFactor(1)
+    window.webContents.zoomFactor = 1
     window.show()
   })
 

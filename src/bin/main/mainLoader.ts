@@ -113,7 +113,7 @@ function scaleWindow(percent = scalePercent) {
 mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
     webContents = mainWindow.getWebContents()
-    webContents.setZoomFactor(1)
+    webContents.zoomFactor = 1
 
     webContents.on('will-navigate', (event, url) => {
       if (isVanillaGameUrl(url)) {

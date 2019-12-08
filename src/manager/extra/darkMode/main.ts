@@ -9,18 +9,17 @@ function changeTheme(mode: string) {
 }
 
 export default function darkMode(userConfig: MajsoulPlus.UserConfig) {
-  if (process.platform === 'darwin') {
-    const { systemPreferences } = remote
+  const { nativeTheme } = remote
 
-    const setOSTheme = () => {
-      changeTheme(systemPreferences.isDarkMode() ? 'dark' : 'light')
-    }
-
-    systemPreferences.subscribeLocalNotification(
-      'AppleInterfaceThemeChangeNotification',
-      setOSTheme
-    )
-  } else {
-    changeTheme(userConfig.window.OSTheme)
+  const setOSTheme = () => {
+    console.log(nativeTheme.shouldUseDarkColors)
+    changeTheme(nativeTheme.shouldUseDarkColors ? 'dark' : 'light')
   }
+
+  nativeTheme.addListener('updated', () => {
+    setOSTheme()
+  })
+
+  setOSTheme()
+  // changeTheme(userConfig.window.OSTheme)
 }
