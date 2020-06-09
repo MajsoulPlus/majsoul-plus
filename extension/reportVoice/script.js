@@ -2,14 +2,13 @@
 
 function autoRun() {
   try {
-    const arrBackup = cfg.voice.sound.groups_
+    const arrBackup = cfg.voice.sound.rows_
     if (!arrBackup || arrBackup.length === 0) {
       throw new Error()
     }
-    Object.entries(cfg.voice.sound.groups_).forEach(([soundID, soundGroup]) => {
-      soundGroup.forEach((soundObject, index) => {
-        soundObject.level_limit = 0
-      })
+    cfg.voice.sound.rows_.forEach(sound=>{
+      sound.level_limit = 0
+      sound.bond_limit = 0
     })
     console.log('Hacked所有语音')
   } catch (error) {
