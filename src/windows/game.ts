@@ -149,7 +149,7 @@ export function newGameWindow(id: number) {
   })
 
   // 设置 GameWindow 的 userAgent
-  window.webContents.setUserAgent(Global.HttpGetUserAgent)
+  window.webContents.userAgent = Global.HttpGetUserAgent
 
   // 载入本地启动器
   window.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'))
