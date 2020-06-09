@@ -50,7 +50,7 @@ export const GlobalPath: MajsoulPlus.GlobalPath = {
 }
 
 export const RemoteDomains = [
-  { id: 0, name: 'zh', domain: 'https://www.majsoul.com/1' },
+  { id: 0, name: 'zh', domain: 'https://game.maj-soul.com/1' },
   { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com' },
   { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com' }
 ]

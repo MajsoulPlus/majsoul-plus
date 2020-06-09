@@ -263,17 +263,19 @@ function addScript(url) {
 
     router.get(`/majsoul_plus/:version/code.js`, async (ctx, next) => {
       const url = ctx.request.originalUrl.replace(/^\/majsoul_plus/, '')
-      const code = (await getRemoteOrCachedFile(url, false, data =>
-        UserConfigs.userData.serverToPlay === 0
-          ? Buffer.from(
-              data
-                .toString('utf-8')
-                .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
-            )
-          : data
-      )).data.toString('utf-8')
+      const code = (
+        await getRemoteOrCachedFile(url, false, data =>
+          UserConfigs.userData.serverToPlay === 0
+            ? Buffer.from(
+                data
+                  .toString('utf-8')
+                  .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
+              )
+            : data
+        )
+      ).data.toString('utf-8')
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = code.substr(0, code.length - 'new GameMgr();'.length + 2)
+      ctx.body = code.replace('new GameMgr', '()=>1')
     })
 
     router.get('/majsoul_plus/plugin/console.js', async (ctx, next) => {

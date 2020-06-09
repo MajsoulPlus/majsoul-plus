@@ -3,7 +3,7 @@ import * as tcpPing from 'tcp-ping'
 import i18n from '../../i18n'
 
 export const remoteDomains = [
-  { id: 0, name: 'zh', domain: 'https://www.majsoul.com/1' },
+  { id: 0, name: 'zh', domain: 'https://game.maj-soul.com/1' },
   { id: 1, name: 'jp', domain: 'https://game.mahjongsoul.com' },
   { id: 2, name: 'en', domain: 'https://mahjongsoul.game.yo-star.com' }
 ]
@@ -65,7 +65,9 @@ class Ping {
   }
 
   private getResVersion = async (version: string) => {
-    const originUrl = `${remoteDomains[this.server].domain}/resversion${version}.json`
+    const originUrl = `${
+      remoteDomains[this.server].domain
+    }/resversion${version}.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(
       url
@@ -74,7 +76,9 @@ class Ping {
   }
 
   private getConfig = async (prefix: string) => {
-    const originUrl = `${remoteDomains[this.server].domain}/${prefix}/config.json`
+    const originUrl = `${
+      remoteDomains[this.server].domain
+    }/${prefix}/config.json`
     const url = this.getRandomUrl(originUrl)
     const res = (await Network.getJson(url)) as MajsoulPlus_Manager.ConfigJson
     return res.ip
