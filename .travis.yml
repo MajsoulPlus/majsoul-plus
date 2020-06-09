@@ -4,7 +4,8 @@ os:
 dist: xenial
 osx_image: xcode10.1
 language: node_js
-  - "12"
+node_js:
+  - '12'
 cache:
   - apt: true
   - yarn: true
