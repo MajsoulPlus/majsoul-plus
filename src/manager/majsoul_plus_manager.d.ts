@@ -47,12 +47,7 @@ declare namespace MajsoulPlus_Manager {
 
   export interface ConfigJsonItem {
     name: string
-    region_urls: RegionUrls
-  }
-
-  export interface RegionUrls {
-    ['mainland']: string
-    ['hk']: string
+    region_urls: string[]
   }
 
   export interface ServerListJson {

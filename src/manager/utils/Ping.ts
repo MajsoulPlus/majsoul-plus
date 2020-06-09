@@ -10,9 +10,8 @@ export const remoteDomains = [
 
 class Ping {
   private server: number
-  private services: MajsoulPlus_Manager.RegionUrls
-  private currentService = null
-  private serviceList = []
+  private services: string[] = []
+  private currentService = 0
   private interval = null
 
   setServer(server: number) {
@@ -86,18 +85,17 @@ class Ping {
 
   private saveServices = (ips: MajsoulPlus_Manager.ConfigJsonItem[]) => {
     this.services = ips[0].region_urls
-    this.serviceList = Object.keys(this.services)
   }
 
   private getService = () => {
     if (!this.services) return Promise.reject(new Error('services is null'))
-    const choseService = window.localStorage.getItem('choseService')
+    const choseService =
+      Number(window.localStorage.getItem('choseService')) || 0
     if (choseService) {
       this.currentService =
-        this.serviceList.find(service => service === choseService) ||
-        this.serviceList[0]
+        this.services.length > choseService ? choseService : 0
     } else {
-      this.currentService = this.serviceList[0]
+      this.currentService = 0
     }
     return Promise.resolve()
   }
@@ -122,12 +120,14 @@ class Ping {
 
   private renderService = () => {
     const serverTextDom = document.querySelector('#serverText') as HTMLElement
+    const serverIndex = document.querySelector('#serverIndexNum') as HTMLElement
     const pingInfoDom = document.querySelector('#pingInfo')
     const pingTextDom = document.querySelector('#pingText')
     pingInfoDom.className = 'offline'
     pingTextDom.textContent = '--'
     i18n.unbindElement(serverTextDom)
-    i18n.text.servers[this.currentService].renderAsText(serverTextDom)
+    i18n.text.main['server'].renderAsText(serverTextDom)
+    serverIndex.innerHTML = '&nbsp;' + (this.currentService + 1).toString()
     return Promise.resolve()
   }
 
@@ -166,15 +166,13 @@ class Ping {
   }
 
   getNextService = () => {
-    let index = this.serviceList.indexOf(this.currentService)
-    index = index + 1 >= this.serviceList.length ? 0 : index + 1
-    this.currentService = this.serviceList[index]
-    localStorage.setItem('choseService', this.currentService)
+    this.currentService = (this.currentService + 1) % this.services.length
+    localStorage.setItem('choseService', this.currentService.toString())
     return Promise.resolve()
   }
 
   changeService = () => {
-    if (this.serviceList.length > 1) {
+    if (this.services.length > 1) {
       this.getNextService()
         .then(this.renderService)
         .then(this.getChildService)
