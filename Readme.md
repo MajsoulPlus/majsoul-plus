@@ -39,7 +39,7 @@
 | --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew cask install majsoul-plus`                                               |
 | Arch User Repository  | [@BruceZhang1993](https://github.com/BruceZhang1993)                         | (`bin`) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus-bin) |
-| Arch User Repository  | [@BruceZhang1993](https://github.com/Yesterday17)                            | (`source`) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus/) |
+| Arch User Repository  | [@Yesterday17](https://github.com/Yesterday17)                            | (`source`) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus/) |
 
 为了防止 `1.x` 用户不慎升级到 `2.x` 后大量模组插件无法使用，`2.x` 版本专门发布了一个 AUR 包。祝您玩的开心！
 
@@ -107,7 +107,7 @@ sudo pacman -S gconf
 
 使用用户 QQ 群① [660996459](//jq.qq.com/?_wv=1027&k=5PMNS8D)
 
-使用用户 QQ 群②[734630401](//shang.qq.com/wpa/qunwpa?idkey=ec467f8cc72b65de6d5ee8a469b02f861de82671d9047b9bf274522ea3f92e23)
+使用用户 QQ 群② [734630401](//shang.qq.com/wpa/qunwpa?idkey=ec467f8cc72b65de6d5ee8a469b02f861de82671d9047b9bf274522ea3f92e23)
 
 
 开发相关 QQ 群 [106475557](//jq.qq.com/?_wv=1027&k=5iayYP5)
