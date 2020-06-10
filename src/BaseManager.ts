@@ -9,7 +9,6 @@ import { appDataDir, Logger } from './global'
 import { MajsoulPlus } from './majsoul_plus'
 import {
   fillObject,
-  getExportFileExtension,
   removeDirSync,
   unzipDir,
   zipDir
@@ -79,7 +78,7 @@ export default abstract class BaseManager {
 
         zipDir(
           path.resolve(appDataDir, this.name, id),
-          `${pathToSave}.${getExportFileExtension(folder)}`
+          `${pathToSave}`
         )
       } catch (e) {
         resp.err = (e as Error).message
