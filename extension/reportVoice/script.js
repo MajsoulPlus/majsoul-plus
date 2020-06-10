@@ -13,16 +13,17 @@ const autoRun = () => {
   try {
     if (cfg.voice.sound) {
       const raw = cfg.voice.sound
+      let timer = 0
       const proxy = new Proxy(raw, {
         get(target, key) {
-          console.log('Get', key)
-          setTimeout(hackVoice, 0)
+          clearTimeout(timer)
+          timer = setTimeout(hackVoice, 0)
           return target[key]
         },
         set(target, key, value) {
-          console.log('Set', key, value)
           target[key] = value
-          setTimeout(hackVoice, 0)
+          clearTimeout(timer)
+          timer = setTimeout(hackVoice, 0)
           return true
         }
       })
