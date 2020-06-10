@@ -30,11 +30,17 @@ class BossKey extends Utility {
       if (this.isActive) {
         // 备份窗口信息 & 隐藏窗口
         hideWindow(ManagerWindow)
-        GameWindows.forEach(window => hideWindow(window))
+        GameWindows.forEach(window => {
+          hideWindow(window)
+          window.webContents.send('set-audio-muted', true)
+        })
       } else {
         // 重新显示窗口
         showWindow(ManagerWindow)
-        GameWindows.forEach(window => showWindow(window))
+        GameWindows.forEach(window => {
+          showWindow(window)
+          window.webContents.send('set-audio-muted', false)
+        })
       }
       this.isActive = !this.isActive
     })

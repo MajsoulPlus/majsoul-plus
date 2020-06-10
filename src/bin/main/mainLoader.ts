@@ -71,6 +71,12 @@ ipcRenderer.on('open-devtools', () => {
   }
 })
 
+ipcRenderer.on('set-audio-muted', (event, bool:boolean) => {
+  if (webContents) {
+    mainWindow.setAudioMuted(bool)
+  }
+})
+
 let serverInfo: {
   url: string
   port: number
