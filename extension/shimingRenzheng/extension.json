@@ -1,9 +1,0 @@
-{
-  "id": "shimingRenzheng",
-  "version": "1.0.0",
-  "name": "解除强制实名认证",
-  "author": "Handle",
-  "description": "如果您是海外玩家或没有中国身份证号码，这个扩展能够帮到您！\n游戏时请遵守当地法律法规。",
-  "entry": "script.js",
-  "applyServer": [0]
-}
