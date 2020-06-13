@@ -98,6 +98,7 @@ declare namespace MajsoulPlus {
     from: string | string[]
     to: string
     'all-servers': boolean
+    replace: boolean
   }
 
   /**
@@ -121,5 +122,9 @@ declare namespace MajsoulPlus {
   export interface WindowStatus {
     visible: boolean
     muted: boolean
+  }
+
+  export interface ResourceMap {
+    res: { [key: string]: { prefix: string } }
   }
 }

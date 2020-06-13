@@ -75,6 +75,9 @@
               },
               "all-servers": {
                 "type": "boolean"
+              },
+              "replace": {
+                "type": "boolean"
               }
             }
           }

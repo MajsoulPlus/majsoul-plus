@@ -30,19 +30,6 @@ export function LoadServer() {
   // 使用 koa-router 的路由
   server.use(router.routes())
 
-  // 处理国服的 region/region.txt
-  server.use(async (ctx, next) => {
-    if (
-      UserConfigs.userData.serverToPlay === 0 &&
-      ctx.request.originalUrl === '/region.txt'
-    ) {
-      ctx.res.statusCode = 200
-      ctx.body = 'mainland'
-    } else {
-      await next()
-    }
-  })
-
   // 默认从远端获取文件
   server.use(async ctx => {
     const isRoutePath = isPath(ctx.request.originalUrl)

@@ -2,9 +2,15 @@ import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as path from 'path'
 import BaseManager from '../BaseManager'
-import { appDataDir, GlobalPath } from '../global'
+import { appDataDir, GlobalPath, Logger } from '../global'
 import { MajsoulPlus } from '../majsoul_plus'
-import { getRemoteSource, isEncryptRes, readFile, XOR } from '../utils'
+import {
+  getRemoteOrCachedFile,
+  getRemoteSource,
+  isEncryptRes,
+  readFile,
+  XOR
+} from '../utils'
 import * as schema from './schema.json'
 
 const defaultResourcePack: MajsoulPlus.ResourcePack = {
@@ -82,7 +88,8 @@ export default class ResourcePackManager extends BaseManager {
         pack.replace[index] = {
           from: [rep, 'jp/' + rep, 'en/' + rep],
           to: rep,
-          'all-servers': true
+          'all-servers': true,
+          replace: false
         }
       } else if (rep['all-servers']) {
         const all = []
@@ -137,6 +144,7 @@ export default class ResourcePackManager extends BaseManager {
           ctx.response.status = 200
           ctx.body = encrypted ? XOR(content as Buffer) : content
         } catch (e) {
+          Logger.error(e)
           ctx.response.status = 404
           ctx.body = undefined
         }
@@ -178,6 +186,31 @@ export default class ResourcePackManager extends BaseManager {
       })
     })
 
+    // 替换资源
+    router.get(
+      `/majsoul_plus/replace/:encoded/:original(.+)`,
+      async (ctx, next) => {
+        const queryPath =
+          '/' + Buffer.from(ctx.params.encoded, 'base64').toString()
+        const originalPath = '/' + ctx.params.original
+        const toXor = isEncryptRes(queryPath) !== isEncryptRes(originalPath)
+
+        Logger.debug(originalPath)
+        Logger.debug(queryPath)
+        Logger.debug(String(toXor))
+
+        const resp = await getRemoteOrCachedFile(queryPath)
+        let data = resp.data as Buffer
+
+        if (toXor) {
+          data = XOR(data)
+        }
+
+        ctx.res.statusCode = resp.code
+        ctx.body = data
+      }
+    )
+
     // 修改资源映射表
     router.get(`/resversion([^w]+)w.json`, async (ctx, next) => {
       ctx.response.type = 'application/json'
@@ -191,7 +224,9 @@ export default class ResourcePackManager extends BaseManager {
         }
       } else {
         ctx.res.statusCode = remote.code
-        const resMap = JSON.parse(remote.data.toString('utf-8'))
+        const resMap: MajsoulPlus.ResourceMap = JSON.parse(
+            remote.data.toString('utf-8')
+          )
 
           // 先加载扩展的资源
           // 后加载资源包的资源，资源包可覆盖扩展的替换
@@ -208,18 +243,28 @@ export default class ResourcePackManager extends BaseManager {
               if (pack.id !== 'majsoul_plus' && item.list[pack.id].enabled) {
                 pack.replace.forEach(
                   (rep: MajsoulPlus.ResourcePackReplaceEntry) => {
-                    const repo = rep as MajsoulPlus.ResourcePackReplaceEntry
-                    const from =
-                      typeof repo.from === 'string' ? [repo.from] : repo.from
+                    const froms =
+                      typeof rep.from === 'string' ? [rep.from] : rep.from
 
-                    from.forEach(rep => {
-                      if (resMap.res[rep] === undefined) {
-                        resMap.res[rep] = { prefix: '' }
+                    froms.forEach(from => {
+                      if (resMap.res[from] === undefined) {
+                        resMap.res[from] = { prefix: '' }
                       }
 
-                      resMap.res[
-                        rep
-                      ].prefix = `majsoul_plus/${item.name}/${pack.id}`
+                      if (rep.replace) {
+                        const to = resMap.res[rep.to]
+                        if (to !== undefined) {
+                          resMap.res[
+                            from
+                          ].prefix = `majsoul_plus/replace/${Buffer.from(
+                            to.prefix + '/' + rep.to
+                          ).toString('base64')}`
+                        }
+                      } else {
+                        resMap.res[
+                          from
+                        ].prefix = `majsoul_plus/${item.name}/${pack.id}`
+                      }
                     })
                   }
                 )
