@@ -71,7 +71,7 @@ ipcRenderer.on('open-devtools', () => {
   }
 })
 
-ipcRenderer.on('set-audio-muted', (event, bool:boolean) => {
+ipcRenderer.on('set-audio-muted', (event, bool: boolean) => {
   if (webContents) {
     mainWindow.setAudioMuted(bool)
   }
@@ -140,7 +140,7 @@ mainWindow.addEventListener('dom-ready', () => {
     scaleWindow(100)
   }
 
-  mainWindow.setUserAgent(navigator.userAgent)
+  mainWindow.useragent = navigator.userAgent
 })
 
 ipcRenderer.on(

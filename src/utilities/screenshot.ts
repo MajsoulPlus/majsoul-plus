@@ -17,7 +17,7 @@ class ScreenShot extends Utility {
       // 由主进程进行保存
       const filePath = path.join(
         app.getPath('pictures'),
-        app.getName(),
+        app.name,
         Date.now() + '.png'
       )
       // 写入文件
