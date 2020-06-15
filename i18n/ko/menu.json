@@ -1,0 +1,11 @@
+{
+  "gameGroup": "게임",
+  "printScreen": "스크린샷",
+  "exitGame": "종료",
+  "windowGroup": "창",
+  "alwaysOnTop": "항상 위에",
+  "fullScreen": "전체 화면",
+  "exitFullScreen": "전체 화면 나가기",
+  "moreGroup": "더 보기",
+  "devTools": "개발자 도구"
+}
