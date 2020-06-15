@@ -1,0 +1,14 @@
+{
+  "newVersionWasFound": "새 버전이 발견되었습니다",
+  "currentVersion": "현재 버전",
+  "latestVersion": "최신 버전",
+  "publishAt": "배포 일시",
+  "tellMeNextTime": "다음에",
+  "gotoPublishPage": "배포 페이지",
+  "updateNow": "지금 업데이트",
+  "downloading": "다운로드 중",
+  "downloadingTip": "새 버전 다운로드 중",
+  "pleaseWait": "잠시만 기다려주세요...",
+  "connecting": "연결 중...",
+  "installAndRelaunch": "설치 & 재시작"
+}
