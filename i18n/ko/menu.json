@@ -1,11 +1,11 @@
 {
-  "gameGroup": "게임",
-  "printScreen": "스크린샷",
-  "exitGame": "종료",
-  "windowGroup": "창",
-  "alwaysOnTop": "항상 위에",
-  "fullScreen": "전체 화면",
-  "exitFullScreen": "전체 화면 나가기",
-  "moreGroup": "더 보기",
-  "devTools": "개발자 도구"
+  "gameGroup": "\uac8c\uc784",
+  "printScreen": "\uc2a4\ud06c\ub9b0\uc0f7",
+  "exitGame": "\uc885\ub8cc",
+  "windowGroup": "\ucc3d",
+  "alwaysOnTop": "\ud56d\uc0c1 \uc704\uc5d0",
+  "fullScreen": "\uc804\uccb4 \ud654\uba74",
+  "exitFullScreen": "\uc804\uccb4 \ud654\uba74 \ub098\uac00\uae30",
+  "moreGroup": "\ub354 \ubcf4\uae30",
+  "devTools": "\uac1c\ubc1c\uc790 \ub3c4\uad6c"
 }

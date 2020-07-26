@@ -1,4 +1,8 @@
 {
+  "executeSafeAlertNodeRequire": "- Based on standard Node.js module, may access and interact with your operating system",
+  "executeSafeAlertWebSocket": "- Internet connection, establish long-term connections with other sites",
+  "executeSafeAlertXMLHttpRequest": "- Internet access, communicate with other sites",
+  "executeSafeAlertWebSecurity": "- Access cross-domain resources, load any file from other sites or your local computer",
   "window": "Window",
   "zoomFactor": "Zoom scale",
   "gameSSAA": "SSAA",
@@ -30,6 +34,7 @@
   "majsoulPlusExtendResources": "Majsoul Plus Extensions",
   "fileTypeAllfiles": "All Files",
   "fileTypeMSPR": "Majsoul+ Resourcepacks",
+  "fileTypeMSPM": "Majsoul+ Mods",
   "fileTypeMSPE": "Majsoul+ Extensions",
   "fileTypeMSPT": "Majsoul+ Tools",
   "fileTypeMajsoulPlusExtendResourcesPack": "Majsoul+ Extends",
@@ -47,8 +52,16 @@
   "XMLHttpRequestFailed": "A ajax call failed, Code: $0",
   "downloadFinished": "Download Finished",
   "downloadFinishedInfo": "A new version has been downloaded, update and relaunch now?",
-
   "dependencyNotFound": "Dependency $0 not found!",
   "dependencyNotEnabled": "Please enable dependency $0 first!",
-  "dependencyVersionMismatch": "Dependency version mismatch! Requires $0:$1, but enabled $2"
+  "dependencyVersionMismatch": "Dependency version mismatch! Requires $0:$1, but enabled $2",
+  "executeSafeAlert": "The plugin requires the following authorizations, confirm enable?",
+  "executeSafeAlertScript": "- Full script authorizations, able to access and modify any data of the page",
+  "executeSafeAlertDocument": "- Access to the root document and object, able to access and modify the whole page",
+  "executeSafeAlertLocalStorage": "- Access to local storage of the page, this usually contains sensitive information",
+  "executeSafeAlertWriteableWindowObject": "- Modify global objects of the page, may make the page easier to be attacked.",
+  "executeSafeAlertWriteableXMLHttpRequest": "- Internet access, communicate with other sites",
+  "executeSafeAlertWriteableWebSocket": "- Internet connection, establish long-term connections with other sites",
+  "executeSafeAlertWriteableNodeRequire": "- Based on standard Node.js module, may access and interact with your operating system",
+  "executeSafeAlertWriteableWebSecurity": "- Access cross-domain resources, load any file from other sites or your local computer"
 }

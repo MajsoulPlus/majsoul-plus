@@ -1,0 +1,14 @@
+{
+  "newVersionWasFound": "新しいバージョンが見つかりました",
+  "currentVersion": "現行バージョン",
+  "latestVersion": "最新バージョン",
+  "publishAt": "リリース日時",
+  "tellMeNextTime": "次回再通知",
+  "gotoPublishPage": "リリースページへ移動",
+  "updateNow": "今すぐ更新",
+  "downloading": "ダウンロード中",
+  "downloadingTip": "サーバからデータを取得中",
+  "pleaseWait": "しばらくお待ち下さい.......",
+  "connecting": "接続中......",
+  "installAndRelaunch": "インストール後再起動します"
+}

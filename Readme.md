@@ -73,17 +73,18 @@ sudo pacman -S gconf
 ## 协助翻译
 
 雀魂 Plus 正在完善多语言本地化，您可以通过以下方式参与到项目翻译中：
-（Out Of Date）
 
 - [Join with ParaTranz](https://paratranz.cn/projects/196): 日本語
 - [Join with OneSky](https://osh1flm.oneskyapp.com/admin/project/dashboard/project/329038): English, 正體中文 台灣, 繁體中文 香港, 한국어
 
 ### 特别感谢以下译者提供的优秀翻译，谢谢您！
 
-| 语言   | 译者                                       |
-| ------ | ------------------------------------------ |
-| 日本語 | [@rakuchan5](https://github.com/rakuchan5) |
-| 한국어 | [@rishubil](https://github.com/rishubil) |
+| 语言   | 译者 |
+| ------ | ------ |
+| 日本語 | [乐乐先生](https://github.com/rakuchan5), [inkuxuan](https://github.com/inkuxuan), [dera0813](https://github.com/dera0813) |
+| 한국어 | [rishubil](https://github.com/rishubil), [karaha](https://osh1flm.oneskyapp.com/account/profile/720841) |
+| English | [Inku Xuan](https://github.com/inkuxuan), [Lawrence_XS](https://github.com/winooxx) |
+| 正體中文 台灣 | [冰鍊](https://github.com/a0193143), [鄢振宇Michael Yan](https://github.com/Michael1015198808), [Davinais](https://github.com/Davinais) |
 
 ## 致用户
 

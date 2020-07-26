@@ -4,11 +4,11 @@
   "latestVersion": "\u6700\u65b0\u7248\u672c",
   "publishAt": "\u767c\u4f48\u65bc",
   "tellMeNextTime": "\u4e0b\u6b21\u63d0\u9192\u6211",
-  "gotoPublishPage": "\u524d\u5f80\u767c\u4f48\u9801",
+  "gotoPublishPage": "\u524d\u5f80\u767c\u4f48\u7db2\u9801",
   "updateNow": "\u4e0b\u8f09\u66f4\u65b0",
   "downloading": "\u6b63\u5728\u4e0b\u8f09\u66f4\u65b0",
-  "downloadingTip": "\u6b63\u5728\u5f9e\u670d\u52d9\u5668\u7372\u53d6\u66f4\u65b0\u4e2d",
+  "downloadingTip": "\u6b63\u5728\u5f9e\u4f3a\u670d\u5668\u7372\u53d6\u66f4\u65b0\u4e2d",
   "pleaseWait": "\u8acb\u7a0d\u5f8c\u2026\u2026",
-  "connecting": "\u8fde\u63a5\u8d44\u6e90\u4e2d\u2026\u2026",
-  "installAndRelaunch": "\u5b89\u88c5\u5e76\u91cd\u542f"
+  "connecting": "\u9023\u63a5\u8cc7\u6e90\u4e2d\u2026\u2026",
+  "installAndRelaunch": "\u5b89\u88dd\u4e26\u91cd\u555f"
 }

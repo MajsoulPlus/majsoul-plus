@@ -1,0 +1,11 @@
+{
+  "gameGroup": "ゲーム",
+  "printScreen": "スクリーンショット",
+  "exitGame": "ゲームを終了",
+  "windowGroup": "ウインドウ",
+  "alwaysOnTop": "最前面で表示",
+  "fullScreen": "全画面",
+  "exitFullScreen": "全画面モードの終了",
+  "moreGroup": "さらに",
+  "devTools": "デベロッパーツール"
+}

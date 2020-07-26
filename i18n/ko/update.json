@@ -1,14 +1,14 @@
 {
-  "newVersionWasFound": "새 버전이 발견되었습니다",
-  "currentVersion": "현재 버전",
-  "latestVersion": "최신 버전",
-  "publishAt": "배포 일시",
-  "tellMeNextTime": "다음에",
-  "gotoPublishPage": "배포 페이지",
-  "updateNow": "지금 업데이트",
-  "downloading": "다운로드 중",
-  "downloadingTip": "새 버전 다운로드 중",
-  "pleaseWait": "잠시만 기다려주세요...",
-  "connecting": "연결 중...",
-  "installAndRelaunch": "설치 & 재시작"
+  "newVersionWasFound": "\uc0c8 \ubc84\uc804\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4",
+  "currentVersion": "\ud604\uc7ac \ubc84\uc804",
+  "latestVersion": "\ucd5c\uc2e0 \ubc84\uc804",
+  "publishAt": "\ubc30\ud3ec \uc77c\uc2dc",
+  "tellMeNextTime": "\ub2e4\uc74c\uc5d0",
+  "gotoPublishPage": "\ubc30\ud3ec \ud398\uc774\uc9c0",
+  "updateNow": "\uc9c0\uae08 \uc5c5\ub370\uc774\ud2b8",
+  "downloading": "\ub2e4\uc6b4\ub85c\ub4dc \uc911",
+  "downloadingTip": "\uc0c8 \ubc84\uc804 \ub2e4\uc6b4\ub85c\ub4dc \uc911",
+  "pleaseWait": "\uc7a0\uc2dc\ub9cc \uae30\ub2e4\ub824\uc8fc\uc138\uc694...",
+  "connecting": "\uc5f0\uacb0 \uc911...",
+  "installAndRelaunch": "\uc124\uce58 & \uc7ac\uc2dc\uc791"
 }

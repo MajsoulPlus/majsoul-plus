@@ -1,9 +1,9 @@
 {
-  "screenshotSaved": "Screenshot saved",
-  "screenshotsSaved": "$0 screenshots saved",
   "programName": "Majsoul Plus",
   "resourcepack": "Resource Packs",
   "extension": "Extensions",
+  "mod": "Mods",
+  "execute": "Plugins",
   "tool": "Tools",
   "setting": "Settings",
   "about": "About",
@@ -19,7 +19,8 @@
   "portInUse": "Port in use, Retrying...",
   "consoleMessage": "ConsoleMsg",
   "webContentsCrashed": "Web Contents Crashed",
-
+  "screenshotSaved": "Screenshot saved",
+  "screenshotsSaved": "$0 screenshots saved",
   "server": "Server",
   "serverzh": "ZH Server",
   "serverjp": "JP Server",
