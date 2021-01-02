@@ -929,6 +929,20 @@ diff@^4.0.1:
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
   integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
 
+discord-rich-presence@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/discord-rich-presence/-/discord-rich-presence-0.0.8.tgz#7a2b41ff87a278e8a2c8835cd91c9890d6b9fbdd"
+  integrity sha512-IpVMPjv15C9UvppxvrrGdv6bzQHOW1P1vLoMH15HvdJwGJ3dBd2bnrJ63Uy36YRUfrAMxGLiwUDHncvC8AuPaQ==
+  dependencies:
+    discord-rpc "github:discordjs/rpc"
+
+"discord-rpc@github:discordjs/rpc":
+  version "3.1.4"
+  resolved "https://codeload.github.com/discordjs/rpc/tar.gz/cbdd31f98b20de0222a793ae0b14018f8119cfb2"
+  dependencies:
+    node-fetch "^2.6.1"
+    ws "^7.3.1"
+
 dmg-builder@21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/dmg-builder/-/dmg-builder-21.2.0.tgz#a9c883557cacb9abdb66c7133b30fe921c1a3ba7"
@@ -2110,6 +2124,11 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+
+node-fetch@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
+  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
 node-gyp@^3.8.0:
   version "3.8.0"
@@ -3439,6 +3458,11 @@ write-file-atomic@^3.0.0:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
+
+ws@^7.3.1:
+  version "7.4.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.2.tgz#782100048e54eb36fe9843363ab1c68672b261dd"
+  integrity sha512-T4tewALS3+qsrpGI/8dqNMLIVdq/g/85U98HPMa6F0m6xTbvhXU6RCQLqPH3+SlomNV/LdY6RXEbBpMH6EOJnA==
 
 xdg-basedir@^3.0.0:
   version "3.0.0"

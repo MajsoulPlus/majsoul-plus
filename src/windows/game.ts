@@ -120,6 +120,18 @@ export function newGameWindow(id: number) {
       http,
       id > 0 ? String(id) : undefined
     )
+
+    try {
+      // Discord Rich Presence
+      const client = require('discord-rich-presence')('794948848308060192')
+      client.updatePresence({
+        type: 0,
+        created_at: Date.now(),
+        instance: true,
+      })
+    } catch(e) {
+      console.error(e)
+    }
   })
 
   window.on('close', () => {
