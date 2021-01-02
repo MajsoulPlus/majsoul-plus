@@ -97,7 +97,7 @@ export default class ResourcePackManager extends BaseManager {
           rep.from = [rep.from]
         }
         rep.from.forEach(key => {
-          all.push(key, 'chs_t/' + key, 'jp/' + key, 'en/' + key, 'chs_t/'+ key)
+          all.push(key, 'chs_t/' + key, 'jp/' + key, 'en/' + key)
         })
         rep.from = all
       }
