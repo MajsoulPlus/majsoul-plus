@@ -86,7 +86,7 @@ export default class ResourcePackManager extends BaseManager {
     pack.replace.forEach((rep, index) => {
       if (typeof rep === 'string') {
         pack.replace[index] = {
-          from: [rep, 'jp/' + rep, 'en/' + rep],
+          from: [rep, 'jp/' + rep, 'en/' + rep, 'chs_t/'+ rep],
           to: rep,
           'all-servers': true,
           replace: false
@@ -97,7 +97,7 @@ export default class ResourcePackManager extends BaseManager {
           rep.from = [rep.from]
         }
         rep.from.forEach(key => {
-          all.push(key, 'chs_t/' + key, 'jp/' + key, 'en/' + key)
+          all.push(key, 'chs_t/' + key, 'jp/' + key, 'en/' + key, 'chs_t/'+ key)
         })
         rep.from = all
       }
