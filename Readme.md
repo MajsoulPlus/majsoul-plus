@@ -37,7 +37,7 @@
 
 | 平台                  | 维护者                                                                       | 安装命令                                                                       |
 | --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew cask install majsoul-plus`                                               |
+| Homebrew Cask / macOS | [@CaptainYukinoshitaHachiman](https://github.com/CaptainYukinoshitaHachiman) | `brew install majsoul-plus --cask`                                               |
 | Arch User Repository  | [@BruceZhang1993](https://github.com/BruceZhang1993)                         | (`bin`) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus-bin) |
 | Arch User Repository  | [@Yesterday17](https://github.com/Yesterday17)                            | (`source`) [参考 AUR 发布页](https://aur.archlinux.org/packages/majsoul-plus/) |
 
