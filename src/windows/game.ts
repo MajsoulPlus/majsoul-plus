@@ -160,11 +160,12 @@ export function newGameWindow(id: number) {
     window.show()
   })
 
+
   // 设置 GameWindow 的 userAgent
-  window.webContents.userAgent = Global.HttpGetUserAgent
+  window.webContents.userAgent = UserConfigs.window.userAgent
 
   // 载入本地启动器
-  window.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'))
+  window.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'), {userAgent: UserConfigs.window.userAgent})
 
   // 在 debug 启动环境下打开开发者工具
   if (process.env.NODE_ENV === 'development') {

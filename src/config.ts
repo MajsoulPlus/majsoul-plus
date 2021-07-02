@@ -13,7 +13,8 @@ const defaultWindowConfig: MajsoulPlus.UserWindowConfig = {
   renderingMultiple: 100,
   isKioskModeOn: false,
   isNoBorder: false,
-  isManagerHide: false
+  isManagerHide: false,
+  userAgent: Global.HttpGetUserAgent
 }
 
 const defaultUpdateConfig: MajsoulPlus.UserUpdateConfig = {

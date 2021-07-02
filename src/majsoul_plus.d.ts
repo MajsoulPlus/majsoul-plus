@@ -12,6 +12,7 @@ declare namespace MajsoulPlus {
     isKioskModeOn: boolean
     isNoBorder: boolean
     isManagerHide: boolean
+    userAgent: string
   }
 
   export interface UserUpdateConfig {
