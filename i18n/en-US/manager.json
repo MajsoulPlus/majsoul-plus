@@ -22,6 +22,7 @@
   "serverToPlay": "Server to play (0 is China server, 1 is Japan server, 2 is America server)",
   "proxyUrl": "Proxy server address (leave it empty if you don't want to use it)",
   "userAgent": "Useragent",
+  "vanillaMode": "Vanilla mode (no extensions)",
   "userLibPath": "'User Library' Path",
   "localVersion": "Version",
   "isManagerHide": "Re-open the launcher when the game quit",

@@ -29,6 +29,7 @@ declare namespace MajsoulPlus {
   export interface UserDataConfig {
     useHttpServer: boolean
     serverToPlay: number
+    vanillaMode: boolean
   }
 
   export interface UserConfig {
