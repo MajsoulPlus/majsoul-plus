@@ -21,6 +21,7 @@ import {
   ListenServer,
   LoadServer
 } from '../server'
+import { getRemoteUrl } from '../utils';
 import { ToolManager } from '../tool/tool'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
@@ -103,15 +104,21 @@ export function newGameWindow(id: number) {
   window.setMenu(getGameWindowMenu(id))
 
   window.webContents.on('dom-ready', () => {
-    // 加载本地服务器地址
-    const http = UserConfigs.userData.useHttpServer
-    const port = (UserConfigs.userData.useHttpServer
-      ? (httpServer.address() as AddressInfo)
-      : (httpsServer.address() as AddressInfo)
-    ).port
-    const url = `http${
-      UserConfigs.userData.useHttpServer ? '' : 's'
-    }://localhost:${port}/`
+    let url, port, http
+
+    if (UserConfigs.userData.vanillaMode) {
+      url = getRemoteUrl('/')
+    } else {
+      // 加载本地服务器地址
+      http = UserConfigs.userData.useHttpServer
+      port = (UserConfigs.userData.useHttpServer
+        ? (httpServer.address() as AddressInfo)
+        : (httpsServer.address() as AddressInfo)
+      ).port
+      url = `http${
+        UserConfigs.userData.useHttpServer ? '' : 's'
+      }://localhost:${port}/`
+    }
 
     window.webContents.send(
       'load-url',
@@ -165,7 +172,7 @@ export function newGameWindow(id: number) {
   window.webContents.userAgent = UserConfigs.window.userAgent
 
   // 载入本地启动器
-  window.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'), {userAgent: UserConfigs.window.userAgent})
+  window.loadURL('file://' + path.join(__dirname, '../bin/main/index.html'))
 
   // 在 debug 启动环境下打开开发者工具
   if (process.env.NODE_ENV === 'development') {

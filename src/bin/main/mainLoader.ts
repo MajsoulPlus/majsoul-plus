@@ -106,7 +106,7 @@ function redirectGameWindow(url: string, gameWindow: Electron.WebviewTag) {
   const localUrl = getLocalUrlWithParams(url)
   console.log('[Majsoul Plus] Redirect Target:' + localUrl)
 
-  gameWindow.loadURL(localUrl, {userAgent: navigator.userAgent})
+  gameWindow.loadURL(localUrl)
 }
 
 function scaleWindow(percent = scalePercent) {
@@ -140,8 +140,6 @@ mainWindow.addEventListener('dom-ready', () => {
   } else {
     scaleWindow(100)
   }
-
-  mainWindow.useragent = navigator.userAgent
 })
 
 ipcRenderer.on(
