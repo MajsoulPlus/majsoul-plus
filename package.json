@@ -124,7 +124,7 @@
     "electron-builder": "^21.2.0",
     "gts": "^1.1.2",
     "ncp": "^2.0.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "run-electron": "^1.0.0",
     "tslint": "^5.20.1",
     "typescript": "^3.7.3",
