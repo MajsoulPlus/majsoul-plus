@@ -83,7 +83,8 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true,
-	  enableRemoteModule: true
+	  enableRemoteModule: true,
+      contextIsolation: false,
     }
   },
   ManagerWindowConfig: {
@@ -95,7 +96,8 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
-	  enableRemoteModule: true
+	  enableRemoteModule: true,
+      contextIsolation: false,
     },
     title: '雀魂Plus',
     icon: appIcon,
@@ -112,7 +114,8 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true,
-	  enableRemoteModule: true
+	  enableRemoteModule: true,
+      contextIsolation: false,
     },
     autoHideMenuBar: true,
     icon: appIcon,
