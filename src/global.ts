@@ -82,7 +82,8 @@ export const Global: MajsoulPlus.Global = {
     enableLargerThanScreen: true,
     webPreferences: {
       nodeIntegration: true,
-      webviewTag: true
+      webviewTag: true,
+	  enableRemoteModule: true
     }
   },
   ManagerWindowConfig: {
@@ -93,7 +94,8 @@ export const Global: MajsoulPlus.Global = {
     backgroundColor: '#FFFFFF',
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+	  enableRemoteModule: true
     },
     title: '雀魂Plus',
     icon: appIcon,
@@ -109,7 +111,8 @@ export const Global: MajsoulPlus.Global = {
     backgroundColor: '#FFFFFF',
     webPreferences: {
       webSecurity: false,
-      allowRunningInsecureContent: true
+      allowRunningInsecureContent: true,
+	  enableRemoteModule: true
     },
     autoHideMenuBar: true,
     icon: appIcon,
