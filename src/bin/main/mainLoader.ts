@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 import i18n from '../../i18n'
 import Global from '../../manager/global'
 import { MajsoulPlus } from '../../majsoul_plus'
@@ -118,7 +118,7 @@ function scaleWindow(percent = scalePercent) {
 
 mainWindow.addEventListener('dom-ready', () => {
   if (!webContents) {
-    webContents = mainWindow.getWebContents()
+    webContents = remote.webContents.fromId(mainWindow.getWebContentsId())
     webContents.zoomFactor = 1
 
     webContents.on('will-navigate', (event, url) => {
