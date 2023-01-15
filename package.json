@@ -121,7 +121,7 @@
     "@types/tcp-ping": "^0.1.0",
 	"@types/node": "^14.18.36",
     "cross-env": "^5.2.1",
-    "electron": "^12.2.3",
+    "electron": "^13.6.9",
     "electron-builder": "^21.2.0",
     "gts": "^1.1.2",
     "ncp": "^2.0.0",
