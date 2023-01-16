@@ -127,7 +127,7 @@
     "ncp": "^2.0.0",
     "node-sass": "^8.0.0",
     "run-electron": "^1.0.0",
-    "tslint": "^5.20.1",
+    "eslint": "^8.32.0",
     "typescript": "^3.7.3",
     "yarn": "^1.22.19"
   }
