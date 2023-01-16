@@ -104,7 +104,7 @@
     "chalk": "^2.4.2",
     "comma-separated-values": "^3.6.4",
     "discord-rich-presence": "^0.0.8",
-    "electron-fetch": "^1.4.0",
+    "electron-fetch": "^1.9.1",
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
     "prettier": "^1.19.1",
