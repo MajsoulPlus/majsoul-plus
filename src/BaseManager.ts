@@ -1,4 +1,4 @@
-import * as Ajv from 'ajv'
+import Ajv from 'ajv'
 import { ipcMain } from 'electron'
 import * as fs from 'fs'
 import * as Koa from 'koa'
