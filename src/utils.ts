@@ -347,7 +347,7 @@ export function zipDir(from: string, to: string) {
 export function unzipDir(file: string, to: string) {
   const zip = new AdmZip(file)
   return new Promise((resolve, reject) => {
-    zip.extractAllToAsync(to, true, err => {
+    zip.extractAllToAsync(to, true, false, err => {
       if (err) reject(err)
       else resolve(to)
     })
