@@ -141,7 +141,7 @@ export async function getRemoteSource(
 
 // fs.mkdir 的 Promise 形式
 export function mkdirPromise(dirname: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     fs.mkdir(dirname, err => {
       if (err) {
         reject(err)
