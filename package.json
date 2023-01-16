@@ -122,7 +122,7 @@
 	"@types/node": "^14.18.36",
     "cross-env": "^7.0.3",
     "electron": "^13.6.9",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^23.6.0",
     "gts": "^3.1.1",
     "ncp": "^2.0.0",
     "node-sass": "^8.0.0",
