@@ -115,7 +115,7 @@ export default class ResourcePackManager extends BaseManager {
 
     // 为每一个资源包分配一个路径
     this.loadedMap.forEach((pack: MajsoulPlus.ResourcePack, id) => {
-      router.get(`/majsoul_plus/resourcepack/${id}/*`, async (ctx, next) => {
+      router.get(`/majsoul_plus/resourcepack/${id}/(.*)`, async (ctx, next) => {
         let queryPath = ctx.path.substr(
           `/majsoul_plus/resourcepack/${id}/`.length
         )

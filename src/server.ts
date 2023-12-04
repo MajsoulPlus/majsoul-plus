@@ -69,7 +69,8 @@ export function ListenServer(port: number) {
   } else {
     httpsServer.listen(port)
     httpsServer.on('error', err => {
-      if (err.code === 'EADDRINUSE') {
+	  let error: any = err;
+      if (error.code === 'EADDRINUSE') {
         httpsServer.close()
         // 随机监听一个空闲端口
         httpsServer.listen(0)

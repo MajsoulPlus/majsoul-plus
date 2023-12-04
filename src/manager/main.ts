@@ -87,7 +87,7 @@ class ResourceManager {
       const openFolder = document.querySelector(`#openFolder${ext.name}`)
       openFolder.addEventListener('click', () => {
         console.log(path.join(Global.appDataDir, ext.name.toLowerCase()))
-        shell.openItem(path.join(Global.appDataDir, ext.name.toLowerCase()))
+        shell.openPath(path.join(Global.appDataDir, ext.name.toLowerCase()))
       })
     })
 

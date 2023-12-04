@@ -141,7 +141,7 @@ export async function getRemoteSource(
 
 // fs.mkdir 的 Promise 形式
 export function mkdirPromise(dirname: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     fs.mkdir(dirname, err => {
       if (err) {
         reject(err)
@@ -258,7 +258,7 @@ export async function getRemoteOrCachedFile(
 }
 
 // 主进程获取资源
-export async function fetchAnySite(url: string, encoding = 'binary') {
+export async function fetchAnySite(url: string, encoding: BufferEncoding = 'binary') {
   const resp = await fetch(url, {
     headers: {
       'User-Agent': Global.HttpGetUserAgent
@@ -271,11 +271,11 @@ export async function fetchAnySite(url: string, encoding = 'binary') {
 export async function writeFile(
   to: string,
   data: Buffer | string,
-  encoding = 'binary'
+  encoding: BufferEncoding = 'binary'
 ): Promise<void> {
   await mkdirs(path.dirname(to))
   return new Promise((resolve, reject) => {
-    fs.writeFile(to, data, encoding, err => {
+    fs.writeFile(to, data, {encoding: encoding}, err => {
       if (err) {
         reject(err)
       }
@@ -347,7 +347,7 @@ export function zipDir(from: string, to: string) {
 export function unzipDir(file: string, to: string) {
   const zip = new AdmZip(file)
   return new Promise((resolve, reject) => {
-    zip.extractAllToAsync(to, true, err => {
+    zip.extractAllToAsync(to, true, false, err => {
       if (err) reject(err)
       else resolve(to)
     })
