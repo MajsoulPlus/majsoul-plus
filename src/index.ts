@@ -142,11 +142,13 @@ app.on('ready', () => {
 
   // 资源管理器通知启动游戏
   ipcMain.on('start-game', () => {
-    // 加载服务器路由规则
-    LoadServer()
+    if (!UserConfigs.userData.vanillaMode) {
+      // 加载服务器路由规则
+      LoadServer()
 
-    // 启动服务器
-    ListenServer(Global.ServerPort)
+      // 启动服务器
+      ListenServer(Global.ServerPort)
+    }
 
     if (!process.env.SERVER_ONLY) {
       GameWindows.newWindow()

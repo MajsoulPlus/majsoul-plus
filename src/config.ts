@@ -13,7 +13,8 @@ const defaultWindowConfig: MajsoulPlus.UserWindowConfig = {
   renderingMultiple: 100,
   isKioskModeOn: false,
   isNoBorder: false,
-  isManagerHide: false
+  isManagerHide: false,
+  userAgent: Global.HttpGetUserAgent
 }
 
 const defaultUpdateConfig: MajsoulPlus.UserUpdateConfig = {
@@ -29,7 +30,8 @@ const defaultChromiumConfig: MajsoulPlus.UserChromiumConfig = {
 
 const defaultUserDataConfig: MajsoulPlus.UserDataConfig = {
   useHttpServer: false,
-  serverToPlay: 0
+  serverToPlay: 0,
+  vanillaMode: false
 }
 
 const defaultConfig: MajsoulPlus.UserConfig = {

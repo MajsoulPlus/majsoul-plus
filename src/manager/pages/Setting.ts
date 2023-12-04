@@ -66,7 +66,7 @@ class Setting {
           index
         }),
       string: () => {
-        if (item === 'proxyUrl') {
+        if (item === 'proxyUrl' || item === 'userAgent') {
           this.renderTextSectionItem({
             settingInner,
             section,

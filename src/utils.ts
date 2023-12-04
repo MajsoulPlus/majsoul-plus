@@ -118,7 +118,7 @@ export async function getRemoteSource(
   const remoteUrl = getRemoteUrl(url)
   const resp = await fetch(remoteUrl, {
     headers: {
-      'User-Agent': Global.HttpGetUserAgent
+      'User-Agent': UserConfigs.window.userAgent
     }
   })
 
@@ -261,7 +261,7 @@ export async function getRemoteOrCachedFile(
 export async function fetchAnySite(url: string, encoding: BufferEncoding = 'binary') {
   const resp = await fetch(url, {
     headers: {
-      'User-Agent': Global.HttpGetUserAgent
+      'User-Agent': UserConfigs.window.userAgent
     }
   })
   return (await resp.buffer()).toString(encoding)

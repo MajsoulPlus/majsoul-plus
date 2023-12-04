@@ -126,7 +126,26 @@ export default class MajsoulPlusExtensionManager extends BaseManager {
       }
     }
 
+    const processRegion = (data) => UserConfigs.userData.serverToPlay === 0
+      ? Buffer.from(
+          data
+            .toString('utf-8')
+            .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
+        )
+      : data;
+
     router.get('/:version/code.js', async (ctx, next) => {
+      if (UserConfigs.userData.vanillaMode) {
+        const code = (
+          await getRemoteOrCachedFile(ctx.request.originalUrl, false, data =>
+            processRegion(data)
+          )
+        ).data.toString('utf-8')
+        ctx.res.setHeader('Content-Type', 'application/javascript')
+        ctx.body = code;
+        return;
+      }
+
       if (this.codejs !== '') {
         ctx.res.statusCode = 200
         ctx.body = this.codejs
@@ -265,13 +284,7 @@ function addScript(url) {
       const url = ctx.request.originalUrl.replace(/^\/majsoul_plus/, '')
       const code = (
         await getRemoteOrCachedFile(url, false, data =>
-          UserConfigs.userData.serverToPlay === 0
-            ? Buffer.from(
-                data
-                  .toString('utf-8')
-                  .replace(/\.\.\/region\/region\.txt/g, 'region.txt')
-              )
-            : data
+          processRegion(data)
         )
       ).data.toString('utf-8')
       ctx.res.setHeader('Content-Type', 'application/javascript')
