@@ -35,6 +35,9 @@ export function LoadServer() {
     const isRoutePath = isPath(ctx.request.originalUrl)
     const resp = await getRemoteOrCachedFile(ctx.request.originalUrl)
     ctx.res.statusCode = resp.code
+    // ensure correct content-type
+    const ext = path.extname(ctx.request.originalUrl.split('?')[0])
+    if (ext) ctx.type = ext
     ctx.body = isRoutePath ? resp.data.toString('utf-8') : resp.data
   })
 
