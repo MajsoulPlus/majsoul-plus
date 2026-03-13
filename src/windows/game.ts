@@ -21,7 +21,7 @@ import {
   ListenServer,
   LoadServer
 } from '../server'
-import { getRemoteUrl } from '../utils';
+import { getRemoteUrl, isLocalhost, localhostRegex } from '../utils';
 import { ToolManager } from '../tool/tool'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
 import { ManagerWindow } from './manager'
@@ -103,6 +103,45 @@ export function newGameWindow(id: number) {
 
   window.setMenu(getGameWindowMenu(id))
 
+  // target & local server configuration details
+  const remoteOrigin: string = new URL(getRemoteUrl('/')).origin
+  const localPort: number = (UserConfigs.userData.useHttpServer
+    ? (httpServer.address() as AddressInfo)
+    : (httpsServer.address() as AddressInfo)
+  ).port
+  const localOrigin: string = `http${
+      UserConfigs.userData.useHttpServer ? '' : 's'
+    }://localhost:${localPort}`
+
+  // when sending external requests, never send localhost as the origin or referer!
+  // if we send those headers, pretend we're requesting from the remote domain
+  window.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    const headers = details.requestHeaders
+    if (headers['Origin'] && isLocalhost(headers['Origin'])) {
+      headers['Origin'] = remoteOrigin
+    }
+    if (headers['Referer'] && isLocalhost(headers['Referer'])) {
+      headers['Referer'] = headers['Referer'].replace(
+        localhostRegex,
+        remoteOrigin
+      )
+    }
+    callback({ requestHeaders: headers })
+  })
+
+  // because we replace origin in the request headers above, we must un-replace
+  // the origin when receiving responses
+  window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    const headers = details.responseHeaders
+    const key = Object.keys(headers).find(
+      k => k.toLowerCase() === 'access-control-allow-origin'
+    )
+    if (key && !isLocalhost(details.url) && headers[key][0] === remoteOrigin) {
+      headers[key] = [localOrigin]
+    }
+    callback({ responseHeaders: headers })
+  })
+
   window.webContents.on('dom-ready', () => {
     let url, port, http
 
@@ -111,13 +150,8 @@ export function newGameWindow(id: number) {
     } else {
       // 加载本地服务器地址
       http = UserConfigs.userData.useHttpServer
-      port = (UserConfigs.userData.useHttpServer
-        ? (httpServer.address() as AddressInfo)
-        : (httpsServer.address() as AddressInfo)
-      ).port
-      url = `http${
-        UserConfigs.userData.useHttpServer ? '' : 's'
-      }://localhost:${port}/`
+      port = localPort
+      url = localOrigin+'/'
     }
 
     window.webContents.send(

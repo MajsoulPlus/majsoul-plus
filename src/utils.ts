@@ -106,6 +106,11 @@ export function isPath(originalUrl: string): boolean {
   )
 }
 
+export const localhostRegex = /^https?:\/\/localhost(:\d+)?/;
+export function isLocalhost(url: string): boolean {
+  return localhostRegex.test(url)
+}
+
 /**
  * 读取远程的官方资源数据
  * @param url 原始请求的相对路径
