@@ -1,21 +1,4 @@
 #update-card {
-  @keyframes fadeInFromNone {
-    0% {
-      display: none;
-      opacity: 0;
-    }
-
-    1% {
-      display: block;
-      opacity: 0;
-    }
-
-    100% {
-      display: block;
-      opacity: 1;
-    }
-  }
-
   display: none;
   padding: 16px 20px;
   position: fixed;
@@ -81,6 +64,23 @@
         background-color: var(--disabled-color);
         cursor: not-allowed;
       }
+    }
+  }
+
+  @keyframes fadeInFromNone {
+    0% {
+      display: none;
+      opacity: 0;
+    }
+
+    1% {
+      display: block;
+      opacity: 0;
+    }
+
+    100% {
+      display: block;
+      opacity: 1;
     }
   }
 

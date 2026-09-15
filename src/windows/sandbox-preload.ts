@@ -1,6 +1,6 @@
 import * as electron from 'electron'
-const fs = electron.remote.require('fs')
-const path = electron.remote.require('path')
+import * as fs from 'fs'
+import * as path from 'path'
 
 // tslint:disable-next-line
 const __dirname = electron.ipcRenderer.sendSync('sandbox-dirname-request')

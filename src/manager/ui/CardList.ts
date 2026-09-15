@@ -1,9 +1,7 @@
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer } from 'electron'
 import i18n from '../../i18n'
 import Card from './Card'
 import CheckedboxCard from './CheckedboxCard'
-
-const dialog = remote.dialog
 
 interface CardListItem extends MajsoulPlus_Manager.CardMetadataWithEnable {
   id: string
@@ -94,7 +92,7 @@ export default class CardList {
     const exp = this.cardListItemMap.get(id)
     if (!exp) return
 
-    const saveReturn = await dialog.showSaveDialog({
+    const saveReturn = await ipcRenderer.invoke('show-save-dialog', {
       title: i18n.text.manager.exportTo(),
       filters: [
         {

@@ -1,5 +1,7 @@
+@use "sass:map";
+
 $material-icons-codepoints: () !default;
-$material-icons-codepoints: map-merge((
+$material-icons-codepoints: map.merge((
 	"10k": e951,
 	"10mp": e952,
 	"11mp": e953,

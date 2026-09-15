@@ -1,3 +1,5 @@
+$fonts-directory-path: '../fonts/' !default;
+
 @font-face {
   font-family: '思源黑体 CN';
   src: url($fonts-directory-path+'SourceHanSansCN-Light.otf') format('opentype');

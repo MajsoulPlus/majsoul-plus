@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain } from 'electron'
+import { app, dialog, ipcMain, nativeTheme, BrowserWindow } from 'electron'
 import * as os from 'os'
 import * as path from 'path'
 import { UserConfigs } from './config'
@@ -16,6 +16,37 @@ import { initPlayer, AudioPlayer } from './windows/audioPlayer'
 import { GameWindows, initGameWindow } from './windows/game'
 import { initManagerWindow, ManagerWindow } from './windows/manager'
 import { initToolManager } from './windows/tool'
+
+// Add IPC handler for dark mode
+ipcMain.handle('get-dark-mode-status', () => {
+  return nativeTheme.shouldUseDarkColors
+})
+
+ipcMain.handle('show-open-dialog', async (event, options) => {
+  const { canceled, filePaths } = await dialog.showOpenDialog(options)
+  return canceled ? [] : filePaths
+})
+
+// Add synchronous IPC handlers for app info
+ipcMain.on('get-app-locale', (event) => {
+  event.returnValue = app.getLocale()
+})
+
+ipcMain.on('get-app-version', (event) => {
+  event.returnValue = app.getVersion()
+})
+
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion()
+})
+
+// Add listener for theme changes
+nativeTheme.on('updated', () => {
+  // Notify all renderer processes about theme change
+  for (const window of BrowserWindow.getAllWindows()) {
+    window.webContents.send('dark-mode-updated', nativeTheme.shouldUseDarkColors)
+  }
+})
 
 // 初始化全局变量
 InitGlobal()
@@ -137,6 +168,7 @@ app.on('will-finish-launching', () => {
 })
 
 app.on('ready', () => {
+
   // 初始化游戏窗口
   initGameWindow()
 
@@ -174,8 +206,8 @@ app.on('ready', () => {
 })
 
 // 监听 GPU 进程崩溃事件
-app.on('gpu-process-crashed', (event, killed) => {
-  Logger.error(`gpu-process-crashed, killed: ${killed}`)
+app.on('child-process-gone', (event, details) => {
+  Logger.error(`child-process-gone, details: ${details}`)
 })
 
 // uncaught exception

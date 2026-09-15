@@ -1,7 +1,9 @@
-@import 'variables';
-@import 'mixins';
+@use "sass:string";
+@use "sass:map";
+@use 'variables';
+@use 'mixins';
 
-$material-design-icons-font-directory-path: './fonts/' !default;
+$material-design-icons-font-directory-path: '../material/fonts/' !default;
 $material-design-icons-font-file-name: 'MaterialIcons-Regular' !default;
 $material-design-icons-font-file-path: $material-design-icons-font-directory-path +
   $material-design-icons-font-file-name !default;
@@ -43,15 +45,13 @@ $material-design-icons-class-icons-prefix: '' !default;
   font-feature-settings: 'liga';
 
   @if $material-design-icons-class-icons-generate-codepoints {
-    @each $name, $codepoint in $material-icons-codepoints {
-      $codepoint: map-get($material-icons-codepoints, $name);
-
+    @each $name, $codepoint in variables.$material-icons-codepoints {
       $class-name: $material-design-icons-class-icons-prefix + $name;
-      $class-name: normalize-class-name($class-name);
+      $class-name: mixins.normalize-class-name($class-name);
 
       &.#{$class-name} {
         &:before {
-          content: material-icons-content($codepoint);
+          content: mixins.material-icons-content($codepoint);
         }
       }
     }

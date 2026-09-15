@@ -1,4 +1,4 @@
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer } from 'electron'
 import i18n from '../../i18n'
 import Global from '../../manager/global'
 import { MajsoulPlus } from '../../majsoul_plus'
@@ -15,10 +15,9 @@ const mainWindow: Electron.WebviewTag = document.querySelector('#mainWindow')
 const mainWindowBox: HTMLDivElement = document.querySelector('#mainWindowBox')
 const scalePercent = userConfigs.window.renderingMultiple
 
-let webContents: Electron.webContents
-
 let screenshotCounter = 0
 let screenshotTimer: NodeJS.Timeout
+
 function showScreenshotLabel(src: string) {
   const image = document.querySelector('#screenshotImage') as HTMLImageElement
   image.src = src
@@ -46,18 +45,14 @@ function showScreenshotLabel(src: string) {
 ipcRenderer.on(
   'take-screenshot',
   (event, index: number, scaleFactor: number) => {
-    if (webContents) {
-      webContents
-        .capturePage({
-          x: 0,
-          y: 0,
-          width: Math.floor(mainWindow.clientWidth * scaleFactor),
-          height: Math.floor(mainWindow.clientHeight * scaleFactor)
-        })
-        .then(image => {
-          ipcRenderer.send('save-screenshot', index, image.toPNG())
-        })
-    }
+    mainWindow.capturePage({
+      x: 0,
+      y: 0,
+      width: Math.floor(mainWindow.clientWidth * scaleFactor),
+      height: Math.floor(mainWindow.clientHeight * scaleFactor)
+    }).then(image => {
+      ipcRenderer.send('save-screenshot', index, image.toPNG())
+    })
   }
 )
 
@@ -66,15 +61,11 @@ ipcRenderer.on('screenshot-saved', (event, filePath: string) => {
 })
 
 ipcRenderer.on('open-devtools', () => {
-  if (webContents) {
-    mainWindow.openDevTools()
-  }
+  mainWindow.openDevTools()
 })
 
 ipcRenderer.on('set-audio-muted', (event, bool: boolean) => {
-  if (webContents) {
-    mainWindow.setAudioMuted(bool)
-  }
+  mainWindow.setAudioMuted(bool)
 })
 
 let serverInfo: {
@@ -118,21 +109,17 @@ function scaleWindow(percent = scalePercent) {
 }
 
 mainWindow.addEventListener('dom-ready', () => {
-  if (!webContents) {
-    webContents = remote.webContents.fromId(mainWindow.getWebContentsId())
-    webContents.zoomFactor = 1
-
-    webContents.on('will-navigate', (event, url) => {
-      if (isVanillaGameUrl(url)) {
-        event.preventDefault()
-        redirectGameWindow(url, mainWindow)
-      }
-    })
-
-    if (process.env.NODE_ENV === 'development') {
-      mainWindow.openDevTools()
-    }
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.openDevTools()
   }
+
+  mainWindow.addEventListener('will-navigate', (event: any) => {
+    const url = event.url
+    if (isVanillaGameUrl(url)) {
+      event.preventDefault()
+      redirectGameWindow(url, mainWindow)
+    }
+  })
 
   if (isLocalHost(mainWindow.src)) {
     scaleWindow(scalePercent)

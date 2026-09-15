@@ -83,7 +83,6 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true,
-	  enableRemoteModule: true,
       contextIsolation: false,
     }
   },
@@ -96,7 +95,6 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
-	  enableRemoteModule: true,
       contextIsolation: false,
     },
     title: '雀魂Plus',
@@ -114,7 +112,6 @@ export const Global: MajsoulPlus.Global = {
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true,
-	  enableRemoteModule: true,
       contextIsolation: false,
     },
     autoHideMenuBar: true,

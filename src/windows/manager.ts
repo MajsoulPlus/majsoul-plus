@@ -24,7 +24,7 @@ export function initManagerWindow() {
   if (process.platform === 'darwin') {
     config.frame = false
     config.titleBarStyle = 'hidden'
-    config.vibrancy = 'medium-light'
+    config.vibrancy = 'appearance-based'
     config.backgroundColor = 'rgba(0,0,0,0)'
   }
 

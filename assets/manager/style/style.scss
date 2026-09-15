@@ -2,13 +2,12 @@ $material-design-icons-font-directory-path: '../material/fonts/';
 $fonts-directory-path: '../fonts/';
 $iconfont-directory-path: '../iconfont/';
 
-@import 'color';
-@import 'default';
-@import 'darwin';
-@import 'widgets/titlebar';
-@import 'widgets/main_context';
-@import 'widgets/update_card';
-
-@import '../fonts/fonts';
-@import '../iconfont/iconfont';
-@import '../material/material-design-icons';
+@use 'color';
+@use 'default';
+@use 'darwin';
+@use 'widgets/titlebar';
+@use 'widgets/main_context';
+@use 'widgets/update_card';
+@use '../fonts/fonts';
+@use '../iconfont/iconfont';
+@use '../material/material-design-icons' as material;

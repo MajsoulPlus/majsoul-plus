@@ -230,7 +230,7 @@ function addScript(url) {
 `
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = format(this.codejs, { parser: 'babel' })
+      ctx.body = await format(this.codejs, { parser: 'babel' })
     })
 
     // 获取扩展基本信息
@@ -255,7 +255,7 @@ function addScript(url) {
 
       ctx.res.statusCode = 200
       ctx.res.setHeader('Content-Type', 'application/javascript')
-      ctx.body = format(
+      ctx.body = await format(
         `/**
 * Extension： ${extension.id}
 * Author: ${extension.author}
@@ -292,7 +292,7 @@ function addScript(url) {
     })
 
     router.get('/majsoul_plus/plugin/console.js', async (ctx, next) => {
-      const result = format(
+      const result = await format(
         `
         const extensionConsole = id => {
           return new Proxy(

@@ -1,7 +1,15 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as CSV from 'comma-separated-values'
-import { app, remote } from 'electron'
+import { app as electronApp, ipcRenderer } from 'electron'
+
+const locale = typeof window !== 'undefined'
+  ? ipcRenderer.sendSync('get-app-locale')
+  : electronApp.getLocale()
+
+const version = typeof window !== 'undefined'
+  ? ipcRenderer.sendSync('get-app-version')
+  : electronApp.getVersion()
 
 /**
  * 本地化，单条语句翻译对象
@@ -300,5 +308,5 @@ class I18n {
 }
 
 export default new I18n({
-  actives: [(app || remote.app).getLocale()]
+  actives: [locale]
 })

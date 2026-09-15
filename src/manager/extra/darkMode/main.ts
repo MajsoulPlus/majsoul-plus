@@ -1,4 +1,4 @@
-import { remote } from 'electron'
+import { ipcRenderer } from 'electron'
 import { MajsoulPlus } from '../../../majsoul_plus'
 
 function changeTheme(mode: string) {
@@ -9,17 +9,21 @@ function changeTheme(mode: string) {
 }
 
 export default function darkMode(userConfig: MajsoulPlus.UserConfig) {
-  const { nativeTheme } = remote
-
-  const setOSTheme = () => {
-    console.log(nativeTheme.shouldUseDarkColors)
-    changeTheme(nativeTheme.shouldUseDarkColors ? 'dark' : 'light')
+  const setOSTheme = async () => {
+    try {
+      // Use IPC to get dark mode status from main process
+      const isDarkMode = await ipcRenderer.invoke('get-dark-mode-status')
+      changeTheme(isDarkMode ? 'dark' : 'light')
+    } catch (error) {
+      console.error('Failed to get dark mode status:', error)
+    }
   }
 
-  nativeTheme.addListener('updated', () => {
-    setOSTheme()
-  })
-
+  // Set initial theme
   setOSTheme()
-  // changeTheme(userConfig.window.OSTheme)
+
+  // Listen for theme changes
+  ipcRenderer.on('dark-mode-updated', (event, isDarkMode) => {
+    changeTheme(isDarkMode ? 'dark' : 'light')
+  })
 }

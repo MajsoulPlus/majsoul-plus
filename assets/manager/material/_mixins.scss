@@ -1,12 +1,15 @@
+@use "sass:string";
+@use "sass:map";
+
 @function material-icons-content($codepoint) {
-  @return unquote('"\\#{$codepoint}"');
+  @return string.unquote('"\\#{$codepoint}"');
 }
 
 @function normalize-class-name($class-name) {
-  $class-name-first-char: str-slice($class-name, 0, 1);
+  $class-name-first-char: string.slice($class-name, 0, 1);
 
   // if the first character is a number, then we need to prefix it with something (since this is invalid class name)
-  @if str-index('1234567890', $class-name-first-char) {
+  @if string.index('1234567890', $class-name-first-char) {
     $class-name: '_' + $class-name;
   }
 
@@ -14,7 +17,7 @@
 }
 
 @mixin material-icon($name, $pseudo: 'before') {
-  $codepoint: map-get($material-icons-codepoints, $name);
+  $codepoint: map.get($material-icons-codepoints, $name);
 
   &:#{$pseudo} {
     content: material-icons-content($codepoint);

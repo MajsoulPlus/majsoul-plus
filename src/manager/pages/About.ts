@@ -1,6 +1,5 @@
-import { ipcRenderer, remote, shell } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 import i18n from '../../i18n'
-const { app } = remote
 
 class AboutPage {
   render = () => {
@@ -43,11 +42,12 @@ class AboutPage {
   }
 
   private getGitHubHTML = () => {
+    const version = ipcRenderer.sendSync('get-app-version')
     const info = document.createElement('p')
     info.innerHTML = `在 PC 上跨平台的雀魂麻将第三方浏览器，提供资源替换和代码注入功能，并对直播环境进行了一定优化。
       <br>
       <br>
-      <span>${i18n.text.manager.localVersion()} ${app.getVersion()}</span>
+      <span>${i18n.text.manager.localVersion()} v${version}</span>
       <a href="https://github.com/MajsoulPlus/majsoul-plus-client">
         <img alt="Github Stars" src="https://img.shields.io/github/stars/MajsoulPlus/majsoul-plus-client.svg?style=social">
       </a>

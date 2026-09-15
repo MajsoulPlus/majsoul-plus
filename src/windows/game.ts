@@ -1,7 +1,6 @@
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  dialog,
   ipcMain,
   Menu,
   MenuItem,
@@ -9,10 +8,9 @@ import {
   MenuItemConstructorOptions,
   app
 } from 'electron'
-import { AddressInfo } from 'net'
 import * as path from 'path'
-import { SaveConfigJson, UserConfigs } from '../config'
-import { Global, Logger, RemoteDomains } from '../global'
+import { UserConfigs, SaveConfigJson } from '../config'
+import { Global, Logger } from '../global'
 import i18n from '../i18n'
 import {
   CloseServer,
@@ -22,9 +20,9 @@ import {
   LoadServer
 } from '../server'
 import { getRemoteUrl } from '../utils';
-import { ToolManager } from '../tool/tool'
 import { AudioPlayer, initPlayer, shutoffPlayer } from './audioPlayer'
-import { ManagerWindow } from './manager'
+import { ToolManager } from '../tool/tool'
+import { AddressInfo } from 'net'
 
 export class GameWindows {
   private static windows: Map<number, BrowserWindow> = new Map()
@@ -147,8 +145,8 @@ export function newGameWindow(id: number) {
   })
 
   // 监听到崩溃事件，输出 console
-  window.webContents.on('crashed', () =>
-    Logger.error(i18n.text.main.webContentsCrashed())
+  window.webContents.on('render-process-gone', (event, details) =>
+    Logger.error(`${i18n.text.main.webContentsCrashed()}: ${details}`)
   )
 
   // 当且仅当只有一个游戏窗口时修改游戏窗口

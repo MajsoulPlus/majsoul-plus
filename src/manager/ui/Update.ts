@@ -1,5 +1,5 @@
 import Network from '../utils/Network'
-import { remote, shell } from 'electron'
+import { shell, ipcRenderer } from 'electron'
 import { gt } from 'semver'
 
 class Update {
@@ -15,8 +15,9 @@ class Update {
     return this
   }
 
-  private getLocalVersion() {
-    return `v${remote.app.getVersion()}`
+  private async getLocalVersion() {
+    const version = await ipcRenderer.invoke('get-app-version')
+    return `v${version}`
   }
 
   private async getRemoteVersionInfo() {

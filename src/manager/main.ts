@@ -3,6 +3,7 @@ import * as os from 'os'
 import Ping from './utils/Ping'
 import i18n from '../i18n'
 import Global from './global'
+import { ipcRenderer, shell } from 'electron'
 
 import Update from './ui/Update'
 import LeftPanel from './ui/Panel'
@@ -15,7 +16,6 @@ import About from './pages/About'
 import darkModeTheme from './extra/darkMode/main'
 import springFestivalTheme from './extra/springFestivalTheme/main'
 import prayForKyoani from './extra/prayForKyoani/main'
-import { ipcRenderer, remote, shell } from 'electron'
 
 class ResourceManager {
   private static userConfig = Setting.userConfig
@@ -100,7 +100,7 @@ class ResourceManager {
       section['ondrop'] = event => {
         event.preventDefault()
         for (const file of event.dataTransfer.files) {
-          const filePath = file.path
+          const filePath = (file as any).path
           const ext = path.extname(filePath)
           const type = {
             '.mspr': 'resourcepack',
@@ -164,37 +164,35 @@ class ResourceManager {
   // 从 MSP* 导入资源包 / 扩展 / 工具
   private static importMSP(type: string) {
     return () => {
-      remote.dialog
-        .showOpenDialog({
-          title: i18n.text.manager.installFrom(),
-          filters: [
-            {
-              name: i18n.text.manager.fileTypeMSPR(),
-              extensions: ['mspr']
-            },
-            {
-              name: i18n.text.manager.fileTypeMSPE(),
-              extensions: ['mspe', 'mspm']
-            },
-            {
-              name: i18n.text.manager.fileTypeMSPT(),
-              extensions: ['mspt']
-            }
-          ].filter(ext => {
-            return {
-              ResourcePack: ['mspr'],
-              Extension: ['mspe', 'mspm'],
-              Tool: ['mspt']
-            }[type].includes(ext.extensions[0])
-          }),
-          properties: ['openFile', 'multiSelections']
+      ipcRenderer.invoke('show-open-dialog', {
+        title: i18n.text.manager.installFrom(),
+        filters: [
+          {
+            name: i18n.text.manager.fileTypeMSPR(),
+            extensions: ['mspr']
+          },
+          {
+            name: i18n.text.manager.fileTypeMSPE(),
+            extensions: ['mspe', 'mspm']
+          },
+          {
+            name: i18n.text.manager.fileTypeMSPT(),
+            extensions: ['mspt']
+          }
+        ].filter(ext => {
+          return {
+            ResourcePack: ['mspr'],
+            Extension: ['mspe', 'mspm'],
+            Tool: ['mspt']
+          }[type].includes(ext.extensions[0])
+        }),
+        properties: ['openFile', 'multiSelections']
+      }).then(filePaths => {
+        filePaths.forEach(file => {
+          ipcRenderer.sendSync(`import-${type.toLowerCase()}`, file)
         })
-        .then(files => {
-          files.filePaths.forEach(file => {
-            ipcRenderer.sendSync(`import-${type.toLowerCase()}`, file)
-          })
-          ResourceManager.refreshCard(type)()
-        })
+        ResourceManager.refreshCard(type)()
+      })
     }
   }
 

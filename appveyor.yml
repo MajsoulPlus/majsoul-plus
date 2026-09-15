@@ -1,3 +1,5 @@
+image: Visual Studio 2022
+
 cache:
   - node_modules
   - '%APPDATA%\npm-cache'
@@ -5,7 +7,9 @@ cache:
   - '%USERPROFILE%\AppData\Local\Yarn\cache'
 
 install:
-  - ps: Install-Product node 18
+  - ps: Install-Product node 22
+  - corepack enable
+  - yarn set version berry
   - yarn
   - node --version
 
